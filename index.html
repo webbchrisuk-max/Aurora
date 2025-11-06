@@ -3,14 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Aurora Tracker – HyperGrid Live Feed</title>
+<title>Aurora Tracker – HyperGrid Live Feed v2 (Pulse Edition)</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
+<!-- ===================== SECTION: CORE THEME ===================== -->
 <style>
-/* =======================================================
-   HYPERGRID THEME
-   ======================================================= */
 body {
   margin:0;
   padding:0;
@@ -29,6 +26,7 @@ body {
   to{background-position:400px 400px,400px 400px;}
 }
 
+/* ===================== SECTION: HEADINGS & GRID ===================== */
 h1{
   text-align:center;
   font-size:1.8rem;
@@ -36,14 +34,12 @@ h1{
   color:#00ffff;
   text-shadow:0 0 15px #00ffff;
 }
-
 .dashboard{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(480px,1fr));
   gap:20px;
   margin:0 5%;
 }
-
 .card{
   background:rgba(10,10,30,0.65);
   border:1px solid rgba(0,255,255,0.25);
@@ -55,24 +51,9 @@ h1{
 }
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 
-/* small headers */
-.card h2{
-  color:#00ffff;
-  font-size:1.2rem;
-  border-bottom:1px solid rgba(0,255,255,0.3);
-  padding-bottom:6px;
-  margin-bottom:12px;
-}
-
-.table-holder{
-  overflow-x:auto;
-  max-height:350px;
-}
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:0.9rem;
-}
+/* ===================== SECTION: TABLES ===================== */
+.table-holder{overflow-x:auto;max-height:350px;}
+table{width:100%;border-collapse:collapse;font-size:0.9rem;}
 th,td{padding:6px 8px;text-align:left;}
 th{color:#ff66cc;}
 tr:nth-child(even){background:rgba(255,255,255,0.05);}
@@ -81,30 +62,58 @@ tr:hover{background:rgba(0,255,255,0.1);}
 .gain-pos{color:#00ff99;}
 .gain-neg{color:#ff6666;}
 
+/* ===================== SECTION: SYNC STATUS ===================== */
 #auroraSyncStatus{
   position:fixed;
   top:10px;
   right:20px;
   font-size:0.85rem;
-  color:#ccc;
+  color:#fff;
 }
 #auroraSyncDot{
   display:inline-block;
   width:10px;
   height:10px;
   border-radius:50%;
-  background:#888;
-  box-shadow:0 0 10px #888;
+  background:#00ffcc;
+  box-shadow:0 0 10px #00ffcc;
   margin-right:6px;
   vertical-align:middle;
+  animation:pulseGlow 3s ease-in-out infinite;
 }
+@keyframes pulseGlow{
+  0%,100%{box-shadow:0 0 10px #00ffcc;}
+  50%{box-shadow:0 0 25px #00ffff;}
+}
+
+/* ===================== SECTION: QUARTERLY BARS ===================== */
+#quarterlyBars{
+  display:flex;
+  justify-content:space-around;
+  align-items:flex-end;
+  height:220px;
+  margin-top:10px;
+}
+.qbar{
+  width:60px;
+  background:linear-gradient(180deg,#ff00ff,#00ffff);
+  border-radius:6px 6px 0 0;
+  box-shadow:0 0 15px #00ffff;
+  animation:pulseBar 4s ease-in-out infinite;
+}
+@keyframes pulseBar{
+  0%,100%{opacity:0.9;box-shadow:0 0 15px #00ffff;}
+  50%{opacity:1;box-shadow:0 0 25px #ff00ff;}
+}
+.qbar-label{text-align:center;margin-top:6px;}
 </style>
 </head>
 <body>
-<h1>Aurora Tracker – HyperGrid Live Feed</h1>
-<div id="auroraSyncStatus"><span id="auroraSyncDot"></span>Syncing…</div>
+<h1>Aurora Tracker – HyperGrid Live Feed v2 (Pulse Edition)</h1>
+<div id="auroraSyncStatus"><span id="auroraSyncDot"></span>Synced</div>
 
 <div class="dashboard">
+
   <!-- ===================== SECTION: Portfolio Summary ===================== -->
   <div class="card" id="portfolio-summary">
     <h2>Portfolio Summary</h2>
@@ -123,7 +132,19 @@ tr:hover{background:rgba(0,255,255,0.1);}
   <div class="card" id="ig-holdings">
     <h2>IG ISA Holdings</h2>
     <div class="table-holder">
-      <table id="igTable"><thead><tr><th>Ticker</th><th>Value (£)</th><th>Gain %</th></tr></thead><tbody></tbody></table>
+      <table id="igTable">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Value (£)</th>
+            <th>Gain (£)</th>
+            <th>Gain (%)</th>
+            <th>Yield (%)</th>
+            <th>Income (£)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
   </div>
 
@@ -131,7 +152,19 @@ tr:hover{background:rgba(0,255,255,0.1);}
   <div class="card" id="t212-holdings">
     <h2>Trade212 Holdings</h2>
     <div class="table-holder">
-      <table id="t212Table"><thead><tr><th>Ticker</th><th>Value (£)</th><th>Gain %</th></tr></thead><tbody></tbody></table>
+      <table id="t212Table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Value (£)</th>
+            <th>Gain (£)</th>
+            <th>Gain (%)</th>
+            <th>Yield (%)</th>
+            <th>Income (£)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
   </div>
 
@@ -143,67 +176,68 @@ tr:hover{background:rgba(0,255,255,0.1);}
     <ul id="nextExDivs"></ul>
   </div>
 
-  <!-- ===================== SECTION: Monthly Dividend Chart ===================== -->
-  <div class="card" id="chart">
-    <h2>Monthly Dividend Projection</h2>
-    <div id="divChart" style="height:300px;"></div>
+  <!-- ===================== SECTION: Quarterly Dividend Breakdown ===================== -->
+  <div class="card" id="quarterly">
+    <h2>Quarterly Dividend Breakdown</h2>
+    <div id="quarterlyBars"></div>
+    <div id="quarterLabels"></div>
   </div>
-</div>
 
+</div>
+<!-- ===================== SECTION: SCRIPT ===================== -->
 <script>
-/* =======================================================
-   AURORA LIVE SYNC
-   ======================================================= */
 async function loadAuroraSync(){
   const STATUS=document.getElementById("auroraSyncStatus");
-  const DOT=document.getElementById("auroraSyncDot");
   const url="https://cdn.jsdelivr.net/gh/webbchrisuk-max/Aurora@main/AuroraSync.json?nocache="+Date.now();
 
   try{
     const response=await fetch(url,{cache:"no-store"});
-    if(!response.ok)throw new Error("HTTP "+response.status);
+    if(!response.ok) throw new Error("HTTP "+response.status);
     const data=await response.json();
     window.AuroraSync=data;
-
-    if(data.integrity && data.integrity.is_valid){
-      STATUS.innerHTML='<span id="auroraSyncDot"></span>🟢 Synced • '+data.integrity.last_validated;
-      DOT.style.background="#00ffcc";
-      DOT.style.boxShadow="0 0 20px #00ffcc";
-    }else{
-      STATUS.innerHTML='<span id="auroraSyncDot"></span>⚠️ Integrity issue';
-      DOT.style.background="#ffaa00";
-      DOT.style.boxShadow="0 0 20px #ffaa00";
-    }
-
     renderData(data);
   }catch(err){
-    STATUS.innerHTML='<span id="auroraSyncDot"></span>🔴 Sync failed';
-    DOT.style.background="#ff4444";
-    DOT.style.boxShadow="0 0 20px #ff4444";
+    STATUS.innerHTML='<span id="auroraSyncDot" style="background:#ff4444;box-shadow:0 0 20px #ff4444;"></span>Sync Error';
     console.error("AuroraSync load error:",err);
   }
 }
 
-/* =======================================================
-   RENDER SECTIONS
-   ======================================================= */
+/* ===================== SECTION: RENDERING ===================== */
 function renderData(data){
+  // Portfolio Summary
   document.getElementById("targetValue").textContent=data.isa.portfolio_summary.annual_target_value.toFixed(2);
   document.getElementById("divYield").textContent=data.isa.portfolio_summary.dividend_yield.toFixed(2);
+
+  // ISA Balances
   document.getElementById("igBalance").textContent=data.isa.ig_isa.balance.toFixed(2);
   document.getElementById("t212Balance").textContent=data.isa.trade212_isa.balance.toFixed(2);
 
-  // Holdings
+  // IG Holdings
   const igBody=document.querySelector("#igTable tbody");
-  const tBody=document.querySelector("#t212Table tbody");
   igBody.innerHTML="";
-  tBody.innerHTML="";
-  data.isa_feed.forEach(h=>{
+  data.isa_feed.filter(x=>x.account==="IG ISA").forEach(h=>{
     const row=document.createElement("tr");
-    row.innerHTML=`<td>${h.ticker}</td><td class="value">${(+h.value).toFixed(2)}</td>
-    <td class="${h.gain_value>=0?'gain-pos':'gain-neg'}">${(+h.gain_percentage).toFixed(2)}%</td>`;
-    if(h.account==="IG ISA")igBody.appendChild(row);
-    if(h.account==="TRADE212")tBody.appendChild(row);
+    row.innerHTML=`<td>${h.name}</td>
+      <td class="value">${(+h.value).toFixed(2)}</td>
+      <td class="${h.gain_value>=0?'gain-pos':'gain-neg'}">${(+h.gain_value).toFixed(2)}</td>
+      <td class="${h.gain_value>=0?'gain-pos':'gain-neg'}">${(+h.gain_percentage).toFixed(2)}%</td>
+      <td>${(+h.annual_div_yield).toFixed(2)}%</td>
+      <td>${(+h.annual_income).toFixed(2)}</td>`;
+    igBody.appendChild(row);
+  });
+
+  // Trade212 Holdings
+  const tBody=document.querySelector("#t212Table tbody");
+  tBody.innerHTML="";
+  data.isa_feed.filter(x=>x.account==="TRADE212").forEach(h=>{
+    const row=document.createElement("tr");
+    row.innerHTML=`<td>${h.name}</td>
+      <td class="value">${(+h.value).toFixed(2)}</td>
+      <td class="${h.gain_value>=0?'gain-pos':'gain-neg'}">${(+h.gain_value).toFixed(2)}</td>
+      <td class="${h.gain_value>=0?'gain-pos':'gain-neg'}">${(+h.gain_percentage).toFixed(2)}%</td>
+      <td>${(+h.annual_div_yield).toFixed(2)}%</td>
+      <td>${(+h.annual_income).toFixed(2)}</td>`;
+    tBody.appendChild(row);
   });
 
   // Dividends
@@ -214,7 +248,6 @@ function renderData(data){
   const upcomingEx=data.dividends_feed.filter(d=>new Date(d.ex_div_date)>now)
     .sort((a,b)=>new Date(a.ex_div_date)-new Date(b.ex_div_date))
     .slice(0,5);
-
   const nextDivs=document.getElementById("nextDivs");
   const nextExDivs=document.getElementById("nextExDivs");
   nextDivs.innerHTML="";
@@ -230,22 +263,29 @@ function renderData(data){
     nextExDivs.appendChild(li);
   });
 
-  // Chart
-  const months=data.dividend_planner.monthly_breakdown.map(m=>m.month);
-  const totals=data.dividend_planner.monthly_breakdown.map(m=>m.total_estimated_income);
-  Plotly.newPlot('divChart',[{
-    x:months,
-    y:totals,
-    type:'bar',
-    marker:{color:'#00ffff'}
-  }],{margin:{t:10},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#fff'}});
+  // Quarterly Bars
+  const qData=data.dividend_planner.quarterly_breakdown;
+  const qBars=document.getElementById("quarterlyBars");
+  const qLabels=document.getElementById("quarterLabels");
+  qBars.innerHTML="";
+  qLabels.innerHTML="";
+  const maxVal=Math.max(...Object.values(qData));
+  Object.entries(qData).forEach(([q,v])=>{
+    const bar=document.createElement("div");
+    bar.className="qbar";
+    bar.style.height=(v/maxVal*200)+"px";
+    qBars.appendChild(bar);
+    const label=document.createElement("div");
+    label.className="qbar-label";
+    label.innerHTML=`${q}<br>£${v.toFixed(2)}`;
+    qLabels.appendChild(label);
+  });
 }
 
-/* =======================================================
-   INIT
-   ======================================================= */
+/* ===================== SECTION: INIT ===================== */
 loadAuroraSync();
-setInterval(loadAuroraSync,300000); // every 5 min
+setInterval(loadAuroraSync,300000); // every 5 minutes
 </script>
 </body>
-</html>
+</html>   
+   
