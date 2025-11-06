@@ -13,9 +13,11 @@
   --magenta:#ff00ff;
   --pink:#ff66cc;
   --green:#00ff99;
-  --bg1:#060018;
-  --bg2:#120035;
-  --bg3:#001a33;
+  --bg1:#020010;
+  --bg2:#180040;
+  --bg3:#002255;
+  --bg4:#330033;
+  --bg5:#004466;
 }
 
 /* full-screen animated aurora gradient */
@@ -24,10 +26,24 @@ body{
   padding:0;
   font-family:'Orbitron',sans-serif;
   color:#fff;
-  background:linear-gradient(120deg,var(--bg1),var(--bg2),var(--bg3));
-  background-size:600% 600%;
-  animation:auroraDrift 45s ease-in-out infinite;
+  background:linear-gradient(125deg,
+    var(--bg1),
+    var(--bg2),
+    var(--bg3),
+    var(--bg4),
+    var(--bg5));
+  background-size:800% 800%;
+  animation:auroraDrift 35s linear infinite;
   overflow-x:hidden;
+  will-change:background-position;
+}
+@keyframes auroraDrift{
+  0%{background-position:0% 50%;}
+  25%{background-position:50% 100%;}
+  50%{background-position:100% 50%;}
+  75%{background-position:50% 0%;}
+  100%{background-position:0% 50%;}
+}
 }
 @keyframes auroraDrift{
   0%{background-position:0% 50%;}
