@@ -3,21 +3,19 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Aurora Tracker – HyperGrid Live Feed v3.1 (Drift + Sector Alignment)</title>
+<title>Aurora Tracker – HyperGrid Live Feed v3.0 (Eclipse Expansion)</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
 
-<!-- ===================== SECTION: CORE THEME + ENHANCED AURORA BACKGROUND ===================== -->
+<!-- ===================== SECTION: CORE THEME + AURORA BACKGROUND ===================== -->
 <style>
 :root{
   --cyan:#00ffff;
   --magenta:#ff00ff;
   --pink:#ff66cc;
   --green:#00ff99;
-  --bg1:#020010;
-  --bg2:#180040;
-  --bg3:#002255;
-  --bg4:#330033;
-  --bg5:#004466;
+  --bg1:#060018;
+  --bg2:#120035;
+  --bg3:#001a33;
 }
 
 /* full-screen animated aurora gradient */
@@ -26,16 +24,10 @@ body{
   padding:0;
   font-family:'Orbitron',sans-serif;
   color:#fff;
-  background:linear-gradient(125deg,
-    var(--bg1),
-    var(--bg2),
-    var(--bg3),
-    var(--bg4),
-    var(--bg5));
-  background-size:800% 800%;
-  animation:auroraDrift 35s linear infinite;
+  background:linear-gradient(120deg,var(--bg1),var(--bg2),var(--bg3));
+  background-size:600% 600%;
+  animation:auroraDrift 45s ease-in-out infinite;
   overflow-x:hidden;
-  will-change:background-position;
 }
 @keyframes auroraDrift{
   0%{background-position:0% 50%;}
@@ -102,10 +94,15 @@ tr:hover{background:rgba(0,255,255,0.1);}
   50%{box-shadow:0 0 25px var(--magenta);}
 }
 
-/* smart timestamp */
-#syncTime{display:block;font-size:0.75rem;color:#aaa;margin-top:2px;}
+/* new: smart timestamp */
+#syncTime{
+  display:block;
+  font-size:0.75rem;
+  color:#aaa;
+  margin-top:2px;
+}
 
-/* highlight colours */
+/* colours used in text highlights */
 .amount-green{color:var(--green);}
 .date-pink{color:var(--pink);}
 
@@ -116,7 +113,7 @@ tr:hover{background:rgba(0,255,255,0.1);}
 </style>
 </head>
 <body>
-<h1>Aurora Tracker – HyperGrid Live Feed v3.1 (Drift + Sector Alignment)</h1>
+<h1>Aurora Tracker – HyperGrid Live Feed v3.0 (Eclipse Expansion)</h1>
 
 <!-- ===================== SECTION: SYNC STATUS ===================== -->
 <div id="auroraSyncStatus">
@@ -127,7 +124,7 @@ tr:hover{background:rgba(0,255,255,0.1);}
 <!-- ===================== SECTION: DASHBOARD GRID ===================== -->
 <div class="dashboard">
 
-  <!-- ===================== SECTION: PORTFOLIO SUMMARY ===================== -->
+  <!-- === Portfolio Summary (gain pulse added later in script) === -->
   <div class="card" id="portfolio-summary">
     <h2>Portfolio Summary</h2>
     <p>Total Target: £<span id="targetValue">0.00</span></p>
@@ -135,26 +132,22 @@ tr:hover{background:rgba(0,255,255,0.1);}
     <p>Total Gain: <span id="totalGain">0.00</span> ( <span id="gainPercent">0.00</span>% )</p>
   </div>
 
-  <!-- ===================== SECTION: ISA BALANCES ===================== -->
+  <!-- === ISA Balances === -->
   <div class="card" id="isa-balances">
     <h2>ISA Balances</h2>
     <p>IG ISA: £<span id="igBalance">0.00</span></p>
     <p>Trade212 ISA: £<span id="t212Balance">0.00</span></p>
   </div>
 
-  <!-- ===================== SECTION: IG ISA HOLDINGS ===================== -->
+  <!-- === IG ISA Holdings === -->
   <div class="card" id="ig-holdings">
     <h2>IG ISA Holdings</h2>
     <div class="table-holder">
       <table id="igTable">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Value (£)</th>
-            <th>Gain (£)</th>
-            <th>Gain (%)</th>
-            <th>Yield (%)</th>
-            <th>Income (£)</th>
+            <th>Name</th><th>Value (£)</th><th>Gain (£)</th>
+            <th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -162,19 +155,15 @@ tr:hover{background:rgba(0,255,255,0.1);}
     </div>
   </div>
 
-  <!-- ===================== SECTION: TRADE212 HOLDINGS ===================== -->
+  <!-- === Trade212 Holdings === -->
   <div class="card" id="t212-holdings">
     <h2>Trade212 Holdings</h2>
     <div class="table-holder">
       <table id="t212Table">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Value (£)</th>
-            <th>Gain (£)</th>
-            <th>Gain (%)</th>
-            <th>Yield (%)</th>
-            <th>Income (£)</th>
+            <th>Name</th><th>Value (£)</th><th>Gain (£)</th>
+            <th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -182,44 +171,35 @@ tr:hover{background:rgba(0,255,255,0.1);}
     </div>
   </div>
 
-  <!-- ===================== SECTION: DIVIDENDS CENTRE (LIST + CALENDAR TOGGLE) ===================== -->
+  <!-- === Dividends List + Calendar Toggle === -->
   <div class="card" id="dividends">
     <div style="display:flex;justify-content:space-between;align-items:center;">
       <h2>Dividends Centre</h2>
       <button id="toggleCalendar" style="background:rgba(0,0,0,0.4);
-        border:1px solid var(--cyan);color:#fff;padding:5px 10px;border-radius:6px;cursor:pointer;">
-        📅 Calendar View
-      </button>
+        border:1px solid var(--cyan);color:#fff;padding:5px 10px;
+        border-radius:6px;cursor:pointer;">📅 Calendar View</button>
     </div>
-
-    <!-- List View -->
     <div id="dividendListView">
       <h3>Next 5 Dividends</h3>
       <ul id="nextDivs"></ul>
       <h3>Next 5 Ex-Dividends</h3>
       <ul id="nextExDivs"></ul>
     </div>
-
-    <!-- Calendar View -->
     <div id="dividendCalendarView" style="display:none;text-align:center;">
       <canvas id="divCalendar" width="420" height="320"></canvas>
       <p style="font-size:0.8rem;color:#aaa;">Tap again to return to list view</p>
     </div>
   </div>
 
-  <!-- ===================== SECTION: DIVIDEND CHARTS (MONTHLY + QUARTERLY) ===================== -->
+  <!-- === Dividend Charts & Forecast Band === -->
   <div class="card" id="dividend-charts">
     <h2>Dividend Income Overview</h2>
-
     <div id="dividendCharts" style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:18px;">
-      <!-- Monthly -->
       <div class="chartBlock" style="flex:1 1 45%;text-align:center;">
         <h3>Monthly Breakdown (Nov 2025 → Nov 2026)</h3>
         <div id="monthlyBars" class="chartHolder"
              style="display:flex;justify-content:space-around;align-items:flex-end;height:240px;margin-top:12px;gap:10px;"></div>
       </div>
-
-      <!-- Quarterly -->
       <div class="chartBlock" style="flex:1 1 45%;text-align:center;">
         <h3>Quarterly Totals</h3>
         <div id="quarterlyBars" class="chartHolder"
@@ -227,11 +207,12 @@ tr:hover{background:rgba(0,255,255,0.1);}
       </div>
     </div>
 
-    <!-- Forecast Band -->
+    <!-- === Forecast Band === -->
     <div id="forecastBand" style="margin-top:25px;text-align:center;">
       <h3>Dividend Forecast</h3>
       <p>Forecast Annual Income: £<span id="forecastTotal">0.00</span> · YTD Received: £<span id="receivedYTD">0.00</span></p>
-      <div style="width:90%;margin:0 auto;background:rgba(255,255,255,0.1);border-radius:8px;height:16px;overflow:hidden;">
+      <div style="width:90%;margin:0 auto;background:rgba(255,255,255,0.1);
+          border-radius:8px;height:16px;overflow:hidden;">
         <div id="forecastProgress"
              style="height:100%;width:0%;
              background:linear-gradient(90deg,var(--cyan),var(--pink));
@@ -242,7 +223,7 @@ tr:hover{background:rgba(0,255,255,0.1);}
     </div>
   </div>
 
-  <!-- ===================== SECTION: SECTOR ALLOCATION RINGS (MOVED BESIDE CHARTS) ===================== -->
+  <!-- === Sector Allocation Rings === -->
   <div class="card" id="sector-allocation">
     <h2>Sector Allocation Rings</h2>
     <div style="display:flex;flex-wrap:wrap;justify-content:space-around;gap:20px;">
@@ -258,194 +239,234 @@ tr:hover{background:rgba(0,255,255,0.1);}
   </div>
 
 </div>
-<!-- ===================== SECTION: SCRIPT CORE ===================== -->
+<!-- ===================== SECTION: SCRIPT ===================== -->
 <script>
-async function loadAuroraSync() {
-  const dot = document.getElementById("auroraSyncDot");
-  const status = document.getElementById("auroraSyncStatus");
-  const syncTime = document.getElementById("syncTime");
+const JSON_URL="https://cdn.jsdelivr.net/gh/webbchrisuk-max/Aurora@main/AuroraSync.json?nocache=";
+let lastGain=0;
 
-  try {
-    const url = "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/main/AuroraSync.json?nocache=" + Date.now();
-    const response = await fetch(url);
-    const data = await response.json();
+/* ===== Utility helpers ===== */
+const asNum=v=>isNaN(+v)?0:+v;
+const shortMonths=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function monthKey(d){const dt=new Date(d+"T00:00:00Z");return shortMonths[dt.getUTCMonth()]+" "+dt.getUTCFullYear();}
+function buildRollingMonths(){
+  const start=new Date(Date.UTC(2025,10,1));const arr=[];
+  for(let i=0;i<13;i++){const d=new Date(Date.UTC(start.getUTCFullYear(),start.getUTCMonth()+i,1));
+    arr.push({key:shortMonths[d.getUTCMonth()]+" "+d.getUTCFullYear(),label:shortMonths[d.getUTCMonth()]});
+  }return arr;
+}
 
-    // ✅ live indicator
-    dot.style.background = "var(--green)";
-    dot.style.boxShadow = "0 0 15px var(--green)";
-    syncTime.textContent = "Last updated " + new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) + " · Live";
-    populateDashboard(data);
-
-  } catch (err) {
-    dot.style.background = "#666";
-    dot.style.boxShadow = "0 0 8px #666";
-    syncTime.textContent = "Sync failed · retrying soon";
+/* ====== MAIN FETCH ====== */
+async function loadAuroraSync(){
+  const dot=document.getElementById("auroraSyncDot");
+  const time=document.getElementById("syncTime");
+  try{
+    const res=await fetch(JSON_URL+Date.now(),{cache:"no-store"});
+    if(!res.ok)throw new Error(res.status);
+    const data=await res.json();
+    renderAll(data);
+    const now=new Date();
+    time.textContent=`Last updated ${now.getHours().toString().padStart(2,"0")}:${now.getMinutes().toString().padStart(2,"0")} · Next sync in 5 min`;
+    dot.style.background="#00ffcc";
+    dot.style.boxShadow="0 0 10px #00ffcc";
+  }catch(e){
+    dot.style.background="#ff3333";
+    dot.style.boxShadow="0 0 15px #ff3333";
+    time.textContent="Sync Error";
+    console.error(e);
   }
 }
 
-/* ===================== DASHBOARD POPULATION ===================== */
-function populateDashboard(data){
-  // Portfolio summary
-  document.getElementById("targetValue").textContent = data.isa.portfolio_summary.annual_target_value.toFixed(2);
-  document.getElementById("divYield").textContent = data.isa.portfolio_summary.dividend_yield.toFixed(2);
-  document.getElementById("igBalance").textContent = data.isa.ig_isa.balance.toFixed(2);
-  document.getElementById("t212Balance").textContent = data.isa.trade212_isa.balance.toFixed(2);
+/* ====== RENDER ALL SECTIONS ====== */
+function renderAll(data){
+  /* Portfolio summary + gain pulse */
+  const g=parseFloat((data.isa.ig_isa.unrealised_gain??0)+(data.isa.trade212_isa.unrealised_gain??0));
+  const pct=((g/(asNum(data.isa.ig_isa.book_cost)+asNum(data.isa.trade212_isa.book_cost)))*100).toFixed(2);
+  document.getElementById("targetValue").textContent=data.isa.portfolio_summary.annual_target_value.toFixed(2);
+  document.getElementById("divYield").textContent=data.isa.portfolio_summary.dividend_yield.toFixed(2);
+  document.getElementById("totalGain").textContent=g.toFixed(2);
+  document.getElementById("gainPercent").textContent=pct;
+  const card=document.getElementById("portfolio-summary");
+  if(g>lastGain){pulse(card,"#00ff99");}
+  else if(g<lastGain){pulse(card,"#ffaa33");}
+  lastGain=g;
 
-  // Gains
-  const gain = data.isa.ig_isa.unrealised_gain + data.isa.trade212_isa.unrealised_gain;
-  const gainPct = ((gain / (data.isa.ig_isa.book_cost + data.isa.trade212_isa.book_cost)) * 100);
-  document.getElementById("totalGain").textContent = gain.toFixed(2);
-  document.getElementById("gainPercent").textContent = gainPct.toFixed(2);
+  /* Balances */
+  document.getElementById("igBalance").textContent=data.isa.ig_isa.balance.toFixed(2);
+  document.getElementById("t212Balance").textContent=data.isa.trade212_isa.balance.toFixed(2);
 
-  // IG Holdings
-  const igBody = document.querySelector("#igTable tbody");
-  igBody.innerHTML = "";
-  data.isa_feed.filter(x=>x.account==="IG ISA").forEach(h=>{
-    igBody.innerHTML += `
-      <tr>
-        <td>${h.name}</td>
-        <td class="value">${(+h.value).toFixed(2)}</td>
-        <td class="${(+h.gain_value)>=0?'gain-pos':'gain-neg'}">${(+h.gain_value).toFixed(2)}</td>
-        <td>${(+h.gain_percentage).toFixed(2)}%</td>
-        <td>${(+h.annual_div_yield).toFixed(2)}%</td>
-        <td>£${(+h.annual_income).toFixed(2)}</td>
-      </tr>`;
-  });
+  /* Holdings tables */
+  renderTable("#igTable tbody",data.isa_feed.filter(x=>x.account==="IG ISA"));
+  renderTable("#t212Table tbody",data.isa_feed.filter(x=>x.account==="TRADE212"));
 
-  // Trade212 Holdings
-  const tBody = document.querySelector("#t212Table tbody");
-  tBody.innerHTML = "";
-  data.isa_feed.filter(x=>x.account==="TRADE212").forEach(h=>{
-    tBody.innerHTML += `
-      <tr>
-        <td>${h.name}</td>
-        <td class="value">${(+h.value).toFixed(2)}</td>
-        <td class="${(+h.gain_value)>=0?'gain-pos':'gain-neg'}">${(+h.gain_value).toFixed(2)}</td>
-        <td>${(+h.gain_percentage).toFixed(2)}%</td>
-        <td>${(+h.annual_div_yield).toFixed(2)}%</td>
-        <td>£${(+h.annual_income).toFixed(2)}</td>
-      </tr>`;
-  });
+  /* Dividends list & ex-div list */
+  renderDividends(data);
 
-  // Dividends
-  populateDividends(data);
-  buildCharts(data);
-  buildSectorRings(data);
+  /* Charts & forecast band */
+  renderMonthly(data);
+  renderQuarterly(data);
+  renderForecast(data);
+
+  /* Sector rings */
+  drawSectorRing("igSectorRing",data.isa_feed.filter(x=>x.account==="IG ISA"));
+  drawSectorRing("t212SectorRing",data.isa_feed.filter(x=>x.account==="TRADE212"));
 }
 
-/* ===================== DIVIDEND LISTS ===================== */
-function populateDividends(data){
-  const nextDivs = data.dividends_feed
-    .filter(x=>["Confirmed","Estimated"].includes(x.status))
-    .sort((a,b)=>new Date(a.pay_date)-new Date(b.pay_date))
-    .slice(0,5);
-
-  const nextEx = data.dividends_feed
-    .filter(x=>["Confirmed","Estimated"].includes(x.status))
-    .sort((a,b)=>new Date(a.ex_div_date)-new Date(b.ex_div_date))
-    .slice(0,5);
-
-  const nd = document.getElementById("nextDivs");
-  const ne = document.getElementById("nextExDivs");
-  nd.innerHTML = "";
-  ne.innerHTML = "";
-
-  nextDivs.forEach(d=>{
-    nd.innerHTML += `<li>
-      <span>${d.ticker}</span> –
-      <span class="amount-green">£${(+d.total_dividend).toFixed(2)}</span>
-      <span class="date-pink">(${d.pay_date})</span>
-    </li>`;
-  });
-  nextEx.forEach(d=>{
-    ne.innerHTML += `<li>
-      <span>${d.ticker}</span> –
-      <span class="date-pink">${d.ex_div_date}</span>
-    </li>`;
+/* ===== TABLES ===== */
+function renderTable(sel,list){
+  const el=document.querySelector(sel);
+  el.innerHTML="";
+  list.forEach(h=>{
+    el.insertAdjacentHTML("beforeend",
+      `<tr><td>${h.name}</td>
+      <td class='value'>${asNum(h.value).toFixed(2)}</td>
+      <td class='${asNum(h.gain_value)>=0?"gain-pos":"gain-neg"}'>${asNum(h.gain_value).toFixed(2)}</td>
+      <td class='${asNum(h.gain_value)>=0?"gain-pos":"gain-neg"}'>${asNum(h.gain_percentage).toFixed(2)}%</td>
+      <td>${asNum(h.annual_div_yield).toFixed(2)}%</td>
+      <td>${asNum(h.annual_income).toFixed(2)}</td></tr>`);
   });
 }
 
-/* ===================== DIVIDEND CHARTS ===================== */
-function buildCharts(data){
-  const monthlyDiv = document.getElementById("monthlyBars");
-  const qDiv = document.getElementById("quarterlyBars");
+/* ===== DIVIDENDS ===== */
+function renderDividends(data){
+  const now=new Date();
+  const next=document.getElementById("nextDivs");
+  const nextEx=document.getElementById("nextExDivs");
+  next.innerHTML=""; nextEx.innerHTML="";
+  const pays=data.dividends_feed.filter(d=>new Date(d.pay_date)>now)
+              .sort((a,b)=>new Date(a.pay_date)-new Date(b.pay_date)).slice(0,5);
+  const exes=data.dividends_feed.filter(d=>new Date(d.ex_div_date)>now)
+              .sort((a,b)=>new Date(a.ex_div_date)-new Date(b.ex_div_date)).slice(0,5);
+  pays.forEach(d=>{
+    next.insertAdjacentHTML("beforeend",
+      `<li>${d.name} – <span class='amount-green'>£${asNum(d.total_dividend).toFixed(2)}</span>
+       on <span class='date-pink'>${d.pay_date}</span></li>`);
+  });
+  exes.forEach(d=>{
+    nextEx.insertAdjacentHTML("beforeend",
+      `<li>${d.name} – Ex-Div <span class='date-pink'>${d.ex_div_date}</span></li>`);
+  });
+}
 
-  const months = data.dividend_planner.monthly_breakdown;
-  const quarters = Object.entries(data.dividend_planner.quarterly_breakdown);
-
-  monthlyDiv.innerHTML="";
-  months.forEach(m=>{
-    const val = +m.total_estimated_income;
-    const height = Math.min(220, val/10);
-    const bar = document.createElement("div");
-    bar.style.height = height+"px";
-    bar.style.width = "18px";
-    bar.style.background = "linear-gradient(180deg,var(--cyan),var(--pink))";
-    bar.style.borderRadius="4px";
+/* ===== MONTHLY / QUARTERLY CHARTS ===== */
+function renderMonthly(data){
+  const holder=document.getElementById("monthlyBars");
+  holder.innerHTML="";
+  const frame=buildRollingMonths();
+  const mbMap={};(data.dividend_planner.monthly_breakdown||[]).forEach(m=>mbMap[m.month.trim()]=asNum(m.total_estimated_income));
+  const monthPayments={};
+  (data.dividends_feed||[]).forEach(d=>{
+    const k=monthKey(d.pay_date);if(!monthPayments[k])monthPayments[k]=[];
+    monthPayments[k].push({t:d.ticker||d.name,a:asNum(d.total_dividend)});
+  });
+  const vals=frame.map(f=>mbMap[f.key]||0);
+  const max=Math.max(1,...vals);
+  frame.forEach(f=>{
+    const total=mbMap[f.key]||0;
+    const wrap=document.createElement("div");
+    wrap.style.display="flex";wrap.style.flexDirection="column";wrap.style.alignItems="center";wrap.style.position="relative";
+    const bar=document.createElement("div");
+    bar.style.width="22px";bar.style.borderRadius="6px 6px 0 0";
+    bar.style.background="linear-gradient(180deg,#ff00ff,#00ffff)";
+    bar.style.boxShadow="0 0 15px #00ffff";
+    bar.style.height=(total/max*190)+"px";
     bar.style.transition="height 1s";
-    bar.title=`${m.month}: £${val.toFixed(2)}`;
-    monthlyDiv.appendChild(bar);
-  });
-
-  qDiv.innerHTML="";
-  quarters.forEach(([q,v])=>{
-    const val = +v;
-    const height = Math.min(220, val/5);
-    const bar = document.createElement("div");
-    bar.style.height = height+"px";
-    bar.style.width = "45px";
-    bar.style.background = "linear-gradient(180deg,var(--magenta),var(--cyan))";
-    bar.style.borderRadius="6px";
-    bar.title=`${q}: £${val.toFixed(2)}`;
-    qDiv.appendChild(bar);
-  });
-
-  // forecast
-  document.getElementById("forecastTotal").textContent = data.dividend_planner.cashflow_projection.annual_total_projection.toFixed(2);
-  document.getElementById("receivedYTD").textContent = data.dividend_planner.received_ytd.toFixed(2);
-  document.getElementById("forecastPercent").textContent = data.dividend_planner.cashflow_projection.percent_to_goal.toFixed(2)+"%";
-  document.getElementById("forecastProgress").style.width = data.dividend_planner.cashflow_projection.percent_to_goal+"%";
-}
-
-/* ===================== SECTOR RINGS ===================== */
-function buildSectorRings(data){
-  const ctx1 = document.getElementById("igSectorRing").getContext("2d");
-  const ctx2 = document.getElementById("t212SectorRing").getContext("2d");
-
-  drawRing(ctx1, data.isa.portfolio_summary.sector_allocation, "var(--cyan)");
-  drawRing(ctx2, data.isa.portfolio_summary.sector_allocation, "var(--magenta)");
-}
-
-function drawRing(ctx, sectors, color){
-  const total = Object.values(sectors).reduce((a,b)=>a+b,0);
-  let start=0;
-  Object.entries(sectors).forEach(([k,v],i)=>{
-    const slice = (v/total)*2*Math.PI;
-    ctx.beginPath();
-    ctx.strokeStyle=color;
-    ctx.lineWidth=18;
-    ctx.shadowBlur=10;
-    ctx.shadowColor=color;
-    ctx.arc(100,100,70,start,start+slice);
-    ctx.stroke();
-    start+=slice;
+    wrap.appendChild(bar);
+    /* tooltip */
+    const tip=document.createElement("div");
+    tip.className="tip";
+    tip.style.position="absolute";
+    tip.style.bottom="100%";tip.style.left="50%";tip.style.transform="translate(-50%,-8px)";
+    tip.style.background="rgba(8,8,30,0.95)";
+    tip.style.border="1px solid rgba(0,255,255,0.4)";
+    tip.style.borderRadius="8px";tip.style.padding="8px 10px";tip.style.minWidth="160px";
+    tip.style.opacity="0";tip.style.transition="opacity .2s,transform .2s";
+    tip.innerHTML=`<h4 style='color:#00ffff;margin:0;'>${f.key}: £${total.toFixed(2)}</h4>`+
+      (monthPayments[f.key]?monthPayments[f.key].map(p=>`<div class='line'>${p.t} – £${p.a.toFixed(2)}</div>`).join(""):"<div class='line'>No payments</div>");
+    wrap.appendChild(tip);
+    wrap.addEventListener("mouseenter",()=>{tip.style.opacity="1";tip.style.transform="translate(-50%,-12px)";});
+    wrap.addEventListener("mouseleave",()=>{tip.style.opacity="0";tip.style.transform="translate(-50%,-8px)";});
+    const lbl=document.createElement("div");
+    lbl.textContent=f.label;lbl.style.fontSize=".75rem";lbl.style.marginTop="6px";
+    wrap.appendChild(lbl);
+    holder.appendChild(wrap);
   });
 }
-</script>
-<!-- ===================== SECTION: SCRIPT – AUTO REFRESH LOOP ===================== -->
-<script>
-// Initial load and auto-refresh every 5 min
-loadAuroraSync();
-setInterval(loadAuroraSync, 300000); // 300 000 ms = 5 min
+function renderQuarterly(data){
+  const el=document.getElementById("quarterlyBars");el.innerHTML="";
+  const qd=data.dividend_planner.quarterly_breakdown||{};
+  const max=Math.max(1,...Object.values(qd));
+  Object.entries(qd).forEach(([q,v])=>{
+    const w=document.createElement("div");w.style.display="flex";w.style.flexDirection="column";w.style.alignItems="center";
+    const b=document.createElement("div");
+    b.style.width="60px";b.style.height=(v/max*190)+"px";
+    b.style.borderRadius="6px 6px 0 0";
+    b.style.background="linear-gradient(180deg,#00ffff,#ff00ff)";
+    b.style.boxShadow="0 0 15px #ff00ff";
+    w.appendChild(b);
+    const l=document.createElement("div");l.innerHTML=`${q}<br>£${v.toFixed(2)}`;
+    l.style.fontSize=".8rem";l.style.textAlign="center";l.style.marginTop="6px";
+    w.appendChild(l);
+    el.appendChild(w);
+  });
+}
 
-// Optional: toggle list/calendar for dividends
+/* ===== FORECAST BAND ===== */
+function renderForecast(data){
+  const f=data.dividend_planner;
+  document.getElementById("forecastTotal").textContent=asNum(f.forecast_total).toFixed(2);
+  document.getElementById("receivedYTD").textContent=asNum(f.received_ytd).toFixed(2);
+  const pct=(asNum(f.forecast_total)/6000*100).toFixed(1);
+  document.getElementById("forecastPercent").textContent=pct+"%";
+  document.getElementById("forecastProgress").style.width=Math.min(pct,100)+"%";
+}
+
+/* ===== SECTOR RINGS ===== */
+function drawSectorRing(id,list){
+  const ctx=document.getElementById(id).getContext("2d");
+  ctx.clearRect(0,0,200,200);
+  const total=list.reduce((s,h)=>s+asNum(h.value),0)||1;
+  const sectors={};
+  list.forEach(h=>{const s=(h.sector||"Other").trim();sectors[s]=(sectors[s]||0)+asNum(h.value);});
+  const colors=["#00ffff","#ff00ff","#ff66cc","#00ff99","#ffaa33","#33ccff","#cc99ff"];
+  let start=-Math.PI/2,i=0;
+  Object.entries(sectors).forEach(([s,v])=>{
+    const ang=(v/total)*2*Math.PI;
+    ctx.beginPath();ctx.arc(100,100,80,start,start+ang);
+    ctx.strokeStyle=colors[i++%colors.length];
+    ctx.lineWidth=25;ctx.shadowBlur=10;ctx.shadowColor=ctx.strokeStyle;
+    ctx.stroke();start+=ang;
+  });
+  ctx.shadowBlur=0;
+}
+
+/* ===== GAIN PULSE ===== */
+function pulse(el,color){
+  el.style.boxShadow=`0 0 25px ${color}`;
+  setTimeout(()=>el.style.boxShadow="0 0 20px rgba(0,255,255,0.15)",1000);
+}
+
+/* ===== CALENDAR TOGGLE (placeholder drawing) ===== */
 document.getElementById("toggleCalendar").addEventListener("click",()=>{
   const list=document.getElementById("dividendListView");
   const cal=document.getElementById("dividendCalendarView");
-  list.style.display=list.style.display==="none"?"block":"none";
-  cal.style.display=cal.style.display==="none"?"block":"none";
+  const btn=document.getElementById("toggleCalendar");
+  if(cal.style.display==="none"){list.style.display="none";cal.style.display="block";btn.textContent="📃 List View";drawCalendar();}
+  else{list.style.display="block";cal.style.display="none";btn.textContent="📅 Calendar View";}
 });
+function drawCalendar(){
+  const c=document.getElementById("divCalendar");
+  const ctx=c.getContext("2d");
+  ctx.clearRect(0,0,c.width,c.height);
+  const grad=ctx.createLinearGradient(0,0,c.width,0);
+  grad.addColorStop(0,"#00ffff");grad.addColorStop(1,"#ff00ff");
+  ctx.strokeStyle=grad;ctx.lineWidth=1;
+  for(let i=0;i<7;i++){ctx.beginPath();ctx.moveTo(60*i,0);ctx.lineTo(60*i,320);ctx.stroke();}
+  for(let j=0;j<5;j++){ctx.beginPath();ctx.moveTo(0,64*j);ctx.lineTo(420,64*j);ctx.stroke();}
+  ctx.font="12px Orbitron";ctx.fillStyle="#fff";ctx.fillText("Future dividend calendar placeholder",40,160);
+}
+/* ===== INITIALISE & AUTO-REFRESH ===== */
+loadAuroraSync();
+setInterval(loadAuroraSync, 300000); // every 5 min
 </script>
 </body>
-</html>  
-  
+</html>
