@@ -25,9 +25,10 @@ jobs:
           curl -L "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Holdings" -o Holdings.json
           curl -L "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Dividends" -o Dividends.json
 
+      # ✅ Updated path fix
       - name: Merge data into AuroraSync.json
         run: |
-          python3 .github/scripts/update_aurora_sync.py
+          python3 ${{ github.workspace }}/.github/scripts/update_aurora_sync.py
 
       # ✅ Always sync latest main before commit to prevent push conflicts
       - name: Sync latest main branch
