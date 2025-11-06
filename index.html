@@ -36,6 +36,24 @@ body{
   75%{background-position:50% 0%;}
   100%{background-position:0% 50%;}
 }
+  /* === Title Glow Animation (Safe Visual Only) === */
+h1, h2, h3 {
+  color: #ffffff;
+  text-shadow: 0 0 15px rgba(255,255,255,0.8), 0 0 30px rgba(0,255,255,0.6);
+  animation: titleGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlow {
+  0% {
+    text-shadow: 0 0 15px rgba(255,255,255,0.8), 0 0 30px rgba(0,255,255,0.6);
+  }
+  50% {
+    text-shadow: 0 0 25px rgba(255,255,255,1), 0 0 45px rgba(0,255,255,0.9);
+  }
+  100% {
+    text-shadow: 0 0 15px rgba(255,255,255,0.8), 0 0 30px rgba(0,255,255,0.6);
+  }
+}
 
 /* titles and general grid */
 h1{
