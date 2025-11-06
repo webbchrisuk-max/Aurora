@@ -1,0 +1,170 @@
+<!-- ===================== AURORA TRACKER v4.2 – FIXED + NEXT DIVIDEND + DEBUG ===================== -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aurora Tracker v4.2 – Live Data + Next Dividend</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body{
+  background:radial-gradient(circle at 30% 30%,#0b1224 0%,#020510 90%);
+  color:#e0e0e0;
+  font-family:'Inter',sans-serif;
+  overflow-x:hidden;
+  margin:0;
+}
+h1,h2,h3{
+  font-family:'Orbitron',sans-serif;
+  text-align:center;
+  color:#00c8ff;
+  text-shadow:0 0 14px rgba(255,127,80,.9),0 0 26px rgba(255,127,80,.6);
+}
+.card{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);
+  border-left:4px solid #00c8ff;
+  border-radius:12px;
+  padding:18px;
+  box-shadow:0 0 25px rgba(0,200,255,.15);
+  margin:10px;
+}
+.nextDivCard{
+  background:rgba(255,255,255,.06);
+  border-left:4px solid #ff7f50;
+  box-shadow:0 0 25px rgba(255,127,80,.3);
+  text-align:center;
+  padding:15px;
+  border-radius:10px;
+  margin:20px;
+}
+.debug{
+  text-align:center;
+  font-size:0.9em;
+  color:#00ffcc;
+  margin:10px 0;
+}
+table{width:100%;border-collapse:collapse;margin-top:10px;}
+th,td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center;}
+th{color:#00c8ff;font-weight:600;}
+.progress-fill{
+  height:100%;
+  background:linear-gradient(270deg,#00c8ff,#ff7f50,#00c8ff);
+  background-size:200% 100%;
+  animation:auroraFlow 6s ease-in-out infinite;
+}
+@keyframes auroraFlow{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+</style>
+</head>
+<body>
+<h1>Aurora Tracker</h1>
+<div id="debug" class="debug">🔄 Fetching data...</div>
+<div id="portfolioSummary" class="card"></div>
+<div id="nextDividend" class="nextDivCard"></div>
+<div id="holdings" class="card"></div>
+<div id="dividends" class="card"></div>
+<canvas id="divChart" height="200"></canvas>
+
+<script>
+const DATA_URL="https://raw.githubusercontent.com/webbchrisuk-max/AuroraSync/main/AuroraSync.json";
+
+async function fetchAurora(){
+  try{
+    const r=await fetch(DATA_URL+'?nocache='+Date.now());
+    const data=await r.json();
+    renderDashboard(data);
+  }catch(e){
+    document.getElementById("debug").textContent="⚠️ Sync error: "+e.message;
+  }
+}
+
+function renderDashboard(data){
+  const isaFeed=data.isa_feed||[];
+  const divFeed=data.dividends_feed||[];
+  const planner=data.dividend_planner||{};
+
+  // ✅ Debug info
+  document.getElementById("debug").innerHTML=`✅ Data loaded successfully — ${isaFeed.length} holdings / ${divFeed.length} dividends`;
+
+  // ===== Portfolio Summary =====
+  const totalVal=isaFeed.reduce((sum,a)=>sum+(parseFloat(a.value)||0),0);
+  const totalGain=isaFeed.reduce((sum,a)=>sum+(parseFloat(a.gain_value)||0),0);
+  document.getElementById("portfolioSummary").innerHTML=
+    `<h2>Portfolio Summary</h2>
+     <p>Total Value £${totalVal.toFixed(2)}</p>
+     <p style="color:${totalGain>=0?'#00ff99':'#ff5f3f'};">
+     ${totalGain>=0?'+':''}£${totalGain.toFixed(2)} Gain</p>`;
+
+  // ===== Holdings Table =====
+  let hHTML=`<h2>Holdings</h2><table>
+  <tr><th>Ticker</th><th>Value (£)</th><th>Gain (£)</th></tr>`;
+  isaFeed.forEach(a=>{
+    const gain=parseFloat(a.gain_value)||0;
+    const val=parseFloat(a.value)||0;
+    const col=gain>=0?'#00ff99':'#ff5f3f';
+    hHTML+=`<tr>
+      <td>${a.ticker}</td>
+      <td>£${val.toFixed(2)}</td>
+      <td style="color:${col};">${gain>=0?'+':''}£${gain.toFixed(2)}</td>
+    </tr>`;
+  });
+  hHTML+=`</table>`;
+  document.getElementById("holdings").innerHTML=hHTML;
+
+  // ===== Dividends Table =====
+  let dHTML=`<h2>Dividends Feed</h2><table>
+  <tr><th>Ticker</th><th>Pay Date</th><th>Amount (£)</th><th>Status</th></tr>`;
+  divFeed.forEach(d=>{
+    dHTML+=`<tr>
+      <td>${d.ticker||''}</td>
+      <td>${d.pay_date||''}</td>
+      <td>${parseFloat(d.total_dividend||0).toFixed(2)}</td>
+      <td>${d.status||''}</td>
+    </tr>`;
+  });
+  dHTML+=`</table>`;
+  document.getElementById("dividends").innerHTML=dHTML;
+
+  // ===== Next Dividend =====
+  const upcoming=divFeed.filter(x=>new Date(x.pay_date)>=new Date());
+  if(upcoming.length){
+    upcoming.sort((a,b)=>new Date(a.pay_date)-new Date(b.pay_date));
+    const n=upcoming[0];
+    const daysLeft=Math.ceil((new Date(n.pay_date)-new Date())/86400000);
+    document.getElementById("nextDividend").innerHTML=
+      `<h3>Next Dividend</h3>
+       <p><strong>${n.name||n.ticker}</strong></p>
+       <p>£${parseFloat(n.total_dividend||0).toFixed(2)}</p>
+       <p>${n.pay_date} (${daysLeft} days left)</p>`;
+  }else{
+    document.getElementById("nextDividend").innerHTML=
+      `<h3>Next Dividend</h3><p>No upcoming dividends</p>`;
+  }
+
+  // ===== Dividend Chart =====
+  const ctx=document.getElementById("divChart").getContext("2d");
+  if(window.divChart && typeof window.divChart.destroy==="function"){
+    window.divChart.destroy();
+  }
+  const months=(planner.monthly_breakdown||[]).map(m=>m.month);
+  const totals=(planner.monthly_breakdown||[]).map(m=>m.total_estimated_income);
+  const grad=ctx.createLinearGradient(0,0,0,400);
+  grad.addColorStop(0,"#00c8ff");
+  grad.addColorStop(1,"#ff7f50");
+  window.divChart=new Chart(ctx,{
+    type:"bar",
+    data:{labels:months,datasets:[{data:totals,backgroundColor:grad,borderRadius:5}]},
+    options:{plugins:{legend:{display:false}},
+      scales:{x:{ticks:{color:"#ff7f50"}},y:{ticks:{color:"#00c8ff"}}}}
+  });
+}
+
+fetchAurora();
+</script>
+</body>
+</html>
