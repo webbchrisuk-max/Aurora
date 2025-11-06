@@ -275,6 +275,26 @@ tr:hover{background:rgba(0,255,255,0.1);}
 
   </div>
 </div>
+  
+  <!-- === Dividends List + Calendar Toggle === -->
+  <div class="card" id="dividends">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h2>Dividends Centre</h2>
+      <button id="toggleCalendar" style="background:rgba(0,0,0,0.4);
+        border:1px solid var(--cyan);color:#fff;padding:5px 10px;
+        border-radius:6px;cursor:pointer;">📅 Calendar View</button>
+    </div>
+    <div id="dividendListView">
+      <h3>Next 5 Dividends</h3>
+      <ul id="nextDivs"></ul>
+      <h3>Next 5 Ex-Dividends</h3>
+      <ul id="nextExDivs"></ul>
+    </div>
+    <div id="dividendCalendarView" style="display:none;text-align:center;">
+      <canvas id="divCalendar" width="420" height="320"></canvas>
+      <p style="font-size:0.8rem;color:#aaa;">Tap again to return to list view</p>
+    </div>
+  </div>
 
   <!-- === Dividend Charts & Forecast Band === -->
   <div class="card" id="dividend-charts">
