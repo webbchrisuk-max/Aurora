@@ -146,6 +146,13 @@ tr:hover{background:rgba(0,255,255,0.1);}
     <p>Total Gain: <span id="totalGain">0.00</span> ( <span id="gainPercent">0.00</span>% )</p>
   </div>
 
+  <!-- ===================== AURORA DIGITAL WAVE LINE ===================== -->
+<div class="wave-container">
+  <svg viewBox="0 0 600 100" preserveAspectRatio="none">
+    <path d="M0,50 Q150,0 300,50 T600,50" class="wave"></path>
+  </svg>
+</div>
+
   <!-- === ISA Balances === -->
   <div class="card" id="isa-balances">
     <h2>ISA Balances</h2>
@@ -234,7 +241,6 @@ tr:hover{background:rgba(0,255,255,0.1);}
       </div>
     </div>
   </div>
-
     <!-- === Forecast Band === -->
     <div id="forecastBand" style="margin-top:25px;text-align:center;">
       <h3>Dividend Forecast</h3>
@@ -268,7 +274,34 @@ function buildRollingMonths(){
   }return arr;
 }
 
-/* ====== MAIN FETCH ====== */
+/* === Digital Wave Line === */
+.wave-container {
+  width: 100%;
+  height: 70px;
+  position: relative;
+  margin: -10px 0 10px 0;
+}
+
+.wave-container svg {
+  width: 100%;
+  height: 100%;
+}
+
+.wave {
+  fill: none;
+  stroke: rgba(0,255,255,0.9);
+  stroke-width: 2;
+  filter: drop-shadow(0 0 8px rgba(0,255,255,0.6));
+  stroke-dasharray: 10 8;
+  animation: waveFlow 4s linear infinite;
+}
+
+@keyframes waveFlow {
+  to { stroke-dashoffset: -36; }
+}
+  
+  
+  /* ====== MAIN FETCH ====== */
 async function loadAuroraSync(){
   const dot=document.getElementById("auroraSyncDot");
   const time=document.getElementById("syncTime");
