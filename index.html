@@ -447,7 +447,22 @@ function drawSectorRing(id,list){
     ctx.beginPath();ctx.arc(100,100,80,start,start+ang);
     ctx.strokeStyle=colors[i++%colors.length];
     ctx.lineWidth=25;ctx.shadowBlur=10;ctx.shadowColor=ctx.strokeStyle;
-    ctx.stroke();start+=ang;
+    ctx.stroke();
+
+    /* === ADD THIS FOR LABELS === */
+    const mid=start+ang/2;
+    const percent=((v/total)*100).toFixed(1)+"%";
+    const x=100+Math.cos(mid)*55;
+    const y=100+Math.sin(mid)*55;
+    ctx.fillStyle="#fff";
+    ctx.font="10px Orbitron";
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
+    ctx.shadowBlur=8;ctx.shadowColor=ctx.strokeStyle;
+    ctx.fillText(percent,x,y);
+    ctx.shadowBlur=0;
+
+    start+=ang;
   });
   ctx.shadowBlur=0;
 }
