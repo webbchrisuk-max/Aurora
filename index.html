@@ -86,33 +86,29 @@ tr:hover{background:rgba(0,255,255,0.1);}
   50%{box-shadow:0 0 25px #00ffff;}
 }
 
-/* ===================== SECTION: QUARTERLY BARS ===================== */
-#quarterlyBars{
-  display:flex;
-  justify-content:space-around;
-  align-items:flex-end;
-  height:220px;
-  margin-top:10px;
-}
-.qbar{
-  width:60px;
-  background:linear-gradient(180deg,#ff00ff,#00ffff);
-  border-radius:6px 6px 0 0;
-  box-shadow:0 0 15px #00ffff;
-  animation:pulseBar 4s ease-in-out infinite;
-}
-@keyframes pulseBar{
-  0%,100%{opacity:0.9;box-shadow:0 0 15px #00ffff;}
-  50%{opacity:1;box-shadow:0 0 25px #ff00ff;}
-}
-.qbar-label{text-align:center;margin-top:6px;}
-</style>
-</head>
-<body>
-<h1>Aurora Tracker – HyperGrid Live Feed v2 (Pulse Edition)</h1>
-<div id="auroraSyncStatus"><span id="auroraSyncDot"></span>Synced</div>
+// Quarterly Bars (stacked labels directly under bars)
+const qData=data.dividend_planner.quarterly_breakdown;
+const qBars=document.getElementById("quarterlyBars");
+qBars.innerHTML="";
+const maxVal=Math.max(...Object.values(qData));
+Object.entries(qData).forEach(([q,v])=>{
+  const wrapper=document.createElement("div");
+  wrapper.style.display="flex";
+  wrapper.style.flexDirection="column";
+  wrapper.style.alignItems="center";
 
-<div class="dashboard">
+  const bar=document.createElement("div");
+  bar.className="qbar";
+  bar.style.height=(v/maxVal*180)+"px";
+  wrapper.appendChild(bar);
+
+  const label=document.createElement("div");
+  label.className="qbar-label";
+  label.innerHTML=`${q}<br>£${v.toFixed(2)}`;
+  wrapper.appendChild(label);
+
+  qBars.appendChild(wrapper);
+});
 
   <!-- ===================== SECTION: Portfolio Summary ===================== -->
   <div class="card" id="portfolio-summary">
