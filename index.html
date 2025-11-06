@@ -6,9 +6,9 @@
 <title>Aurora Tracker – HyperGrid Live Feed v2 (Pulse Edition)</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
 
-<!-- ===================== SECTION: CORE THEME ===================== -->
 <style>
-body {
+/* ===================== SECTION: CORE THEME ===================== */
+body{
   margin:0;
   padding:0;
   font-family:'Orbitron',sans-serif;
@@ -21,12 +21,10 @@ body {
   animation:scrollGrid 60s linear infinite;
   overflow-x:hidden;
 }
-@keyframes scrollGrid {
+@keyframes scrollGrid{
   from{background-position:0 0,0 0;}
   to{background-position:400px 400px,400px 400px;}
 }
-
-/* ===================== SECTION: HEADINGS & GRID ===================== */
 h1{
   text-align:center;
   font-size:1.8rem;
@@ -86,29 +84,34 @@ tr:hover{background:rgba(0,255,255,0.1);}
   50%{box-shadow:0 0 25px #00ffff;}
 }
 
-// Quarterly Bars (stacked labels directly under bars)
-const qData=data.dividend_planner.quarterly_breakdown;
-const qBars=document.getElementById("quarterlyBars");
-qBars.innerHTML="";
-const maxVal=Math.max(...Object.values(qData));
-Object.entries(qData).forEach(([q,v])=>{
-  const wrapper=document.createElement("div");
-  wrapper.style.display="flex";
-  wrapper.style.flexDirection="column";
-  wrapper.style.alignItems="center";
+/* ===================== SECTION: QUARTERLY BARS ===================== */
+#quarterlyBars{
+  display:flex;
+  justify-content:space-around;
+  align-items:flex-end;
+  height:220px;
+  margin-top:10px;
+}
+.qbar{
+  width:75px;
+  background:linear-gradient(180deg,#ff00ff,#00ffff);
+  border-radius:6px 6px 0 0;
+  box-shadow:0 0 15px #00ffff;
+  animation:pulseBar 4s ease-in-out infinite;
+}
+@keyframes pulseBar{
+  0%,100%{opacity:0.9;box-shadow:0 0 15px #00ffff;}
+  50%{opacity:1;box-shadow:0 0 25px #ff00ff;}
+}
+.qbar-label{text-align:center;margin-top:6px;}
+</style>
+</head>
 
-  const bar=document.createElement("div");
-  bar.className="qbar";
-  bar.style.height=(v/maxVal*180)+"px";
-  wrapper.appendChild(bar);
+<body>
+<h1>Aurora Tracker – HyperGrid Live Feed v2 (Pulse Edition)</h1>
+<div id="auroraSyncStatus"><span id="auroraSyncDot"></span>Synced</div>
 
-  const label=document.createElement("div");
-  label.className="qbar-label";
-  label.innerHTML=`${q}<br>£${v.toFixed(2)}`;
-  wrapper.appendChild(label);
-
-  qBars.appendChild(wrapper);
-});
+<div class="dashboard">
 
   <!-- ===================== SECTION: Portfolio Summary ===================== -->
   <div class="card" id="portfolio-summary">
@@ -176,10 +179,10 @@ Object.entries(qData).forEach(([q,v])=>{
   <div class="card" id="quarterly">
     <h2>Quarterly Dividend Breakdown</h2>
     <div id="quarterlyBars"></div>
-    <div id="quarterLabels"></div>
   </div>
 
 </div>
+
 <!-- ===================== SECTION: SCRIPT ===================== -->
 <script>
 async function loadAuroraSync(){
@@ -211,7 +214,7 @@ function renderData(data){
   // IG Holdings
   const igBody=document.querySelector("#igTable tbody");
   igBody.innerHTML="";
-  data.isa_feed.filter(x=>x.account==="IG ISA").forEach(h=>{
+  data.isa_feed.filter(x=>x.account==="IG ISA"||x.account==="IG ISA").forEach(h=>{
     const row=document.createElement("tr");
     row.innerHTML=`<td>${h.name}</td>
       <td class="value">${(+h.value).toFixed(2)}</td>
@@ -259,22 +262,28 @@ function renderData(data){
     nextExDivs.appendChild(li);
   });
 
-  // Quarterly Bars
+  // Quarterly Bars (Aligned Labels)
   const qData=data.dividend_planner.quarterly_breakdown;
   const qBars=document.getElementById("quarterlyBars");
-  const qLabels=document.getElementById("quarterLabels");
   qBars.innerHTML="";
-  qLabels.innerHTML="";
   const maxVal=Math.max(...Object.values(qData));
   Object.entries(qData).forEach(([q,v])=>{
+    const wrapper=document.createElement("div");
+    wrapper.style.display="flex";
+    wrapper.style.flexDirection="column";
+    wrapper.style.alignItems="center";
+
     const bar=document.createElement("div");
     bar.className="qbar";
-    bar.style.height=(v/maxVal*200)+"px";
-    qBars.appendChild(bar);
+    bar.style.height=(v/maxVal*180)+"px";
+    wrapper.appendChild(bar);
+
     const label=document.createElement("div");
     label.className="qbar-label";
     label.innerHTML=`${q}<br>£${v.toFixed(2)}`;
-    qLabels.appendChild(label);
+    wrapper.appendChild(label);
+
+    qBars.appendChild(wrapper);
   });
 }
 
@@ -283,5 +292,4 @@ loadAuroraSync();
 setInterval(loadAuroraSync,300000); // every 5 minutes
 </script>
 </body>
-</html>   
-   
+</html>
