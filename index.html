@@ -133,8 +133,6 @@ tr:hover{background:rgba(0,255,255,0.1);}
 @keyframes waveFlow{
   to{stroke-dashoffset:-36;}
 }
-
-/* Glow pulse for subtle depth */
 .wave-container{
   animation:waveGlow 7s ease-in-out infinite;
 }
@@ -158,6 +156,7 @@ tr:hover{background:rgba(0,255,255,0.1);}
 </div>
 
 <div class="dashboard">
+
   <div class="card" id="portfolio-summary">
     <h2>Portfolio Summary</h2>
     <p>Total Target: £<span id="targetValue">0.00</span></p>
@@ -183,7 +182,9 @@ tr:hover{background:rgba(0,255,255,0.1);}
     <h2>IG ISA Holdings</h2>
     <div class="table-holder">
       <table id="igTable">
-        <thead><tr><th>Name</th><th>Value (£)</th><th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th></tr></thead>
+        <thead>
+          <tr><th>Name</th><th>Value (£)</th><th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th></tr>
+        </thead>
         <tbody></tbody>
       </table>
     </div>
@@ -193,11 +194,14 @@ tr:hover{background:rgba(0,255,255,0.1);}
     <h2>Trade212 Holdings</h2>
     <div class="table-holder">
       <table id="t212Table">
-        <thead><tr><th>Name</th><th>Value (£)</th><th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th></tr></thead>
+        <thead>
+          <tr><th>Name</th><th>Value (£)</th><th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th></tr>
+        </thead>
         <tbody></tbody>
       </table>
     </div>
   </div>
+
 </div>
 
 <script>
@@ -208,9 +212,11 @@ async function loadAuroraSync(){
     const url="https://raw.githubusercontent.com/webbchrisuk-max/Aurora/main/AuroraSync.json?nocache="+Date.now();
     const res=await fetch(url);
     const data=await res.json();
+
     dot.style.background="var(--green)";
     dot.style.boxShadow="0 0 15px var(--green)";
     syncTime.textContent="Last updated "+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+" · Live";
+
     populate(data);
   }catch(e){
     dot.style.background="#666";
@@ -224,10 +230,12 @@ function populate(data){
   document.getElementById("divYield").textContent=data.isa.portfolio_summary.dividend_yield.toFixed(2);
   document.getElementById("igBalance").textContent=data.isa.ig_isa.balance.toFixed(2);
   document.getElementById("t212Balance").textContent=data.isa.trade212_isa.balance.toFixed(2);
+
   const gain=data.isa.ig_isa.unrealised_gain+data.isa.trade212_isa.unrealised_gain;
   const gainPct=((gain/(data.isa.ig_isa.book_cost+data.isa.trade212_isa.book_cost))*100);
   document.getElementById("totalGain").textContent=gain.toFixed(2);
   document.getElementById("gainPercent").textContent=gainPct.toFixed(2);
+
   populateTables(data);
 }
 
