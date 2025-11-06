@@ -1,170 +1,266 @@
-<!-- ===================== AURORA TRACKER v4.2 – FIXED + NEXT DIVIDEND + DEBUG ===================== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Aurora Tracker v4.2 – Live Data + Next Dividend</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
-body{
-  background:radial-gradient(circle at 30% 30%,#0b1224 0%,#020510 90%);
-  color:#e0e0e0;
-  font-family:'Inter',sans-serif;
-  overflow-x:hidden;
-  margin:0;
+/* ===================== SECTION: GLOBAL ===================== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Orbitron', sans-serif;
+  color: #fff;
+  background: #05010f;
+  overflow-x: hidden;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
-h1,h2,h3{
-  font-family:'Orbitron',sans-serif;
-  text-align:center;
-  color:#00c8ff;
-  text-shadow:0 0 14px rgba(255,127,80,.9),0 0 26px rgba(255,127,80,.6);
+
+/* Animated HyperGrid background */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    linear-gradient(0deg, transparent 24%, rgba(0,204,255,0.1) 25%, rgba(0,204,255,0.1) 26%, transparent 27%, transparent 74%, rgba(255,0,204,0.1) 75%, rgba(255,0,204,0.1) 76%, transparent 77%, transparent),
+    linear-gradient(90deg, transparent 24%, rgba(0,204,255,0.1) 25%, rgba(0,204,255,0.1) 26%, transparent 27%, transparent 74%, rgba(255,0,204,0.1) 75%, rgba(255,0,204,0.1) 76%, transparent 77%, transparent);
+  background-size: 80px 80px;
+  animation: gridMove 20s linear infinite;
+  z-index: 0;
 }
-.card{
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.1);
-  border-left:4px solid #00c8ff;
-  border-radius:12px;
-  padding:18px;
-  box-shadow:0 0 25px rgba(0,200,255,.15);
-  margin:10px;
+@keyframes gridMove {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 80px 80px, 80px 80px; }
 }
-.nextDivCard{
-  background:rgba(255,255,255,.06);
-  border-left:4px solid #ff7f50;
-  box-shadow:0 0 25px rgba(255,127,80,.3);
-  text-align:center;
-  padding:15px;
-  border-radius:10px;
-  margin:20px;
+
+/* Layout container */
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 20px;
+  z-index: 1;
+  flex: 1;
+  overflow-y: auto;
 }
-.debug{
-  text-align:center;
-  font-size:0.9em;
-  color:#00ffcc;
-  margin:10px 0;
+
+/* Responsive for small screens (single column) */
+@media (max-width: 1024px) {
+  .container { grid-template-columns: 1fr; }
 }
-table{width:100%;border-collapse:collapse;margin-top:10px;}
-th,td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center;}
-th{color:#00c8ff;font-weight:600;}
-.progress-fill{
-  height:100%;
-  background:linear-gradient(270deg,#00c8ff,#ff7f50,#00c8ff);
-  background-size:200% 100%;
-  animation:auroraFlow 6s ease-in-out infinite;
+
+/* Card styling */
+.card {
+  background: rgba(10, 10, 30, 0.6);
+  border: 1px solid rgba(0, 204, 255, 0.3);
+  border-radius: 10px;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 0 15px rgba(0,204,255,0.3);
+  position: relative;
 }
-@keyframes auroraFlow{
-  0%{background-position:0% 50%;}
-  50%{background-position:100% 50%;}
-  100%{background-position:0% 50%;}
+.card h2 {
+  font-size: 1rem;
+  color: #00ccff;
+  border-bottom: 1px solid rgba(255,0,204,0.3);
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+.value {
+  font-size: 1.3rem;
+  color: #fff;
+  text-shadow: 0 0 5px #00ccff;
+}
+.holdings-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.holdings-table th, .holdings-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.holdings-table th {
+  text-align: left;
+  color: #ff00cc;
+}
+
+/* Dividends split */
+.dividend-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+@media (max-width: 1024px) {
+  .dividend-grid { grid-template-columns: 1fr; }
+}
+.div-feed {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Chart styling */
+.chart-container {
+  width: 100%;
+  height: 250px;
+}
+
+/* Scrollbar custom */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0,204,255,0.4);
+  border-radius: 3px;
 }
 </style>
 </head>
+
 <body>
-<h1>Aurora Tracker</h1>
-<div id="debug" class="debug">🔄 Fetching data...</div>
-<div id="portfolioSummary" class="card"></div>
-<div id="nextDividend" class="nextDivCard"></div>
-<div id="holdings" class="card"></div>
-<div id="dividends" class="card"></div>
-<canvas id="divChart" height="200"></canvas>
+<h1 style="text-align:center;margin:15px 0;font-weight:600;color:#00ccff;text-shadow:0 0 10px #ff00cc;">Aurora Tracker</h1>
+
+<div class="container">
+
+  <!-- ===================== LEFT COLUMN ===================== -->
+  <div id="leftColumn">
+    <div class="card" id="portfolioSummary">
+      <h2>Portfolio Summary</h2>
+      <div id="portfolioValues" class="value">Loading...</div>
+    </div>
+
+    <div class="card" id="isaTotals">
+      <h2>ISA Totals</h2>
+      <p>IG ISA: <span id="igTotal" class="value">--</span></p>
+      <p>Trade212 ISA: <span id="t212Total" class="value">--</span></p>
+    </div>
+
+    <div class="card" id="nextDividend">
+      <h2>Next Dividend</h2>
+      <div id="nextDividendContent" class="value">Loading...</div>
+    </div>
+
+    <div class="card" id="igHoldings">
+      <h2>IG ISA Holdings</h2>
+      <table class="holdings-table" id="igTable"></table>
+    </div>
+
+    <div class="card" id="t212Holdings">
+      <h2>Trade212 Holdings</h2>
+      <table class="holdings-table" id="t212Table"></table>
+    </div>
+  </div>
+
+  <!-- ===================== RIGHT COLUMN ===================== -->
+  <div id="rightColumn">
+    <div class="dividend-grid">
+      <div class="card">
+        <h2>Next 5 Dividends</h2>
+        <div id="next5Dividends" class="div-feed">Loading...</div>
+      </div>
+      <div class="card">
+        <h2>Next 5 Ex-Dividends</h2>
+        <div id="next5ExDividends" class="div-feed">Loading...</div>
+      </div>
+    </div>
+
+    <div class="card chart-container">
+      <h2>Dividend Chart</h2>
+      <canvas id="dividendChart"></canvas>
+    </div>
+  </div>
+
+</div>
 
 <script>
-const DATA_URL="https://raw.githubusercontent.com/webbchrisuk-max/Aurora/main/AuroraSync.json";
+async function loadAuroraData() {
+  try {
+    const response = await fetch("https://raw.githubusercontent.com/webbchrisuk-max/Aurora/main/AuroraSync.json?nocache=" + Date.now());
+    const data = await response.json();
 
-async function fetchAurora(){
-  try{
-    const r=await fetch(DATA_URL+'?nocache='+Date.now());
-    const data=await r.json();
-    renderDashboard(data);
-  }catch(e){
-    document.getElementById("debug").textContent="⚠️ Sync error: "+e.message;
+    // Portfolio summary
+    const ig = data.isa.ig_isa.balance;
+    const t212 = data.isa.trade212_isa.balance;
+    const total = (ig + t212).toFixed(2);
+    document.getElementById("portfolioValues").innerHTML = `£${total}`;
+    document.getElementById("igTotal").innerHTML = `£${ig.toLocaleString()}`;
+    document.getElementById("t212Total").innerHTML = `£${t212.toLocaleString()}`;
+
+    // Next Dividend
+    if (data.dividends_feed && data.dividends_feed.length > 0) {
+      const next = data.dividends_feed[0];
+      document.getElementById("nextDividendContent").innerHTML =
+        `${next.ticker} – £${next.amount} in ${next.days_left} days`;
+    }
+
+    // Holdings split
+    const igHoldings = data.isa_feed.filter(h => h.account === "IG");
+    const t212Holdings = data.isa_feed.filter(h => h.account === "Trade212");
+
+    function buildTable(arr, targetId) {
+      const table = document.getElementById(targetId);
+      table.innerHTML = "<tr><th>Ticker</th><th>Value</th></tr>";
+      arr.slice(0, 10).forEach(h => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${h.ticker}</td><td>£${Number(h.value).toLocaleString()}</td>`;
+        table.appendChild(row);
+      });
+    }
+    buildTable(igHoldings, "igTable");
+    buildTable(t212Holdings, "t212Table");
+
+    // Dividends feed split
+    const divs = data.dividends_feed || [];
+    const next5 = divs.slice(0, 5);
+    const next5Ex = divs.filter(d => d.ex_date).slice(0, 5);
+
+    function buildFeed(list, targetId) {
+      const container = document.getElementById(targetId);
+      container.innerHTML = "";
+      list.forEach(d => {
+        const div = document.createElement("div");
+        div.style.marginBottom = "6px";
+        div.innerHTML = `<strong>${d.ticker}</strong> – £${d.amount} (${d.date || d.ex_date})`;
+        container.appendChild(div);
+      });
+    }
+    buildFeed(next5, "next5Dividends");
+    buildFeed(next5Ex, "next5ExDividends");
+
+    // Chart
+    const ctx = document.getElementById("dividendChart").getContext("2d");
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: divs.slice(0, 6).map(d => d.ticker),
+        datasets: [{
+          label: "Dividend (£)",
+          data: divs.slice(0, 6).map(d => d.amount),
+          backgroundColor: "rgba(0,204,255,0.6)",
+          borderColor: "#ff00cc",
+          borderWidth: 1
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { color: "#fff" }, grid: { color: "rgba(255,255,255,0.1)" } },
+          y: { ticks: { color: "#fff" }, grid: { color: "rgba(255,255,255,0.1)" } }
+        }
+      }
+    });
+
+  } catch (err) {
+    console.error("AuroraSync load error:", err);
+    document.getElementById("portfolioValues").textContent = "Sync Error";
   }
 }
 
-function renderDashboard(data){
-  const isaFeed=data.isa_feed||[];
-  const divFeed=data.dividends_feed||[];
-  const planner=data.dividend_planner||{};
-
-  // ✅ Debug info
-  document.getElementById("debug").innerHTML=`✅ Data loaded successfully — ${isaFeed.length} holdings / ${divFeed.length} dividends`;
-
-  // ===== Portfolio Summary =====
-  const totalVal=isaFeed.reduce((sum,a)=>sum+(parseFloat(a.value)||0),0);
-  const totalGain=isaFeed.reduce((sum,a)=>sum+(parseFloat(a.gain_value)||0),0);
-  document.getElementById("portfolioSummary").innerHTML=
-    `<h2>Portfolio Summary</h2>
-     <p>Total Value £${totalVal.toFixed(2)}</p>
-     <p style="color:${totalGain>=0?'#00ff99':'#ff5f3f'};">
-     ${totalGain>=0?'+':''}£${totalGain.toFixed(2)} Gain</p>`;
-
-  // ===== Holdings Table =====
-  let hHTML=`<h2>Holdings</h2><table>
-  <tr><th>Ticker</th><th>Value (£)</th><th>Gain (£)</th></tr>`;
-  isaFeed.forEach(a=>{
-    const gain=parseFloat(a.gain_value)||0;
-    const val=parseFloat(a.value)||0;
-    const col=gain>=0?'#00ff99':'#ff5f3f';
-    hHTML+=`<tr>
-      <td>${a.ticker}</td>
-      <td>£${val.toFixed(2)}</td>
-      <td style="color:${col};">${gain>=0?'+':''}£${gain.toFixed(2)}</td>
-    </tr>`;
-  });
-  hHTML+=`</table>`;
-  document.getElementById("holdings").innerHTML=hHTML;
-
-  // ===== Dividends Table =====
-  let dHTML=`<h2>Dividends Feed</h2><table>
-  <tr><th>Ticker</th><th>Pay Date</th><th>Amount (£)</th><th>Status</th></tr>`;
-  divFeed.forEach(d=>{
-    dHTML+=`<tr>
-      <td>${d.ticker||''}</td>
-      <td>${d.pay_date||''}</td>
-      <td>${parseFloat(d.total_dividend||0).toFixed(2)}</td>
-      <td>${d.status||''}</td>
-    </tr>`;
-  });
-  dHTML+=`</table>`;
-  document.getElementById("dividends").innerHTML=dHTML;
-
-  // ===== Next Dividend =====
-  const upcoming=divFeed.filter(x=>new Date(x.pay_date)>=new Date());
-  if(upcoming.length){
-    upcoming.sort((a,b)=>new Date(a.pay_date)-new Date(b.pay_date));
-    const n=upcoming[0];
-    const daysLeft=Math.ceil((new Date(n.pay_date)-new Date())/86400000);
-    document.getElementById("nextDividend").innerHTML=
-      `<h3>Next Dividend</h3>
-       <p><strong>${n.name||n.ticker}</strong></p>
-       <p>£${parseFloat(n.total_dividend||0).toFixed(2)}</p>
-       <p>${n.pay_date} (${daysLeft} days left)</p>`;
-  }else{
-    document.getElementById("nextDividend").innerHTML=
-      `<h3>Next Dividend</h3><p>No upcoming dividends</p>`;
-  }
-
-  // ===== Dividend Chart =====
-  const ctx=document.getElementById("divChart").getContext("2d");
-  if(window.divChart && typeof window.divChart.destroy==="function"){
-    window.divChart.destroy();
-  }
-  const months=(planner.monthly_breakdown||[]).map(m=>m.month);
-  const totals=(planner.monthly_breakdown||[]).map(m=>m.total_estimated_income);
-  const grad=ctx.createLinearGradient(0,0,0,400);
-  grad.addColorStop(0,"#00c8ff");
-  grad.addColorStop(1,"#ff7f50");
-  window.divChart=new Chart(ctx,{
-    type:"bar",
-    data:{labels:months,datasets:[{data:totals,backgroundColor:grad,borderRadius:5}]},
-    options:{plugins:{legend:{display:false}},
-      scales:{x:{ticks:{color:"#ff7f50"}},y:{ticks:{color:"#00c8ff"}}}}
-  });
-}
-
-fetchAurora();
+loadAuroraData();
 </script>
+
 </body>
 </html>
