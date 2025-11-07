@@ -249,12 +249,12 @@ function buildRollingMonths(){
 }
 
 /* ===================== SMART SYNC (final version) ===================== */
-async function loadAuroraSync(attempt = 1) {
+async function loadAuroraSync(attempt = 1, hard = false) {
   const dot = document.getElementById("auroraSyncDot");
   const time = document.getElementById("syncTime");
 
   try {
-    const res = await fetch(JSON_URL + Date.now(), {
+    const res = await fetch(JSON_URL + (hard ? (Date.now() + "." + Math.random()) : Date.now()), {
       cache: "no-store",
       headers: {
         "Cache-Control": "no-cache, no-store, must-revalidate",
@@ -286,10 +286,6 @@ async function loadAuroraSync(attempt = 1) {
     }
   }
 }
-
-/* Auto-load every 5 min */
-loadAuroraSync();
-setInterval(loadAuroraSync, 300000);
 
 /* ===================== RENDER CORE ===================== */
 function renderAll(data){
@@ -482,8 +478,10 @@ function drawCalendar(){
 }
 
 /* ===================== INIT ===================== */
-loadAuroraSync();
-setInterval(loadAuroraSync, 300000); // every 5 min
+document.addEventListener("DOMContentLoaded", () => {
+  loadAuroraSync(true); // first hard load
+  setInterval(loadAuroraSync, 300000); // refresh every 5 min
+});
 </script>
 </body>
 </html>
