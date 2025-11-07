@@ -2,8 +2,8 @@ name: Aurora Data Sync
 
 on:
   schedule:
-    - cron: "0 * * * *" # every hour
-  workflow_dispatch:     # allows manual run
+    - cron: "0 * * * *" # Every hour
+  workflow_dispatch:     # Allows manual run from Actions tab
 
 permissions:
   contents: write
@@ -12,16 +12,17 @@ permissions:
 jobs:
   update-data:
     runs-on: ubuntu-latest
+
     steps:
       - name: 🔄 Checkout repository
         uses: actions/checkout@v4
 
-      - name: ⚙️ Set up environment
+      - name: ⚙️ Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: 3.11
 
-      - name: 🧮 Install dependencies
+      - name: 🧮 Install jq
         run: sudo apt-get install jq -y
 
       - name: 📥 Fetch Google Sheets Data
@@ -35,21 +36,24 @@ jobs:
         run: |
           echo "Merging data into AuroraSync.json..."
           cp AuroraSync.json AuroraSync_temp.json
-          # (You can extend this with jq merge logic if required)
+          # Optional jq merging logic can go here
           mv AuroraSync_temp.json AuroraSync.json
           echo "✅ Merge complete."
 
       - name: 💹 Recalculate Dividend Yield & Annual Income
         run: |
           FILE="AuroraSync.json"
-          echo "Recalculating yield..."
+          echo "🔄 Recalculating yield..."
           total_income=$(jq '[.isa_feed[].annual_income|tonumber] | add' $FILE)
           total_value=$(jq '[.isa_feed[].value|tonumber] | add' $FILE)
-          yield=$(python3 - <<EOF
-total_income=$total_income
-total_value=$total_value
-print(round((total_income/total_value)*100, 2))
-EOF
+
+          # Run Python safely to calculate percentage
+          yield=$(python3 - <<'PY'
+import os
+ti=float(os.environ.get("TOTAL_INCOME",0))
+tv=float(os.environ.get("TOTAL_VALUE",1))
+print(round((ti/tv)*100,2))
+PY
 )
           jq --argjson y "$yield" --argjson ti "$total_income" \
             '.isa.portfolio_summary.dividend_yield=$y |
@@ -57,20 +61,23 @@ EOF
              .isa.portfolio_summary.last_calculated=(now | todate)' \
              $FILE > tmp.json && mv tmp.json $FILE
           echo "✅ Dividend yield updated to $yield%"
+        env:
+          TOTAL_INCOME: ${{ steps.recalc.outputs.total_income }}
+          TOTAL_VALUE:  ${{ steps.recalc.outputs.total_value }}
 
-      - name: 🧾 Validate JSON
+      - name: 🧾 Validate JSON structure
         run: |
-          cat AuroraSync.json | jq . > /dev/null
-          echo "✅ JSON validation passed."
+          jq . AuroraSync.json > /dev/null
+          echo "✅ JSON structure validated."
 
       - name: 🚀 Commit and push changes
         run: |
           git config user.name "AuroraSync Bot"
           git config user.email "actions@github.com"
           git add AuroraSync.json
-          git commit -m "Auto-update: AuroraSync.json (yield + income recalculated)" || echo "No changes to commit."
+          git commit -m "Auto-update: Dividend yield & annual income recalculated" || echo "No changes to commit."
           git push
           echo "✅ AuroraSync.json updated successfully."
 
-      - name: ✅ Mark workflow as success
+      - name: ✅ Mark workflow success
         run: echo "Aurora Data Sync completed successfully."
