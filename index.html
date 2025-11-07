@@ -70,7 +70,20 @@ h2,h3{color:#fff;text-shadow:0 0 10px rgba(0,255,255,0.55);margin-top:.5em;}
 .amount-green{color:var(--green);}
 .date-pink{color:#ff66cc;}
 
-/* ===================== COLLAPSIBLE HOLDINGS ===================== */
+/* Dividend list formatting */
+.divSection table th, .divSection table td {
+  padding:6px 8px;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+}
+.divSection th {color:#00ffff;text-shadow:0 0 10px rgba(0,255,255,0.6);}
+.divSection td {color:#e0ffff;}
+.divSection tr:hover {background:rgba(0,255,255,0.08);}
+
+/* Holdings table tint */
+#igTable td, #t212Table td {color:#ccfaff;}
+#igTable th, #t212Table th {color:#00ffff;text-shadow:0 0 8px rgba(0,255,255,0.7);}
+
+/* Collapsible */
 .collapse-header {
   background:rgba(0,255,255,0.1);
   border:1px solid rgba(0,255,255,0.25);
@@ -127,12 +140,25 @@ h2,h3{color:#fff;text-shadow:0 0 10px rgba(0,255,255,0.55);margin-top:.5em;}
     <p>Trade212 ISA: £<span id="t212Balance">0.00</span></p>
   </div>
 
-  <!-- ===== Next Dividends ===== -->
+  <!-- ===== Dividends Centre ===== -->
   <div class="card" id="dividends">
-    <h2>Next 5 Dividends</h2>
-    <ul id="nextDivs"></ul>
-    <h2>Next 5 Ex-Dividends</h2>
-    <ul id="nextExDivs"></ul>
+    <h2>Dividends Centre</h2>
+
+    <div class="divSection">
+      <h3>Next 5 Dividends</h3>
+      <table style="width:100%;border-collapse:collapse;font-size:.9rem;">
+        <thead><tr><th>Stock</th><th>Amount (£)</th><th>Pay Date</th></tr></thead>
+        <tbody id="nextDivs"></tbody>
+      </table>
+    </div>
+
+    <div class="divSection" style="margin-top:20px;">
+      <h3>Next 5 Ex-Dividends</h3>
+      <table style="width:100%;border-collapse:collapse;font-size:.9rem;">
+        <thead><tr><th>Stock</th><th>Ex-Date</th></tr></thead>
+        <tbody id="nextExDivs"></tbody>
+      </table>
+    </div>
   </div>
 
   <!-- ===== Dividend Overview ===== -->
@@ -206,10 +232,8 @@ h2,h3{color:#fff;text-shadow:0 0 10px rgba(0,255,255,0.55);margin-top:.5em;}
 <script>
 const JSON_URL = "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json?ts=";
 let lastGain = 0;
-
 const asNum = v => isNaN(+v)?0:+v;
 
-/* Core Sync */
 async function loadAuroraSync(){
   const dot=document.getElementById("auroraSyncDot");
   const time=document.getElementById("syncTime");
@@ -227,7 +251,6 @@ async function loadAuroraSync(){
   }
 }
 
-/* Render data */
 function renderAll(data){
   document.getElementById("targetValue").textContent=asNum(data.isa.portfolio_summary.annual_target_value).toFixed(2);
   document.getElementById("divYield").textContent=asNum(data.isa.portfolio_summary.dividend_yield).toFixed(2);
@@ -237,6 +260,7 @@ function renderAll(data){
   renderTable("#t212Table tbody", data.isa_feed.filter(x=>x.account==="TRADE212"));
   renderDividends(data);
   renderForecast(data);
+  renderQuarterly(data);
 }
 
 /* Holdings table */
@@ -261,8 +285,31 @@ function renderDividends(data){
   next.innerHTML=""; nextEx.innerHTML="";
   const pays=(data.dividends_feed||[]).filter(d=>new Date(d.pay_date)>now).slice(0,5);
   const exes=(data.dividends_feed||[]).filter(d=>new Date(d.ex_div_date)>now).slice(0,5);
-  pays.forEach(d=>next.insertAdjacentHTML("beforeend",`<li>${d.name} – <span class='amount-green'>£${asNum(d.total_dividend).toFixed(2)}</span> on <span class='date-pink'>${d.pay_date}</span></li>`));
-  exes.forEach(d=>nextEx.insertAdjacentHTML("beforeend",`<li>${d.name} – Ex-Div <span class='date-pink'>${d.ex_div_date}</span></li>`));
+  pays.forEach(d=>next.insertAdjacentHTML("beforeend",`<tr><td>${d.name}</td><td class='amount-green'>£${asNum(d.total_dividend).toFixed(2)}</td><td class='date-pink'>${d.pay_date}</td></tr>`));
+  exes.forEach(d=>nextEx.insertAdjacentHTML("beforeend",`<tr><td>${d.name}</td><td class='date-pink'>${d.ex_div_date}</td></tr>`));
+}
+
+/* Quarterly Chart */
+function renderQuarterly(data){
+  const el=document.getElementById("quarterlyBars");
+  el.innerHTML="";
+  const qd=data.dividend_planner?.quarterly_breakdown||{};
+  const max=Math.max(1,...Object.values(qd));
+  Object.entries(qd).forEach(([q,v])=>{
+    const wrap=document.createElement("div");
+    wrap.style.display="flex";wrap.style.flexDirection="column";wrap.style.alignItems="center";
+    const bar=document.createElement("div");
+    bar.style.width="40px";bar.style.height=(v/max*190)+"px";
+    bar.style.background="linear-gradient(180deg,#9dfcff,var(--cyan))";
+    bar.style.borderRadius="6px 6px 0 0";
+    bar.style.boxShadow="0 0 12px var(--cyan)";
+    wrap.appendChild(bar);
+    const label=document.createElement("div");
+    label.innerHTML=`${q}<br>£${v.toFixed(2)}`;
+    label.style.fontSize=".8rem";label.style.marginTop="4px";label.style.textAlign="center";
+    wrap.appendChild(label);
+    el.appendChild(wrap);
+  });
 }
 
 /* Forecast */
