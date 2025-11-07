@@ -1,193 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Aurora Tracker – Core v2</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
-
-<!-- ===================== SECTION: CORE THEME ===================== -->
+<meta charset="UTF-8">
+<title>Aurora Connection Test</title>
 <style>
-:root {
-  --cyan: #00ffff;
-  --green: #00ff99;
-  --red: #ff4444;
-  --bg1: #060018;
-  --bg2: #120035;
-  --bg3: #001a33;
-}
-
 body {
-  margin: 0;
-  font-family: "Orbitron", sans-serif;
-  background: linear-gradient(120deg, var(--bg1), var(--bg2), var(--bg3));
-  background-size: 600% 600%;
-  animation: auroraDrift 45s ease-in-out infinite;
-  color: #fff;
-  text-align: center;
-  overflow-x: hidden;
-}
-@keyframes auroraDrift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-h1 {
-  font-size: 1.8rem;
-  margin-top: 25px;
-  text-shadow: 0 0 14px rgba(0,255,255,0.7);
-}
-h2 {
-  color: var(--cyan);
-  text-shadow: 0 0 10px var(--cyan);
-  margin-bottom: 10px;
-}
-
-.card {
-  background: rgba(10,10,30,0.65);
-  border: 1px solid rgba(0,255,255,0.25);
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0,255,255,0.15);
-  backdrop-filter: blur(6px);
+  background: #000;
+  color: #0ff;
+  font-family: monospace;
   padding: 20px;
-  max-width: 800px;
-  margin: 25px auto;
-  text-align: left;
 }
-
-/* Table styling */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.85rem;
-}
-th, td {
-  padding: 8px 10px;
-  text-align: left;
-}
-th {
-  color: #00ffff;
-  border-bottom: 1px solid rgba(0,255,255,0.3);
-}
-tr:nth-child(even) { background: rgba(255,255,255,0.05); }
-tr:hover { background: rgba(0,255,255,0.1); transition: 0.3s; }
-
-.value-pos {
-  color: var(--green);
-  text-shadow: 0 0 6px var(--green);
-}
-.value-neg {
-  color: var(--red);
-  text-shadow: 0 0 6px var(--red);
-}
-
-/* Sync indicator */
-#status {
-  font-size: 0.9rem;
-  color: #aaa;
-  margin-bottom: 15px;
-}
-#auroraSyncDot {
-  display:inline-block;width:10px;height:10px;border-radius:50%;
-  background:var(--cyan);box-shadow:0 0 10px var(--cyan);
-  margin-right:6px;vertical-align:middle;
-}
+h1 { color: #fff; }
+.status { margin-top: 10px; }
+pre { background: #111; padding: 10px; border-radius: 6px; }
 </style>
 </head>
 <body>
-<h1>Aurora Tracker – Core v2</h1>
-<div id="status"><span id="auroraSyncDot"></span>Connecting to AuroraSync.json...</div>
+<h1>🔗 Aurora Connection Test</h1>
+<div id="status">Connecting...</div>
+<pre id="output"></pre>
 
-<!-- Portfolio Summary -->
-<div class="card">
-  <h2>Portfolio Summary</h2>
-  <p><strong>Total Target:</strong> £<span id="targetValue">--</span></p>
-  <p><strong>Dividend Yield:</strong> <span id="divYield">--</span>%</p>
-</div>
-
-<!-- IG ISA Holdings -->
-<div class="card">
-  <h2>IG ISA Holdings</h2>
-  <table id="igHoldings">
-    <thead>
-      <tr><th>Name</th><th>Shares</th><th>Live Price (£)</th><th>Value (£)</th><th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th></tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-</div>
-
-<!-- Trade212 ISA Holdings -->
-<div class="card">
-  <h2>Trade212 ISA Holdings</h2>
-  <table id="t212Holdings">
-    <thead>
-      <tr><th>Name</th><th>Shares</th><th>Live Price (£)</th><th>Value (£)</th><th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th></tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-</div>
-
-<!-- ===================== SCRIPT ===================== -->
 <script>
-const JSON_URL = "AuroraSync.json?ts=";
-async function loadAuroraData() {
+const JSON_URL = "AuroraSync.json?ts=" + Date.now();
+
+async function testConnection() {
   const status = document.getElementById("status");
-  const dot = document.getElementById("auroraSyncDot");
+  const output = document.getElementById("output");
+
   try {
-    const res = await fetch(JSON_URL + Date.now(), { cache: "no-store" });
+    const res = await fetch(JSON_URL, { cache: "no-store" });
     if (!res.ok) throw new Error("HTTP " + res.status);
     const data = await res.json();
-    console.log("✅ AuroraSync loaded:", data);
 
-    // Portfolio
-    document.getElementById("targetValue").textContent = data?.isa?.portfolio_summary?.annual_target_value?.toLocaleString() ?? "N/A";
-    document.getElementById("divYield").textContent = data?.isa?.portfolio_summary?.dividend_yield ?? "N/A";
-
-    // Render holdings
-    renderHoldings("#igHoldings tbody", data.isa_feed.filter(x => x.account === "IG ISA"));
-    renderHoldings("#t212Holdings tbody", data.isa_feed.filter(x => x.account === "TRADE212"));
-
-    dot.style.background = "#00ff99";
-    dot.style.boxShadow = "0 0 10px #00ff99";
-    status.textContent = "✅ Synced successfully with AuroraSync.json";
+    status.textContent = "✅ Connected successfully!";
+    output.textContent = JSON.stringify({
+      ig_isa_balance: data?.isa?.ig_isa?.balance,
+      trade212_balance: data?.isa?.trade212_isa?.balance,
+      dividend_yield: data?.isa?.portfolio_summary?.dividend_yield
+    }, null, 2);
   } catch (err) {
-    console.error("❌ Sync failed:", err);
-    dot.style.background = "#ff3333";
-    dot.style.boxShadow = "0 0 15px #ff3333";
-    status.textContent = "❌ Failed to fetch AuroraSync.json — check console for details.";
+    status.textContent = "❌ Failed to connect: " + err.message;
+    output.textContent = err.stack;
   }
 }
 
-function renderHoldings(selector, list) {
-  const el = document.querySelector(selector);
-  el.innerHTML = "";
-  if (!list.length) {
-    el.innerHTML = "<tr><td colspan='8'>No holdings found.</td></tr>";
-    return;
-  }
-  list.forEach(h => {
-    const gainClass = parseFloat(h.gain_value) >= 0 ? "value-pos" : "value-neg";
-    el.insertAdjacentHTML("beforeend", `
-      <tr>
-        <td>${h.name}</td>
-        <td>${h.shares ?? "--"}</td>
-        <td>£${(h.latest_price ?? 0).toFixed(2)}</td>
-        <td>£${(h.value ?? 0).toFixed(2)}</td>
-        <td class="${gainClass}">£${(h.gain_value ?? 0).toFixed(2)}</td>
-        <td class="${gainClass}">${(h.gain_percentage ?? 0).toFixed(2)}%</td>
-        <td>${(h.annual_div_yield ?? 0).toFixed(2)}%</td>
-        <td>£${(h.annual_income ?? 0).toFixed(2)}</td>
-      </tr>
-    `);
-  });
-}
-
-window.addEventListener("DOMContentLoaded", () => {
-  console.log("🌍 Aurora Tracker: DOM ready, starting sync...");
-  loadAuroraData(); // first fetch
-  setInterval(loadAuroraData, 300000); // refresh every 5 min
-});
+testConnection();
 </script>
 </body>
 </html>
