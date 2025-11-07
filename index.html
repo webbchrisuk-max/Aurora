@@ -2,220 +2,163 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta content="width=device-width, initial-scale=1.0" name="viewport" />
-<title>Aurora Tracker – Known Good Build</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aurora Tracker – Stable Step 3</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet" />
 <style>
-  :root{--cyan:#00ffff;--green:#00ff99;--bg1:#060018;--bg2:#120035;--bg3:#001a33;}
-  body{margin:0;padding:0;font-family:'Orbitron',sans-serif;color:#fff;
-       background:linear-gradient(120deg,var(--bg1),var(--bg2),var(--bg3));
-       background-size:600% 600%;animation:auroraDrift 45s ease-in-out infinite;}
-  @keyframes auroraDrift{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
-  h1{text-align:center;margin:18px 0;text-shadow:0 0 14px rgba(0,255,255,.6);}
-  .wrap{max-width:1100px;margin:0 auto;padding:0 16px 32px;display:grid;grid-template-columns:1fr 1fr;gap:18px;}
-  @media (max-width:820px){.wrap{grid-template-columns:1fr;}}
-  .card{background:rgba(10,10,30,.65);border:1px solid rgba(0,255,255,.25);border-radius:10px;padding:16px;
-        box-shadow:0 0 20px rgba(0,255,255,.12);backdrop-filter:blur(6px);}
-  .kv{display:grid;grid-template-columns:auto 1fr;gap:6px 10px}
-  .kv b{opacity:.9}
-  table{width:100%;border-collapse:collapse;font-size:.9rem}
-  th,td{padding:6px 8px;text-align:left}
-  tr:nth-child(even){background:rgba(255,255,255,.06)}
-  .val{color:var(--cyan)}
-  .pos{color:var(--green)} .neg{color:#ff6464}
-  /* sync */
-  #sync{position:fixed;top:10px;right:12px;font-size:.8rem}
-  #dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#888;margin-right:6px;box-shadow:0 0 8px #888}
-  /* debug */
-  #dbg{font-family:ui-monospace,Consolas,monospace;font-size:.78rem;background:rgba(0,0,0,.35);
-       border:1px dashed rgba(0,255,255,.3);padding:10px;border-radius:8px;max-height:140px;overflow:auto}
+:root{
+  --cyan:#00ffff;
+  --green:#00ff99;
+  --bg1:#060018;
+  --bg2:#120035;
+  --bg3:#001a33;
+}
+body{
+  margin:0;padding:0;
+  font-family:'Orbitron',sans-serif;color:#fff;
+  background:linear-gradient(120deg,var(--bg1),var(--bg2),var(--bg3));
+  background-size:600% 600%;animation:aurora 45s ease-in-out infinite;
+}
+@keyframes aurora{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+h1{text-align:center;margin:18px 0;text-shadow:0 0 14px rgba(0,255,255,.6);}
+.dashboard{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:1200px;margin:0 auto;padding:0 16px 32px;}
+@media(max-width:820px){.dashboard{grid-template-columns:1fr;}}
+.card{background:rgba(10,10,30,.65);border:1px solid rgba(0,255,255,.25);
+  border-radius:10px;padding:18px;box-shadow:0 0 18px rgba(0,255,255,.12);}
+h2{margin-top:0;text-shadow:0 0 10px rgba(0,255,255,.6);}
+table{width:100%;border-collapse:collapse;font-size:.9rem;}
+th,td{padding:6px 8px;text-align:left;}
+tr:nth-child(even){background:rgba(255,255,255,.05);}
+.value{color:var(--cyan);} .gain-pos{color:var(--green);} .gain-neg{color:#ff5555;}
+#auroraSyncStatus{position:fixed;top:10px;right:16px;font-size:.8rem}
+#auroraSyncDot{display:inline-block;width:10px;height:10px;border-radius:50%;
+  background:#888;margin-right:6px;box-shadow:0 0 10px #888;}
+.amount-green{color:var(--green);} .date-pink{color:#ff66cc;}
 </style>
 </head>
 <body>
-<h1>Aurora Tracker – Core (Rollback)</h1>
+<h1>Aurora Tracker</h1>
 
-<div id="sync"><span id="dot"></span><span id="syncText">Waiting…</span></div>
+<div id="auroraSyncStatus">
+  <span id="auroraSyncDot"></span>
+  <span id="syncTime">Syncing…</span>
+</div>
 
-<div class="wrap">
-  <div class="card">
+<div class="dashboard">
+
+  <div class="card" id="portfolio-summary">
     <h2>Portfolio Summary</h2>
-    <div class="kv">
-      <b>Total Target:</b> <span>£<span id="targetValue">0.00</span></span>
-      <b>Dividend Yield:</b> <span><span id="divYield">0.00</span>%</span>
-      <b>Total Gain:</b> <span>£<span id="totalGain">0.00</span> (<span id="gainPercent">0.00</span>%)</span>
-    </div>
+    <p>Total Target: £<span id="targetValue">0.00</span></p>
+    <p>Dividend Yield: <span id="divYield">0.00</span>%</p>
+    <p>Total Gain: £<span id="totalGain">0.00</span> ( <span id="gainPercent">0.00</span>% )</p>
   </div>
 
-  <div class="card">
+  <div class="card" id="isa-balances">
     <h2>ISA Balances</h2>
-    <div class="kv">
-      <b>IG ISA:</b> <span>£<span id="igBalance">0.00</span></span>
-      <b>Trade212 ISA:</b> <span>£<span id="t212Balance">0.00</span></span>
-    </div>
+    <p>IG ISA: £<span id="igBalance">0.00</span></p>
+    <p>Trade212 ISA: £<span id="t212Balance">0.00</span></p>
   </div>
 
-  <div class="card" style="grid-column:1 / -1">
+  <div class="card" id="holdings">
     <h2>IG ISA Holdings</h2>
-    <div style="overflow:auto">
-      <table id="igTable">
-        <thead>
-          <tr>
-            <th>Name</th><th>Shares</th><th>Price (£)</th><th>Value (£)</th>
-            <th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
+    <table id="igTable">
+      <thead><tr><th>Name</th><th>Value (£)</th><th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <h2 style="margin-top:20px;">Trade212 ISA Holdings</h2>
+    <table id="t212Table">
+      <thead><tr><th>Name</th><th>Value (£)</th><th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th></tr></thead>
+      <tbody></tbody>
+    </table>
   </div>
 
-  <div class="card" style="grid-column:1 / -1">
-    <h2>Trade212 ISA Holdings</h2>
-    <div style="overflow:auto">
-      <table id="t212Table">
-        <thead>
-          <tr>
-            <th>Name</th><th>Shares</th><th>Price (£)</th><th>Value (£)</th>
-            <th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
+  <div class="card" id="dividends">
+    <h2>Dividends Centre</h2>
+    <h3>Next 5 Dividends</h3>
+    <ul id="nextDivs"></ul>
+    <h3>Next 5 Ex-Dividends</h3>
+    <ul id="nextExDivs"></ul>
   </div>
 
-  <div class="card" style="grid-column:1 / -1">
-    <h3>Connectivity Debug (safe to leave)</h3>
-    <div id="dbg">Ready.</div>
-  </div>
 </div>
 
 <script>
-(function(){
-  // ---- Config: three mirrors + hard cache-bust
-  var SOURCES = [
-    "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json?ts=",
-    "https://cdn.jsdelivr.net/gh/webbchrisuk-max/Aurora@main/AuroraSync.json?ts=",
-    "https://api.github.com/repos/webbchrisuk-max/Aurora/contents/AuroraSync.json?ts="
-  ];
-  var dot = document.getElementById("dot");
-  var syncText = document.getElementById("syncText");
-  var dbg = document.getElementById("dbg");
+const JSON_URL = "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/main/AuroraSync.json?ts=";
+let lastGain = 0;
+const asNum = v => isNaN(+v)?0:+v;
 
-  function log(s){ dbg.textContent += "\n" + s; dbg.scrollTop = dbg.scrollHeight; }
-
-  function asNum(v){ var n = Number(v); return isNaN(n) ? 0 : n; }
-
-  function renderAll(data){
-    // If GitHub API endpoint used, the file is base64 in `content`
-    if (data && data.content && data.encoding === "base64") {
-      try {
-        var decoded = atob(data.content.replace(/\n/g,""));
-        data = JSON.parse(decoded);
-      } catch(e) {
-        log("Decode error: " + e);
-        throw e;
-      }
-    }
-
-    // Portfolio summary
-    var ig = (data.isa && data.isa.ig_isa) ? data.isa.ig_isa : {};
-    var t2 = (data.isa && data.isa.trade212_isa) ? data.isa.trade212_isa : {};
-    var ps = (data.isa && data.isa.portfolio_summary) ? data.isa.portfolio_summary : {};
-
-    var g = asNum(ig.unrealised_gain) + asNum(t2.unrealised_gain);
-    var denom = asNum(ig.book_cost) + asNum(t2.book_cost);
-    var pct = denom ? (g/denom*100) : 0;
-
-    document.getElementById("targetValue").textContent = asNum(ps.annual_target_value).toFixed(2);
-    document.getElementById("divYield").textContent = asNum(ps.dividend_yield).toFixed(2);
-    document.getElementById("totalGain").textContent = g.toFixed(2);
-    document.getElementById("gainPercent").textContent = pct.toFixed(2);
-
-    document.getElementById("igBalance").textContent = asNum(ig.balance).toFixed(2);
-    document.getElementById("t212Balance").textContent = asNum(t2.balance).toFixed(2);
-
-    // Tables
-    var feed = Array.isArray(data.isa_feed) ? data.isa_feed : [];
-    drawTable("igTable", feed.filter(function(x){return (x.account||"").toUpperCase()==="IG ISA";}));
-    drawTable("t212Table", feed.filter(function(x){return (x.account||"").toUpperCase()==="TRADE212";}));
+/* ===================== LOAD + SYNC ===================== */
+async function loadAuroraSync(attempt=1,hard=false){
+  const dot=document.getElementById("auroraSyncDot");
+  const time=document.getElementById("syncTime");
+  try{
+    const res=await fetch(JSON_URL+Date.now(),{cache:"no-store"});
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const data=await res.json();
+    renderAll(data);
+    dot.style.background="#00ffcc";dot.style.boxShadow="0 0 10px #00ffcc";
+    const now=new Date();
+    time.textContent=`Last updated ${now.getHours().toString().padStart(2,"0")}:${now.getMinutes().toString().padStart(2,"0")}`;
+  }catch(e){
+    console.error("❌ Sync failed",e);
+    dot.style.background="#ff3333";dot.style.boxShadow="0 0 10px #ff3333";
+    time.textContent="Sync Error";
   }
+}
 
-  function drawTable(id, list){
-    var tbody = document.querySelector("#"+id+" tbody");
-    tbody.innerHTML = "";
-    list.forEach(function(h){
-      var tr = document.createElement("tr");
-      var price = asNum(h.latest_price || h.price);
-      var gainVal = asNum(h.gain_value);
-      var gainPct = asNum(h.gain_percentage);
-      tr.innerHTML =
-        "<td>"+(h.name||"-")+"</td>"+
-        "<td>"+asNum(h.shares||0)+"</td>"+
-        "<td class='val'>"+price.toFixed(4)+"</td>"+
-        "<td class='val'>"+asNum(h.value||0).toFixed(2)+"</td>"+
-        "<td class='"+(gainVal>=0?"pos":"neg")+"'>"+gainVal.toFixed(2)+"</td>"+
-        "<td class='"+(gainPct>=0?"pos":"neg")+"'>"+gainPct.toFixed(2)+"%</td>"+
-        "<td>"+asNum(h.annual_div_yield||0).toFixed(2)+"%</td>"+
-        "<td>"+asNum(h.annual_income||0).toFixed(2)+"</td>";
-      tbody.appendChild(tr);
-    });
-  }
+/* ===================== RENDER ENGINE ===================== */
+function renderAll(data){
+  const g=asNum(data.isa.ig_isa.unrealised_gain)+asNum(data.isa.trade212_isa.unrealised_gain);
+  const pct=(g/(asNum(data.isa.ig_isa.book_cost)+asNum(data.isa.trade212_isa.book_cost))*100)||0;
+  document.getElementById("targetValue").textContent=asNum(data.isa.portfolio_summary.annual_target_value).toFixed(2);
+  document.getElementById("divYield").textContent=asNum(data.isa.portfolio_summary.dividend_yield).toFixed(2);
+  document.getElementById("totalGain").textContent=g.toFixed(2);
+  document.getElementById("gainPercent").textContent=pct.toFixed(2);
+  document.getElementById("igBalance").textContent=asNum(data.isa.ig_isa.balance).toFixed(2);
+  document.getElementById("t212Balance").textContent=asNum(data.isa.trade212_isa.balance).toFixed(2);
+  renderTable("#igTable tbody",data.isa_feed.filter(x=>x.account==="IG ISA"));
+  renderTable("#t212Table tbody",data.isa_feed.filter(x=>x.account==="TRADE212"));
+  renderDividends(data);
+}
 
-  function setOK(){
-    dot.style.background = "#00ffcc";
-    dot.style.boxShadow = "0 0 12px #00ffcc";
-  }
-  function setFail(){
-    dot.style.background = "#ff4343";
-    dot.style.boxShadow = "0 0 12px #ff4343";
-  }
+/* ===================== TABLES ===================== */
+function renderTable(sel,list){
+  const el=document.querySelector(sel);el.innerHTML="";
+  list.forEach(h=>{
+    el.insertAdjacentHTML("beforeend",
+      `<tr>
+        <td>${h.name}</td>
+        <td class='value'>${asNum(h.value).toFixed(2)}</td>
+        <td class='${asNum(h.gain_value)>=0?"gain-pos":"gain-neg"}'>${asNum(h.gain_value).toFixed(2)}</td>
+        <td class='${asNum(h.gain_value)>=0?"gain-pos":"gain-neg"}'>${asNum(h.gain_percentage).toFixed(2)}%</td>
+        <td>${asNum(h.annual_div_yield).toFixed(2)}%</td>
+        <td>${asNum(h.annual_income).toFixed(2)}</td>
+      </tr>`);
+  });
+}
 
-  function nowTime(){
-    var d=new Date();
-    return d.getHours().toString().padStart(2,"0")+":"+
-           d.getMinutes().toString().padStart(2,"0")+":"+
-           d.getSeconds().toString().padStart(2,"0");
-  }
+/* ===================== DIVIDENDS ===================== */
+function renderDividends(data){
+  const now=new Date();
+  const next=document.getElementById("nextDivs");
+  const nextEx=document.getElementById("nextExDivs");
+  next.innerHTML="";nextEx.innerHTML="";
+  const pays=(data.dividends_feed||[]).filter(d=>new Date(d.pay_date)>now)
+    .sort((a,b)=>new Date(a.pay_date)-new Date(b.pay_date)).slice(0,5);
+  const exes=(data.dividends_feed||[]).filter(d=>new Date(d.ex_div_date)>now)
+    .sort((a,b)=>new Date(a.ex_div_date)-new Date(b.ex_div_date)).slice(0,5);
+  pays.forEach(d=>next.insertAdjacentHTML("beforeend",
+    `<li>${d.name} – <span class='amount-green'>£${asNum(d.total_dividend).toFixed(2)}</span> on <span class='date-pink'>${d.pay_date}</span></li>`));
+  exes.forEach(d=>nextEx.insertAdjacentHTML("beforeend",
+    `<li>${d.name} – Ex-Div <span class='date-pink'>${d.ex_div_date}</span></li>`));
+}
 
-  function hardBust(){
-    return Date.now()+"."+Math.random();
-  }
-
-  function tryFetch(idx){
-    if (idx >= SOURCES.length) {
-      setFail();
-      syncText.textContent = "❌ Final error: Load failed";
-      log("❌ Final error: Load failed");
-      return;
-    }
-    var url = SOURCES[idx] + hardBust();
-    log("Trying ["+(idx+1)+"/"+SOURCES.length+"]: "+url);
-
-    fetch(url, { cache:"no-store", headers:{
-      "Cache-Control":"no-cache, no-store, must-revalidate",
-      "Pragma":"no-cache","Expires":"0"
-    }})
-    .then(function(res){
-      if(!res.ok) throw new Error("HTTP "+res.status);
-      return res.json();
-    })
-    .then(function(json){
-      renderAll(json);
-      setOK();
-      syncText.textContent = "Last updated "+nowTime();
-      log("✅ Loaded from source #"+(idx+1));
-    })
-    .catch(function(err){
-      log("Failed: "+err.message);
-      tryFetch(idx+1);
-    });
-  }
-
-  // First load + 5-min refresh
-  tryFetch(0);
-  setInterval(function(){ tryFetch(0); }, 300000);
-})();
+/* ===================== INIT ===================== */
+document.addEventListener("DOMContentLoaded",()=>{loadAuroraSync();setInterval(loadAuroraSync,300000);});
 </script>
 </body>
 </html>
