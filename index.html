@@ -234,7 +234,7 @@ tr:hover{background:rgba(0,255,255,0.10);}
 <!-- ===================== SECTION: SCRIPT ENGINE (SYNC + RENDER) ===================== -->
 <script>
 /* 🔗 Live JSON feed (locked) — matches your working test2 */
-const JSON_URL = "https://cdn.jsdelivr.net/gh/webbchrisuk-max/Aurora@main/AuroraSync.json?nocache=";
+const JSON_URL = "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json?ts=";
 let lastGain = 0;
 
 /* Helpers */
@@ -248,28 +248,48 @@ function buildRollingMonths(){
   }return arr;
 }
 
-/* ===================== SMART SYNC (from test2) ===================== */
-async function loadAuroraSync(){
-  const dot=document.getElementById("auroraSyncDot");
-  const time=document.getElementById("syncTime");
-  try{
-    const res=await fetch(JSON_URL+Date.now(),{cache:"no-store"});
-    if(!res.ok)throw new Error(res.status);
-    const data=await res.json();
+/* ===================== SMART SYNC (final version) ===================== */
+async function loadAuroraSync(attempt = 1) {
+  const dot = document.getElementById("auroraSyncDot");
+  const time = document.getElementById("syncTime");
 
+  try {
+    const res = await fetch(JSON_URL + Date.now(), {
+      cache: "no-store",
+      headers: {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0"
+      }
+    });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+
+    const data = await res.json();
     renderAll(data);
 
-    const now=new Date();
-    time.textContent=`Last updated ${now.getHours().toString().padStart(2,"0")}:${now.getMinutes().toString().padStart(2,"0")} · Next sync in 5 min`;
-    dot.style.background="#00ffcc";
-    dot.style.boxShadow="0 0 10px #00ffcc";
-  }catch(e){
-    console.error(e);
-    dot.style.background="#ff3333";
-    dot.style.boxShadow="0 0 15px #ff3333";
-    document.getElementById("syncTime").textContent="Sync Error";
+    const now = new Date();
+    time.textContent = `Last updated ${now.getHours().toString().padStart(2,"0")}:${now.getMinutes().toString().padStart(2,"0")} · Next sync in 5 min`;
+    dot.style.background = "#00ffcc";
+    dot.style.boxShadow = "0 0 10px #00ffcc";
+
+    console.log("✅ AuroraSync updated successfully.");
+  } catch (e) {
+    console.error("❌ Sync failed (attempt " + attempt + "):", e);
+
+    if (attempt < 3) {
+      setTimeout(() => loadAuroraSync(attempt + 1), 2000);
+      console.log("Retrying fetch in 2s...");
+    } else {
+      dot.style.background = "#ff3333";
+      dot.style.boxShadow = "0 0 15px #ff3333";
+      time.textContent = "Sync Error after 3 attempts";
+    }
   }
 }
+
+/* Auto-load every 5 min */
+loadAuroraSync();
+setInterval(loadAuroraSync, 300000);
 
 /* ===================== RENDER CORE ===================== */
 function renderAll(data){
