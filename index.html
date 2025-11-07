@@ -277,7 +277,7 @@ async function renderSharePlanSuite(){
   const container=document.getElementById("sharePlanContainer");
   if(!container)return;
   try{
-    const res=await fetch("https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json?ts=" + new Date().getTime(), {
+    const res=await fetch("https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json?ts=" + new Date().getTime(), { cache: "no-store", headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "Pragma": "no-cache", "Expires": "0" } })"https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json?ts=" + new Date().getTime(), {
   cache: "no-store",
   headers: {
     "Cache-Control": "no-cache, no-store, must-revalidate",
@@ -317,7 +317,6 @@ async function renderSharePlanSuite(){
 renderSharePlanSuite();
 setInterval(renderSharePlanSuite,300000);
 </script>
-
 </div>
 <!-- ===================== SCRIPT ===================== -->
 <script>
@@ -340,7 +339,7 @@ async function loadAuroraSync(){
   const dot=document.getElementById("auroraSyncDot");
   const time=document.getElementById("syncTime");
   try{
-    const res=await fetch(JSON_URL+Date.now(),{cache:"no-store"});
+    const res=await fetch("https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json?ts=" + new Date().getTime(), { cache: "no-store", headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "Pragma": "no-cache", "Expires": "0" } })JSON_URL+Date.now(),{cache:"no-store"});
     if(!res.ok)throw new Error(res.status);
     const data=await res.json();
     renderAll(data);
