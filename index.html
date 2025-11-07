@@ -277,7 +277,14 @@ async function renderSharePlanSuite(){
   const container=document.getElementById("sharePlanContainer");
   if(!container)return;
   try{
-    const res=await fetch("https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json?nocache="+Date.now(),{cache:"no-store"});
+    const res=await fetch("https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json?ts=" + new Date().getTime(), {
+  cache: "no-store",
+  headers: {
+    "Cache-Control": "no-cache, no-store, must-revalidate",
+    "Pragma": "no-cache",
+    "Expires": "0"
+  }
+})
     if(!res.ok)throw new Error("HTTP "+res.status);
     const data=await res.json();
     const s=data.share_plan_suite?.dividend_candidates?.share_plan_expansion;
