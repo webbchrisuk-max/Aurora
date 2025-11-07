@@ -9,27 +9,42 @@
 <style>
 :root{
   --cyan:#00ffff;
+  --magenta:#ff00ff;
   --green:#00ff99;
   --bg1:#060018;
   --bg2:#120035;
   --bg3:#001a33;
 }
 
+/* Aurora background */
 body{
   margin:0;padding:0;
   font-family:'Orbitron',sans-serif;
   color:#fff;
-  background:linear-gradient(120deg,var(--bg1),var(--bg2),var(--bg3));
+  background:radial-gradient(circle at 20% 20%,var(--bg1),var(--bg2),var(--bg3));
   background-size:600% 600%;
   animation:auroraDrift 45s ease-in-out infinite;
-  overflow-x:hidden;
+  overflow-x:hidden;position:relative;
 }
 @keyframes auroraDrift{
   0%{background-position:0% 50%;}
-  25%{background-position:50% 100%;}
   50%{background-position:100% 50%;}
-  75%{background-position:50% 0%;}
   100%{background-position:0% 50%;}
+}
+
+/* Floating sparkles */
+body::after{
+  content:"";
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background-image:radial-gradient(circle at 10% 10%,rgba(0,255,255,0.15) 0,transparent 40%),
+                    radial-gradient(circle at 80% 70%,rgba(255,0,255,0.15) 0,transparent 40%);
+  animation:glowFloat 20s linear infinite;
+  pointer-events:none;
+}
+@keyframes glowFloat{
+  0%{background-position:0 0,0 0;}
+  50%{background-position:50px 100px, -50px -80px;}
+  100%{background-position:0 0,0 0;}
 }
 
 h1{text-align:center;font-size:1.8rem;margin:20px 0;color:#fff;
@@ -49,7 +64,9 @@ h2,h3{color:#fff;text-shadow:0 0 10px rgba(0,255,255,0.55);margin-top:.5em;}
   box-shadow:0 0 20px rgba(0,255,255,0.15);
   backdrop-filter:blur(6px);
   animation:fadeIn .8s ease-in-out;
+  transition:transform .3s, box-shadow .3s;
 }
+.card:hover{transform:translateY(-3px);box-shadow:0 0 25px rgba(0,255,255,0.3);}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 
 /* Sync indicator */
@@ -63,36 +80,49 @@ h2,h3{color:#fff;text-shadow:0 0 10px rgba(0,255,255,0.55);margin-top:.5em;}
 .amount-green{color:var(--green);}
 .date-pink{color:#ff66cc;}
 
-/* Target bar */
+/* Portfolio bar */
 #targetBarFill {transition:width 1s ease, box-shadow 1s;}
-#targetBarFill.full {
-  box-shadow:0 0 20px var(--cyan), 0 0 40px var(--cyan);
-  animation:pulseFull 3s ease-in-out infinite;
-}
-@keyframes pulseFull {0%,100%{opacity:1;}50%{opacity:.6;}}
+@keyframes pulseBar {0%,100%{box-shadow:0 0 10px var(--cyan);}50%{box-shadow:0 0 25px var(--cyan);}}
+#targetBarFill.pulsing {animation:pulseBar 3s ease-in-out infinite;}
 
 /* Chart containers */
 #quarterlyChart,#monthlyChart{text-align:center;margin-top:20px;}
 #quarterlyBars,#monthlyBars{display:flex;justify-content:space-around;align-items:flex-end;height:240px;gap:10px;}
 .barBlock{display:flex;flex-direction:column;align-items:center;}
-.barFill{border-radius:6px 6px 0 0;background:linear-gradient(180deg,#9dfcff,var(--cyan));box-shadow:0 0 15px var(--cyan);transition:height 1s ease;}
-.barLabel{margin-top:6px;font-size:.8rem;text-align:center;}
+.barFill{border-radius:6px 6px 0 0;background:linear-gradient(180deg,#9dfcff,var(--cyan));
+  box-shadow:0 0 15px var(--cyan);transition:height 1s ease,transform .2s;}
 .barFill.monthly{width:22px;}
 .barFill.quarterly{width:60px;}
+.barBlock:hover .barFill{transform:scale(1.1);box-shadow:0 0 25px var(--cyan);}
+.barLabel{margin-top:6px;font-size:.8rem;text-align:center;}
 
-/* Holdings tables */
+/* Table effects */
 .table-holder{overflow-x:auto;max-height:350px;}
 table{width:100%;border-collapse:collapse;font-size:.85rem;}
 th,td{padding:6px 8px;text-align:left;}
 th{color:#00ffff;text-shadow:0 0 8px rgba(0,255,255,0.45);}
 tr:nth-child(even){background:rgba(255,255,255,0.05);}
-tr:hover{background:rgba(0,255,255,0.10);}
+tr:hover{background:rgba(0,255,255,0.10);transform:scale(1.01);}
 .value{color:var(--cyan);}
 .gain-pos{color:var(--green);}
 .gain-neg{color:#ff5555;}
 
-.icon-title{display:flex;align-items:center;gap:10px;}
-.icon-title span{font-size:1.3rem;}
+/* Icon pulse for dividends */
+.icon-title span {
+  font-size:1.3rem;
+  transition:transform .5s, text-shadow .5s;
+}
+.icon-title span.pulse {
+  transform:scale(1.2);
+  text-shadow:0 0 20px var(--cyan),0 0 40px var(--cyan);
+}
+
+/* Background drift on refresh */
+@keyframes ripple {
+  0% {box-shadow:0 0 0 0 rgba(0,255,255,0.6);}
+  70% {box-shadow:0 0 0 20px rgba(0,255,255,0);}
+  100% {box-shadow:0 0 0 0 rgba(0,255,255,0);}
+}
 </style>
 </head>
 
@@ -111,7 +141,7 @@ tr:hover{background:rgba(0,255,255,0.10);}
     <h2>Portfolio Summary</h2>
     <p>Total Target: £<span id="targetValue">0.00</span></p>
     <div style="width:90%;background:rgba(255,255,255,0.1);border-radius:8px;height:16px;overflow:hidden;margin-top:6px;">
-      <div id="targetBarFill" style="height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),#9dfcff);box-shadow:0 0 10px var(--cyan);"></div>
+      <div id="targetBarFill" style="height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),#9dfcff);"></div>
     </div>
     <p style="font-size:.8rem;margin-top:6px;">Progress: <span id="targetProgress">0%</span></p>
     <p>Dividend Yield: <span id="divYield">0.00</span>%</p>
@@ -144,37 +174,26 @@ tr:hover{background:rgba(0,255,255,0.10);}
     </div>
   </div>
 
-  <!-- ===== Dividends Centre ===== -->
+  <!-- ===== Dividends ===== -->
   <div class="card" id="dividends">
-    <div class="icon-title"><span>💰</span><h2>Next 5 Dividends</h2></div>
+    <div class="icon-title"><span id="divIcon1">💰</span><h2>Next 5 Dividends</h2></div>
     <ul id="nextDivs" style="list-style:none;padding:0;margin:0;"></ul>
-
-    <div class="icon-title" style="margin-top:15px;"><span>📅</span><h2>Next 5 Ex-Dividends</h2></div>
+    <div class="icon-title" style="margin-top:15px;"><span id="divIcon2">📅</span><h2>Next 5 Ex-Dividends</h2></div>
     <ul id="nextExDivs" style="list-style:none;padding:0;margin:0;"></ul>
   </div>
 
   <!-- ===== Dividend Overview + Charts ===== -->
   <div class="card" id="dividend-overview">
     <h2>Dividend Overview</h2>
-    <h3>Dividend Forecast</h3>
     <p>Forecast Annual Income: £<span id="forecastTotal">0.00</span></p>
     <p>YTD Received: £<span id="receivedYTD">0.00</span></p>
     <div style="width:90%;margin:0 auto;background:rgba(255,255,255,0.1);border-radius:8px;height:16px;overflow:hidden;">
       <div id="forecastProgress" style="height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),#9dfcff);box-shadow:0 0 10px var(--cyan);transition:width 1s ease;"></div>
     </div>
     <p style="font-size:.8rem;margin-top:6px;">Progress to £6 000 Goal: <span id="forecastPercent">0%</span></p>
-
-    <div id="quarterlyChart">
-      <h3>Quarterly Totals</h3>
-      <div id="quarterlyBars"></div>
-    </div>
-
-    <div id="monthlyChart">
-      <h3>Dividend Payments by Month</h3>
-      <div id="monthlyBars"></div>
-    </div>
+    <div id="quarterlyChart"><h3>Quarterly Totals</h3><div id="quarterlyBars"></div></div>
+    <div id="monthlyChart"><h3>Dividend Payments by Month</h3><div id="monthlyBars"></div></div>
   </div>
-
 </div>
 
 <script>
@@ -191,17 +210,30 @@ async function loadAuroraSync(){
     renderAll(data);
     dot.style.background="#00ffcc";
     time.textContent="Last updated "+new Date().toLocaleTimeString();
+    pulseIcons();
   }catch(e){
     dot.style.background="#ff3333";
     console.error("Sync error:",e);
   }
 }
 
+function pulseIcons(){
+  ["divIcon1","divIcon2"].forEach(id=>{
+    const el=document.getElementById(id);
+    el.classList.add("pulse");
+    setTimeout(()=>el.classList.remove("pulse"),800);
+  });
+}
+
 function renderAll(data){
+  const bar=document.getElementById("targetBarFill");
+  bar.classList.add("pulsing");
+
   document.getElementById("targetValue").textContent=asNum(data.isa.portfolio_summary.annual_target_value).toFixed(2);
   document.getElementById("divYield").textContent=asNum(data.isa.portfolio_summary.dividend_yield).toFixed(2);
   document.getElementById("igBalance").textContent=asNum(data.isa.ig_isa.balance).toFixed(2);
   document.getElementById("t212Balance").textContent=asNum(data.isa.trade212_isa.balance).toFixed(2);
+
   renderTargetBar(data);
   renderTable("#igTable tbody",data.isa_feed.filter(x=>x.account==="IG ISA"));
   renderTable("#t212Table tbody",data.isa_feed.filter(x=>x.account==="TRADE212"));
@@ -252,12 +284,12 @@ function renderQuarterly(data){
     wrap.className="barBlock";
     const bar=document.createElement("div");
     bar.className="barFill quarterly";
-    bar.style.height=(v/max*190)+"px";
+    bar.style.height="0px";
+    setTimeout(()=>{bar.style.height=(v/max*190)+"px";},200);
     const label=document.createElement("div");
     label.className="barLabel";
     label.innerHTML=`${q}<br>£${v.toFixed(2)}`;
-    wrap.appendChild(bar);
-    wrap.appendChild(label);
+    wrap.appendChild(bar);wrap.appendChild(label);
     el.appendChild(wrap);
   });
 }
@@ -267,32 +299,4 @@ function renderMonthly(data){
   el.innerHTML="";
   const mb=(data.dividend_planner?.monthly_breakdown)||[];
   const max=Math.max(1,...mb.map(m=>asNum(m.total_estimated_income)));
-  mb.forEach(m=>{
-    const wrap=document.createElement("div");
-    wrap.className="barBlock";
-    const bar=document.createElement("div");
-    bar.className="barFill monthly";
-    bar.style.height=(asNum(m.total_estimated_income)/max*190)+"px";
-    const label=document.createElement("div");
-    label.className="barLabel";
-    label.innerHTML=`${m.month}<br>£${asNum(m.total_estimated_income).toFixed(0)}`;
-    wrap.appendChild(bar);
-    wrap.appendChild(label);
-    el.appendChild(wrap);
-  });
-}
-
-function renderTargetBar(data){
-  const target=asNum(data.isa.portfolio_summary.annual_target_value);
-  const current=asNum(data.isa.ig_isa.balance)+asNum(data.isa.trade212_isa.balance);
-  const pct=Math.min((current/target)*100,100);
-  document.getElementById("targetProgress").textContent=pct.toFixed(1)+"%";
-  const bar=document.getElementById("targetBarFill");
-  bar.style.width=pct+"%";
-  bar.classList.toggle("full",pct>=100);
-}
-
-document.addEventListener("DOMContentLoaded",loadAuroraSync);
-</script>
-</body>
-</html>
+  mb.forEach((m
