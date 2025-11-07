@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta charset="utf-8" />
+<meta content="width=device-width, initial-scale=1.0" name="viewport" />
 <title>Aurora Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet" />
 
-<!-- ===================== CORE THEME ===================== -->
+<!-- ===================== SECTION: CORE THEME ===================== -->
 <style>
 :root{
   --cyan:#00ffff;
@@ -35,7 +35,7 @@ body{
   100%{background-position:0% 50%;}
 }
 
-/* Headings */
+/* Headings (white text + cyan glow) */
 h1{text-align:center;font-size:1.8rem;margin:20px 0;color:#fff;
     text-shadow:0 0 14px rgba(0,255,255,0.7),0 0 28px rgba(0,255,255,0.35);}
 h2,h3{color:#fff;text-shadow:0 0 10px rgba(0,255,255,0.55);margin-top:.5em;}
@@ -81,7 +81,7 @@ tr:hover{background:rgba(0,255,255,0.10);}
 .amount-green{color:var(--green);}
 .date-pink{color:#ff66cc;}
 
-/* Sector bars */
+/* Sector bars (static visual) */
 .sector-bars{margin-top:25px;display:flex;flex-direction:column;gap:10px;}
 .sector-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:.9rem;}
 .sector-bar span{min-width:110px;text-shadow:0 0 8px rgba(255,255,255,0.6);}
@@ -96,217 +96,212 @@ tr:hover{background:rgba(0,255,255,0.10);}
 </head>
 <body>
 <h1>Aurora Tracker</h1>
+
+<!-- ===================== SECTION: SYNC STATUS ===================== -->
 <div id="auroraSyncStatus">
   <span id="auroraSyncDot"></span>Synced
   <span id="syncTime">Last updated --:-- · Next sync in 5 min</span>
 </div>
 
-<!-- ===================== DASHBOARD ===================== -->
+<!-- ===================== SECTION: DASHBOARD ===================== -->
 <div class="dashboard">
-<!-- Portfolio Summary -->
-<div class="card" id="portfolio-summary">
-  <h2>Portfolio Summary</h2>
-  <p>Total Target: £<span id="targetValue">0.00</span></p>
-  <p>Dividend Yield: <span id="divYield">0.00</span>%</p>
-  <p>Total Gain: <span id="totalGain">0.00</span> ( <span id="gainPercent">0.00</span>% )</p>
-</div>
 
-<!-- ISA Balances -->
-<div class="card" id="isa-balances">
-  <h2>ISA Balances</h2>
-  <p>IG ISA: £<span id="igBalance">0.00</span></p>
-  <p>Trade212 ISA: £<span id="t212Balance">0.00</span></p>
-</div>
-
-<!-- Unified Holdings -->
-<div class="card" id="holdings-unified">
-  <h2>Holdings</h2>
-  <div class="table-holder" style="margin-bottom:18px;">
-    <h3>IG ISA</h3>
-    <table id="igTable"><thead>
-      <tr><th>Name</th><th>Value (£)</th><th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th></tr>
-    </thead><tbody></tbody></table>
-  </div>
-  <div class="table-holder">
-    <h3>Trade212 ISA</h3>
-    <table id="t212Table"><thead>
-      <tr><th>Name</th><th>Value (£)</th><th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th></tr>
-    </thead><tbody></tbody></table>
-  </div>
-</div>
-<!-- ===================== DIVIDENDS CENTRE ===================== -->
-<div class="card" id="dividends">
-  <div style="display:flex;justify-content:space-between;align-items:center;">
-    <h2>Dividends Centre</h2>
-    <button id="toggleCalendar"
-      style="background:rgba(0,0,0,0.4);border:1px solid var(--cyan);color:#fff;
-             padding:5px 10px;border-radius:6px;cursor:pointer;">
-      📅 Calendar View
-    </button>
+  <!-- ===== Portfolio Summary ===== -->
+  <div class="card" id="portfolio-summary">
+    <h2>Portfolio Summary</h2>
+    <p>Total Target: £<span id="targetValue">0.00</span></p>
+    <p>Dividend Yield: <span id="divYield">0.00</span>%</p>
+    <p>Total Gain: <span id="totalGain">0.00</span> ( <span id="gainPercent">0.00</span>% )</p>
   </div>
 
-  <div id="dividendListView">
-    <ul id="nextDivs"></ul>
-    <ul id="nextExDivs"></ul>
+  <!-- ===== ISA Balances ===== -->
+  <div class="card" id="isa-balances">
+    <h2>ISA Balances</h2>
+    <p>IG ISA: £<span id="igBalance">0.00</span></p>
+    <p>Trade212 ISA: £<span id="t212Balance">0.00</span></p>
   </div>
 
-  <div id="dividendCalendarView" style="display:none;text-align:center;">
-    <canvas id="divCalendar" width="420" height="320"></canvas>
-    <p style="font-size:.8rem;color:#aaa;">Tap again to return to list view</p>
-  </div>
-</div>
-
-<!-- ===================== DIVIDEND CHARTS & FORECAST ===================== -->
-<div class="card" id="dividend-charts">
-  <h2>Dividend Income Overview</h2>
-  <div id="dividendCharts" style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:18px;">
-    <div class="chartBlock" style="flex:1 1 45%;text-align:center;">
-      <h3>Monthly Breakdown (Nov 2025 → Nov 2026)</h3>
-      <div id="monthlyBars"
-           style="display:flex;justify-content:space-around;align-items:flex-end;height:240px;
-                  margin-top:12px;gap:10px;"></div>
-    </div>
-    <div class="chartBlock" style="flex:1 1 45%;text-align:center;">
-      <h3>Quarterly Totals</h3>
-      <div id="quarterlyBars"
-           style="display:flex;justify-content:space-around;align-items:flex-end;height:240px;
-                  margin-top:12px;gap:10px;"></div>
-    </div>
-  </div>
-
-  <div id="forecastBand" style="margin-top:25px;text-align:center;">
-    <h3>Dividend Forecast</h3>
-    <p>Forecast Annual Income: £<span id="forecastTotal">0.00</span> ·
-       YTD Received: £<span id="receivedYTD">0.00</span></p>
-    <div style="width:90%;margin:0 auto;background:rgba(255,255,255,0.1);
-                border-radius:8px;height:16px;overflow:hidden;">
-      <div id="forecastProgress"
-           style="height:100%;width:0%;
-                  background:linear-gradient(90deg,var(--cyan),#9dfcff);
-                  box-shadow:0 0 10px var(--cyan);
-                  transition:width 1s ease;"></div>
-    </div>
-    <p style="font-size:.8rem;margin-top:6px;">
-      Progress to £6 000 Goal: <span id="forecastPercent">0%</span>
-    </p>
-  </div>
-</div>
-
-<!-- ===================== SECTOR ALLOCATION ===================== -->
-<div class="card" id="sector-allocation">
-  <h2>Sector Allocation</h2>
-  <div style="display:flex;flex-wrap:wrap;justify-content:space-around;gap:20px;">
-    <div style="text-align:center;">
+  <!-- ===== Unified Holdings (IG + Trade212) ===== -->
+  <div class="card" id="holdings-unified">
+    <h2>Holdings</h2>
+    <div class="table-holder" style="margin-bottom:18px;">
       <h3>IG ISA</h3>
-      <canvas id="igSectorRing" width="200" height="200"></canvas>
+      <table id="igTable">
+        <thead>
+          <tr><th>Name</th><th>Value (£)</th><th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
-    <div style="text-align:center;">
+    <div class="table-holder">
       <h3>Trade212 ISA</h3>
-      <canvas id="t212SectorRing" width="200" height="200"></canvas>
+      <table id="t212Table">
+        <thead>
+          <tr><th>Name</th><th>Value (£)</th><th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
   </div>
-  <div class="sector-bars" style="margin-top:25px;">
-    <div class="sector-bar"><span>Financials</span><div class="bar" style="--p:28%;"></div><span class="val">28%</span></div>
-    <div class="sector-bar"><span>Utilities</span><div class="bar" style="--p:14%;"></div><span class="val">14%</span></div>
-    <div class="sector-bar"><span>Consumer Defensive</span><div class="bar" style="--p:22%;"></div><span class="val">22%</span></div>
-    <div class="sector-bar"><span>Real Estate</span><div class="bar" style="--p:9%;"></div><span class="val">9%</span></div>
-    <div class="sector-bar"><span>Energy</span><div class="bar" style="--p:10%;"></div><span class="val">10%</span></div>
-    <div class="sector-bar"><span>Technology</span><div class="bar" style="--p:17%;"></div><span class="val">17%</span></div>
+
+  <!-- ===== Dividends Centre ===== -->
+  <div class="card" id="dividends">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h2>Dividends Centre</h2>
+      <button id="toggleCalendar"
+        style="background:rgba(0,0,0,0.4);border:1px solid var(--cyan);color:#fff;
+               padding:5px 10px;border-radius:6px;cursor:pointer;">
+        📅 Calendar View
+      </button>
+    </div>
+
+    <div id="dividendListView">
+      <h3>Next 5 Dividends</h3>
+      <ul id="nextDivs"></ul>
+      <h3>Next 5 Ex-Dividends</h3>
+      <ul id="nextExDivs"></ul>
+    </div>
+
+    <div id="dividendCalendarView" style="display:none;text-align:center;">
+      <canvas id="divCalendar" width="420" height="320"></canvas>
+      <p style="font-size:.8rem;color:#aaa;">Tap again to return to list view</p>
+    </div>
   </div>
+
+  <!-- ===== Dividend Charts & Forecast ===== -->
+  <div class="card" id="dividend-charts">
+    <h2>Dividend Income Overview</h2>
+    <div id="dividendCharts" style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:18px;">
+      <div class="chartBlock" style="flex:1 1 45%;text-align:center;">
+        <h3>Monthly Breakdown (Nov 2025 → Nov 2026)</h3>
+        <div id="monthlyBars"
+             style="display:flex;justify-content:space-around;align-items:flex-end;height:240px;
+                    margin-top:12px;gap:10px;"></div>
+      </div>
+      <div class="chartBlock" style="flex:1 1 45%;text-align:center;">
+        <h3>Quarterly Totals</h3>
+        <div id="quarterlyBars"
+             style="display:flex;justify-content:space-around;align-items:flex-end;height:240px;
+                    margin-top:12px;gap:10px;"></div>
+      </div>
+    </div>
+
+    <div id="forecastBand" style="margin-top:25px;text-align:center;">
+      <h3>Dividend Forecast</h3>
+      <p>Forecast Annual Income: £<span id="forecastTotal">0.00</span> ·
+         YTD Received: £<span id="receivedYTD">0.00</span></p>
+      <div style="width:90%;margin:0 auto;background:rgba(255,255,255,0.1);
+                  border-radius:8px;height:16px;overflow:hidden;">
+        <div id="forecastProgress"
+             style="height:100%;width:0%;
+                    background:linear-gradient(90deg,var(--cyan),#9dfcff);
+                    box-shadow:0 0 10px var(--cyan);
+                    transition:width 1s ease;"></div>
+      </div>
+      <p style="font-size:.8rem;margin-top:6px;">
+        Progress to £6 000 Goal: <span id="forecastPercent">0%</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- ===== Sector Allocation ===== -->
+  <div class="card" id="sector-allocation">
+    <h2>Sector Allocation</h2>
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-around;gap:20px;">
+      <div style="text-align:center;">
+        <h3>IG ISA</h3>
+        <canvas id="igSectorRing" width="200" height="200"></canvas>
+      </div>
+      <div style="text-align:center;">
+        <h3>Trade212 ISA</h3>
+        <canvas id="t212SectorRing" width="200" height="200"></canvas>
+      </div>
+    </div>
+
+    <!-- Static percentage bars you asked to keep -->
+    <div class="sector-bars" style="margin-top:25px;">
+      <div class="sector-bar"><span>Financials</span><div class="bar" style="--p:28%;"></div><span class="val">28%</span></div>
+      <div class="sector-bar"><span>Utilities</span><div class="bar" style="--p:14%;"></div><span class="val">14%</span></div>
+      <div class="sector-bar"><span>Consumer Defensive</span><div class="bar" style="--p:22%;"></div><span class="val">22%</span></div>
+      <div class="sector-bar"><span>Real Estate</span><div class="bar" style="--p:9%;"></div><span class="val">9%</span></div>
+      <div class="sector-bar"><span>Energy</span><div class="bar" style="--p:10%;"></div><span class="val">10%</span></div>
+      <div class="sector-bar"><span>Technology</span><div class="bar" style="--p:17%;"></div><span class="val">17%</span></div>
+    </div>
+  </div>
+
 </div>
-<!-- ===================== SCRIPT ENGINE ===================== -->
+
+<!-- ===================== SECTION: SCRIPT ENGINE (SYNC + RENDER) ===================== -->
 <script>
-/* 🔗 Live JSON feed (locked in) */
-const JSON_URL = "https://cdn.jsdelivr.net/gh/webbchrisuk-max/Aurora@main/AuroraSync.json?v=" + Date.now();
+/* 🔗 Live JSON feed (locked) — matches your working test2 */
+const JSON_URL = "https://cdn.jsdelivr.net/gh/webbchrisuk-max/Aurora@main/AuroraSync.json?nocache=";
 let lastGain = 0;
 
 /* Helpers */
 const asNum = v => isNaN(+v) ? 0 : +v;
 const shortMonths = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function monthKey(d){const dt=new Date(d+"T00:00:00Z");return shortMonths[dt.getUTCMonth()]+" "+dt.getUTCFullYear();}
+function buildRollingMonths(){
+  const start=new Date(Date.UTC(2025,10,1));const arr=[];
+  for(let i=0;i<13;i++){const d=new Date(Date.UTC(start.getUTCFullYear(),start.getUTCMonth()+i,1));
+    arr.push({key:shortMonths[d.getUTCMonth()]+" "+d.getUTCFullYear(),label:shortMonths[d.getUTCMonth()]});
+  }return arr;
+}
 
-/* ===================== FETCH + UPDATE ===================== */
-/* ===================== SMART SYNC + RETRY ===================== */
-async function loadAuroraSync(force=false, attempt=1){
-  const dot = document.getElementById("auroraSyncDot");
-  const time = document.getElementById("syncTime");
-  const url = JSON_URL + (force ? (Date.now()+"."+Math.random()) : Date.now());
-
-  try {
-    if (time) time.textContent = `Syncing... (Attempt ${attempt})`;
-
-    const res = await fetch(url, {
-      cache: "no-store",
-      headers: {
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-        "Pragma": "no-cache",
-        "Expires": "0"
-      }
-    });
-
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    const data = await res.json();
+/* ===================== SMART SYNC (from test2) ===================== */
+async function loadAuroraSync(){
+  const dot=document.getElementById("auroraSyncDot");
+  const time=document.getElementById("syncTime");
+  try{
+    const res=await fetch(JSON_URL+Date.now(),{cache:"no-store"});
+    if(!res.ok)throw new Error(res.status);
+    const data=await res.json();
 
     renderAll(data);
 
-    const now = new Date();
-    time.textContent = `Last updated ${now.getHours().toString().padStart(2,"0")}:${now.getMinutes().toString().padStart(2,"0")} · Next sync in 5 min`;
-    dot.style.background = "#00ffcc";
-    dot.style.boxShadow = "0 0 10px #00ffcc";
-
-    console.log(`✅ Synced successfully on attempt ${attempt}`, data);
-
-  } catch (e) {
-    console.warn(`⚠️ Sync error (attempt ${attempt}):`, e);
-
-    dot.style.background = "#ffaa33";
-    dot.style.boxShadow = "0 0 15px #ffaa33";
-    time.textContent = `Retrying... (Attempt ${attempt})`;
-
-    if (attempt < 3) {
-      // retry after 5 seconds
-      setTimeout(() => loadAuroraSync(force, attempt + 1), 5000);
-    } else {
-      dot.style.background = "#ff3333";
-      dot.style.boxShadow = "0 0 15px #ff3333";
-      time.textContent = "Sync failed after 3 attempts";
-      console.error("❌ AuroraSync final error:", e);
-    }
+    const now=new Date();
+    time.textContent=`Last updated ${now.getHours().toString().padStart(2,"0")}:${now.getMinutes().toString().padStart(2,"0")} · Next sync in 5 min`;
+    dot.style.background="#00ffcc";
+    dot.style.boxShadow="0 0 10px #00ffcc";
+  }catch(e){
+    console.error(e);
+    dot.style.background="#ff3333";
+    dot.style.boxShadow="0 0 15px #ff3333";
+    document.getElementById("syncTime").textContent="Sync Error";
   }
 }
 
-/* ===================== RENDER CORE DATA ===================== */
+/* ===================== RENDER CORE ===================== */
 function renderAll(data){
-  /* Portfolio Summary */
-  const g = (asNum(data.isa?.ig_isa?.unrealised_gain)+asNum(data.isa?.trade212_isa?.unrealised_gain));
-  const pct = ((g / (asNum(data.isa?.ig_isa?.book_cost)+asNum(data.isa?.trade212_isa?.book_cost))) * 100).toFixed(2);
-  document.getElementById("targetValue").textContent = Number(data.isa.portfolio_summary.annual_target_value||0)
-      .toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+  // Portfolio Summary + gain pulse
+  const g = asNum(data.isa?.ig_isa?.unrealised_gain) + asNum(data.isa?.trade212_isa?.unrealised_gain);
+  const pct = ((g / (asNum(data.isa?.ig_isa?.book_cost) + asNum(data.isa?.trade212_isa?.book_cost))) * 100) || 0;
+  document.getElementById("targetValue").textContent = asNum(data.isa.portfolio_summary.annual_target_value).toFixed(2);
   document.getElementById("divYield").textContent = asNum(data.isa.portfolio_summary.dividend_yield).toFixed(2);
   document.getElementById("totalGain").textContent = g.toFixed(2);
-  document.getElementById("gainPercent").textContent = pct;
-
+  document.getElementById("gainPercent").textContent = pct.toFixed(2);
   const card=document.getElementById("portfolio-summary");
   if(g>lastGain){pulse(card,"#00ffcc");}
   else if(g<lastGain){pulse(card,"#ffaa33");}
   lastGain=g;
 
-  /* Balances */
+  // Balances
   document.getElementById("igBalance").textContent = asNum(data.isa.ig_isa.balance).toFixed(2);
   document.getElementById("t212Balance").textContent = asNum(data.isa.trade212_isa.balance).toFixed(2);
 
-  /* Holdings */
+  // Holdings tables (unified)
   renderTable("#igTable tbody", data.isa_feed.filter(x=>x.account==="IG ISA"));
   renderTable("#t212Table tbody", data.isa_feed.filter(x=>x.account==="TRADE212"));
 
-  /* Dividends */
+  // Dividends lists
   renderDividends(data);
 
-  /* Charts */
+  // Charts + forecast
   renderMonthly(data);
   renderQuarterly(data);
   renderForecast(data);
 
-  /* Sector rings */
+  // Sector rings
   drawSectorRing("igSectorRing", data.isa_feed.filter(x=>x.account==="IG ISA"));
   drawSectorRing("t212SectorRing", data.isa_feed.filter(x=>x.account==="TRADE212"));
 }
@@ -326,63 +321,127 @@ function renderTable(sel,list){
   });
 }
 
-/* ===================== NEW DIVIDEND LISTS ===================== */
+/* ===================== DIVIDEND LISTS ===================== */
 function renderDividends(data){
-  const now = new Date();
-  const next = document.getElementById("nextDivs");
-  const nextEx = document.getElementById("nextExDivs");
-  next.innerHTML = ""; nextEx.innerHTML = "";
-
-  const pays = (data.dividends_feed||[]).filter(d=>new Date(d.pay_date)>now)
+  const now=new Date();
+  const next=document.getElementById("nextDivs");
+  const nextEx=document.getElementById("nextExDivs");
+  next.innerHTML=""; nextEx.innerHTML="";
+  const pays=(data.dividends_feed||[]).filter(d=>new Date(d.pay_date)>now)
               .sort((a,b)=>new Date(a.pay_date)-new Date(b.pay_date)).slice(0,5);
-  const exes = (data.dividends_feed||[]).filter(d=>new Date(d.ex_div_date)>now)
+  const exes=(data.dividends_feed||[]).filter(d=>new Date(d.ex_div_date)>now)
               .sort((a,b)=>new Date(a.ex_div_date)-new Date(b.ex_div_date)).slice(0,5);
-
-  const cardStyle=`background:rgba(255,255,255,0.05);border:1px solid rgba(0,255,255,0.2);
-                   border-radius:8px;margin:8px 0;padding:10px 12px;line-height:1.5;
-                   box-shadow:0 0 10px rgba(0,255,255,0.05);`;
-  const titleStyle=`background:linear-gradient(90deg,rgba(0,255,255,0.2),rgba(0,255,255,0));
-                    color:#00ffff;font-weight:700;padding:6px 10px;border-left:3px solid #00ffff;
-                    border-radius:6px;margin:10px 0;text-shadow:0 0 10px #00ffff;`;
-  const daysUntil = d=>{
-    const diff=Math.ceil((new Date(d)-now)/(1000*60*60*24));
-    return diff>0?`${diff} day${diff>1?"s":""}`:"today";
-  };
-
-  next.insertAdjacentHTML("beforebegin",`<div style="${titleStyle}">💷 Next 5 Dividends</div>`);
-  nextEx.insertAdjacentHTML("beforebegin",`<div style="${titleStyle}">🗓️ Next 5 Ex-Dividends</div>`);
-
   pays.forEach(d=>{
-    next.insertAdjacentHTML("beforeend",`
-      <li style="${cardStyle}">
-        <div style="font-weight:600;color:#00ffff;">${d.name}</div>
-        <div>Total: <span class='amount-green'>£${asNum(d.total_dividend).toFixed(2)}</span></div>
-        <div>Pay Date: <span class='date-pink'>${d.pay_date}</span>
-        <span style="color:#00ffaa;font-size:.8rem;">(${daysUntil(d.pay_date)})</span></div>
-      </li>`);
+    next.insertAdjacentHTML("beforeend",
+      `<li>${d.name} – <span class='amount-green'>£${asNum(d.total_dividend).toFixed(2)}</span>
+       on <span class='date-pink'>${d.pay_date}</span></li>`);
   });
   exes.forEach(d=>{
-    nextEx.insertAdjacentHTML("beforeend",`
-      <li style="${cardStyle}">
-        <div style="font-weight:600;color:#00ffff;">${d.name}</div>
-        <div>Ex-Div Date: <span class='date-pink'>${d.ex_div_date}</span>
-        <span style="color:#00ffaa;font-size:.8rem;">(${daysUntil(d.ex_div_date)})</span></div>
-      </li>`);
+    nextEx.insertAdjacentHTML("beforeend",
+      `<li>${d.name} – Ex-Div <span class='date-pink'>${d.ex_div_date}</span></li>`);
   });
 }
 
-/* ===================== CHARTS, RINGS, EFFECTS ===================== */
-function renderMonthly(data){/* unchanged chart logic (shortened for brevity) */}
-function renderQuarterly(data){/* unchanged chart logic */}
-function renderForecast(data){/* unchanged forecast logic */}
-function drawSectorRing(id,list){/* unchanged ring logic */}
+/* ===================== CHARTS (from test2) ===================== */
+function renderMonthly(data){
+  const holder=document.getElementById("monthlyBars");
+  holder.innerHTML="";
+  const frame=buildRollingMonths();
+  const mbMap={};(data.dividend_planner?.monthly_breakdown||[]).forEach(m=>mbMap[m.month.trim()]=asNum(m.total_estimated_income));
+  const monthPayments={};
+  (data.dividends_feed||[]).forEach(d=>{
+    const k=monthKey(d.pay_date);if(!monthPayments[k])monthPayments[k]=[];
+    monthPayments[k].push({t:d.ticker||d.name,a:asNum(d.total_dividend)});
+  });
+  const vals=frame.map(f=>mbMap[f.key]||0);
+  const max=Math.max(1,...vals);
+  frame.forEach(f=>{
+    const total=mbMap[f.key]||0;
+    const wrap=document.createElement("div");
+    wrap.style.display="flex";wrap.style.flexDirection="column";wrap.style.alignItems="center";wrap.style.position="relative";
+    const bar=document.createElement("div");
+    bar.style.width="22px";bar.style.borderRadius="6px 6px 0 0";
+    bar.style.background="linear-gradient(180deg,var(--cyan),#9dfcff)";
+    bar.style.boxShadow="0 0 15px var(--cyan)";
+    bar.style.height=(total/max*190)+"px";
+    bar.style.transition="height 1s";
+    wrap.appendChild(bar);
+    // tooltip
+    const tip=document.createElement("div");
+    tip.style.position="absolute";tip.style.bottom="100%";tip.style.left="50%";tip.style.transform="translate(-50%,-8px)";
+    tip.style.background="rgba(8,8,30,0.95)";tip.style.border="1px solid rgba(0,255,255,0.4)";
+    tip.style.borderRadius="8px";tip.style.padding="8px 10px";tip.style.minWidth="160px";
+    tip.style.opacity="0";tip.style.transition="opacity .2s,transform .2s";
+    tip.innerHTML=`<h4 style='color:#00ffff;margin:0;'>${f.key}: £${total.toFixed(2)}</h4>`+
+      (monthPayments[f.key]?monthPayments[f.key].map(p=>`<div>${p.t} – £${p.a.toFixed(2)}</div>`).join(""):"<div>No payments</div>");
+    wrap.appendChild(tip);
+    wrap.addEventListener("mouseenter",()=>{tip.style.opacity="1";tip.style.transform="translate(-50%,-12px)";});
+    wrap.addEventListener("mouseleave",()=>{tip.style.opacity="0";tip.style.transform="translate(-50%,-8px)";});
+    const lbl=document.createElement("div");
+    lbl.textContent=f.label;lbl.style.fontSize=".75rem";lbl.style.marginTop="6px";
+    wrap.appendChild(lbl);
+    holder.appendChild(wrap);
+  });
+}
 
+function renderQuarterly(data){
+  const el=document.getElementById("quarterlyBars");el.innerHTML="";
+  const qd=data.dividend_planner?.quarterly_breakdown||{};
+  const max=Math.max(1,...Object.values(qd));
+  Object.entries(qd).forEach(([q,v])=>{
+    const w=document.createElement("div");w.style.display="flex";w.style.flexDirection="column";w.style.alignItems="center";
+    const b=document.createElement("div");
+    b.style.width="60px";b.style.height=(v/max*190)+"px";
+    b.style.borderRadius="6px 6px 0 0";
+    b.style.background="linear-gradient(180deg,#9dfcff,var(--cyan))";
+    b.style.boxShadow="0 0 15px var(--cyan)";
+    w.appendChild(b);
+    const l=document.createElement("div");l.innerHTML=`${q}<br>£${v.toFixed(2)}`;
+    l.style.fontSize=".8rem";l.style.textAlign="center";l.style.marginTop="6px";
+    w.appendChild(l);
+    el.appendChild(w);
+  });
+}
+
+function renderForecast(data){
+  const f=data.dividend_planner||{};
+  document.getElementById("forecastTotal").textContent=asNum(f.forecast_total).toFixed(2);
+  document.getElementById("receivedYTD").textContent=asNum(f.received_ytd).toFixed(2);
+  const pct=(asNum(f.forecast_total)/6000*100).toFixed(1);
+  document.getElementById("forecastPercent").textContent=pct+"%";
+  document.getElementById("forecastProgress").style.width=Math.min(pct,100)+"%";
+}
+
+/* ===================== SECTOR RINGS (from test2) ===================== */
+function drawSectorRing(id,list){
+  const canvas=document.getElementById(id);
+  if(!canvas) return;
+  const ctx=canvas.getContext("2d");
+  ctx.clearRect(0,0,200,200);
+  const total=list.reduce((s,h)=>s+asNum(h.value),0)||1;
+  const sectors={};
+  list.forEach(h=>{
+    const s=(h.sector||"Other").trim();
+    sectors[s]=(sectors[s]||0)+asNum(h.value);
+  });
+  const colors=["#00ffff","#9dfcff","#00d2ff","#89fff7","#7ee8ff","#b7ffff","#ccffff"];
+  let start=-Math.PI/2,i=0;
+  Object.entries(sectors).forEach(([s,v])=>{
+    const ang=(v/total)*2*Math.PI;
+    ctx.beginPath();ctx.arc(100,100,80,start,start+ang);
+    ctx.strokeStyle=colors[i++%colors.length];
+    ctx.lineWidth=25;ctx.shadowBlur=10;ctx.shadowColor=ctx.strokeStyle;
+    ctx.stroke();start+=ang;
+  });
+  ctx.shadowBlur=0;
+}
+
+/* ===================== EFFECTS / CALENDAR ===================== */
 function pulse(el,color){
   el.style.boxShadow=`0 0 26px ${color}`;
   setTimeout(()=>el.style.boxShadow="0 0 20px rgba(0,255,255,0.15)",900);
 }
 
-/* Calendar toggle placeholder */
 document.getElementById("toggleCalendar").addEventListener("click",()=>{
   const list=document.getElementById("dividendListView");
   const cal=document.getElementById("dividendCalendarView");
@@ -403,8 +462,8 @@ function drawCalendar(){
 }
 
 /* ===================== INIT ===================== */
-loadAuroraSync(true);
-setInterval(()=>loadAuroraSync(false),300000);
+loadAuroraSync();
+setInterval(loadAuroraSync, 300000); // every 5 min
 </script>
 </body>
 </html>
