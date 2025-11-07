@@ -60,7 +60,6 @@ h2,h3{color:#fff;text-shadow:0 0 10px rgba(0,255,255,0.55);margin-top:.5em;}
 @keyframes pulseGlow{0%,100%{box-shadow:0 0 10px var(--cyan);}50%{box-shadow:0 0 25px var(--cyan);}}
 #syncTime{display:block;font-size:.75rem;color:#aaa;margin-top:2px;}
 
-/* List formatting */
 .amount-green{color:var(--green);}
 .date-pink{color:#ff66cc;}
 
@@ -70,40 +69,25 @@ h2,h3{color:#fff;text-shadow:0 0 10px rgba(0,255,255,0.55);margin-top:.5em;}
   box-shadow:0 0 20px var(--cyan), 0 0 40px var(--cyan);
   animation:pulseFull 3s ease-in-out infinite;
 }
-@keyframes pulseFull {
-  0%,100%{opacity:1;}
-  50%{opacity:.6;}
-}
+@keyframes pulseFull {0%,100%{opacity:1;}50%{opacity:.6;}}
 
 /* Chart container */
-#quarterlyChart {
-  text-align:center;
-  margin-top:20px;
-}
-#quarterlyBars {
-  display:flex;
-  justify-content:space-around;
-  align-items:flex-end;
-  height:240px;
-  gap:10px;
-}
-.barBlock {
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-}
-.barFill {
-  width:60px;
-  border-radius:6px 6px 0 0;
-  background:linear-gradient(180deg,#9dfcff,var(--cyan));
-  box-shadow:0 0 15px var(--cyan);
-  transition:height 1s ease;
-}
-.barLabel {
-  margin-top:6px;
-  font-size:.8rem;
-  text-align:center;
-}
+#quarterlyChart{text-align:center;margin-top:20px;}
+#quarterlyBars{display:flex;justify-content:space-around;align-items:flex-end;height:240px;gap:10px;}
+.barBlock{display:flex;flex-direction:column;align-items:center;}
+.barFill{width:60px;border-radius:6px 6px 0 0;background:linear-gradient(180deg,#9dfcff,var(--cyan));box-shadow:0 0 15px var(--cyan);transition:height 1s ease;}
+.barLabel{margin-top:6px;font-size:.8rem;text-align:center;}
+
+/* Holdings tables */
+.table-holder{overflow-x:auto;max-height:350px;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+th,td{padding:6px 8px;text-align:left;}
+th{color:#00ffff;text-shadow:0 0 8px rgba(0,255,255,0.45);}
+tr:nth-child(even){background:rgba(255,255,255,0.05);}
+tr:hover{background:rgba(0,255,255,0.10);}
+.value{color:var(--cyan);}
+.gain-pos{color:var(--green);}
+.gain-neg{color:#ff5555;}
 </style>
 </head>
 
@@ -120,22 +104,11 @@ h2,h3{color:#fff;text-shadow:0 0 10px rgba(0,255,255,0.55);margin-top:.5em;}
   <!-- ===== Portfolio Summary ===== -->
   <div class="card" id="portfolio-summary">
     <h2>Portfolio Summary</h2>
-
-    <div style="margin-bottom:10px;">
-      <p>Total Target: £<span id="targetValue">0.00</span></p>
-      <div id="targetBarWrap"
-           style="width:90%;background:rgba(255,255,255,0.1);
-                  border-radius:8px;height:16px;overflow:hidden;margin-top:6px;">
-        <div id="targetBarFill"
-             style="height:100%;width:0%;
-                    background:linear-gradient(90deg,var(--cyan),#9dfcff);
-                    box-shadow:0 0 10px var(--cyan);"></div>
-      </div>
-      <p style="font-size:.8rem;margin-top:6px;">
-        Progress: <span id="targetProgress">0%</span>
-      </p>
+    <p>Total Target: £<span id="targetValue">0.00</span></p>
+    <div style="width:90%;background:rgba(255,255,255,0.1);border-radius:8px;height:16px;overflow:hidden;margin-top:6px;">
+      <div id="targetBarFill" style="height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),#9dfcff);box-shadow:0 0 10px var(--cyan);"></div>
     </div>
-
+    <p style="font-size:.8rem;margin-top:6px;">Progress: <span id="targetProgress">0%</span></p>
     <p>Dividend Yield: <span id="divYield">0.00</span>%</p>
     <p>Total Gain: <span id="totalGain">0.00</span> ( <span id="gainPercent">0.00</span>% )</p>
   </div>
@@ -147,27 +120,45 @@ h2,h3{color:#fff;text-shadow:0 0 10px rgba(0,255,255,0.55);margin-top:.5em;}
     <p>Trade212 ISA: £<span id="t212Balance">0.00</span></p>
   </div>
 
-  <!-- ===== Dividend Overview + Chart ===== -->
+  <!-- ===== Holdings ===== -->
+  <div class="card" id="holdings">
+    <h2>Holdings</h2>
+    <h3>IG ISA</h3>
+    <div class="table-holder">
+      <table id="igTable">
+        <thead><tr><th>Name</th><th>Shares</th><th>Live Price (£)</th><th>Value (£)</th><th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <h3>Trade212 ISA</h3>
+    <div class="table-holder">
+      <table id="t212Table">
+        <thead><tr><th>Name</th><th>Shares</th><th>Live Price (£)</th><th>Value (£)</th><th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== Dividends Centre ===== -->
+  <div class="card" id="dividends">
+    <h2>Dividends Centre</h2>
+    <h3>Next 5 Dividends</h3>
+    <ul id="nextDivs" style="list-style:none;padding:0;margin:0;"></ul>
+    <h3 style="margin-top:15px;">Next 5 Ex-Dividends</h3>
+    <ul id="nextExDivs" style="list-style:none;padding:0;margin:0;"></ul>
+  </div>
+
+  <!-- ===== Dividend Overview + Quarterly Chart ===== -->
   <div class="card" id="dividend-overview">
     <h2>Dividend Overview</h2>
-    <div id="forecastBand" style="margin-bottom:20px;">
-      <h3>Dividend Forecast</h3>
-      <p>Forecast Annual Income: £<span id="forecastTotal">0.00</span></p>
-      <p>YTD Received: £<span id="receivedYTD">0.00</span></p>
-      <div style="width:90%;margin:0 auto;background:rgba(255,255,255,0.1);
-                  border-radius:8px;height:16px;overflow:hidden;">
-        <div id="forecastProgress"
-             style="height:100%;width:0%;
-                    background:linear-gradient(90deg,var(--cyan),#9dfcff);
-                    box-shadow:0 0 10px var(--cyan);
-                    transition:width 1s ease;"></div>
-      </div>
-      <p style="font-size:.8rem;margin-top:6px;">
-        Progress to £6 000 Goal: <span id="forecastPercent">0%</span>
-      </p>
+    <h3>Dividend Forecast</h3>
+    <p>Forecast Annual Income: £<span id="forecastTotal">0.00</span></p>
+    <p>YTD Received: £<span id="receivedYTD">0.00</span></p>
+    <div style="width:90%;margin:0 auto;background:rgba(255,255,255,0.1);border-radius:8px;height:16px;overflow:hidden;">
+      <div id="forecastProgress" style="height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),#9dfcff);box-shadow:0 0 10px var(--cyan);transition:width 1s ease;"></div>
     </div>
+    <p style="font-size:.8rem;margin-top:6px;">Progress to £6 000 Goal: <span id="forecastPercent">0%</span></p>
 
-    <!-- Quarterly Totals -->
     <div id="quarterlyChart">
       <h3>Quarterly Totals</h3>
       <div id="quarterlyBars"></div>
@@ -201,9 +192,34 @@ function renderAll(data){
   document.getElementById("divYield").textContent=asNum(data.isa.portfolio_summary.dividend_yield).toFixed(2);
   document.getElementById("igBalance").textContent=asNum(data.isa.ig_isa.balance).toFixed(2);
   document.getElementById("t212Balance").textContent=asNum(data.isa.trade212_isa.balance).toFixed(2);
-  renderForecast(data);
   renderTargetBar(data);
+  renderTable("#igTable tbody",data.isa_feed.filter(x=>x.account==="IG ISA"));
+  renderTable("#t212Table tbody",data.isa_feed.filter(x=>x.account==="TRADE212"));
+  renderDividends(data);
+  renderForecast(data);
   renderQuarterly(data);
+}
+
+function renderTable(sel,list){
+  const el=document.querySelector(sel);el.innerHTML="";
+  list.forEach(h=>{
+    el.insertAdjacentHTML("beforeend",
+    `<tr><td>${h.name}</td><td>${h.shares}</td><td>${asNum(h.live_price).toFixed(2)}</td>
+     <td>${asNum(h.value).toFixed(2)}</td><td class='${asNum(h.gain_value)>=0?"gain-pos":"gain-neg"}'>${asNum(h.gain_value).toFixed(2)}</td>
+     <td>${asNum(h.gain_percentage).toFixed(2)}%</td><td>${asNum(h.annual_div_yield).toFixed(2)}%</td>
+     <td>${asNum(h.annual_income).toFixed(2)}</td></tr>`);
+  });
+}
+
+function renderDividends(data){
+  const now=new Date();
+  const next=document.getElementById("nextDivs");
+  const nextEx=document.getElementById("nextExDivs");
+  next.innerHTML="";nextEx.innerHTML="";
+  const pays=(data.dividends_feed||[]).filter(d=>new Date(d.pay_date)>now).slice(0,5);
+  const exes=(data.dividends_feed||[]).filter(d=>new Date(d.ex_div_date)>now).slice(0,5);
+  pays.forEach(d=>next.insertAdjacentHTML("beforeend",`<li style="margin:6px 0;">${d.name}<br><span class='amount-green'>£${asNum(d.total_dividend).toFixed(2)}</span><br><span class='date-pink'>${d.pay_date}</span></li>`));
+  exes.forEach(d=>nextEx.insertAdjacentHTML("beforeend",`<li style="margin:6px 0;">${d.name}<br><span class='date-pink'>${d.ex_div_date}</span></li>`));
 }
 
 function renderForecast(data){
