@@ -35,7 +35,7 @@ body{
   100%{background-position:0% 50%;}
 }
 
-/* Headings (white text + cyan glow) */
+/* Headings */
 h1{text-align:center;font-size:1.8rem;margin:20px 0;color:#fff;
     text-shadow:0 0 14px rgba(0,255,255,0.7),0 0 28px rgba(0,255,255,0.35);}
 h2,h3{color:#fff;text-shadow:0 0 10px rgba(0,255,255,0.55);margin-top:.5em;}
@@ -58,17 +58,6 @@ h2,h3{color:#fff;text-shadow:0 0 10px rgba(0,255,255,0.55);margin-top:.5em;}
 }
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 
-/* Tables */
-.table-holder{overflow-x:auto;max-height:350px;}
-table{width:100%;border-collapse:collapse;font-size:.9rem;}
-th,td{padding:6px 8px;text-align:left;}
-th{color:#fff;text-shadow:0 0 8px rgba(0,255,255,0.45);}
-tr:nth-child(even){background:rgba(255,255,255,0.05);}
-tr:hover{background:rgba(0,255,255,0.10);}
-.value{color:var(--cyan);}
-.gain-pos{color:var(--green);}
-.gain-neg{color:#ff5555;}
-
 /* Sync indicator */
 #auroraSyncStatus{position:fixed;top:10px;right:20px;font-size:.85rem;color:#fff;}
 #auroraSyncDot{display:inline-block;width:10px;height:10px;border-radius:50%;
@@ -80,18 +69,47 @@ tr:hover{background:rgba(0,255,255,0.10);}
 /* Highlight helpers */
 .amount-green{color:var(--green);}
 .date-pink{color:#ff66cc;}
+
+/* ===================== COLLAPSIBLE HOLDINGS ===================== */
+.collapse-header {
+  background:rgba(0,255,255,0.1);
+  border:1px solid rgba(0,255,255,0.25);
+  border-radius:6px;
+  padding:8px 12px;
+  margin-top:10px;
+  cursor:pointer;
+  transition:background .2s, box-shadow .2s;
+}
+.collapse-header:hover {
+  background:rgba(0,255,255,0.2);
+  box-shadow:0 0 10px rgba(0,255,255,0.3);
+}
+.collapse-content {
+  display:none;
+  margin-top:8px;
+}
+.collapse-content table {
+  width:100%;
+  border-collapse:collapse;
+  font-size:.85rem;
+}
+.collapse-content th, .collapse-content td {
+  padding:4px 6px;
+  text-align:left;
+}
 </style>
 </head>
+
 <body>
 <h1>Aurora Tracker</h1>
 
-<!-- ===================== SYNC STATUS ===================== -->
+<!-- ===================== SECTION: SYNC STATUS ===================== -->
 <div id="auroraSyncStatus">
   <span id="auroraSyncDot"></span>Synced
   <span id="syncTime">Last updated --:-- · Next sync in 5 min</span>
 </div>
 
-<!-- ===================== DASHBOARD ===================== -->
+<!-- ===================== SECTION: DASHBOARD ===================== -->
 <div class="dashboard">
 
   <!-- ===== Portfolio Summary ===== -->
@@ -109,50 +127,13 @@ tr:hover{background:rgba(0,255,255,0.10);}
     <p>Trade212 ISA: £<span id="t212Balance">0.00</span></p>
   </div>
 
-  <!-- ===== Dividends Centre ===== -->
-<div class="card" id="dividends">
-  <h2>Dividends Centre</h2>
-
-  <h3>Next 5 Dividends</h3>
-  <div id="nextDivs" class="div-list"></div>
-
-  <h3>Next 5 Ex-Dividends</h3>
-  <div id="nextExDivs" class="div-list"></div>
-</div>
-
-<style>
-.div-list {
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-.div-card {
-  background:rgba(255,255,255,0.05);
-  border:1px solid rgba(0,255,255,0.25);
-  border-radius:8px;
-  padding:10px 14px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  box-shadow:0 0 10px rgba(0,255,255,0.1);
-}
-.div-card:hover {
-  background:rgba(0,255,255,0.08);
-  box-shadow:0 0 15px rgba(0,255,255,0.25);
-}
-.div-left {
-  font-size:0.9rem;
-}
-.div-right {
-  text-align:right;
-  font-size:0.85rem;
-  color:#aaa;
-}
-.div-amount {
-  color:var(--green);
-  font-weight:bold;
-}
-</style>
+  <!-- ===== Next Dividends ===== -->
+  <div class="card" id="dividends">
+    <h2>Next 5 Dividends</h2>
+    <ul id="nextDivs"></ul>
+    <h2>Next 5 Ex-Dividends</h2>
+    <ul id="nextExDivs"></ul>
+  </div>
 
   <!-- ===== Dividend Overview ===== -->
   <div class="card" id="dividend-overview">
@@ -181,123 +162,126 @@ tr:hover{background:rgba(0,255,255,0.10);}
                   height:240px;margin-top:12px;gap:10px;"></div>
     </div>
   </div>
+
+  <!-- ===== Holdings (Collapsible) ===== -->
+  <div class="card" id="holdings-card">
+    <h2>Holdings</h2>
+
+    <div class="collapse-header" onclick="toggleCollapse('igHoldings')">
+      ▶ IG ISA Holdings
+    </div>
+    <div id="igHoldings" class="collapse-content">
+      <table id="igTable">
+        <thead>
+          <tr>
+            <th>Name</th><th>Shares</th><th>Live Price (£)</th>
+            <th>Value (£)</th><th>Gain (£)</th><th>Gain (%)</th>
+            <th>Yield (%)</th><th>Income (£)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="collapse-header" onclick="toggleCollapse('t212Holdings')">
+      ▶ Trade212 ISA Holdings
+    </div>
+    <div id="t212Holdings" class="collapse-content">
+      <table id="t212Table">
+        <thead>
+          <tr>
+            <th>Name</th><th>Shares</th><th>Live Price (£)</th>
+            <th>Value (£)</th><th>Gain (£)</th><th>Gain (%)</th>
+            <th>Yield (%)</th><th>Income (£)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
 </div>
 
-<!-- ===================== SCRIPT ===================== -->
+<!-- ===================== SECTION: SCRIPT ENGINE ===================== -->
 <script>
 const JSON_URL = "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json?ts=";
 let lastGain = 0;
-const asNum = v => isNaN(+v) ? 0 : +v;
 
-/* ===================== SMART SYNC ===================== */
-async function loadAuroraSync(attempt = 1, hard = false) {
-  const dot = document.getElementById("auroraSyncDot");
-  const time = document.getElementById("syncTime");
-  try {
-    const res = await fetch(JSON_URL + (hard ? (Date.now() + "." + Math.random()) : Date.now()), { cache: "no-store" });
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    const data = await res.json();
+const asNum = v => isNaN(+v)?0:+v;
+
+/* Core Sync */
+async function loadAuroraSync(){
+  const dot=document.getElementById("auroraSyncDot");
+  const time=document.getElementById("syncTime");
+  try{
+    const res=await fetch(JSON_URL+Date.now(),{cache:"no-store"});
+    if(!res.ok)throw new Error(res.status);
+    const data=await res.json();
     renderAll(data);
-    const now = new Date();
-    time.textContent = `Last updated ${now.getHours().toString().padStart(2,"0")}:${now.getMinutes().toString().padStart(2,"0")} · Next sync in 5 min`;
-    dot.style.background = "#00ffcc";
-  } catch (e) {
-    console.error("❌ Sync failed (attempt " + attempt + "):", e);
-    dot.style.background = "#ff3333";
-    if (attempt < 3) setTimeout(() => loadAuroraSync(attempt + 1, hard), 2000);
+    const now=new Date();
+    time.textContent=`Last updated ${now.getHours().toString().padStart(2,"0")}:${now.getMinutes().toString().padStart(2,"0")}`;
+    dot.style.background="#00ffcc";
+  }catch(e){
+    dot.style.background="#ff3333";
+    console.error("Sync error:",e);
   }
 }
 
-/* ===================== RENDER ALL ===================== */
+/* Render data */
 function renderAll(data){
-  const g = asNum(data.isa?.ig_isa?.unrealised_gain) + asNum(data.isa?.trade212_isa?.unrealised_gain);
-  const pct = ((g / (asNum(data.isa?.ig_isa?.book_cost) + asNum(data.isa?.trade212_isa?.book_cost))) * 100) || 0;
-  document.getElementById("targetValue").textContent = asNum(data.isa.portfolio_summary.annual_target_value).toFixed(2);
-  document.getElementById("divYield").textContent = asNum(data.isa.portfolio_summary.dividend_yield).toFixed(2);
-  document.getElementById("totalGain").textContent = g.toFixed(2);
-  document.getElementById("gainPercent").textContent = pct.toFixed(2);
-
-  document.getElementById("igBalance").textContent = asNum(data.isa.ig_isa.balance).toFixed(2);
-  document.getElementById("t212Balance").textContent = asNum(data.isa.trade212_isa.balance).toFixed(2);
-
+  document.getElementById("targetValue").textContent=asNum(data.isa.portfolio_summary.annual_target_value).toFixed(2);
+  document.getElementById("divYield").textContent=asNum(data.isa.portfolio_summary.dividend_yield).toFixed(2);
+  document.getElementById("igBalance").textContent=asNum(data.isa.ig_isa.balance).toFixed(2);
+  document.getElementById("t212Balance").textContent=asNum(data.isa.trade212_isa.balance).toFixed(2);
+  renderTable("#igTable tbody", data.isa_feed.filter(x=>x.account==="IG ISA"));
+  renderTable("#t212Table tbody", data.isa_feed.filter(x=>x.account==="TRADE212"));
   renderDividends(data);
   renderForecast(data);
 }
 
-/* ===================== DIVIDENDS ===================== */
+/* Holdings table */
+function renderTable(sel,list){
+  const el=document.querySelector(sel);
+  el.innerHTML="";
+  list.forEach(h=>{
+    el.insertAdjacentHTML("beforeend",
+      `<tr><td>${h.name}</td><td>${h.shares}</td><td>${asNum(h.live_price).toFixed(2)}</td>
+       <td>${asNum(h.value).toFixed(2)}</td><td>${asNum(h.gain_value).toFixed(2)}</td>
+       <td>${asNum(h.gain_percentage).toFixed(2)}%</td>
+       <td>${asNum(h.annual_div_yield).toFixed(2)}%</td>
+       <td>${asNum(h.annual_income).toFixed(2)}</td></tr>`);
+  });
+}
+
+/* Dividends */
 function renderDividends(data){
   const now=new Date();
   const next=document.getElementById("nextDivs");
   const nextEx=document.getElementById("nextExDivs");
   next.innerHTML=""; nextEx.innerHTML="";
-  const pays=(data.dividends_feed||[]).filter(d=>new Date(d.pay_date)>now)
-              .sort((a,b)=>new Date(a.pay_date)-new Date(b.pay_date)).slice(0,5);
-  const exes=(data.dividends_feed||[]).filter(d=>new Date(d.ex_div_date)>now)
-              .sort((a,b)=>new Date(a.ex_div_date)-new Date(b.ex_div_date)).slice(0,5);
-
-  pays.forEach(d=>{
-    next.insertAdjacentHTML("beforeend", `
-      <div class="div-card">
-        <div class="div-left">
-          ${d.name}<br>
-          <span class="div-amount">£${asNum(d.total_dividend).toFixed(2)}</span>
-        </div>
-        <div class="div-right">
-          ${d.pay_date}
-        </div>
-      </div>
-    `);
-  });
-
-  exes.forEach(d=>{
-    nextEx.insertAdjacentHTML("beforeend", `
-      <div class="div-card">
-        <div class="div-left">${d.name}</div>
-        <div class="div-right">Ex-Div ${d.ex_div_date}</div>
-      </div>
-    `);
-  });
+  const pays=(data.dividends_feed||[]).filter(d=>new Date(d.pay_date)>now).slice(0,5);
+  const exes=(data.dividends_feed||[]).filter(d=>new Date(d.ex_div_date)>now).slice(0,5);
+  pays.forEach(d=>next.insertAdjacentHTML("beforeend",`<li>${d.name} – <span class='amount-green'>£${asNum(d.total_dividend).toFixed(2)}</span> on <span class='date-pink'>${d.pay_date}</span></li>`));
+  exes.forEach(d=>nextEx.insertAdjacentHTML("beforeend",`<li>${d.name} – Ex-Div <span class='date-pink'>${d.ex_div_date}</span></li>`));
 }
 
-/* ===================== FORECAST ===================== */
+/* Forecast */
 function renderForecast(data){
-  const f = data.dividend_planner || {};
-  document.getElementById("forecastTotal").textContent = asNum(f.forecast_total).toFixed(2);
-  document.getElementById("receivedYTD").textContent = asNum(f.received_ytd).toFixed(2);
-  const pct = (asNum(f.forecast_total)/6000*100).toFixed(1);
-  document.getElementById("forecastPercent").textContent = pct + "%";
-  document.getElementById("forecastProgress").style.width = Math.min(pct,100) + "%";
-
-  const el = document.getElementById("quarterlyBars");
-  el.innerHTML = "";
-  const qd = f.quarterly_breakdown || {};
-  const max = Math.max(1, ...Object.values(qd));
-  Object.entries(qd).forEach(([q,v])=>{
-    const w=document.createElement("div");
-    w.style.display="flex";
-    w.style.flexDirection="column";
-    w.style.alignItems="center";
-    const b=document.createElement("div");
-    b.style.width="55px";
-    b.style.height=(v/max*180)+"px";
-    b.style.borderRadius="6px 6px 0 0";
-    b.style.background="linear-gradient(180deg,#9dfcff,var(--cyan))";
-    b.style.boxShadow="0 0 12px var(--cyan)";
-    w.appendChild(b);
-    const l=document.createElement("div");
-    l.innerHTML=`${q}<br>£${v.toFixed(2)}`;
-    l.style.fontSize=".8rem";
-    l.style.textAlign="center";
-    l.style.marginTop="6px";
-    w.appendChild(l);
-    el.appendChild(w);
-  });
+  const f=data.dividend_planner||{};
+  document.getElementById("forecastTotal").textContent=asNum(f.forecast_total).toFixed(2);
+  document.getElementById("receivedYTD").textContent=asNum(f.received_ytd).toFixed(2);
+  const pct=(asNum(f.forecast_total)/6000*100).toFixed(1);
+  document.getElementById("forecastPercent").textContent=pct+"%";
+  document.getElementById("forecastProgress").style.width=Math.min(pct,100)+"%";
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadAuroraSync(true);
-  setInterval(() => loadAuroraSync(false), 300000);
-});
+/* Toggle collapsible */
+function toggleCollapse(id){
+  const el=document.getElementById(id);
+  el.style.display=(el.style.display==="none"||el.style.display==="")?"block":"none";
+}
+
+document.addEventListener("DOMContentLoaded",loadAuroraSync);
 </script>
 </body>
 </html>
