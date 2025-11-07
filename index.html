@@ -71,12 +71,14 @@ h2,h3{color:#fff;text-shadow:0 0 10px rgba(0,255,255,0.55);margin-top:.5em;}
 }
 @keyframes pulseFull {0%,100%{opacity:1;}50%{opacity:.6;}}
 
-/* Chart container */
-#quarterlyChart{text-align:center;margin-top:20px;}
-#quarterlyBars{display:flex;justify-content:space-around;align-items:flex-end;height:240px;gap:10px;}
+/* Chart containers */
+#quarterlyChart,#monthlyChart{text-align:center;margin-top:20px;}
+#quarterlyBars,#monthlyBars{display:flex;justify-content:space-around;align-items:flex-end;height:240px;gap:10px;}
 .barBlock{display:flex;flex-direction:column;align-items:center;}
-.barFill{width:60px;border-radius:6px 6px 0 0;background:linear-gradient(180deg,#9dfcff,var(--cyan));box-shadow:0 0 15px var(--cyan);transition:height 1s ease;}
+.barFill{border-radius:6px 6px 0 0;background:linear-gradient(180deg,#9dfcff,var(--cyan));box-shadow:0 0 15px var(--cyan);transition:height 1s ease;}
 .barLabel{margin-top:6px;font-size:.8rem;text-align:center;}
+.barFill.monthly{width:22px;}
+.barFill.quarterly{width:60px;}
 
 /* Holdings tables */
 .table-holder{overflow-x:auto;max-height:350px;}
@@ -89,15 +91,8 @@ tr:hover{background:rgba(0,255,255,0.10);}
 .gain-pos{color:var(--green);}
 .gain-neg{color:#ff5555;}
 
-/* Icon headers */
-.icon-title {
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.icon-title span {
-  font-size:1.3rem;
-}
+.icon-title{display:flex;align-items:center;gap:10px;}
+.icon-title span{font-size:1.3rem;}
 </style>
 </head>
 
@@ -151,18 +146,14 @@ tr:hover{background:rgba(0,255,255,0.10);}
 
   <!-- ===== Dividends Centre ===== -->
   <div class="card" id="dividends">
-    <div class="icon-title">
-      <span>💰</span><h2>Next 5 Dividends</h2>
-    </div>
+    <div class="icon-title"><span>💰</span><h2>Next 5 Dividends</h2></div>
     <ul id="nextDivs" style="list-style:none;padding:0;margin:0;"></ul>
 
-    <div class="icon-title" style="margin-top:15px;">
-      <span>📅</span><h2>Next 5 Ex-Dividends</h2>
-    </div>
+    <div class="icon-title" style="margin-top:15px;"><span>📅</span><h2>Next 5 Ex-Dividends</h2></div>
     <ul id="nextExDivs" style="list-style:none;padding:0;margin:0;"></ul>
   </div>
 
-  <!-- ===== Dividend Overview + Quarterly Chart ===== -->
+  <!-- ===== Dividend Overview + Charts ===== -->
   <div class="card" id="dividend-overview">
     <h2>Dividend Overview</h2>
     <h3>Dividend Forecast</h3>
@@ -176,6 +167,11 @@ tr:hover{background:rgba(0,255,255,0.10);}
     <div id="quarterlyChart">
       <h3>Quarterly Totals</h3>
       <div id="quarterlyBars"></div>
+    </div>
+
+    <div id="monthlyChart">
+      <h3>Dividend Payments by Month</h3>
+      <div id="monthlyBars"></div>
     </div>
   </div>
 
@@ -212,6 +208,7 @@ function renderAll(data){
   renderDividends(data);
   renderForecast(data);
   renderQuarterly(data);
+  renderMonthly(data);
 }
 
 function renderTable(sel,list){
@@ -254,11 +251,31 @@ function renderQuarterly(data){
     const wrap=document.createElement("div");
     wrap.className="barBlock";
     const bar=document.createElement("div");
-    bar.className="barFill";
+    bar.className="barFill quarterly";
     bar.style.height=(v/max*190)+"px";
     const label=document.createElement("div");
     label.className="barLabel";
     label.innerHTML=`${q}<br>£${v.toFixed(2)}`;
+    wrap.appendChild(bar);
+    wrap.appendChild(label);
+    el.appendChild(wrap);
+  });
+}
+
+function renderMonthly(data){
+  const el=document.getElementById("monthlyBars");
+  el.innerHTML="";
+  const mb=(data.dividend_planner?.monthly_breakdown)||[];
+  const max=Math.max(1,...mb.map(m=>asNum(m.total_estimated_income)));
+  mb.forEach(m=>{
+    const wrap=document.createElement("div");
+    wrap.className="barBlock";
+    const bar=document.createElement("div");
+    bar.className="barFill monthly";
+    bar.style.height=(asNum(m.total_estimated_income)/max*190)+"px";
+    const label=document.createElement("div");
+    label.className="barLabel";
+    label.innerHTML=`${m.month}<br>£${asNum(m.total_estimated_income).toFixed(0)}`;
     wrap.appendChild(bar);
     wrap.appendChild(label);
     el.appendChild(wrap);
