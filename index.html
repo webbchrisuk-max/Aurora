@@ -88,6 +88,16 @@ tr:hover{background:rgba(0,255,255,0.10);}
 .value{color:var(--cyan);}
 .gain-pos{color:var(--green);}
 .gain-neg{color:#ff5555;}
+
+/* Icon headers */
+.icon-title {
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.icon-title span {
+  font-size:1.3rem;
+}
 </style>
 </head>
 
@@ -141,10 +151,14 @@ tr:hover{background:rgba(0,255,255,0.10);}
 
   <!-- ===== Dividends Centre ===== -->
   <div class="card" id="dividends">
-    <h2>Dividends Centre</h2>
-    <h3>Next 5 Dividends</h3>
+    <div class="icon-title">
+      <span>💰</span><h2>Next 5 Dividends</h2>
+    </div>
     <ul id="nextDivs" style="list-style:none;padding:0;margin:0;"></ul>
-    <h3 style="margin-top:15px;">Next 5 Ex-Dividends</h3>
+
+    <div class="icon-title" style="margin-top:15px;">
+      <span>📅</span><h2>Next 5 Ex-Dividends</h2>
+    </div>
     <ul id="nextExDivs" style="list-style:none;padding:0;margin:0;"></ul>
   </div>
 
