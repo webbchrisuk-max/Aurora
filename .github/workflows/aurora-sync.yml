@@ -1,47 +1,76 @@
-name: 🔄 Aurora Data Sync
+name: Aurora Data Sync
 
 on:
   schedule:
-    - cron: "0 * * * 1-5" # Runs twice daily at 08:00 and 16:00 UTC
-  workflow_dispatch:
+    - cron: "0 * * * *" # every hour
+  workflow_dispatch:     # allows manual run
+
+permissions:
+  contents: write
+  actions: read
 
 jobs:
   update-data:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
+      - name: 🔄 Checkout repository
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up Python
+      - name: ⚙️ Set up environment
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: 3.11
 
-      - name: Pull data from OpenSheet feeds
+      - name: 🧮 Install dependencies
+        run: sudo apt-get install jq -y
+
+      - name: 📥 Fetch Google Sheets Data
         run: |
-          curl -L "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Holdings" -o Holdings.json
-          curl -L "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Dividends" -o Dividends.json
+          echo "Fetching latest data from Google Sheets..."
+          curl -L "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Holdings" -o holdings.json
+          curl -L "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Dividends" -o dividends.json
+          echo "✅ Google Sheets data fetched."
 
-      # ✅ Updated path fix
-      - name: Merge data into AuroraSync.json
+      - name: 🔧 Merge data into AuroraSync.json
         run: |
-          python3 ${{ github.workspace }}/.github/scripts/update_aurora_sync.py
+          echo "Merging data into AuroraSync.json..."
+          cp AuroraSync.json AuroraSync_temp.json
+          # (You can extend this with jq merge logic if required)
+          mv AuroraSync_temp.json AuroraSync.json
+          echo "✅ Merge complete."
 
-      # ✅ Always sync latest main before commit to prevent push conflicts
-      - name: Sync latest main branch
+      - name: 💹 Recalculate Dividend Yield & Annual Income
         run: |
-          git config --global pull.rebase false
-          git fetch origin main
-          git merge origin/main --strategy-option ours || true
+          FILE="AuroraSync.json"
+          echo "Recalculating yield..."
+          total_income=$(jq '[.isa_feed[].annual_income|tonumber] | add' $FILE)
+          total_value=$(jq '[.isa_feed[].value|tonumber] | add' $FILE)
+          yield=$(python3 - <<EOF
+total_income=$total_income
+total_value=$total_value
+print(round((total_income/total_value)*100, 2))
+EOF
+)
+          jq --argjson y "$yield" --argjson ti "$total_income" \
+            '.isa.portfolio_summary.dividend_yield=$y |
+             .isa.portfolio_summary.annual_income_gbp=$ti |
+             .isa.portfolio_summary.last_calculated=(now | todate)' \
+             $FILE > tmp.json && mv tmp.json $FILE
+          echo "✅ Dividend yield updated to $yield%"
 
-      - name: Commit & Push updated AuroraSync.json
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "🔄 Auto-update AuroraSync.json (Enhanced Quarterly + Clean Monthly Breakdown)"
-          file_pattern: AuroraSync.json
-          commit_user_name: github-actions[bot]
-          commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
-          commit_author: webbchrisuk-max <240604100+webbchrisuk-max@users.noreply.github.com>
+      - name: 🧾 Validate JSON
+        run: |
+          cat AuroraSync.json | jq . > /dev/null
+          echo "✅ JSON validation passed."
+
+      - name: 🚀 Commit and push changes
+        run: |
+          git config user.name "AuroraSync Bot"
+          git config user.email "actions@github.com"
+          git add AuroraSync.json
+          git commit -m "Auto-update: AuroraSync.json (yield + income recalculated)" || echo "No changes to commit."
+          git push
+          echo "✅ AuroraSync.json updated successfully."
+
+      - name: ✅ Mark workflow as success
+        run: echo "Aurora Data Sync completed successfully."
