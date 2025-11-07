@@ -1,11 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Aurora Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&amp;display=swap" rel="stylesheet"/>
 <!-- ===================== CORE THEME ===================== -->
 <style>
 :root{
@@ -152,137 +152,166 @@ tr:hover{background:rgba(0,255,255,0.10);}
 @keyframes growBar{from{width:0;opacity:.5;}to{width:var(--p);opacity:1;}}
 </style>
 </head>
-
 <body>
 <h1>Aurora Tracker</h1>
-
 <!-- ===================== SYNC STATUS ===================== -->
 <div id="auroraSyncStatus">
-  <span id="auroraSyncDot"></span>Synced
+<span id="auroraSyncDot"></span>Synced
   <span id="syncTime">Last updated --:-- · Next sync in 5 min</span>
 </div>
-
 <!-- ===================== DASHBOARD ===================== -->
 <div class="dashboard">
-
-  <!-- Portfolio Summary -->
-  <div class="card" id="portfolio-summary">
-    <h2>Portfolio Summary</h2>
-    <p>Total Target: £<span id="targetValue">0.00</span></p>
-    <p>Dividend Yield: <span id="divYield">0.00</span>%</p>
-    <p>Total Gain: <span id="totalGain">0.00</span> ( <span id="gainPercent">0.00</span>% )</p>
-  </div>
-
-  <!-- ISA Balances -->
-  <div class="card" id="isa-balances">
-    <h2>ISA Balances</h2>
-    <p>IG ISA: £<span id="igBalance">0.00</span></p>
-    <p>Trade212 ISA: £<span id="t212Balance">0.00</span></p>
-  </div>
-
-  <!-- Unified Holdings (IG + Trade212 in one card) -->
-  <div class="card" id="holdings-unified">
-    <h2>Holdings</h2>
-    <div class="table-holder" style="margin-bottom:18px;">
-      <h3>IG ISA</h3>
-      <table id="igTable">
-        <thead>
-        <tr>
-          <th>Name</th><th>Value (£)</th><th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th>
-        </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-    <div class="table-holder">
-      <h3>Trade212 ISA</h3>
-      <table id="t212Table">
-        <thead>
-        <tr>
-          <th>Name</th><th>Value (£)</th><th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th>
-        </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- Dividends Centre -->
-  <div class="card" id="dividends">
-    <div style="display:flex;justify-content:space-between;align-items:center;">
-      <h2>Dividends Centre</h2>
-      <button id="toggleCalendar" style="background:rgba(0,0,0,0.4);border:1px solid var(--cyan);color:#fff;padding:5px 10px;border-radius:6px;cursor:pointer;">
+<!-- Portfolio Summary -->
+<div class="card" id="portfolio-summary">
+<h2>Portfolio Summary</h2>
+<p>Total Target: £<span id="targetValue">0.00</span></p>
+<p>Dividend Yield: <span id="divYield">0.00</span>%</p>
+<p>Total Gain: <span id="totalGain">0.00</span> ( <span id="gainPercent">0.00</span>% )</p>
+</div>
+<!-- ISA Balances -->
+<div class="card" id="isa-balances">
+<h2>ISA Balances</h2>
+<p>IG ISA: £<span id="igBalance">0.00</span></p>
+<p>Trade212 ISA: £<span id="t212Balance">0.00</span></p>
+</div>
+<!-- Unified Holdings (IG + Trade212 in one card) -->
+<div class="card" id="holdings-unified">
+<h2>Holdings</h2>
+<div class="table-holder" style="margin-bottom:18px;">
+<h3>IG ISA</h3>
+<table id="igTable">
+<thead>
+<tr>
+<th>Name</th><th>Value (£)</th><th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+<div class="table-holder">
+<h3>Trade212 ISA</h3>
+<table id="t212Table">
+<thead>
+<tr>
+<th>Name</th><th>Value (£)</th><th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+</div>
+<!-- Dividends Centre -->
+<div class="card" id="dividends">
+<div style="display:flex;justify-content:space-between;align-items:center;">
+<h2>Dividends Centre</h2>
+<button id="toggleCalendar" style="background:rgba(0,0,0,0.4);border:1px solid var(--cyan);color:#fff;padding:5px 10px;border-radius:6px;cursor:pointer;">
         📅 Calendar View
       </button>
-    </div>
-    <div id="dividendListView">
-      <h3>Next 5 Dividends</h3>
-      <ul id="nextDivs"></ul>
-      <h3>Next 5 Ex-Dividends</h3>
-      <ul id="nextExDivs"></ul>
-    </div>
-    <div id="dividendCalendarView" style="display:none;text-align:center;">
-      <canvas id="divCalendar" width="420" height="320"></canvas>
-      <p style="font-size:0.8rem;color:#aaa;">Tap again to return to list view</p>
-    </div>
-  </div>
-
-  <!-- Dividend Charts & Forecast -->
-  <div class="card" id="dividend-charts">
-    <h2>Dividend Income Overview</h2>
-    <div id="dividendCharts" style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:18px;">
-      <div class="chartBlock" style="flex:1 1 45%;text-align:center;">
-        <h3>Monthly Breakdown (Nov 2025 → Nov 2026)</h3>
-        <div id="monthlyBars" class="chartHolder"
-             style="display:flex;justify-content:space-around;align-items:flex-end;height:240px;margin-top:12px;gap:10px;"></div>
-      </div>
-      <div class="chartBlock" style="flex:1 1 45%;text-align:center;">
-        <h3>Quarterly Totals</h3>
-        <div id="quarterlyBars" class="chartHolder"
-             style="display:flex;justify-content:space-around;align-items:flex-end;height:240px;margin-top:12px;gap:10px;"></div>
-      </div>
-    </div>
-
-    <div id="forecastBand" style="margin-top:25px;text-align:center;">
-      <h3>Dividend Forecast</h3>
-      <p>Forecast Annual Income: £<span id="forecastTotal">0.00</span> · YTD Received: £<span id="receivedYTD">0.00</span></p>
-      <div style="width:90%;margin:0 auto;background:rgba(255,255,255,0.1);border-radius:8px;height:16px;overflow:hidden;">
-        <div id="forecastProgress" style="height:100%;width:0%;
+</div>
+<div id="dividendListView">
+<h3>Next 5 Dividends</h3>
+<ul id="nextDivs"></ul>
+<h3>Next 5 Ex-Dividends</h3>
+<ul id="nextExDivs"></ul>
+</div>
+<div id="dividendCalendarView" style="display:none;text-align:center;">
+<canvas height="320" id="divCalendar" width="420"></canvas>
+<p style="font-size:0.8rem;color:#aaa;">Tap again to return to list view</p>
+</div>
+</div>
+<!-- Dividend Charts & Forecast -->
+<div class="card" id="dividend-charts">
+<h2>Dividend Income Overview</h2>
+<div id="dividendCharts" style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:18px;">
+<div class="chartBlock" style="flex:1 1 45%;text-align:center;">
+<h3>Monthly Breakdown (Nov 2025 → Nov 2026)</h3>
+<div class="chartHolder" id="monthlyBars" style="display:flex;justify-content:space-around;align-items:flex-end;height:240px;margin-top:12px;gap:10px;"></div>
+</div>
+<div class="chartBlock" style="flex:1 1 45%;text-align:center;">
+<h3>Quarterly Totals</h3>
+<div class="chartHolder" id="quarterlyBars" style="display:flex;justify-content:space-around;align-items:flex-end;height:240px;margin-top:12px;gap:10px;"></div>
+</div>
+</div>
+<div id="forecastBand" style="margin-top:25px;text-align:center;">
+<h3>Dividend Forecast</h3>
+<p>Forecast Annual Income: £<span id="forecastTotal">0.00</span> · YTD Received: £<span id="receivedYTD">0.00</span></p>
+<div style="width:90%;margin:0 auto;background:rgba(255,255,255,0.1);border-radius:8px;height:16px;overflow:hidden;">
+<div id="forecastProgress" style="height:100%;width:0%;
              background:linear-gradient(90deg,var(--cyan),#9dfcff);
              box-shadow:0 0 10px var(--cyan);
              transition:width 1s ease;"></div>
-      </div>
-      <p style="font-size:0.8rem;margin-top:6px;">Progress to £6 000 Goal: <span id="forecastPercent">0%</span></p>
-    </div>
-  </div>
+</div>
+<p style="font-size:0.8rem;margin-top:6px;">Progress to £6 000 Goal: <span id="forecastPercent">0%</span></p>
+</div>
+</div>
+<!-- Sector Allocation: Rings + Percent Bars -->
+<div class="card" id="sector-allocation">
+<h2>Sector Allocation</h2>
+<div style="display:flex;flex-wrap:wrap;justify-content:space-around;gap:20px;">
+<div style="text-align:center;">
+<h3>IG ISA</h3>
+<canvas height="200" id="igSectorRing" width="200"></canvas>
+</div>
+<div style="text-align:center;">
+<h3>Trade212 ISA</h3>
+<canvas height="200" id="t212SectorRing" width="200"></canvas>
+</div>
+</div>
+<!-- Static percentage bars (kept, as requested) -->
+<div class="sector-bars" style="margin-top:25px;">
+<div class="sector-bar"><span>Financials</span><div class="bar" style="--p:28%;"></div><span class="val">28%</span></div>
+<div class="sector-bar"><span>Utilities</span><div class="bar" style="--p:14%;"></div><span class="val">14%</span></div>
+<div class="sector-bar"><span>Consumer Defensive</span><div class="bar" style="--p:22%;"></div><span class="val">22%</span></div>
+<div class="sector-bar"><span>Real Estate</span><div class="bar" style="--p:9%;"></div><span class="val">9%</span></div>
+<div class="sector-bar"><span>Energy</span><div class="bar" style="--p:10%;"></div><span class="val">10%</span></div>
+<div class="sector-bar"><span>Technology</span><div class="bar" style="--p:17%;"></div><span class="val">17%</span></div>
+</div>
+</div>
+<!-- ===================== SECTION: SHARE PLAN SUITE ===================== -->
+<div class="card" id="share-plan-suite">
+<h2>Share Plan Suite</h2>
+<div id="sharePlanContainer" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;"></div>
+</div>
+<script>
+async function renderSharePlanSuite(){
+  const container=document.getElementById("sharePlanContainer");
+  if(!container)return;
+  try{
+    const res=await fetch("https://raw.githubusercontent.com/webbchrisuk-max/AuroraSync/refs/heads/main/AuroraSync.json?nocache="+Date.now(),{cache:"no-store"});
+    if(!res.ok)throw new Error("HTTP "+res.status);
+    const data=await res.json();
+    const s=data.share_plan_suite?.dividend_candidates?.share_plan_expansion;
+    if(!s){container.innerHTML="<p style='color:#ff6666;'>No share plan data found.</p>";return;}
 
-  <!-- Sector Allocation: Rings + Percent Bars -->
-  <div class="card" id="sector-allocation">
-    <h2>Sector Allocation</h2>
-    <div style="display:flex;flex-wrap:wrap;justify-content:space-around;gap:20px;">
-      <div style="text-align:center;">
-        <h3>IG ISA</h3>
-        <canvas id="igSectorRing" width="200" height="200"></canvas>
-      </div>
-      <div style="text-align:center;">
-        <h3>Trade212 ISA</h3>
-        <canvas id="t212SectorRing" width="200" height="200"></canvas>
-      </div>
-    </div>
+    function createCategory(title,list,emoji){
+      let html=`<div style='grid-column:1/-1;'><h3 style='color:#00ffff;text-shadow:0 0 10px #00ffff;'>${emoji} ${title}</h3></div>`;
+      list.forEach(i=>{
+        html+=`<div class='card' style='background:rgba(20,20,40,0.6);border:1px solid rgba(0,255,255,0.25);box-shadow:0 0 12px rgba(0,255,255,0.15);'>
+          <h4 style='color:#ffcccc;margin:0 0 6px 0;'>${i.ticker||i.name}</h4>
+          <p style='margin:2px 0;'>${i.name}</p>
+          <p style='margin:2px 0;color:#00ffff;'>Yield: ${i.dividend_yield??"-"}%</p>
+          <p style='margin:2px 0;font-size:0.85rem;'>${i.role||""}</p>
+        </div>`;
+      });
+      return html;
+    }
 
-    <!-- Static percentage bars (kept, as requested) -->
-    <div class="sector-bars" style="margin-top:25px;">
-      <div class="sector-bar"><span>Financials</span><div class="bar" style="--p:28%;"></div><span class="val">28%</span></div>
-      <div class="sector-bar"><span>Utilities</span><div class="bar" style="--p:14%;"></div><span class="val">14%</span></div>
-      <div class="sector-bar"><span>Consumer Defensive</span><div class="bar" style="--p:22%;"></div><span class="val">22%</span></div>
-      <div class="sector-bar"><span>Real Estate</span><div class="bar" style="--p:9%;"></div><span class="val">9%</span></div>
-      <div class="sector-bar"><span>Energy</span><div class="bar" style="--p:10%;"></div><span class="val">10%</span></div>
-      <div class="sector-bar"><span>Technology</span><div class="bar" style="--p:17%;"></div><span class="val">17%</span></div>
-    </div>
-  </div>
+    let html="";
+    html+=createCategory("High-Yield Additions",s.high_yield_additions,"💸");
+    html+=createCategory("Infrastructure Income",s.infrastructure_income,"☀️");
+    html+=createCategory("Dividend Growth Focus",s.dividend_growth_focus,"📈");
+    html+=createCategory("Global ETF Income",s.global_etf_income,"🌍");
+    container.innerHTML=html;
+  }catch(e){
+    console.error(e);
+    container.innerHTML="<p style='color:#ff5555;'>Error loading Share Plan Suite data.</p>";
+  }
+}
+renderSharePlanSuite();
+setInterval(renderSharePlanSuite,300000);
+</script>
 
 </div>
-
 <!-- ===================== SCRIPT ===================== -->
 <script>
 const JSON_URL="https://cdn.jsdelivr.net/gh/webbchrisuk-max/Aurora@main/AuroraSync.json?nocache="; // ✅ unchanged sync path
