@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+<title>Aurora Tracker – Core v3</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet" />
+
+<style>
+:root{
+  --cyan:#00ffff;
+  --green:#00ff99;
+  --bg1:#060018;
+  --bg2:#120035;
+  --bg3:#001a33;
+}
+body{
+  margin:0;padding:0;font-family:'Orbitron',sans-serif;color:#fff;
+  background:linear-gradient(120deg,var(--bg1),var(--bg2),var(--bg3));
+  background-size:600% 600%;animation:auroraDrift 45s ease-in-out infinite;
+}
+@keyframes auroraDrift{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+h1{text-align:center;margin:20px 0;color:#fff;text-shadow:0 0 14px var(--cyan);}
+h2,h3{color:#fff;text-shadow:0 0 10px var(--cyan);}
+.dashboard{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;max-width:1100px;margin:0 auto;padding:0 20px 40px;}
+@media(max-width:820px){.dashboard{grid-template-columns:1fr;}}
+.card{background:rgba(10,10,30,0.65);border:1px solid rgba(0,255,255,0.25);
+      border-radius:10px;padding:20px;box-shadow:0 0 20px rgba(0,255,255,0.15);
+      backdrop-filter:blur(6px);}
+.table-holder{overflow-x:auto;max-height:360px;}
+table{width:100%;border-collapse:collapse;font-size:.9rem;}
+th,td{padding:6px 8px;text-align:left;}
+th{color:#fff;text-shadow:0 0 8px rgba(0,255,255,0.45);}
+tr:nth-child(even){background:rgba(255,255,255,0.05);}
+.value{color:var(--cyan);}
+.gain-pos{color:var(--green);}
+.gain-neg{color:#ff5555;}
+#auroraSyncStatus{position:fixed;top:10px;right:20px;font-size:.85rem;}
+#auroraSyncDot{display:inline-block;width:10px;height:10px;border-radius:50%;
+  background:var(--cyan);box-shadow:0 0 10px var(--cyan);margin-right:6px;}
+#syncTime{display:block;font-size:.75rem;color:#aaa;}
+ul{list-style:none;padding-left:0;}
+li{margin:6px 0;padding:6px 8px;background:rgba(255,255,255,0.05);
+   border-radius:6px;}
+.amount-green{color:var(--green);}
+.date-pink{color:#ff66cc;}
+</style>
+</head>
+<body>
+<h1>Aurora Tracker – Core v3</h1>
+
+<!-- Sync status -->
+<div id="auroraSyncStatus">
+  <span id="auroraSyncDot"></span> <span id="syncTime">Connecting…</span>
+</div>
+
+<!-- Dashboard -->
+<div class="dashboard">
+
+  <!-- Portfolio Summary -->
+  <div class="card">
+    <h2>Portfolio Summary</h2>
+    <p>Total Target: £<span id="targetValue">0.00</span></p>
+    <p>Dividend Yield: <span id="divYield">0.00</span>%</p>
+  </div>
+
+  <!-- ISA Balances -->
+  <div class="card">
+    <h2>ISA Balances</h2>
+    <p>IG ISA: £<span id="igBalance">0.00</span></p>
+    <p>Trade212 ISA: £<span id="t212Balance">0.00</span></p>
+  </div>
+
+  <!-- Holdings -->
+  <div class="card">
+    <h2>Holdings</h2>
+    <div class="table-holder">
+      <h3>IG ISA</h3>
+      <table id="igTable">
+        <thead>
+          <tr><th>Name</th><th>Shares</th><th>Live Price (£)</th><th>Value (£)</th><th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th></tr>
+        </thead><tbody></tbody>
+      </table>
+    </div>
+    <div class="table-holder" style="margin-top:25px;">
+      <h3>Trade212 ISA</h3>
+      <table id="t212Table">
+        <thead>
+          <tr><th>Name</th><th>Shares</th><th>Live Price (£)</th><th>Value (£)</th><th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th></tr>
+        </thead><tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Dividends Centre -->
+  <div class="card">
+    <h2>Dividends Centre</h2>
+    <h3>Next 5 Dividends</h3>
+    <ul id="nextDivs"></ul>
+    <h3>Next 5 Ex-Dividends</h3>
+    <ul id="nextExDivs"></ul>
+  </div>
+
+</div>
+
+<script>
+const JSON_PATH = new URL('AuroraSync.json', location.href).toString();
+const asNum = v=>isNaN(+v)?0:+v;
+function showSync(ok){const dot=document.getElementById('auroraSyncDot');
+  dot.style.background=ok?'#00ffcc':'#ff4444';
+  dot.style.boxShadow=`0 0 10px ${ok?'#00ffcc':'#ff4444'}`;}
+
+async function loadAuroraSync(){
+  try{
+    const res = await fetch(`${JSON_PATH}?v=${Date.now()}`,{cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    renderAll(data);
+    showSync(true);
+    const now=new Date();
+    document.getElementById('syncTime').textContent=`Last updated ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+  }catch(e){
+    console.error('❌ Fetch failed',e);
+    showSync(false);
+    document.getElementById('syncTime').textContent='Sync Error';
+  }
+}
+
+function renderAll(data){
+  document.getElementById('targetValue').textContent=asNum(data.isa?.portfolio_summary?.annual_target_value).toFixed(2);
+  document.getElementById('divYield').textContent=asNum(data.isa?.portfolio_summary?.dividend_yield).toFixed(2);
+  document.getElementById('igBalance').textContent=asNum(data.isa?.ig_isa?.balance).toFixed(2);
+  document.getElementById('t212Balance').textContent=asNum(data.isa?.trade212_isa?.balance).toFixed(2);
+  renderTable('#igTable tbody',data.isa_feed?.filter(x=>x.account==='IG ISA'));
+  renderTable('#t212Table tbody',data.isa_feed?.filter(x=>x.account==='TRADE212'));
+  renderDividends(data);
+}
+
+function renderTable(sel,list=[]){
+  const el=document.querySelector(sel);el.innerHTML='';
+  list.forEach(h=>{
+    el.insertAdjacentHTML('beforeend',`
+      <tr>
+        <td>${h.name}</td><td>${h.shares}</td>
+        <td>${asNum(h.live_price||h.latest_price).toFixed(2)}</td>
+        <td class='value'>${asNum(h.value).toFixed(2)}</td>
+        <td class='${asNum(h.gain_value)>=0?'gain-pos':'gain-neg'}'>${asNum(h.gain_value).toFixed(2)}</td>
+        <td class='${asNum(h.gain_value)>=0?'gain-pos':'gain-neg'}'>${asNum(h.gain_percentage).toFixed(2)}%</td>
+        <td>${asNum(h.annual_div_yield).toFixed(2)}%</td>
+        <td>${asNum(h.annual_income).toFixed(2)}</td>
+      </tr>`);
+  });
+}
+
+function renderDividends(data){
+  const now=new Date();
+  const next=document.getElementById('nextDivs');
+  const nextEx=document.getElementById('nextExDivs');
+  next.innerHTML='';nextEx.innerHTML='';
+  const pays=(data.dividends_feed||[]).filter(d=>new Date(d.pay_date)>now)
+              .sort((a,b)=>new Date(a.pay_date)-new Date(b.pay_date)).slice(0,5);
+  const exes=(data.dividends_feed||[]).filter(d=>new Date(d.ex_div_date)>now)
+              .sort((a,b)=>new Date(a.ex_div_date)-new Date(b.ex_div_date)).slice(0,5);
+  pays.forEach(d=>{
+    next.insertAdjacentHTML('beforeend',
+      `<li><strong>${d.name}</strong><br>💷 <span class='amount-green'>£${asNum(d.total_dividend).toFixed(2)}</span><br>📅 <span class='date-pink'>${d.pay_date}</span></li>`);
+  });
+  exes.forEach(d=>{
+    nextEx.insertAdjacentHTML('beforeend',
+      `<li><strong>${d.name}</strong><br>📆 Ex-Div <span class='date-pink'>${d.ex_div_date}</span></li>`);
+  });
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  loadAuroraSync();
+  setInterval(loadAuroraSync,300000);
+});
+</script>
+</body>
+</html>
