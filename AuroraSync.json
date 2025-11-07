@@ -2,7 +2,7 @@
   "isa": {
     "portfolio_summary": {
       "annual_target_value": 80000,
-      "dividend_yield": 6.8,
+      "dividend_yield": 6.94,
       "sector_allocation": {
         "Financials": 28,
         "Utilities": 14,
@@ -10,7 +10,9 @@
         "Real Estate": 9,
         "Energy": 10,
         "Technology": 17
-      }
+      },
+      "annual_income_gbp": 4109.797,
+      "last_calculated": "2025-11-07T14:01:58Z"
     },
     "ig_isa": {
       "account_name": "IG ISA",
