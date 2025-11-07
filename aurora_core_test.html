@@ -184,7 +184,11 @@ function renderHoldings(selector, list) {
   });
 }
 
-window.addEventListener("load", loadAuroraData);
+window.addEventListener("DOMContentLoaded", () => {
+  console.log("🌍 Aurora Tracker: DOM ready, starting sync...");
+  loadAuroraData(); // first fetch
+  setInterval(loadAuroraData, 300000); // refresh every 5 min
+});
 </script>
 </body>
 </html>
