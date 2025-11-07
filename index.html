@@ -225,29 +225,52 @@ const asNum = v => isNaN(+v) ? 0 : +v;
 const shortMonths = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
 /* ===================== FETCH + UPDATE ===================== */
-async function loadAuroraSync(force=false){
+/* ===================== SMART SYNC + RETRY ===================== */
+async function loadAuroraSync(force=false, attempt=1){
   const dot = document.getElementById("auroraSyncDot");
   const time = document.getElementById("syncTime");
-  try{
-    const url = JSON_URL + (force ? (Date.now()+"."+Math.random()) : Date.now());
+  const url = JSON_URL + (force ? (Date.now()+"."+Math.random()) : Date.now());
+
+  try {
+    if (time) time.textContent = `Syncing... (Attempt ${attempt})`;
+
     const res = await fetch(url, {
-      cache:"no-store",
-      headers:{
-        "Cache-Control":"no-cache, no-store, must-revalidate",
-        "Pragma":"no-cache",
-        "Expires":"0"
+      cache: "no-store",
+      headers: {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0"
       }
     });
-    if(!res.ok) throw new Error("HTTP "+res.status);
+
+    if (!res.ok) throw new Error("HTTP " + res.status);
     const data = await res.json();
+
     renderAll(data);
+
     const now = new Date();
     time.textContent = `Last updated ${now.getHours().toString().padStart(2,"0")}:${now.getMinutes().toString().padStart(2,"0")} · Next sync in 5 min`;
-    dot.style.background="#00ffcc"; dot.style.boxShadow="0 0 10px #00ffcc";
-  }catch(e){
-    console.error("AuroraSync Error →",e);
-    dot.style.background="#ff3333"; dot.style.boxShadow="0 0 15px #ff3333";
-    time.textContent="Sync Error";
+    dot.style.background = "#00ffcc";
+    dot.style.boxShadow = "0 0 10px #00ffcc";
+
+    console.log(`✅ Synced successfully on attempt ${attempt}`, data);
+
+  } catch (e) {
+    console.warn(`⚠️ Sync error (attempt ${attempt}):`, e);
+
+    dot.style.background = "#ffaa33";
+    dot.style.boxShadow = "0 0 15px #ffaa33";
+    time.textContent = `Retrying... (Attempt ${attempt})`;
+
+    if (attempt < 3) {
+      // retry after 5 seconds
+      setTimeout(() => loadAuroraSync(force, attempt + 1), 5000);
+    } else {
+      dot.style.background = "#ff3333";
+      dot.style.boxShadow = "0 0 15px #ff3333";
+      time.textContent = "Sync failed after 3 attempts";
+      console.error("❌ AuroraSync final error:", e);
+    }
   }
 }
 
