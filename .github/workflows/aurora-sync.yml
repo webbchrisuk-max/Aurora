@@ -36,16 +36,19 @@ jobs:
         run: |
           echo "Merging data into AuroraSync.json..."
           cp AuroraSync.json AuroraSync_temp.json
-          # Optional jq merging logic can go here
+          # Optional jq merge logic can go here
           mv AuroraSync_temp.json AuroraSync.json
           echo "✅ Merge complete."
 
       - name: 💹 Recalculate Dividend Yield & Annual Income
+        env:
+          TOTAL_INCOME: ""
+          TOTAL_VALUE: ""
         run: |
           FILE="AuroraSync.json"
           echo "🔄 Recalculating yield..."
-          total_income=$(jq '[.isa_feed[].annual_income|tonumber] | add' $FILE)
-          total_value=$(jq '[.isa_feed[].value|tonumber] | add' $FILE)
+          total_income=$(jq '[.isa_feed[].annual_income|tonumber] | add' "$FILE")
+          total_value=$(jq '[.isa_feed[].value|tonumber] | add' "$FILE")
 
           # Run Python safely to calculate percentage
           yield=$(python3 - <<'PY'
@@ -59,11 +62,8 @@ PY
             '.isa.portfolio_summary.dividend_yield=$y |
              .isa.portfolio_summary.annual_income_gbp=$ti |
              .isa.portfolio_summary.last_calculated=(now | todate)' \
-             $FILE > tmp.json && mv tmp.json $FILE
+             "$FILE" > tmp.json && mv tmp.json "$FILE"
           echo "✅ Dividend yield updated to $yield%"
-        env:
-          TOTAL_INCOME: ${{ steps.recalc.outputs.total_income }}
-          TOTAL_VALUE:  ${{ steps.recalc.outputs.total_value }}
 
       - name: 🧾 Validate JSON structure
         run: |
