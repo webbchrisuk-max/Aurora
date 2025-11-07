@@ -9,14 +9,12 @@
 <style>
 :root{
   --cyan:#00ffff;
-  --magenta:#ff00ff;
   --green:#00ff99;
   --bg1:#060018;
   --bg2:#120035;
   --bg3:#001a33;
 }
 
-/* Background */
 body{
   margin:0;padding:0;
   font-family:'Orbitron',sans-serif;
@@ -34,7 +32,6 @@ body{
   100%{background-position:0% 50%;}
 }
 
-/* Headings */
 h1{text-align:center;font-size:1.8rem;margin:20px 0;color:#fff;
     text-shadow:0 0 14px rgba(0,255,255,0.7),0 0 28px rgba(0,255,255,0.35);}
 h2,h3{color:#fff;text-shadow:0 0 10px rgba(0,255,255,0.55);margin-top:.5em;}
@@ -63,41 +60,11 @@ h2,h3{color:#fff;text-shadow:0 0 10px rgba(0,255,255,0.55);margin-top:.5em;}
 @keyframes pulseGlow{0%,100%{box-shadow:0 0 10px var(--cyan);}50%{box-shadow:0 0 25px var(--cyan);}}
 #syncTime{display:block;font-size:.75rem;color:#aaa;margin-top:2px;}
 
+/* List formatting */
 .amount-green{color:var(--green);}
 .date-pink{color:#ff66cc;}
 
-/* Dividend list formatting */
-.divSection table th, .divSection table td {
-  padding:6px 8px;
-  border-bottom:1px solid rgba(255,255,255,0.1);
-}
-.divSection th {color:#00ffff;text-shadow:0 0 10px rgba(0,255,255,0.6);}
-.divSection td {color:#e0ffff;}
-.divSection tr:hover {background:rgba(0,255,255,0.08);}
-
-/* Holdings table tint */
-#igTable td, #t212Table td {color:#ccfaff;}
-#igTable th, #t212Table th {color:#00ffff;text-shadow:0 0 8px rgba(0,255,255,0.7);}
-
-/* Collapsible */
-.collapse-header {
-  background:rgba(0,255,255,0.1);
-  border:1px solid rgba(0,255,255,0.25);
-  border-radius:6px;
-  padding:8px 12px;
-  margin-top:10px;
-  cursor:pointer;
-  transition:background .2s, box-shadow .2s;
-}
-.collapse-header:hover {
-  background:rgba(0,255,255,0.2);
-  box-shadow:0 0 10px rgba(0,255,255,0.3);
-}
-.collapse-content {display:none;margin-top:8px;}
-.collapse-content table {width:100%;border-collapse:collapse;font-size:.85rem;}
-.collapse-content th, .collapse-content td {padding:4px 6px;text-align:left;}
-
-/* Target bar animation */
+/* Target bar */
 #targetBarFill {transition:width 1s ease, box-shadow 1s;}
 #targetBarFill.full {
   box-shadow:0 0 20px var(--cyan), 0 0 40px var(--cyan);
@@ -106,6 +73,36 @@ h2,h3{color:#fff;text-shadow:0 0 10px rgba(0,255,255,0.55);margin-top:.5em;}
 @keyframes pulseFull {
   0%,100%{opacity:1;}
   50%{opacity:.6;}
+}
+
+/* Chart container */
+#quarterlyChart {
+  text-align:center;
+  margin-top:20px;
+}
+#quarterlyBars {
+  display:flex;
+  justify-content:space-around;
+  align-items:flex-end;
+  height:240px;
+  gap:10px;
+}
+.barBlock {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.barFill {
+  width:60px;
+  border-radius:6px 6px 0 0;
+  background:linear-gradient(180deg,#9dfcff,var(--cyan));
+  box-shadow:0 0 15px var(--cyan);
+  transition:height 1s ease;
+}
+.barLabel {
+  margin-top:6px;
+  font-size:.8rem;
+  text-align:center;
 }
 </style>
 </head>
@@ -150,47 +147,33 @@ h2,h3{color:#fff;text-shadow:0 0 10px rgba(0,255,255,0.55);margin-top:.5em;}
     <p>Trade212 ISA: £<span id="t212Balance">0.00</span></p>
   </div>
 
-  <!-- ===== Dividends Centre ===== -->
-  <div class="card" id="dividends">
-    <h2>Dividends Centre</h2>
-
-    <div class="divSection">
-      <h3>Next 5 Dividends</h3>
-      <table style="width:100%;border-collapse:collapse;font-size:.9rem;">
-        <thead><tr><th>Stock</th><th>Amount (£)</th><th>Pay Date</th></tr></thead>
-        <tbody id="nextDivs"></tbody>
-      </table>
+  <!-- ===== Dividend Overview + Chart ===== -->
+  <div class="card" id="dividend-overview">
+    <h2>Dividend Overview</h2>
+    <div id="forecastBand" style="margin-bottom:20px;">
+      <h3>Dividend Forecast</h3>
+      <p>Forecast Annual Income: £<span id="forecastTotal">0.00</span></p>
+      <p>YTD Received: £<span id="receivedYTD">0.00</span></p>
+      <div style="width:90%;margin:0 auto;background:rgba(255,255,255,0.1);
+                  border-radius:8px;height:16px;overflow:hidden;">
+        <div id="forecastProgress"
+             style="height:100%;width:0%;
+                    background:linear-gradient(90deg,var(--cyan),#9dfcff);
+                    box-shadow:0 0 10px var(--cyan);
+                    transition:width 1s ease;"></div>
+      </div>
+      <p style="font-size:.8rem;margin-top:6px;">
+        Progress to £6 000 Goal: <span id="forecastPercent">0%</span>
+      </p>
     </div>
 
-    <div class="divSection" style="margin-top:20px;">
-      <h3>Next 5 Ex-Dividends</h3>
-      <table style="width:100%;border-collapse:collapse;font-size:.9rem;">
-        <thead><tr><th>Stock</th><th>Ex-Date</th></tr></thead>
-        <tbody id="nextExDivs"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- ===== Holdings ===== -->
-  <div class="card" id="holdings-card">
-    <h2>Holdings</h2>
-
-    <div class="collapse-header" onclick="toggleCollapse('igHoldings')">▶ IG ISA Holdings</div>
-    <div id="igHoldings" class="collapse-content">
-      <table id="igTable"><thead>
-        <tr><th>Name</th><th>Shares</th><th>Live Price (£)</th><th>Value (£)</th>
-        <th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th></tr></thead>
-        <tbody></tbody></table>
-    </div>
-
-    <div class="collapse-header" onclick="toggleCollapse('t212Holdings')">▶ Trade212 ISA Holdings</div>
-    <div id="t212Holdings" class="collapse-content">
-      <table id="t212Table"><thead>
-        <tr><th>Name</th><th>Shares</th><th>Live Price (£)</th><th>Value (£)</th>
-        <th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th></tr></thead>
-        <tbody></tbody></table>
+    <!-- Quarterly Totals -->
+    <div id="quarterlyChart">
+      <h3>Quarterly Totals</h3>
+      <div id="quarterlyBars"></div>
     </div>
   </div>
+
 </div>
 
 <script>
@@ -218,32 +201,38 @@ function renderAll(data){
   document.getElementById("divYield").textContent=asNum(data.isa.portfolio_summary.dividend_yield).toFixed(2);
   document.getElementById("igBalance").textContent=asNum(data.isa.ig_isa.balance).toFixed(2);
   document.getElementById("t212Balance").textContent=asNum(data.isa.trade212_isa.balance).toFixed(2);
-  renderTable("#igTable tbody",data.isa_feed.filter(x=>x.account==="IG ISA"));
-  renderTable("#t212Table tbody",data.isa_feed.filter(x=>x.account==="TRADE212"));
-  renderDividends(data);
+  renderForecast(data);
   renderTargetBar(data);
+  renderQuarterly(data);
 }
 
-function renderTable(sel,list){
-  const el=document.querySelector(sel);el.innerHTML="";
-  list.forEach(h=>{
-    el.insertAdjacentHTML("beforeend",
-    `<tr><td>${h.name}</td><td>${h.shares}</td><td>${asNum(h.live_price).toFixed(2)}</td>
-     <td>${asNum(h.value).toFixed(2)}</td><td>${asNum(h.gain_value).toFixed(2)}</td>
-     <td>${asNum(h.gain_percentage).toFixed(2)}%</td><td>${asNum(h.annual_div_yield).toFixed(2)}%</td>
-     <td>${asNum(h.annual_income).toFixed(2)}</td></tr>`);
+function renderForecast(data){
+  const f=data.dividend_planner||{};
+  document.getElementById("forecastTotal").textContent=asNum(f.forecast_total).toFixed(2);
+  document.getElementById("receivedYTD").textContent=asNum(f.received_ytd).toFixed(2);
+  const pct=(asNum(f.forecast_total)/6000*100).toFixed(1);
+  document.getElementById("forecastPercent").textContent=pct+"%";
+  document.getElementById("forecastProgress").style.width=Math.min(pct,100)+"%";
+}
+
+function renderQuarterly(data){
+  const el=document.getElementById("quarterlyBars");
+  el.innerHTML="";
+  const qd=data.dividend_planner?.quarterly_breakdown||{};
+  const max=Math.max(1,...Object.values(qd));
+  Object.entries(qd).forEach(([q,v])=>{
+    const wrap=document.createElement("div");
+    wrap.className="barBlock";
+    const bar=document.createElement("div");
+    bar.className="barFill";
+    bar.style.height=(v/max*190)+"px";
+    const label=document.createElement("div");
+    label.className="barLabel";
+    label.innerHTML=`${q}<br>£${v.toFixed(2)}`;
+    wrap.appendChild(bar);
+    wrap.appendChild(label);
+    el.appendChild(wrap);
   });
-}
-
-function renderDividends(data){
-  const now=new Date();
-  const next=document.getElementById("nextDivs");
-  const nextEx=document.getElementById("nextExDivs");
-  next.innerHTML="";nextEx.innerHTML="";
-  const pays=(data.dividends_feed||[]).filter(d=>new Date(d.pay_date)>now).slice(0,5);
-  const exes=(data.dividends_feed||[]).filter(d=>new Date(d.ex_div_date)>now).slice(0,5);
-  pays.forEach(d=>next.insertAdjacentHTML("beforeend",`<tr><td>${d.name}</td><td class='amount-green'>£${asNum(d.total_dividend).toFixed(2)}</td><td class='date-pink'>${d.pay_date}</td></tr>`));
-  exes.forEach(d=>nextEx.insertAdjacentHTML("beforeend",`<tr><td>${d.name}</td><td class='date-pink'>${d.ex_div_date}</td></tr>`));
 }
 
 function renderTargetBar(data){
@@ -254,11 +243,6 @@ function renderTargetBar(data){
   const bar=document.getElementById("targetBarFill");
   bar.style.width=pct+"%";
   bar.classList.toggle("full",pct>=100);
-}
-
-function toggleCollapse(id){
-  const el=document.getElementById(id);
-  el.style.display=(el.style.display==="none"||el.style.display==="")?"block":"none";
 }
 
 document.addEventListener("DOMContentLoaded",loadAuroraSync);
