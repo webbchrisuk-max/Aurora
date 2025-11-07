@@ -110,12 +110,49 @@ tr:hover{background:rgba(0,255,255,0.10);}
   </div>
 
   <!-- ===== Dividends Centre ===== -->
-  <div class="card" id="dividends">
-    <h2>Next 5 Dividends</h2>
-    <ul id="nextDivs"></ul>
-    <h2>Next 5 Ex-Dividends</h2>
-    <ul id="nextExDivs"></ul>
-  </div>
+<div class="card" id="dividends">
+  <h2>Dividends Centre</h2>
+
+  <h3>Next 5 Dividends</h3>
+  <div id="nextDivs" class="div-list"></div>
+
+  <h3>Next 5 Ex-Dividends</h3>
+  <div id="nextExDivs" class="div-list"></div>
+</div>
+
+<style>
+.div-list {
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.div-card {
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(0,255,255,0.25);
+  border-radius:8px;
+  padding:10px 14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 0 10px rgba(0,255,255,0.1);
+}
+.div-card:hover {
+  background:rgba(0,255,255,0.08);
+  box-shadow:0 0 15px rgba(0,255,255,0.25);
+}
+.div-left {
+  font-size:0.9rem;
+}
+.div-right {
+  text-align:right;
+  font-size:0.85rem;
+  color:#aaa;
+}
+.div-amount {
+  color:var(--green);
+  font-weight:bold;
+}
+</style>
 
   <!-- ===== Dividend Overview ===== -->
   <div class="card" id="dividend-overview">
@@ -189,22 +226,36 @@ function renderAll(data){
 
 /* ===================== DIVIDENDS ===================== */
 function renderDividends(data){
-  const now = new Date();
-  const next = document.getElementById("nextDivs");
-  const nextEx = document.getElementById("nextExDivs");
+  const now=new Date();
+  const next=document.getElementById("nextDivs");
+  const nextEx=document.getElementById("nextExDivs");
   next.innerHTML=""; nextEx.innerHTML="";
   const pays=(data.dividends_feed||[]).filter(d=>new Date(d.pay_date)>now)
               .sort((a,b)=>new Date(a.pay_date)-new Date(b.pay_date)).slice(0,5);
   const exes=(data.dividends_feed||[]).filter(d=>new Date(d.ex_div_date)>now)
               .sort((a,b)=>new Date(a.ex_div_date)-new Date(b.ex_div_date)).slice(0,5);
+
   pays.forEach(d=>{
-    next.insertAdjacentHTML("beforeend",
-      `<li>${d.name} – <span class='amount-green'>£${asNum(d.total_dividend).toFixed(2)}</span>
-       on <span class='date-pink'>${d.pay_date}</span></li>`);
+    next.insertAdjacentHTML("beforeend", `
+      <div class="div-card">
+        <div class="div-left">
+          ${d.name}<br>
+          <span class="div-amount">£${asNum(d.total_dividend).toFixed(2)}</span>
+        </div>
+        <div class="div-right">
+          ${d.pay_date}
+        </div>
+      </div>
+    `);
   });
+
   exes.forEach(d=>{
-    nextEx.insertAdjacentHTML("beforeend",
-      `<li>${d.name} – Ex-Div <span class='date-pink'>${d.ex_div_date}</span></li>`);
+    nextEx.insertAdjacentHTML("beforeend", `
+      <div class="div-card">
+        <div class="div-left">${d.name}</div>
+        <div class="div-right">Ex-Div ${d.ex_div_date}</div>
+      </div>
+    `);
   });
 }
 
