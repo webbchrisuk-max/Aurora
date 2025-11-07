@@ -353,7 +353,7 @@ function renderAll(data){
   /* Portfolio summary + gain pulse */
   const g=parseFloat((data.isa.ig_isa.unrealised_gain??0)+(data.isa.trade212_isa.unrealised_gain??0));
   const pct=((g/(asNum(data.isa.ig_isa.book_cost)+asNum(data.isa.trade212_isa.book_cost)))*100).toFixed(2);
-  document.getElementById("targetValue").textContent=data.isa.portfolio_summary.annual_target_value.toFixed(2);
+  document.getElementById("targetValue").textContent = Number(data.isa.portfolio_summary.annual_target_value || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
   document.getElementById("divYield").textContent=data.isa.portfolio_summary.dividend_yield.toFixed(2);
   document.getElementById("totalGain").textContent=g.toFixed(2);
   document.getElementById("gainPercent").textContent=pct;
