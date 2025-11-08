@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aurora Monzo Dashboard v1.0 – Neon Blue + Coral Glow</title>
+
+<!-- ===================== SECTION: FONTS & BASE ===================== -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@500&display=swap" rel="stylesheet" />
+
+<style>
+:root {
+  --bg-color: #05060a;
+  --card-bg: rgba(255,255,255,0.05);
+  --text-color: #ffffff;
+  --glow-cyan: #00fff7;
+  --glow-coral: #ff6f61;
+}
+
+/* ===================== SECTION: GLOBAL ===================== */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-color);
+  color: var(--text-color);
+  overflow-x: hidden;
+}
+
+h1, h2, h3 {
+  font-family: 'Orbitron', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* ===================== SECTION: HEADER ===================== */
+header {
+  text-align: center;
+  padding: 25px 10px;
+  background: linear-gradient(90deg, var(--glow-cyan), var(--glow-coral));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%,100% { text-shadow: 0 0 10px var(--glow-coral), 0 0 20px var(--glow-cyan); }
+  50% { text-shadow: 0 0 25px var(--glow-coral), 0 0 35px var(--glow-cyan); }
+}
+
+/* ===================== SECTION: CARD DESIGN ===================== */
+.card {
+  background: var(--card-bg);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 0 15px rgba(0,255,247,0.08);
+  backdrop-filter: blur(6px);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 18px rgba(255,111,97,0.25);
+}
+
+/* ===================== SECTION: GRID LAYOUT ===================== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 15px;
+}
+
+/* ===================== SECTION: PROGRESS BARS ===================== */
+.progress-container {
+  background: rgba(255,255,255,0.08);
+  border-radius: 10px;
+  height: 14px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, var(--glow-cyan), var(--glow-coral));
+  box-shadow: 0 0 10px var(--glow-cyan);
+  border-radius: 10px;
+  animation: loadBar 2s ease forwards;
+}
+
+@keyframes loadBar {
+  from { width: 0; }
+  to { width: var(--target-width, 100%); }
+}
+
+/* ===================== SECTION: TABLE STYLING ===================== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 0.95rem;
+}
+th, td {
+  text-align: left;
+  padding: 8px;
+}
+th {
+  color: var(--glow-cyan);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+tr:nth-child(even) {
+  background: rgba(255,255,255,0.03);
+}
+
+/* ===================== SECTION: RESPONSIVE ===================== */
+@media (max-width: 600px) {
+  .container { padding: 10px; }
+  h1 { font-size: 1.4em; }
+}
+</style>
+</head>
+<body>
+<!-- ===================== SECTION: HEADER ===================== -->
+<header>
+  <h1>Aurora Monzo Dashboard</h1>
+  <h3>Live Data Sync – Neon Blue + Coral Glow Edition</h3>
+</header>
+
+<!-- ===================== SECTION: MAIN CONTAINER ===================== -->
+<div class="container">
+
+  <!-- ACCOUNT SUMMARY -->
+  <section id="account-summary" class="card">
+    <h2>🏦 Main Account</h2>
+    <p><strong>Balance:</strong> £<span id="mainBalance">0.00</span></p>
+    <p><strong>Payday:</strong> <span id="payday">–</span> (Received £<span id="payReceived">0.00</span>)</p>
+  </section>
+
+  <!-- FLEX SUMMARY -->
+  <section id="flex-summary" class="card">
+    <h2>💳 Flex Summary</h2>
+    <p><strong>Total Balance:</strong> £<span id="flexBalance">0.00</span></p>
+    <p><strong>Next Payment:</strong> £<span id="flexNext">0.00</span> on <span id="flexDate">–</span></p>
+  </section>
+
+  <!-- POTS GRID -->
+  <section id="pots-section">
+    <h2>💰 Pots</h2>
+    <div id="potsContainer" class="grid"></div>
+  </section>
+
+  <!-- DIRECT DEBITS -->
+  <section id="direct-debits" class="card">
+    <h2>🔁 Direct Debits (Paid from Direct Debits Pot)</h2>
+    <table id="ddTable">
+      <thead>
+        <tr><th>Payee</th><th>Amount (£)</th><th>Due Date</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- SUBSCRIPTIONS -->
+  <section id="subscriptions" class="card">
+    <h2>📱 Subscriptions (Paid from Main Balance)</h2>
+    <table id="subTable">
+      <thead>
+        <tr><th>Service</th><th>Amount (£)</th><th>Renewal Date</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- TIMESTAMP FOOTER -->
+  <footer style="text-align:center;margin-top:25px;color:#aaa;font-size:0.85em;">
+    <span id="lastUpdated">Last updated loading…</span>
+  </footer>
+</div>
+
+<!-- ===================== SECTION: SCRIPT ===================== -->
+<script>
+const jsonURL = "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraMonzo.json";
+
+async function loadAuroraMonzo() {
+  try {
+    const response = await fetch(jsonURL + "?nocache=" + Date.now());
+    const data = await response.json();
+    const monzo = data.monzo;
+
+    // ---- ACCOUNT SUMMARY ----
+    document.getElementById("mainBalance").textContent = monzo.account_summary.current_balance.toFixed(2);
+    document.getElementById("payday").textContent = monzo.account_summary.last_payday;
+    document.getElementById("payReceived").textContent = monzo.account_summary.pay_amount_received.toFixed(2);
+
+    // ---- FLEX SUMMARY ----
+    document.getElementById("flexBalance").textContent = monzo.flex_account.total_balance.toFixed(2);
+    document.getElementById("flexNext").textContent = monzo.flex_account.next_payment_due.toFixed(2);
+    document.getElementById("flexDate").textContent = monzo.flex_account.due_date;
+
+    // ---- POTS ----
+    const potsDiv = document.getElementById("potsContainer");
+    monzo.pots.forEach(pot => {
+      const card = document.createElement("div");
+      card.className = "card";
+      const value = parseFloat(pot.balance);
+      const target = 600; // example placeholder target for animation
+      const percent = Math.min((value / target) * 100, 100).toFixed(1);
+      card.innerHTML = `
+        <h3>${pot.name}</h3>
+        <p>£${value.toFixed(2)}</p>
+        <div class="progress-container">
+          <div class="progress-bar" style="--target-width:${percent}%;"></div>
+        </div>
+        <small>${pot.notes || ""}</small>
+      `;
+      potsDiv.appendChild(card);
+    });
+
+    // ---- DIRECT DEBITS ----
+    const ddBody = document.querySelector("#ddTable tbody");
+    monzo.direct_debits.forEach(dd => {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${dd.payee}</td><td>${dd.amount.toFixed(2)}</td><td>${dd.due_date}</td>`;
+      ddBody.appendChild(row);
+    });
+
+    // ---- SUBSCRIPTIONS ----
+    const subBody = document.querySelector("#subTable tbody");
+    monzo.subscriptions_from_main.forEach(sub => {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${sub.service}</td><td>${sub.amount.toFixed(2)}</td><td>${sub.renewal_date}</td>`;
+      subBody.appendChild(row);
+    });
+
+    // ---- LAST UPDATED ----
+    document.getElementById("lastUpdated").textContent =
+      "Last updated " + new Date(monzo.integrity.created).toLocaleString();
+
+  } catch (err) {
+    document.getElementById("lastUpdated").textContent = "⚠️ Failed to load data";
+    console.error("Aurora Monzo load error:", err);
+  }
+}
+
+// Run loader
+loadAuroraMonzo();
+</script>
+</body>
+</html>
