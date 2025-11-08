@@ -1,0 +1,59 @@
+{
+  "monzo": {
+    "account_summary": {
+      "account_name": "Main Monzo Account",
+      "current_balance": 826.15,
+      "last_payday": "2025-11-07",
+      "pay_amount_received": 2078.78,
+      "currency": "GBP"
+    },
+
+    "pots": [
+      { "name": "Flex Repayment Card", "balance": 609.44, "notes": "£419 due 1 Dec 2025" },
+      { "name": "Direct Debits", "balance": 458.45, "notes": "Covers all DDs except insurance + subs" },
+      { "name": "HolidayPot", "balance": 174.45, "notes": "Holiday savings" },
+      { "name": "Coventry City F.C", "balance": 167.86, "notes": "Goal by May 2026" },
+      { "name": "IG Trading", "balance": 229.30, "notes": "Round-up investment pot" },
+      { "name": "Car Maintenance", "balance": 294.49, "notes": "Vehicle servicing and MOT" },
+      { "name": "Work Buffer", "balance": 47.94, "notes": "Reimbursement buffer (auto Friday sync)" },
+      { "name": "Holding Pot", "balance": 508.34, "notes": "Allocation reserve" },
+      { "name": "Christmas", "balance": 150.00, "notes": "Seasonal fund" }
+    ],
+
+    "subscriptions_from_main": [
+      { "service": "Contents Insurance", "amount": 7.73, "renewal_date": "2025-11-31" },
+      { "service": "Apple One", "amount": 18.95, "renewal_date": "2025-11-13" },
+      { "service": "ChatGPT Plus", "amount": 19.99, "renewal_date": "2025-11-23" }
+    ],
+
+    "direct_debits": [
+      { "payee": "Virgin Media", "amount": 46.39, "due_date": "2025-11-14" },
+      { "payee": "Barclays Partner Finance", "amount": 50.92, "due_date": "2025-11-17" },
+      { "payee": "Vodafone", "amount": 23.28, "due_date": "2025-11-30" },
+      { "payee": "Driver & Vehicle Licensing Agency", "amount": 23.18, "due_date": "2025-11-03" },
+      { "payee": "Octopus Energy", "amount": 94.90, "due_date": "2025-11-03" },
+      { "payee": "Sports Direct", "amount": 20.00, "due_date": "2025-11-04" },
+      { "payee": "ID Mobile", "amount": 10.00, "due_date": "2025-11-07" },
+      { "payee": "Postcode Lottery #1", "amount": 12.25, "due_date": "2025-11-07" },
+      { "payee": "Postcode Lottery #2", "amount": 12.25, "due_date": "2025-11-07" },
+      { "payee": "Postcode Lottery #3", "amount": 12.25, "due_date": "2025-11-07" },
+      { "payee": "Postcode Lottery #4", "amount": 12.25, "due_date": "2025-11-07" },
+      { "payee": "Monzo Plus", "amount": 5.00, "due_date": "2025-11-08" },
+      { "payee": "Rugby B.C.", "amount": 139.00, "due_date": "2025-11-03" },
+      { "payee": "Legal & General", "amount": 17.92, "due_date": "2025-11-03" },
+      { "payee": "Severn Trent Water", "amount": 43.86, "due_date": "2025-11-03" }
+    ],
+
+    "flex_account": {
+      "total_balance": -808.86,
+      "next_payment_due": 419.00,
+      "due_date": "2025-12-01"
+    },
+
+    "integrity": {
+      "source": "Aurora Monzo Core v1.0",
+      "created": "2025-11-08T20:34:00Z",
+      "is_valid": true
+    }
+  }
+}
