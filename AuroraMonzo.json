@@ -3,6 +3,7 @@
     "account_core": {
       "main_balance": 826.15,
       "payday_last": "2025-11-07",
+      "payday_next": "2025-12-05",
       "income_received": 2078.78,
       "flex": {
         "total_balance": -810.77,
