@@ -1,0 +1,114 @@
+name: Aurora Monzo – Hourly Pot + Transaction Sync
+
+on:
+  schedule:
+    - cron: "0 * * * *"   # every hour UTC
+  workflow_dispatch:
+
+concurrency:
+  group: aurora-monzo-hourly
+  cancel-in-progress: false
+
+jobs:
+  sync_monzo_hourly:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧩 Checkout repository
+        uses: actions/checkout@v4
+
+      # =====================================================
+      # STEP 1 – Fetch Transfers sheet
+      # =====================================================
+      - name: 🟢 Fetch Transfers sheet
+        run: |
+          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transfers" -o transfers.json
+
+      # =====================================================
+      # STEP 2 – Ensure state tracking
+      # =====================================================
+      - name: 📦 Ensure state folder
+        run: |
+          mkdir -p .aurora
+          if [ ! -f .aurora/monzo_transfers_applied.json ]; then
+            echo "[]" > .aurora/monzo_transfers_applied.json
+          fi
+
+      # =====================================================
+      # STEP 3 – Apply NEW Transfers
+      # =====================================================
+      - name: 🔄 Apply NEW Transfers
+        run: |
+          node <<'EOF'
+          const fs = require('fs');
+          const monzoFile = 'AuroraMonzo.json';
+          const transfersFile = 'transfers.json';
+          const appliedFile = '.aurora/monzo_transfers_applied.json';
+          const data = JSON.parse(fs.readFileSync(monzoFile,'utf8'));
+          const transfers = JSON.parse(fs.readFileSync(transfersFile,'utf8'));
+          const applied = JSON.parse(fs.readFileSync(appliedFile,'utf8'));
+          const core = data.monzo.account_core; if(!core.pots) core.pots = {};
+          const makeId = t => [t["Date"],t["From Pot"],t["To Pot"],t["Amount"],t["Note"]].join(' | ');
+          let appliedCount = 0;
+          for(const t of transfers){
+            const id = makeId(t);
+            if(applied.includes(id)) continue;
+            const from = t["From Pot"]?.trim(), to = t["To Pot"]?.trim(), amount = parseFloat(t["Amount"]);
+            if(!from||!to||!Number.isFinite(amount)) continue;
+            if(from==="Main Account") core.main_balance-=amount;
+            else if(core.pots[from]!=undefined) core.pots[from]-=amount;
+            else core.pots[from]=-amount;
+            if(to==="Main Account") core.main_balance+=amount;
+            else { if(core.pots[to]==undefined) core.pots[to]=0; core.pots[to]+=amount; }
+            applied.push(id); appliedCount++;
+            console.log(`✅ ${from} → ${to} £${amount.toFixed(2)}`);
+          }
+          data.monzo.integrity.checksum = "monzo-hourly-"+new Date().toISOString();
+          data.monzo.integrity.verified = true;
+          fs.writeFileSync(monzoFile,JSON.stringify(data,null,2));
+          fs.writeFileSync(appliedFile,JSON.stringify(applied,null,2));
+          console.log(`ℹ️ Transfers applied: ${appliedCount}`);
+          EOF
+
+      # =====================================================
+      # STEP 4 – Fetch Transactions sheet
+      # =====================================================
+      - name: 🟣 Fetch Transactions sheet
+        run: |
+          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transactions" -o transactions.json
+
+      # =====================================================
+      # STEP 5 – Update Monzo Transactions feed
+      # =====================================================
+      - name: 🧾 Update Monzo Transactions feed
+        run: |
+          node <<'EOF'
+          const fs = require('fs');
+          const monzoFile = 'AuroraMonzo.json';
+          const txs = JSON.parse(fs.readFileSync('transactions.json','utf8'));
+          const data = JSON.parse(fs.readFileSync(monzoFile,'utf8'));
+          if(!data.monzo.transactions_feed) data.monzo.transactions_feed = {};
+          data.monzo.transactions_feed.recent = txs.map(t=>({
+            "Date":t["Date"]||"",
+            "Time":t["Time"]||"",
+            "Name":t["Name"]||t["Merchant"]||"",
+            "Amount (£)":t["Amount (£)"]||t["Amount"]||"",
+            "Category":t["Category"]||"",
+            "Note":t["Note"]||t["Email Subject"]||""
+          }));
+          data.monzo.integrity.checksum = "monzo-hourly-transactions-"+new Date().toISOString();
+          data.monzo.integrity.verified = true;
+          fs.writeFileSync(monzoFile,JSON.stringify(data,null,2));
+          console.log(`✅ ${txs.length} transactions updated`);
+          EOF
+
+      # =====================================================
+      # STEP 6 – Commit and push
+      # =====================================================
+      - name: 📝 Commit and push changes
+        run: |
+          git config user.name "aurora-bot"
+          git config user.email "aurora@users.noreply.github.com"
+          git add AuroraMonzo.json .aurora/monzo_transfers_applied.json
+          git commit -m "💰 Hourly Monzo Sync (pots + transactions)" || echo "No changes to commit"
+          git push
