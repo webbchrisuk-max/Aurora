@@ -184,6 +184,7 @@ tr:nth-child(even) {
 </div>
 
 <!-- ===================== SECTION: SCRIPT ===================== -->
+<!-- ===================== SECTION: SCRIPT ===================== -->
 <script>
 async function loadAuroraMonzo() {
   const status = document.getElementById("lastUpdated");
@@ -192,38 +193,89 @@ async function loadAuroraMonzo() {
   const monzoFeed = "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Monzo";
 
   try {
-    // Use URL() to ensure valid strings
-    const jsonUrl = new URL(monzoJSON + "?nocache=" + Date.now());
-    const feedUrl = new URL(monzoFeed + "?nocache=" + Date.now());
-
     const [summaryRes, feedRes] = await Promise.all([
-      fetch(jsonUrl.toString()),
-      fetch(feedUrl.toString())
+      fetch(monzoJSON + "?nocache=" + Date.now()),
+      fetch(monzoFeed + "?nocache=" + Date.now())
     ]);
 
-    if (!summaryRes.ok) throw new Error(`AuroraMonzo.json HTTP ${summaryRes.status}`);
-    if (!feedRes.ok) throw new Error(`Monzo feed HTTP ${feedRes.status}`);
-
-    const summaryText = await summaryRes.text();
-    const feedText = await feedRes.text();
-
-    // Validate JSON manually to trap pattern errors
-    let summary, feed;
-    try {
-      summary = JSON.parse(summaryText);
-    } catch (err) {
-      throw new Error("AuroraMonzo.json parse error: " + err.message);
+    if (!summaryRes.ok || !feedRes.ok) {
+      throw new Error(`HTTP ${summaryRes.status} / ${feedRes.status}`);
     }
 
-    try {
-      feed = JSON.parse(feedText);
-    } catch (err) {
-      throw new Error("Monzo feed parse error: " + err.message);
-    }
+    const summary = await summaryRes.json();
+    const feed = await feedRes.json();
 
     console.log("✅ AuroraMonzo.json loaded:", summary);
     console.log("✅ Monzo feed loaded:", feed);
 
+    // ===================== SECTION: ACCOUNT SUMMARY =====================
+    const s = summary.monzo_summary;
+    document.getElementById("mainBalance").textContent = s.main_balance.toFixed(2);
+    document.getElementById("payday").textContent = s.payday;
+    document.getElementById("payReceived").textContent = s.last_income.toFixed(2);
+
+    // ===================== SECTION: FLEX SUMMARY =====================
+    const flex = s.flex_account;
+    if (flex) {
+      document.getElementById("flexBalance").textContent = flex.balance.toFixed(2);
+      document.getElementById("flexNext").textContent = flex.next_payment.toFixed(2);
+      document.getElementById("flexDate").textContent = flex.due_date;
+    } else {
+      document.getElementById("flexBalance").textContent = "0.00";
+      document.getElementById("flexNext").textContent = "0.00";
+      document.getElementById("flexDate").textContent = "–";
+    }
+
+    // ===================== SECTION: POTS GRID =====================
+    const potsDiv = document.getElementById("potsContainer");
+    potsDiv.innerHTML = "";
+    summary.pots.forEach(pot => {
+      if (pot.name.toLowerCase().includes("flex")) return; // skip flex card here
+      const card = document.createElement("div");
+      card.className = "card";
+      const value = parseFloat(pot.balance);
+      const target = 500;
+      const percent = Math.min((value / target) * 100, 100).toFixed(1);
+      card.innerHTML = `
+        <h3>${pot.name}</h3>
+        <p>£${value.toFixed(2)}</p>
+        <div class="progress-container">
+          <div class="progress-bar" style="--target-width:${percent}%;"></div>
+        </div>
+        <small>${pot.notes || ""}</small>
+      `;
+      potsDiv.appendChild(card);
+    });
+
+    // ===================== SECTION: DIRECT DEBITS =====================
+    const ddBody = document.querySelector("#ddTable tbody");
+    ddBody.innerHTML = "";
+    summary.direct_debits.forEach(dd => {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${dd.payee}</td><td>${dd.amount.toFixed(2)}</td><td>${dd.due_date}</td>`;
+      ddBody.appendChild(row);
+    });
+
+    // ===================== SECTION: SUBSCRIPTIONS =====================
+    const subBody = document.querySelector("#subTable tbody");
+    subBody.innerHTML = "";
+    summary.subscriptions_from_main.forEach(sub => {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${sub.service}</td><td>${sub.amount.toFixed(2)}</td><td>${sub.renewal_date}</td>`;
+      subBody.appendChild(row);
+    });
+
+    // ===================== SECTION: TIMESTAMP =====================
+    status.textContent = "✅ Data successfully loaded – " + new Date().toLocaleString();
+  } catch (err) {
+    console.error("❌ Aurora Monzo load error:", err);
+    status.textContent = "❌ Failed to load Monzo data: " + err.message;
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadAuroraMonzo);
+</script>
+    
     // ===================== SECTION: ACCOUNT SUMMARY =====================
     const s = summary.monzo_summary;
     document.getElementById("mainBalance").textContent = s.main_balance.toFixed(2);
