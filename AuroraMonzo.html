@@ -1,4 +1,4 @@
-<!-- ===================== SECTION: Aurora Monzo Dashboard v1.4 (with Pot Carousel – Fixed Background) ===================== -->
+<!-- ===================== SECTION: Aurora Monzo Dashboard v1.4 (with Pot Carousel – Fixed + Safe) ===================== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,11 +25,9 @@ body{
   font-family:'Inter',sans-serif;
   color:var(--text-color);
   overflow-x:hidden;
-  overflow-y:auto;
   min-height:100vh;
   position:relative;
 }
-/* fixed animated gradient layer so body height never changes */
 body::before{
   content:"";
   position:fixed;
@@ -79,28 +77,10 @@ header{
 }
 .card:hover{transform:translateY(-2px);box-shadow:0 0 18px rgba(255,111,97,0.25);}
 
-/* ===================== SECTION: PROGRESS BARS ===================== */
-.progress-container{
-  background:rgba(255,255,255,0.08);
-  border-radius:10px;
-  height:14px;
-  overflow:hidden;
-  margin-top:6px;
-}
-.progress-bar{
-  height:100%;
-  width:0;
-  background:linear-gradient(90deg,var(--glow-cyan),var(--glow-coral));
-  box-shadow:0 0 10px var(--glow-cyan);
-  border-radius:10px;
-  animation:loadBar 2s ease forwards;
-}
-@keyframes loadBar{from{width:0;}to{width:var(--target-width,100%);}}
-
-/* ===================== SECTION: POT CAROUSEL STYLES ===================== */
+/* ===================== SECTION: POT CAROUSEL ===================== */
 .pot-carousel{
   display:flex;
-  overflow:hidden;            /* lock height, no scroll jump */
+  overflow:hidden;
   position:relative;
   height:240px;
 }
@@ -115,7 +95,7 @@ header{
   background:rgba(255,255,255,0.05);
   box-shadow:0 0 15px var(--glow-cyan);
   animation:potPulse 2s infinite alternate;
-  transition:transform .3s ease;
+  transition:transform .3s ease, opacity .3s ease;
   position:absolute;
   top:0;left:0;right:0;bottom:0;
   opacity:0;
@@ -128,7 +108,7 @@ header{
 .pot-progress{width:80%;height:10px;border-radius:8px;background:rgba(255,255,255,0.1);margin-top:10px;overflow:hidden;}
 .pot-fill{height:100%;background:linear-gradient(90deg,var(--glow-cyan),var(--glow-coral));border-radius:8px;transition:width .8s ease-in-out;}
 
-/* ===================== SECTION: TABLE STYLING ===================== */
+/* ===================== SECTION: TABLES ===================== */
 table{width:100%;border-collapse:collapse;margin-top:10px;font-size:.95rem;}
 th,td{text-align:left;padding:8px;}
 th{color:var(--glow-cyan);border-bottom:1px solid rgba(255,255,255,0.1);}
@@ -193,6 +173,7 @@ tr:nth-child(even){background:rgba(255,255,255,0.03);}
   </footer>
 </div>
 
+<!-- ===================== SECTION: SCRIPT ===================== -->
 <script>
 async function loadAuroraMonzo(){
   const status=document.getElementById("lastUpdated");
@@ -212,6 +193,7 @@ async function loadAuroraMonzo(){
     document.getElementById("payReceived").textContent=core.income_received.toFixed(2);
     document.getElementById("flexBalance").textContent=(pots.FlexRepayment||0).toFixed(2);
 
+    // DIRECT DEBITS
     const ddBody=document.querySelector("#ddTable tbody");
     ddBody.innerHTML="";
     dd.forEach(i=>{
@@ -220,6 +202,7 @@ async function loadAuroraMonzo(){
       ddBody.appendChild(r);
     });
 
+    // SUBSCRIPTIONS
     const subBody=document.querySelector("#subTable tbody");
     subBody.innerHTML="";
     subs.forEach(i=>{
@@ -228,11 +211,15 @@ async function loadAuroraMonzo(){
       subBody.appendChild(r);
     });
 
+    // ✅ SAFE TRANSACTION HANDLER
     const txnBody=document.querySelector("#txnTable tbody");
     txnBody.innerHTML="";
     txns.slice(0,5).forEach(tx=>{
+      const date=tx.date||"—";
+      const merchant=tx.merchant||"Unknown";
+      const amount=(typeof tx.amount==="number")?tx.amount.toFixed(2):"0.00";
       const r=document.createElement("tr");
-      r.innerHTML=`<td>${tx.date}</td><td>${tx.merchant}</td><td>${tx.amount.toFixed(2)}</td>`;
+      r.innerHTML=`<td>${date}</td><td>${merchant}</td><td>${amount}</td>`;
       txnBody.appendChild(r);
     });
 
@@ -283,4 +270,4 @@ document.addEventListener("DOMContentLoaded",loadAuroraMonzo);
 </script>
 </body>
 </html>
-<!-- ===================== END: Aurora Monzo Dashboard v1.4 (Fixed Carousel) ===================== -->
+<!-- ===================== END: Aurora Monzo Dashboard v1.4 (Fixed + Safe) ===================== -->
