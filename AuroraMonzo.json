@@ -1,5 +1,4 @@
-{
-  
+{{
   "monzo": {
     "account_core": {
       "main_balance": 826.15,
@@ -13,7 +12,7 @@
         "IGTrading": 229.30,
         "Car Maintenance": 294.49,
         "Work Buffer": 47.94,
-        "Christmas": 150.00
+        "Christmas": 150.00,
         "Savings": 501
       }
     },
