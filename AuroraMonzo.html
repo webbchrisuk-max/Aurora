@@ -174,30 +174,40 @@ async function loadAuroraMonzo(){
     const flexBal=flex.total_balance??0;
     document.getElementById("flexBalance").textContent=flexBal.toFixed(2);
 
-    // ---- Direct Debits up to next payday ----
-    const ddBody=document.querySelector("#ddTable tbody");
-    ddBody.innerHTML="";
-    const nextPayday=new Date(nextPaydayISO);
-    const paydayLast=new Date(lastPaydayISO);
+   /* ---------- Direct Debits (current pay-period only) ---------- */
+const ddBody = document.querySelector("#ddTable tbody");
+ddBody.innerHTML = "";
 
-    const upcoming=dd.map(e=>({...e,_due:new Date(e.due_date)}))
-                     .filter(e=>e._due>=paydayLast&&e._due<=nextPayday)
-                     .sort((a,b)=>a._due-b._due);
+const start = new Date(core.payday_last);          // 2025-11-07
+start.setHours(0,0,0,0);
+const end = new Date(start);
+end.setDate(start.getDate() + 28);                 // next payday = +28 days (2025-12-05)
+end.setHours(23,59,59,999);
 
-    let totalDue=0;upcoming.forEach(e=>totalDue+=e.amount);
-    document.getElementById("ddTotal").textContent=totalDue.toFixed(2);
+const upcomingDDs = dd
+  .map(e => {
+    const d = new Date(e.due_date);
+    d.setHours(0,0,0,0);
+    return { ...e, _due: d };
+  })
+  .filter(e => e._due >= start && e._due <= end)
+  .sort((a,b) => a._due - b._due);
 
-    if(upcoming.length===0){
-      const r=document.createElement("tr");
-      r.innerHTML=`<td colspan="3" style="text-align:center;color:#888;">No direct debits due before next payday</td>`;
-      ddBody.appendChild(r);
-    }else{
-      upcoming.forEach(e=>{
-        const r=document.createElement("tr");
-        r.innerHTML=`<td>${e.payee}</td><td>${e.amount.toFixed(2)}</td><td>${e.due_date}</td>`;
-        ddBody.appendChild(r);
-      });
-    }
+if (upcomingDDs.length === 0) {
+  const row = document.createElement("tr");
+  row.innerHTML =
+    `<td colspan="3" style="text-align:center;color:#888;">
+       No direct debits in this pay period
+     </td>`;
+  ddBody.appendChild(row);
+} else {
+  upcomingDDs.forEach(e => {
+    const r = document.createElement("tr");
+    r.innerHTML =
+      `<td>${e.payee}</td><td>${e.amount.toFixed(2)}</td><td>${e.due_date}</td>`;
+    ddBody.appendChild(r);
+  });
+}
 
     // ---- Subscriptions ----
     const subBody=document.querySelector("#subTable tbody");
