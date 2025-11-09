@@ -1,4 +1,4 @@
-<!-- ===================== SECTION: Aurora Monzo Dashboard v1.4 (Manual Pot Carousel + Fixed Transaction Feed) ===================== -->
+<!-- ===================== SECTION: Aurora Monzo Dashboard v1.4 (Manual Carousel + Flex Summary + Transaction Feed) ===================== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,101 +19,104 @@
 }
 
 /* ===================== SECTION: GLOBAL ===================== */
-body{
-  margin:0;
-  padding:0;
-  font-family:'Inter',sans-serif;
-  color:var(--text-color);
-  overflow-x:hidden;
-  min-height:100vh;
-  position:relative;
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-color);
+  overflow-x: hidden;
+  min-height: 100vh;
+  position: relative;
 }
-body::before{
-  content:"";
-  position:fixed;
-  top:0;left:0;right:0;bottom:0;
-  z-index:-1;
-  background:radial-gradient(circle at top right,#05060a 0%,#090d16 70%);
-  animation:auroraPulse 18s ease-in-out infinite alternate;
-  background-attachment:fixed;
-  will-change:background;
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: -1;
+  background: radial-gradient(circle at top right,#05060a 0%,#090d16 70%);
+  animation: auroraPulse 18s ease-in-out infinite alternate;
+  background-attachment: fixed;
+  will-change: background;
 }
-@keyframes auroraPulse{
-  0%{background:radial-gradient(circle at top right,#05060a 0%,#090d16 70%);}
-  100%{background:radial-gradient(circle at bottom left,#0b1020 0%,#04060a 80%);}
-}
-
-h1,h2,h3{
-  font-family:'Orbitron',sans-serif;
-  text-transform:uppercase;
-  letter-spacing:1px;
+@keyframes auroraPulse {
+  0% { background: radial-gradient(circle at top right,#05060a 0%,#090d16 70%); }
+  100% { background: radial-gradient(circle at bottom left,#0b1020 0%,#04060a 80%); }
 }
 
-.container{max-width:1100px;margin:auto;padding:20px;}
+h1,h2,h3 {
+  font-family: 'Orbitron', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.container { max-width: 1100px; margin: auto; padding: 20px; }
 
 /* ===================== SECTION: HEADER ===================== */
-header{
-  text-align:center;
-  padding:25px 10px;
-  background:linear-gradient(90deg,var(--glow-cyan),var(--glow-coral));
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  animation:pulseGlow 4s ease-in-out infinite;
+header {
+  text-align: center;
+  padding: 25px 10px;
+  background: linear-gradient(90deg, var(--glow-cyan), var(--glow-coral));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: pulseGlow 4s ease-in-out infinite;
 }
-@keyframes pulseGlow{
-  0%,100%{text-shadow:0 0 10px var(--glow-coral),0 0 20px var(--glow-cyan);}
-  50%{text-shadow:0 0 25px var(--glow-coral),0 0 35px var(--glow-cyan);}
+@keyframes pulseGlow {
+  0%,100% { text-shadow: 0 0 10px var(--glow-coral), 0 0 20px var(--glow-cyan); }
+  50% { text-shadow: 0 0 25px var(--glow-coral), 0 0 35px var(--glow-cyan); }
 }
 
 /* ===================== SECTION: CARD DESIGN ===================== */
-.card{
-  background:var(--card-bg);
-  border-radius:14px;
-  padding:18px 20px;
-  margin-bottom:15px;
-  box-shadow:0 0 15px rgba(0,255,247,0.08);
-  backdrop-filter:blur(6px);
-  transition:transform .25s ease,box-shadow .25s ease;
+.card {
+  background: var(--card-bg);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 0 15px rgba(0,255,247,0.08);
+  backdrop-filter: blur(6px);
+  transition: transform .25s ease, box-shadow .25s ease;
 }
-.card:hover{transform:translateY(-2px);box-shadow:0 0 18px rgba(255,111,97,0.25);}
+.card:hover { transform: translateY(-2px); box-shadow: 0 0 18px rgba(255,111,97,0.25); }
 
 /* ===================== SECTION: POT CAROUSEL (MANUAL SCROLL) ===================== */
-.pot-carousel{
-  display:flex;
-  overflow-x:auto;
-  scroll-snap-type:x mandatory;
-  gap:20px;
-  padding:10px 0 20px 0;
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
+.pot-carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 20px;
+  padding: 10px 0 20px 0;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
-.pot-carousel::-webkit-scrollbar{display:none;}
+.pot-carousel::-webkit-scrollbar { display: none; }
 
-.pot-card{
-  flex:0 0 85%;
-  scroll-snap-align:center;
-  background:rgba(255,255,255,0.05);
-  border-radius:14px;
-  padding:20px;
-  text-align:center;
-  box-shadow:0 0 15px var(--glow-cyan);
-  animation:potPulse 2s infinite alternate;
-  transition:transform 0.3s ease;
+.pot-card {
+  flex: 0 0 85%;
+  scroll-snap-align: center;
+  background: rgba(255,255,255,0.05);
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 0 15px var(--glow-cyan);
+  animation: potPulse 2s infinite alternate;
+  transition: transform 0.3s ease;
 }
-.pot-card:hover{transform:scale(1.03);}
-@keyframes potPulse{from{box-shadow:0 0 15px var(--glow-cyan);}to{box-shadow:0 0 25px var(--glow-coral);}}
-.pot-card h3{color:var(--glow-coral);text-shadow:0 0 8px var(--glow-coral);}
-.pot-progress{height:10px;border-radius:8px;background:rgba(255,255,255,0.1);margin-top:10px;overflow:hidden;}
-.pot-fill{height:100%;background:linear-gradient(90deg,var(--glow-cyan),var(--glow-coral));border-radius:8px;transition:width .8s ease-in-out;}
+.pot-card:hover { transform: scale(1.03); }
+@keyframes potPulse {
+  from { box-shadow: 0 0 15px var(--glow-cyan); }
+  to { box-shadow: 0 0 25px var(--glow-coral); }
+}
+.pot-card h3 { color: var(--glow-coral); text-shadow: 0 0 8px var(--glow-coral); }
+.pot-progress { height: 10px; border-radius: 8px; background: rgba(255,255,255,0.1); margin-top: 10px; overflow: hidden; }
+.pot-fill { height: 100%; background: linear-gradient(90deg,var(--glow-cyan),var(--glow-coral)); border-radius: 8px; transition: width .8s ease-in-out; }
 
 /* ===================== SECTION: TABLES ===================== */
-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:.95rem;}
-th,td{text-align:left;padding:8px;}
-th{color:var(--glow-cyan);border-bottom:1px solid rgba(255,255,255,0.1);}
-tr:nth-child(even){background:rgba(255,255,255,0.03);}
+table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: .95rem; }
+th,td { text-align: left; padding: 8px; }
+th { color: var(--glow-cyan); border-bottom: 1px solid rgba(255,255,255,0.1); }
+tr:nth-child(even) { background: rgba(255,255,255,0.03); }
 
 /* ===================== SECTION: RESPONSIVE ===================== */
-@media(max-width:600px){.container{padding:10px;}h1{font-size:1.4em;}}
+@media(max-width:600px) { .container { padding: 10px; } h1 { font-size: 1.4em; } }
 </style>
 </head>
 
@@ -125,23 +128,27 @@ tr:nth-child(even){background:rgba(255,255,255,0.03);}
 
 <div class="container">
 
+  <!-- MAIN ACCOUNT -->
   <section id="account-summary" class="card">
     <h2>🏦 Main Account</h2>
     <p><strong>Balance:</strong> £<span id="mainBalance">0.00</span></p>
     <p><strong>Payday:</strong> <span id="payday">–</span> (Received £<span id="payReceived">0.00</span>)</p>
   </section>
 
+  <!-- FLEX SUMMARY -->
   <section id="flex-summary" class="card">
     <h2>💳 Flex Summary</h2>
     <p><strong>Total Balance:</strong> £<span id="flexBalance">0.00</span></p>
-    <p><strong>Next Payment:</strong> £419.00 on 2025-12-01</p>
+    <p><strong>Next Payment:</strong> —</p>
   </section>
 
+  <!-- POTS OVERVIEW -->
   <section id="pots-section" class="card">
     <h2>💰 Pots Overview</h2>
     <div class="pot-carousel" id="potCarousel"></div>
   </section>
 
+  <!-- DIRECT DEBITS -->
   <section id="direct-debits" class="card">
     <h2>🔁 Direct Debits</h2>
     <table id="ddTable">
@@ -150,6 +157,7 @@ tr:nth-child(even){background:rgba(255,255,255,0.03);}
     </table>
   </section>
 
+  <!-- SUBSCRIPTIONS -->
   <section id="subscriptions" class="card">
     <h2>📱 Subscriptions</h2>
     <table id="subTable">
@@ -158,6 +166,7 @@ tr:nth-child(even){background:rgba(255,255,255,0.03);}
     </table>
   </section>
 
+  <!-- RECENT TRANSACTIONS -->
   <section id="recent-transactions" class="card">
     <h2>🧾 Recent Transactions</h2>
     <table id="txnTable">
@@ -182,14 +191,23 @@ async function loadAuroraMonzo(){
     const data=await res.json();
     const core=data.monzo.account_core;
     const pots=core.pots||{};
+    const flex=core.flex||{};
     const dd=data.monzo.direct_debits||[];
     const subs=data.monzo.subscriptions_from_main||[];
     const txns=data.transactions_feed?.recent||[];
 
+    // MAIN ACCOUNT
     document.getElementById("mainBalance").textContent=core.main_balance.toFixed(2);
     document.getElementById("payday").textContent=core.payday_last;
     document.getElementById("payReceived").textContent=core.income_received.toFixed(2);
-    document.getElementById("flexBalance").textContent=(pots.FlexRepayment||0).toFixed(2);
+
+    // FLEX SUMMARY
+    document.getElementById("flexBalance").textContent = flex.total_balance?.toFixed(2) || "0.00";
+    const flexNext = flex.next_payment_due
+      ? `£${flex.next_payment_due.toFixed(2)} on ${flex.next_due_date}`
+      : "—";
+    document.querySelector("#flex-summary p:nth-of-type(2)").innerHTML =
+      `<strong>Next Payment:</strong> ${flexNext}`;
 
     // DIRECT DEBITS
     const ddBody=document.querySelector("#ddTable tbody");
@@ -209,7 +227,7 @@ async function loadAuroraMonzo(){
       subBody.appendChild(r);
     });
 
-    // ✅ TRANSACTION LOADER (matches your real JSON keys)
+    // RECENT TRANSACTIONS
     const txnBody=document.querySelector("#txnTable tbody");
     txnBody.innerHTML="";
     if(!Array.isArray(txns) || txns.length===0){
@@ -241,13 +259,12 @@ function renderPotCarousel(pots){
   const carousel=document.getElementById("potCarousel");
   carousel.innerHTML="";
   const goals={
-    FlexRepayment:419,DirectDebits:416,Holiday:800,
-    CommentaryCityFC:500,IGTrading:400,CarMaintenance:400,
-    WorkBuffer:65,Savings:1000
+    "Flex Repayment":419,"Direct Debits":416,"Holiday":800,
+    "Coventry City FC":500,"IGTrading":400,"Car Maintenance":400,
+    "Work Buffer":65,"Christmas":250,"Savings":1000
   };
 
   Object.entries(pots).forEach(([name,balance])=>{
-    if(name==="FlexRepayment")return;
     const goal=goals[name]||500;
     const pct=Math.min((balance/goal)*100,100).toFixed(1);
     const card=document.createElement("div");
@@ -264,4 +281,4 @@ document.addEventListener("DOMContentLoaded",loadAuroraMonzo);
 </script>
 </body>
 </html>
-<!-- ===================== END: Aurora Monzo Dashboard v1.4 (Manual Pot Carousel + Fixed Transaction Feed) ===================== -->
+<!-- ===================== END: Aurora Monzo Dashboard v1.4 (Manual Carousel + Flex Summary + Transaction Feed) ===================== -->
