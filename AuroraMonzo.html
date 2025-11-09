@@ -1,10 +1,10 @@
-<!-- ===================== SECTION: Aurora Monzo Dashboard v1.4 (with Pot Carousel) ===================== -->
+<!-- ===================== SECTION: Aurora Monzo Dashboard v1.5 (bug-fix release) ===================== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Aurora Monzo Dashboard v1.4 – Neon Blue + Coral Glow</title>
+<title>Aurora Monzo Dashboard v1.5 – Neon Blue + Coral Glow</title>
 
 <!-- ===================== SECTION: FONTS & BASE ===================== -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@500&display=swap" rel="stylesheet" />
@@ -68,36 +68,6 @@ header {
 .card:hover {
   transform: translateY(-2px);
   box-shadow: 0 0 18px rgba(255,111,97,0.25);
-}
-
-/* ===================== SECTION: GRID LAYOUT ===================== */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 15px;
-}
-
-/* ===================== SECTION: PROGRESS BARS ===================== */
-.progress-container {
-  background: rgba(255,255,255,0.08);
-  border-radius: 10px;
-  height: 14px;
-  overflow: hidden;
-  margin-top: 6px;
-}
-
-.progress-bar {
-  height: 100%;
-  width: 0;
-  background: linear-gradient(90deg, var(--glow-cyan), var(--glow-coral));
-  box-shadow: 0 0 10px var(--glow-cyan);
-  border-radius: 10px;
-  animation: loadBar 2s ease forwards;
-}
-
-@keyframes loadBar {
-  from { width: 0; }
-  to { width: var(--target-width, 100%); }
 }
 
 /* ===================== SECTION: POTS CAROUSEL STYLES ===================== */
@@ -172,13 +142,11 @@ tr:nth-child(even) { background: rgba(255,255,255,0.03); }
 </style>
 </head>
 <body>
-<!-- ===================== SECTION: HEADER ===================== -->
 <header>
   <h1>Aurora Monzo Dashboard</h1>
   <h3>Live Data Sync – Neon Blue + Coral Glow Edition</h3>
 </header>
 
-<!-- ===================== SECTION: MAIN CONTAINER ===================== -->
 <div class="container">
 
   <!-- ACCOUNT SUMMARY -->
@@ -219,21 +187,20 @@ tr:nth-child(even) { background: rgba(255,255,255,0.03); }
     </table>
   </section>
 
-  // TRANSACTIONS
-const txnBody = document.querySelector("#txnTable tbody");
-txnBody.innerHTML = "";
-txns.slice(0, 5).forEach(tx => {
-  const date = tx.date || tx.Date || "–";
-  const merchant = tx.merchant || tx.Merchant || tx.Name || "–";
-  const rawAmt = tx.amount ?? tx["Amount (£)"] ?? tx.Amount ?? 0;
-  const amount = parseFloat(rawAmt) || 0;
+  <!-- RECENT TRANSACTIONS -->
+  <section id="recent-transactions" class="card">
+    <h2>🧾 Recent Transactions</h2>
+    <table id="txnTable">
+      <thead><tr><th>Date</th><th>Merchant</th><th>Amount (£)</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
 
-  const row = document.createElement("tr");
-  row.innerHTML = `<td>${date}</td><td>${merchant}</td><td>${amount.toFixed(2)}</td>`;
-  txnBody.appendChild(row);
-});
+  <footer style="text-align:center;margin-top:25px;color:#aaa;font-size:0.85em;">
+    <span id="lastUpdated">Loading data…</span>
+  </footer>
+</div>
 
-<!-- ===================== SECTION: SCRIPT ===================== -->
 <script>
 async function loadAuroraMonzo() {
   const status = document.getElementById("lastUpdated");
@@ -274,12 +241,16 @@ async function loadAuroraMonzo() {
       subBody.appendChild(row);
     });
 
-    // TRANSACTIONS
+    // TRANSACTIONS (fixed for varied key names)
     const txnBody = document.querySelector("#txnTable tbody");
     txnBody.innerHTML = "";
     txns.slice(0, 5).forEach(tx => {
+      const date = tx.date || tx.Date || "–";
+      const merchant = tx.merchant || tx.Merchant || tx.Name || "–";
+      const rawAmt = tx.amount ?? tx["Amount (£)"] ?? tx.Amount ?? 0;
+      const amount = parseFloat(rawAmt) || 0;
       const row = document.createElement("tr");
-      row.innerHTML = `<td>${tx.date}</td><td>${tx.merchant}</td><td>${tx.amount.toFixed(2)}</td>`;
+      row.innerHTML = `<td>${date}</td><td>${merchant}</td><td>${amount.toFixed(2)}</td>`;
       txnBody.appendChild(row);
     });
 
@@ -339,4 +310,4 @@ document.addEventListener("DOMContentLoaded", loadAuroraMonzo);
 </script>
 </body>
 </html>
-<!-- ===================== END: Aurora Monzo Dashboard v1.4 ===================== -->
+<!-- ===================== END: Aurora Monzo Dashboard v1.5 ===================== -->
