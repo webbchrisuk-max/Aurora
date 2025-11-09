@@ -358,39 +358,49 @@ txns.slice(0, 5).forEach((tx) => {
   txnBody.appendChild(r);
 });
 
-/* ---------- Render Pots Carousel ---------- */
+/* ---------- POTS CAROUSEL ---------- */
 renderPotCarousel(pots);
 
-/* ---------- Pots Carousel ---------- */
 function renderPotCarousel(pots) {
   const carousel = document.getElementById("potCarousel");
   carousel.innerHTML = "";
+
+  // ✅ Manual goal values (current confirmed set)
   const goals = {
     "Flex Repayment": 419,
-    "Direct Debits": 416,
-    Holiday: 800,
+    "Direct Debits": 459.45,
+    "Holiday": 297.79,
     "Coventry City FC": 500,
-    IGTrading: 400,
+    "IGTrading": 500,
     "Car Maintenance": 400,
     "Work Buffer": 65,
-    Savings: 1000,
+    "Savings": 1000
   };
+
+  // ✅ Debug log (safe to keep or remove)
+  console.log("🎯 Pots loaded:", pots);
+  console.log("🎯 Goals used:", goals);
+
   Object.entries(pots).forEach(([name, balance]) => {
-    if (name === "Flex Repayment") return;
-    const goal = goals[name] || 500;
+    if (name === "Flex Repayment") return; // skip Flex
+    const goal = goals[name] ?? 500;
     const pct = Math.min((balance / goal) * 100, 100).toFixed(1);
+
     const card = document.createElement("div");
     card.className = "pot-card";
     card.innerHTML = `
       <h3>${name}</h3>
-      <p>£${balance.toFixed(2)} / £${goal}</p>
+      <p>£${balance.toFixed(2)} / £${goal.toFixed(2)}</p>
       <div class="progress-container">
         <div class="progress-bar" style="width:${pct}%"></div>
-      </div>`;
+      </div>
+    `;
     carousel.appendChild(card);
   });
-}
 
+  // ✅ Prevent caching (forces latest script values)
+  carousel.setAttribute("data-rendered", Date.now());
+}
 /* ---------- Sync Indicator ---------- */
 status.innerHTML = "🟢 Connected – Live Sync Active";
 status.style.animationPlayState = "running";
