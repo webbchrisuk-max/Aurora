@@ -184,7 +184,6 @@ tr:nth-child(even) {
 </div>
 
 <!-- ===================== SECTION: SCRIPT ===================== -->
-<!-- ===================== SECTION: SCRIPT ===================== -->
 <script>
 async function loadAuroraMonzo() {
   const status = document.getElementById("lastUpdated");
@@ -225,68 +224,6 @@ async function loadAuroraMonzo() {
       document.getElementById("flexNext").textContent = "0.00";
       document.getElementById("flexDate").textContent = "–";
     }
-
-    // ===================== SECTION: POTS GRID =====================
-    const potsDiv = document.getElementById("potsContainer");
-    potsDiv.innerHTML = "";
-    summary.pots.forEach(pot => {
-      if (pot.name.toLowerCase().includes("flex")) return; // skip flex card here
-      const card = document.createElement("div");
-      card.className = "card";
-      const value = parseFloat(pot.balance);
-      const target = 500;
-      const percent = Math.min((value / target) * 100, 100).toFixed(1);
-      card.innerHTML = `
-        <h3>${pot.name}</h3>
-        <p>£${value.toFixed(2)}</p>
-        <div class="progress-container">
-          <div class="progress-bar" style="--target-width:${percent}%;"></div>
-        </div>
-        <small>${pot.notes || ""}</small>
-      `;
-      potsDiv.appendChild(card);
-    });
-
-    // ===================== SECTION: DIRECT DEBITS =====================
-    const ddBody = document.querySelector("#ddTable tbody");
-    ddBody.innerHTML = "";
-    summary.direct_debits.forEach(dd => {
-      const row = document.createElement("tr");
-      row.innerHTML = `<td>${dd.payee}</td><td>${dd.amount.toFixed(2)}</td><td>${dd.due_date}</td>`;
-      ddBody.appendChild(row);
-    });
-
-    // ===================== SECTION: SUBSCRIPTIONS =====================
-    const subBody = document.querySelector("#subTable tbody");
-    subBody.innerHTML = "";
-    summary.subscriptions_from_main.forEach(sub => {
-      const row = document.createElement("tr");
-      row.innerHTML = `<td>${sub.service}</td><td>${sub.amount.toFixed(2)}</td><td>${sub.renewal_date}</td>`;
-      subBody.appendChild(row);
-    });
-
-    // ===================== SECTION: TIMESTAMP =====================
-    status.textContent = "✅ Data successfully loaded – " + new Date().toLocaleString();
-  } catch (err) {
-    console.error("❌ Aurora Monzo load error:", err);
-    status.textContent = "❌ Failed to load Monzo data: " + err.message;
-  }
-}
-
-document.addEventListener("DOMContentLoaded", loadAuroraMonzo);
-</script>
-    
-    // ===================== SECTION: ACCOUNT SUMMARY =====================
-    const s = summary.monzo_summary;
-    document.getElementById("mainBalance").textContent = s.main_balance.toFixed(2);
-    document.getElementById("payday").textContent = s.payday;
-    document.getElementById("payReceived").textContent = s.last_income.toFixed(2);
-
-    // ===================== SECTION: FLEX SUMMARY =====================
-    const flex = summary.pots.find(p => p.name.toLowerCase().includes("flex"));
-    document.getElementById("flexBalance").textContent = flex ? flex.balance.toFixed(2) : "0.00";
-    document.getElementById("flexNext").textContent = "419.00";
-    document.getElementById("flexDate").textContent = "2025-12-01";
 
     // ===================== SECTION: POTS GRID =====================
     const potsDiv = document.getElementById("potsContainer");
