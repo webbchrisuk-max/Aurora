@@ -21,8 +21,14 @@ jobs:
         run: |
           sudo apt-get install -y jq
           curl -L "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraMonzo.json" -o AuroraMonzo.json
+
+          # Wrap the downloaded OpenSheet data into the correct JSON structure
+          jq -n --argjson data "$(cat newMonzo.json)" '{ "monzo": { "transactions_feed": { "recent": $data } } }' > wrappedMonzo.json
+
+          # Merge: replace ONLY the transactions_feed section
           jq '.monzo.transactions_feed = $new.monzo.transactions_feed' \
-            --argjson new "$(cat newMonzo.json)" AuroraMonzo.json > AuroraMonzo_merged.json
+            --argjson new "$(cat wrappedMonzo.json)" AuroraMonzo.json > AuroraMonzo_merged.json
+
           mv AuroraMonzo_merged.json AuroraMonzo.json
 
       - name: Commit and push merged file
