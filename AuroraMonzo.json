@@ -1,7 +1,7 @@
 {
   "monzo": {
     "account_core": {
-      "main_balance": 358.81,
+      "main_balance": 821.15,
       "payday_last": "2025-11-07",
       "income_received": 2078.78,
       "flex": {
@@ -11,7 +11,7 @@
       },
       "pots": {
         "Flex Repayment": 609.44,
-        "Direct Debits": 925.79,
+        "Direct Debits": 463.45,
         "Holiday": 174.45,
         "Coventry City FC": 167.86,
         "IGTrading": 229.3,
