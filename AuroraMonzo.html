@@ -1,4 +1,4 @@
-<!-- ===================== SECTION: Aurora Monzo Dashboard v1.4 (with Pot Carousel – Fixed + Safe) ===================== -->
+<!-- ===================== SECTION: Aurora Monzo Dashboard v1.4 (Manual Pot Carousel Edition) ===================== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -77,35 +77,33 @@ header{
 }
 .card:hover{transform:translateY(-2px);box-shadow:0 0 18px rgba(255,111,97,0.25);}
 
-/* ===================== SECTION: POT CAROUSEL ===================== */
+/* ===================== SECTION: POT CAROUSEL (MANUAL SCROLL) ===================== */
 .pot-carousel{
   display:flex;
-  overflow:hidden;
-  position:relative;
-  height:240px;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  gap:20px;
+  padding:10px 0 20px 0;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
 }
+.pot-carousel::-webkit-scrollbar{display:none;}
+
 .pot-card{
-  flex:0 0 100%;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  border-radius:14px;
+  flex:0 0 85%;
+  scroll-snap-align:center;
   background:rgba(255,255,255,0.05);
+  border-radius:14px;
+  padding:20px;
+  text-align:center;
   box-shadow:0 0 15px var(--glow-cyan);
   animation:potPulse 2s infinite alternate;
-  transition:transform .3s ease, opacity .3s ease;
-  position:absolute;
-  top:0;left:0;right:0;bottom:0;
-  opacity:0;
-  transform:translate3d(100%,0,0);
+  transition:transform 0.3s ease;
 }
-.pot-card.active{opacity:1;transform:translate3d(0,0,0);}
-.pot-card.exit-left{transform:translate3d(-100%,0,0);}
+.pot-card:hover{transform:scale(1.03);}
 @keyframes potPulse{from{box-shadow:0 0 15px var(--glow-cyan);}to{box-shadow:0 0 25px var(--glow-coral);}}
 .pot-card h3{color:var(--glow-coral);text-shadow:0 0 8px var(--glow-coral);}
-.pot-progress{width:80%;height:10px;border-radius:8px;background:rgba(255,255,255,0.1);margin-top:10px;overflow:hidden;}
+.pot-progress{height:10px;border-radius:8px;background:rgba(255,255,255,0.1);margin-top:10px;overflow:hidden;}
 .pot-fill{height:100%;background:linear-gradient(90deg,var(--glow-cyan),var(--glow-coral));border-radius:8px;transition:width .8s ease-in-out;}
 
 /* ===================== SECTION: TABLES ===================== */
@@ -240,34 +238,23 @@ function renderPotCarousel(pots){
     CommentaryCityFC:500,IGTrading:400,CarMaintenance:400,
     WorkBuffer:65,Savings:1000
   };
-  const entries=Object.entries(pots).filter(([n])=>n!=="FlexRepayment");
-  entries.forEach(([name,balance],i)=>{
+
+  Object.entries(pots).forEach(([name,balance])=>{
+    if(name==="FlexRepayment")return;
     const goal=goals[name]||500;
     const pct=Math.min((balance/goal)*100,100).toFixed(1);
     const card=document.createElement("div");
     card.className="pot-card";
-    if(i===0)card.classList.add("active");
     card.innerHTML=`
       <h3>${name}</h3>
       <p>£${balance.toFixed(2)} / £${goal}</p>
       <div class="pot-progress"><div class="pot-fill" style="width:${pct}%"></div></div>`;
     carousel.appendChild(card);
   });
-
-  let idx=0;
-  setInterval(()=>{
-    const cards=carousel.querySelectorAll(".pot-card");
-    if(cards.length<2)return;
-    cards[idx].classList.remove("active");
-    cards[idx].classList.add("exit-left");
-    idx=(idx+1)%cards.length;
-    cards[idx].classList.add("active");
-    setTimeout(()=>cards.forEach(c=>c.classList.remove("exit-left")),1000);
-  },4000);
 }
 
 document.addEventListener("DOMContentLoaded",loadAuroraMonzo);
 </script>
 </body>
 </html>
-<!-- ===================== END: Aurora Monzo Dashboard v1.4 (Fixed + Safe) ===================== -->
+<!-- ===================== END: Aurora Monzo Dashboard v1.4 (Manual Pot Carousel Edition) ===================== -->
