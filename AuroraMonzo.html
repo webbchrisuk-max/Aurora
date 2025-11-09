@@ -1,4 +1,4 @@
-<!-- ===================== SECTION: Aurora Monzo Dashboard v1.4 (Manual Pot Carousel + Transaction Fix) ===================== -->
+<!-- ===================== SECTION: Aurora Monzo Dashboard v1.4 (Manual Pot Carousel + Fixed Transaction Feed) ===================== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -184,6 +184,7 @@ async function loadAuroraMonzo(){
     const pots=core.pots||{};
     const dd=data.monzo.direct_debits||[];
     const subs=data.monzo.subscriptions_from_main||[];
+    const txns=data.transactions_feed?.recent||[];
 
     document.getElementById("mainBalance").textContent=core.main_balance.toFixed(2);
     document.getElementById("payday").textContent=core.payday_last;
@@ -208,30 +209,21 @@ async function loadAuroraMonzo(){
       subBody.appendChild(r);
     });
 
-    // ✅ UNIVERSAL TRANSACTION LOADER
+    // ✅ TRANSACTION LOADER (matches your real JSON keys)
     const txnBody=document.querySelector("#txnTable tbody");
     txnBody.innerHTML="";
-    let txns =
-      data.monzo.transactions_feed?.recent ||
-      data.monzo.transactions?.recent ||
-      data.monzo.transactions ||
-      [];
-
     if(!Array.isArray(txns) || txns.length===0){
       const row=document.createElement("tr");
       row.innerHTML=`<td colspan="3" style="text-align:center;color:#888;">No recent transactions available</td>`;
       txnBody.appendChild(row);
     }else{
       txns.slice(0,5).forEach(tx=>{
-        const date=tx.date||"—";
-        const merchant=tx.merchant||tx.description||"Unknown";
-        const amount=typeof tx.amount==="number"
-          ? tx.amount.toFixed(2)
-          : tx.amount_gbp
-          ? parseFloat(tx.amount_gbp).toFixed(2)
-          : "0.00";
+        const date=tx["Date"]||"—";
+        const merchant=tx["Name"]||"Unknown";
+        const amountStr=tx["Amount (£)"]||"0.00";
+        const amount=parseFloat(amountStr.replace(/[^\d.-]/g,""))||0;
         const r=document.createElement("tr");
-        r.innerHTML=`<td>${date}</td><td>${merchant}</td><td>${amount}</td>`;
+        r.innerHTML=`<td>${date}</td><td>${merchant}</td><td>${amount.toFixed(2)}</td>`;
         txnBody.appendChild(r);
       });
     }
@@ -272,4 +264,4 @@ document.addEventListener("DOMContentLoaded",loadAuroraMonzo);
 </script>
 </body>
 </html>
-<!-- ===================== END: Aurora Monzo Dashboard v1.4 (Manual Pot Carousel + Transaction Fix) ===================== -->
+<!-- ===================== END: Aurora Monzo Dashboard v1.4 (Manual Pot Carousel + Fixed Transaction Feed) ===================== -->
