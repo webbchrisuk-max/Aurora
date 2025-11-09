@@ -5,13 +5,13 @@
       "payday_last": "2025-11-07",
       "income_received": 2078.78,
       "pots": {
-        "FlexRepayment": 419,
-        "DirectDebits": 46.48,
+        "Flex Repayment": 419,
+        "Direct Debits": 46.48,
         "Holiday": 454.77,
-        "CommentaryCityFC": 71.43,
+        "Coventry City FC": 71.43,
         "IGTrading": 151.6,
-        "CarMaintenance": 201.49,
-        "WorkBuffer": 37.33,
+        "Car Maintenance": 201.49,
+        "Work Buffer": 37.33,
         "Savings": 501
       }
     },
