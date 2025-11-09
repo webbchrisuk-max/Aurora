@@ -7,6 +7,12 @@
     "last_updated": "2025-11-09T00:45:00Z"
   },
 
+  "flex_account": {
+      "total_balance": -808.86,
+      "next_payment_due": 419.00,
+      "due_date": "2025-12-01"
+    }
+
   "pots": [
     { "name": "Flex Repayment Card", "balance": 609.44, "notes": "£419 due 1 Dec 2025" },
     { "name": "Direct Debits", "balance": 458.45, "notes": "Covers all DDs except insurance + subs" },
