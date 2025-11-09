@@ -37,6 +37,41 @@ header{text-align:center;padding:25px 10px;
   transition:transform .25s ease,box-shadow .25s ease;}
 .card:hover{transform:translateY(-2px);box-shadow:0 0 18px rgba(255,111,97,0.25);}
 
+/* === CARD GLOW EFFECT (Soft Pulse for All Sections) === */
+.card {
+  background: var(--card-bg);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 0 12px rgba(0,255,247,0.12),
+              0 0 24px rgba(255,111,97,0.08);
+  backdrop-filter: blur(6px);
+  position: relative;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  animation: cardGlow 4s ease-in-out infinite alternate;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(255,111,97,0.35),
+              0 0 35px rgba(0,255,247,0.25);
+}
+
+@keyframes cardGlow {
+  0% {
+    box-shadow: 0 0 8px rgba(0,255,247,0.15),
+                0 0 20px rgba(255,111,97,0.08);
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(0,255,247,0.25),
+                0 0 35px rgba(255,111,97,0.15);
+  }
+  100% {
+    box-shadow: 0 0 8px rgba(0,255,247,0.15),
+                0 0 20px rgba(255,111,97,0.08);
+  }
+}
+
 /* === PROGRESS BAR === */
 .progress-container{background:rgba(255,255,255,0.08);border-radius:10px;height:14px;overflow:hidden;margin-top:6px;}
 .progress-bar{height:100%;background:linear-gradient(90deg,var(--glow-cyan),var(--glow-coral));
@@ -93,6 +128,78 @@ header{text-align:center;padding:25px 10px;
   p,td,th{font-size:.9rem;}
   table{font-size:.85rem;}
   footer{font-size:.75em;padding:5px 0 8px 0;}
+}
+/* === CARD TEXT + TABLE CLEANUP (Aurora Neon Layout) === */
+
+/* Consistent section headers */
+.card h2 {
+  font-size: 1.1rem;
+  letter-spacing: 1.2px;
+  color: var(--glow-cyan);
+  margin-bottom: 10px;
+  text-shadow: 0 0 8px rgba(0,255,247,0.5);
+}
+
+/* Improve paragraph spacing */
+.card p {
+  margin: 5px 0;
+  line-height: 1.4em;
+}
+
+/* Table layout refinement */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 6px;
+  font-size: 0.93rem;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Header row style */
+th {
+  color: var(--glow-cyan);
+  font-weight: 600;
+  padding: 10px 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  text-align: left;
+  text-shadow: 0 0 6px rgba(0,255,247,0.4);
+}
+
+/* Table rows: spacing + even row glow */
+td {
+  padding: 9px 8px;
+  color: #e7e7e7;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+
+tr:nth-child(even) td {
+  background: rgba(255,255,255,0.02);
+}
+
+tr:hover td {
+  background: rgba(255,111,97,0.05);
+  color: #fff;
+  text-shadow: 0 0 8px rgba(255,111,97,0.3);
+  transition: all 0.25s ease;
+}
+
+/* Direct Debits total row highlight */
+#ddTable tr:last-child td {
+  background: rgba(0,255,247,0.05);
+  color: var(--glow-cyan);
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(0,255,247,0.4);
+  border-top: 1px solid rgba(0,255,247,0.15);
+}
+
+/* Consistent glow around key data */
+#recent-transactions td:nth-child(3),
+#subscriptions td:nth-child(2),
+#direct-debits td:nth-child(2) {
+  color: var(--glow-coral);
+  font-weight: 600;
+  text-shadow: 0 0 8px rgba(255,111,97,0.3);
 }
 </style>
 <!-- ===================== PART 2 START (BODY LAYOUT) ===================== -->
@@ -164,7 +271,7 @@ header{text-align:center;padding:25px 10px;
     </table>
   </section>
 
-  <!-- 🧾 RECENT TRANSACTIONS -->
+ <!-- 🧾 RECENT TRANSACTIONS -->
   <section id="recent-transactions" class="card">
     <h2>🧾 Recent Transactions</h2>
     <table id="txnTable">
@@ -358,49 +465,39 @@ txns.slice(0, 5).forEach((tx) => {
   txnBody.appendChild(r);
 });
 
-/* ---------- POTS CAROUSEL ---------- */
+/* ---------- Render Pots Carousel ---------- */
 renderPotCarousel(pots);
 
+/* ---------- Pots Carousel ---------- */
 function renderPotCarousel(pots) {
   const carousel = document.getElementById("potCarousel");
   carousel.innerHTML = "";
-
-  // ✅ Manual goal values (current confirmed set)
   const goals = {
     "Flex Repayment": 419,
-    "Direct Debits": 459.45,
-    "Holiday": 297.79,
+    "Direct Debits": 416,
+    Holiday: 800,
     "Coventry City FC": 500,
-    "IGTrading": 500,
+    IGTrading: 400,
     "Car Maintenance": 400,
     "Work Buffer": 65,
-    "Savings": 1000
+    Savings: 1000,
   };
-
-  // ✅ Debug log (safe to keep or remove)
-  console.log("🎯 Pots loaded:", pots);
-  console.log("🎯 Goals used:", goals);
-
   Object.entries(pots).forEach(([name, balance]) => {
-    if (name === "Flex Repayment") return; // skip Flex
-    const goal = goals[name] ?? 500;
+    if (name === "Flex Repayment") return;
+    const goal = goals[name] || 500;
     const pct = Math.min((balance / goal) * 100, 100).toFixed(1);
-
     const card = document.createElement("div");
     card.className = "pot-card";
     card.innerHTML = `
       <h3>${name}</h3>
-      <p>£${balance.toFixed(2)} / £${goal.toFixed(2)}</p>
+      <p>£${balance.toFixed(2)} / £${goal}</p>
       <div class="progress-container">
         <div class="progress-bar" style="width:${pct}%"></div>
-      </div>
-    `;
+      </div>`;
     carousel.appendChild(card);
   });
-
-  // ✅ Prevent caching (forces latest script values)
-  carousel.setAttribute("data-rendered", Date.now());
 }
+
 /* ---------- Sync Indicator ---------- */
 status.innerHTML = "🟢 Connected – Live Sync Active";
 status.style.animationPlayState = "running";
