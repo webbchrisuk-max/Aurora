@@ -1,0 +1,39 @@
+name: Aurora Monzo – Monthly Direct Debit Rollover
+
+on:
+  schedule:
+    - cron: "0 0 1 * *"   # midnight on the 1st (UTC)
+  workflow_dispatch:
+
+jobs:
+  roll_forward_direct_debits:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧩 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📅 Roll Direct Debit due dates forward by +1 month
+        run: |
+          node <<'EOF'
+          const fs = require('fs');
+          const file = 'AuroraMonzo.json';
+          const data = JSON.parse(fs.readFileSync(file,'utf8'));
+          const dds = data.monzo.direct_debits || [];
+          dds.forEach(dd=>{
+            const date = new Date(dd.due_date);
+            if(!isNaN(date)){ date.setMonth(date.getMonth()+1); dd.due_date = date.toISOString().split('T')[0]; }
+          });
+          data.monzo.integrity.checksum = "monzo-monthly-"+new Date().toISOString();
+          data.monzo.integrity.verified = true;
+          fs.writeFileSync(file,JSON.stringify(data,null,2));
+          console.log(`✅ Rolled ${dds.length} Direct Debits one month forward.`);
+          EOF
+
+      - name: 📝 Commit and push
+        run: |
+          git config user.name "aurora-bot"
+          git config user.email "aurora@users.noreply.github.com"
+          git add AuroraMonzo.json
+          git commit -m "📅 Monzo DDs rolled forward by +1 month" || echo "No changes to commit"
+          git push
