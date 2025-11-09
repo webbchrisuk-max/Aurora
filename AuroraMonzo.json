@@ -4,62 +4,55 @@
     "last_income": 2078.78,
     "payday": "2025-11-07",
     "currency": "GBP",
-    "last_updated": "2025-11-08T22:45:00Z"
+    "last_updated": "2025-11-09T00:45:00Z"
   },
 
-  "pots": {
-    "Flex Repayment": {
-      "balance": 419.00,
-      "target": 419.00,
-      "status": "covered",
-      "notes": "December 1st payment covered; next due January 1st (£380.87)"
-    },
-    "Direct Debits": {
-      "balance": 385.34,
-      "notes": "All DDs covered until next payday"
-    },
-    "Holiday": {
-      "balance": 74.45,
-      "goal": 500.00,
-      "target_date": "2026-02-01",
-      "notes": "Holiday Pot for Cyprus 2026"
-    },
-    "Coventry City FC": {
-      "balance": 71.43,
-      "goal": 500.00,
-      "target_date": "2026-05-01",
-      "notes": "CCFC Season Pot target May 2026"
-    },
-    "IG Trading": {
-      "balance": 126.75,
-      "notes": "Used for trading or top-ups into IG ISA"
-    },
-    "Car Maintenance": {
-      "balance": 201.49,
-      "goal": 300.00,
-      "notes": "For tyres, MOT, servicing"
-    },
-    "Work Buffer": {
-      "balance": 37.33,
-      "target": 65.00,
-      "automation_rule": "Every Friday, refund work-tagged spending to main account"
-    },
-    "Savings": {
-      "balance": 501.00,
-      "notes": "General emergency fund / interest-earning pot"
-    }
-  },
+  "pots": [
+    { "name": "Flex Repayment Card", "balance": 609.44, "notes": "£419 due 1 Dec 2025" },
+    { "name": "Direct Debits", "balance": 458.45, "notes": "Covers all DDs except insurance + subs" },
+    { "name": "HolidayPot", "balance": 174.45, "notes": "Holiday savings" },
+    { "name": "Coventry City F.C", "balance": 167.86, "notes": "Goal by May 2026" },
+    { "name": "IG Trading", "balance": 229.30, "notes": "Round-up investment pot" },
+    { "name": "Car Maintenance", "balance": 294.49, "notes": "Vehicle servicing and MOT" },
+    { "name": "Work Buffer", "balance": 47.94, "notes": "Reimbursement buffer (auto Friday sync)" },
+    { "name": "Holding Pot", "balance": 508.34, "notes": "Allocation reserve" },
+    { "name": "Christmas", "balance": 150.00, "notes": "Seasonal fund" }
+  ],
+
+  "direct_debits": [
+    { "payee": "Virgin Media", "amount": 46.39, "due_date": "2025-11-14" },
+    { "payee": "Barclays Partner Finance", "amount": 50.92, "due_date": "2025-11-17" },
+    { "payee": "Vodafone", "amount": 23.28, "due_date": "2025-11-30" },
+    { "payee": "Driver & Vehicle Licensing Agency", "amount": 23.18, "due_date": "2025-11-03" },
+    { "payee": "Octopus Energy", "amount": 94.90, "due_date": "2025-11-03" },
+    { "payee": "Sports Direct", "amount": 20.00, "due_date": "2025-11-04" },
+    { "payee": "ID Mobile", "amount": 10.00, "due_date": "2025-11-07" },
+    { "payee": "Postcode Lottery #1", "amount": 12.25, "due_date": "2025-11-07" },
+    { "payee": "Postcode Lottery #2", "amount": 12.25, "due_date": "2025-11-07" },
+    { "payee": "Postcode Lottery #3", "amount": 12.25, "due_date": "2025-11-07" },
+    { "payee": "Postcode Lottery #4", "amount": 12.25, "due_date": "2025-11-07" },
+    { "payee": "Monzo Plus", "amount": 5.00, "due_date": "2025-11-08" },
+    { "payee": "Rugby B.C.", "amount": 139.00, "due_date": "2025-11-03" },
+    { "payee": "Legal & General", "amount": 17.92, "due_date": "2025-11-03" },
+    { "payee": "Severn Trent Water", "amount": 43.86, "due_date": "2025-11-03" }
+  ],
+
+  "subscriptions_from_main": [
+    { "service": "Contents Insurance", "amount": 7.73, "renewal_date": "2025-11-31" },
+    { "service": "Apple One", "amount": 18.95, "renewal_date": "2025-11-13" },
+    { "service": "ChatGPT Plus", "amount": 19.99, "renewal_date": "2025-11-23" }
+  ],
 
   "totals": {
-    "pots_total": 1816.79,
+    "pots_total": 2630.27,
     "available_cash": 826.15,
-    "grand_total": 2642.94
+    "grand_total": 3456.42
   },
 
   "transactions_feed": "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Monzo",
 
   "integrity": {
-    "checksum": "restored-2025-11-08",
+    "checksum": "aurora-monzo-realdata-2025-11-09",
     "verified": true
   }
 }
