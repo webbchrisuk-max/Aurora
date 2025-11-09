@@ -1,14 +1,14 @@
-<!-- ===================== SECTION: Aurora Monzo Dashboard v1.4 (4-Weekly Payday + Direct Debits in Pay Period + Flex Restored) ===================== -->
+<!-- ===================== SECTION: Aurora Monzo Dashboard v1.5 (Pay-Period DDs + Flex + Total Due) ===================== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>Aurora Monzo Dashboard v1.4 – Neon Blue + Coral Glow</title>
+<title>Aurora Monzo Dashboard v1.5 – Neon Blue + Coral Glow</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@500&display=swap" rel="stylesheet" />
 
 <style>
-:root {
+:root{
   --bg-color:#05060a;
   --card-bg:rgba(255,255,255,0.05);
   --text-color:#fff;
@@ -40,6 +40,7 @@ tr:nth-child(even){background:rgba(255,255,255,.03);}
 </header>
 
 <div class="container">
+
   <section id="account-summary" class="card">
     <h2>🏦 Main Account</h2>
     <p><strong>Balance:</strong> £<span id="mainBalance">0.00</span></p>
@@ -116,21 +117,19 @@ async function loadAuroraMonzo(){
     const nextPaydayDate=computeNextPayday28(lastPaydayISO);
     const nextPaydayISO=formatISO(nextPaydayDate);
 
-    // Account summary
     document.getElementById("mainBalance").textContent=core.main_balance.toFixed(2);
     document.getElementById("paydayLast").textContent=lastPaydayISO;
     document.getElementById("paydayNext").textContent=nextPaydayISO;
     document.getElementById("payReceived").textContent=core.income_received.toFixed(2);
     document.getElementById("payPeriodNote").textContent=`Pay period: ${lastPaydayISO} → ${nextPaydayISO} (4-weekly)`;
 
-    // Flex summary
     if(core.flex){
       document.getElementById("flexBalance").textContent=core.flex.total_balance.toFixed(2);
       document.getElementById("nextFlexDue").textContent=core.flex.next_payment_due.toFixed(2);
       document.getElementById("nextFlexDate").textContent=core.flex.next_due_date;
     }
 
-    // Direct Debits (current pay period)
+    /* ---------- Direct Debits (current pay period + total) ---------- */
     const ddBody=document.querySelector("#ddTable tbody");
     ddBody.innerHTML="";
     const start=new Date(core.payday_last);start.setHours(0,0,0,0);
@@ -140,6 +139,8 @@ async function loadAuroraMonzo(){
       .map(e=>{const d=new Date(e.due_date);d.setHours(0,0,0,0);return{...e,_due:d};})
       .filter(e=>e._due>=start&&e._due<=end)
       .sort((a,b)=>a._due-b._due);
+
+    const totalDue=periodDDs.reduce((sum,e)=>sum+(e.amount||0),0);
 
     if(periodDDs.length===0){
       const row=document.createElement("tr");
@@ -151,9 +152,14 @@ async function loadAuroraMonzo(){
         r.innerHTML=`<td>${e.payee}</td><td>${e.amount.toFixed(2)}</td><td>${e.due_date}</td>`;
         ddBody.appendChild(r);
       });
+      const totalRow=document.createElement("tr");
+      totalRow.style.fontWeight="600";
+      totalRow.style.color="var(--glow-cyan)";
+      totalRow.innerHTML=`<td>Total due before payday</td><td>£${totalDue.toFixed(2)}</td><td>by ${formatISO(end)}</td>`;
+      ddBody.appendChild(totalRow);
     }
 
-    // Subscriptions
+    /* ---------- Subscriptions ---------- */
     const subBody=document.querySelector("#subTable tbody");
     subBody.innerHTML="";
     subs.forEach(i=>{
@@ -162,7 +168,7 @@ async function loadAuroraMonzo(){
       subBody.appendChild(r);
     });
 
-    // Transactions
+    /* ---------- Transactions ---------- */
     const txnBody=document.querySelector("#txnTable tbody");
     txnBody.innerHTML="";
     if(!Array.isArray(txns)||txns.length===0){
@@ -211,4 +217,4 @@ document.addEventListener("DOMContentLoaded",loadAuroraMonzo);
 </script>
 </body>
 </html>
-<!-- ===================== END: Aurora Monzo Dashboard v1.4 (Pay-Period DDs + Flex Restored) ===================== -->
+<!-- ===================== END: Aurora Monzo Dashboard v1.5 (Pay-Period DDs + Total) ===================== -->
