@@ -185,7 +185,11 @@ tr:nth-child(even) {
 
 <!-- ===================== SECTION: SCRIPT ===================== -->
 <script>
-const jsonURL = "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraMonzo.json";
+// main monzo summary + pots
+const monzoJSON = "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraMonzo.json";
+
+// live transaction feed from your Google Sheet
+const monzoFeed = "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Monzo";
 
 async function loadAuroraMonzo() {
   try {
