@@ -274,14 +274,32 @@ async function loadAuroraMonzo() {
       statusEl.style.color = "";
     }
 
-    /* ---------- Direct Debits ---------- */
-    const ddBody = document.querySelector("#ddTable tbody");
-    ddBody.innerHTML = "";
-    dd.forEach(item => {
-      const row = document.createElement("tr");
-      row.innerHTML = `<td>${item.payee}</td><td>${item.amount.toFixed(2)}</td><td>${item.due_date}</td>`;
-      ddBody.appendChild(row);
-    });
+    /* ---------- Direct Debits (only this pay period) ---------- */
+const ddBody = document.querySelector("#ddTable tbody");
+ddBody.innerHTML = "";
+
+const start = new Date(core.payday_last);          // last payday from JSON
+start.setHours(0,0,0,0);
+const end = new Date(start);
+end.setDate(start.getDate() + 28);                 // next payday = +28 days
+end.setHours(23,59,59,999);
+
+const ddInWindow = dd
+  .map(e => ({...e, dateObj: new Date(e.due_date)}))
+  .filter(e => e.dateObj >= start && e.dateObj <= end)
+  .sort((a,b) => a.dateObj - b.dateObj);
+
+if (ddInWindow.length === 0) {
+  const row = document.createElement("tr");
+  row.innerHTML = `<td colspan="3" style="text-align:center;color:#888;">No direct debits left before payday</td>`;
+  ddBody.appendChild(row);
+} else {
+  ddInWindow.forEach(item => {
+    const row = document.createElement("tr");
+    row.innerHTML = `<td>${item.payee}</td><td>${item.amount.toFixed(2)}</td><td>${item.due_date}</td>`;
+    ddBody.appendChild(row);
+  });
+}
 
     /* ---------- Subscriptions ---------- */
     const subBody = document.querySelector("#subTable tbody");
