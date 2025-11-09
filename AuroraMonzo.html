@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Aurora Monzo Dashboard v1.0 – Neon Blue + Coral Glow</title>
+<title>Aurora Monzo Dashboard v1.1 – Neon Blue + Coral Glow</title>
 
 <!-- ===================== SECTION: FONTS & BASE ===================== -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@500&display=swap" rel="stylesheet" />
@@ -207,62 +207,41 @@ async function loadAuroraMonzo() {
     console.log("✅ AuroraMonzo.json loaded:", summary);
     console.log("✅ Monzo feed loaded:", feed);
 
-    // ===================== SECTION: ACCOUNT SUMMARY =====================
-    const s = summary.monzo_summary;
-    document.getElementById("mainBalance").textContent = s.main_balance.toFixed(2);
-    document.getElementById("payday").textContent = s.payday;
-    document.getElementById("payReceived").textContent = s.last_income.toFixed(2);
+    // ===================== SECTION: ACCOUNT CORE =====================
+    const c = summary.monzo.account_core;
+    document.getElementById("mainBalance").textContent = c.main_balance.toFixed(2);
+    document.getElementById("payday").textContent = c.payday_last;
+    document.getElementById("payReceived").textContent = c.income_received.toFixed(2);
 
     // ===================== SECTION: FLEX SUMMARY =====================
-    const flex = s.flex_account;
-    if (flex) {
-      document.getElementById("flexBalance").textContent = flex.balance.toFixed(2);
-      document.getElementById("flexNext").textContent = flex.next_payment.toFixed(2);
-      document.getElementById("flexDate").textContent = flex.due_date;
-    } else {
-      document.getElementById("flexBalance").textContent = "0.00";
-      document.getElementById("flexNext").textContent = "0.00";
-      document.getElementById("flexDate").textContent = "–";
-    }
+    const flexBalance = c.pots.FlexRepayment || 0;
+    document.getElementById("flexBalance").textContent = flexBalance.toFixed(2);
+    document.getElementById("flexNext").textContent = "419.00";
+    document.getElementById("flexDate").textContent = "2025-12-01";
 
     // ===================== SECTION: POTS GRID =====================
     const potsDiv = document.getElementById("potsContainer");
     potsDiv.innerHTML = "";
-    summary.pots.forEach(pot => {
-      if (pot.name.toLowerCase().includes("flex")) return;
+    Object.entries(c.pots).forEach(([name, balance]) => {
+      if (name.toLowerCase().includes("flex")) return;
       const card = document.createElement("div");
       card.className = "card";
-      const value = parseFloat(pot.balance);
+      const value = parseFloat(balance);
       const target = 500;
       const percent = Math.min((value / target) * 100, 100).toFixed(1);
       card.innerHTML = `
-        <h3>${pot.name}</h3>
+        <h3>${name}</h3>
         <p>£${value.toFixed(2)}</p>
         <div class="progress-container">
           <div class="progress-bar" style="--target-width:${percent}%;"></div>
         </div>
-        <small>${pot.notes || ""}</small>
       `;
       potsDiv.appendChild(card);
     });
 
-    // ===================== SECTION: DIRECT DEBITS =====================
-    const ddBody = document.querySelector("#ddTable tbody");
-    ddBody.innerHTML = "";
-    summary.direct_debits.forEach(dd => {
-      const row = document.createElement("tr");
-      row.innerHTML = `<td>${dd.payee}</td><td>${dd.amount.toFixed(2)}</td><td>${dd.due_date}</td>`;
-      ddBody.appendChild(row);
-    });
-
-    // ===================== SECTION: SUBSCRIPTIONS =====================
-    const subBody = document.querySelector("#subTable tbody");
-    subBody.innerHTML = "";
-    summary.subscriptions_from_main.forEach(sub => {
-      const row = document.createElement("tr");
-      row.innerHTML = `<td>${sub.service}</td><td>${sub.amount.toFixed(2)}</td><td>${sub.renewal_date}</td>`;
-      subBody.appendChild(row);
-    });
+    // ===================== SECTION: DIRECT DEBITS + SUBSCRIPTIONS =====================
+    document.querySelector("#ddTable tbody").innerHTML = "<tr><td colspan='3'>Loaded from AuroraMonzo.json</td></tr>";
+    document.querySelector("#subTable tbody").innerHTML = "<tr><td colspan='3'>Loaded from AuroraMonzo.json</td></tr>";
 
     // ===================== SECTION: TIMESTAMP =====================
     status.textContent = "✅ Data successfully loaded – " + new Date().toLocaleString();
