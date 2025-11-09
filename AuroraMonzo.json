@@ -4,14 +4,14 @@
     "last_income": 2078.78,
     "payday": "2025-11-07",
     "currency": "GBP",
-    "last_updated": "2025-11-09T00:45:00Z"
-  },
-
-  "flex_account": {
-      "total_balance": -808.86,
-      "next_payment_due": 419.00,
-      "due_date": "2025-12-01"
+    "last_updated": "2025-11-09T01:15:00Z",
+    "flex_account": {
+      "balance": 609.44,
+      "next_payment": 419.00,
+      "due_date": "2025-12-01",
+      "notes": "£419 due 1 Dec 2025; next £380.87 due 1 Jan 2026"
     }
+  },
 
   "pots": [
     { "name": "Flex Repayment Card", "balance": 609.44, "notes": "£419 due 1 Dec 2025" },
@@ -44,7 +44,7 @@
   ],
 
   "subscriptions_from_main": [
-    { "service": "Contents Insurance", "amount": 7.73, "renewal_date": "2025-11-31" },
+    { "service": "Contents Insurance", "amount": 7.73, "renewal_date": "2025-11-30" },
     { "service": "Apple One", "amount": 18.95, "renewal_date": "2025-11-13" },
     { "service": "ChatGPT Plus", "amount": 19.99, "renewal_date": "2025-11-23" }
   ],
@@ -58,7 +58,7 @@
   "transactions_feed": "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Monzo",
 
   "integrity": {
-    "checksum": "aurora-monzo-realdata-2025-11-09",
+    "checksum": "aurora-monzo-realdata-2025-11-09-v2",
     "verified": true
   }
 }
