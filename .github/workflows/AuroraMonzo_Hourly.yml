@@ -35,7 +35,7 @@ jobs:
           fi
 
       # =====================================================
-      # STEP 3 – Apply NEW Transfers
+      # STEP 3 – Apply NEW Transfers (with date filter)
       # =====================================================
       - name: 🔄 Apply NEW Transfers
         run: |
@@ -48,25 +48,40 @@ jobs:
           const transfers = JSON.parse(fs.readFileSync(transfersFile,'utf8'));
           const applied = JSON.parse(fs.readFileSync(appliedFile,'utf8'));
           const core = data.monzo.account_core; if(!core.pots) core.pots = {};
+
           const makeId = t => [t["Date"],t["From Pot"],t["To Pot"],t["Amount"],t["Note"]].join(' | ');
+          const today = new Date().toISOString().split('T')[0]; // e.g. 2025-11-09
           let appliedCount = 0;
-          for(const t of transfers){
+
+          for (const t of transfers) {
             const id = makeId(t);
-            if(applied.includes(id)) continue;
-            const from = t["From Pot"]?.trim(), to = t["To Pot"]?.trim(), amount = parseFloat(t["Amount"]);
-            if(!from||!to||!Number.isFinite(amount)) continue;
-            if(from==="Main Account") core.main_balance-=amount;
-            else if(core.pots[from]!=undefined) core.pots[from]-=amount;
-            else core.pots[from]=-amount;
-            if(to==="Main Account") core.main_balance+=amount;
-            else { if(core.pots[to]==undefined) core.pots[to]=0; core.pots[to]+=amount; }
-            applied.push(id); appliedCount++;
-            console.log(`✅ ${from} → ${to} £${amount.toFixed(2)}`);
+            if (applied.includes(id)) continue;                     // already done
+            const from = t["From Pot"]?.trim(), to = t["To Pot"]?.trim();
+            const amount = parseFloat(t["Amount"]);
+            const date = (t["Date"]||"").trim();
+
+            // Skip invalid or future-dated transfers
+            if (!from || !to || !Number.isFinite(amount) || !date || date > today) {
+              if (date > today) console.log(`⏭️ Skipping future transfer (${date}): ${from} → ${to} £${amount}`);
+              continue;
+            }
+
+            if (from === "Main Account") core.main_balance -= amount;
+            else if (core.pots[from] != undefined) core.pots[from] -= amount;
+            else core.pots[from] = -amount;
+
+            if (to === "Main Account") core.main_balance += amount;
+            else { if (core.pots[to] == undefined) core.pots[to] = 0; core.pots[to] += amount; }
+
+            applied.push(id);
+            appliedCount++;
+            console.log(`✅ ${from} → ${to} £${amount.toFixed(2)} (${date})`);
           }
-          data.monzo.integrity.checksum = "monzo-hourly-"+new Date().toISOString();
+
+          data.monzo.integrity.checksum = "monzo-hourly-" + new Date().toISOString();
           data.monzo.integrity.verified = true;
-          fs.writeFileSync(monzoFile,JSON.stringify(data,null,2));
-          fs.writeFileSync(appliedFile,JSON.stringify(applied,null,2));
+          fs.writeFileSync(monzoFile, JSON.stringify(data, null, 2));
+          fs.writeFileSync(appliedFile, JSON.stringify(applied, null, 2));
           console.log(`ℹ️ Transfers applied: ${appliedCount}`);
           EOF
 
