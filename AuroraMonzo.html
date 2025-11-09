@@ -209,14 +209,32 @@ async function loadAuroraMonzo(){
     document.querySelector("#flex-summary p:nth-of-type(2)").innerHTML =
       `<strong>Next Payment:</strong> ${flexNext}`;
 
-    // DIRECT DEBITS
-    const ddBody=document.querySelector("#ddTable tbody");
-    ddBody.innerHTML="";
-    dd.forEach(i=>{
-      const r=document.createElement("tr");
-      r.innerHTML=`<td>${i.payee}</td><td>${i.amount.toFixed(2)}</td><td>${i.due_date}</td>`;
-      ddBody.appendChild(r);
-    });
+    // ✅ DIRECT DEBITS FILTERED UP TO NEXT PAYDAY
+    const ddBody = document.querySelector("#ddTable tbody");
+    ddBody.innerHTML = ""; 
+
+    // Convert payday_last to Date and compute next payday (+1 month)
+    const paydayLast = new Date(core.payday_last);
+    const nextPayday = new Date(paydayLast);
+    nextPayday.setMonth(paydayLast.getMonth() + 1);
+
+// Filter for due_date <= nextPayday
+const upcomingDDs = dd.filter(entry => {
+  const due = new Date(entry.due_date);
+  return due <= nextPayday;
+});
+
+if (upcomingDDs.length === 0) {
+  const row = document.createElement("tr");
+  row.innerHTML = `<td colspan="3" style="text-align:center;color:#888;">No direct debits due before payday</td>`;
+  ddBody.appendChild(row);
+} else {
+  upcomingDDs.forEach(entry => {
+    const r = document.createElement("tr");
+    r.innerHTML = `<td>${entry.payee}</td><td>${entry.amount.toFixed(2)}</td><td>${entry.due_date}</td>`;
+    ddBody.appendChild(r);
+  });
+}
 
     // SUBSCRIPTIONS
     const subBody=document.querySelector("#subTable tbody");
