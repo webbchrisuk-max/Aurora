@@ -1,106 +1,79 @@
-<!-- ===================== SECTION: Aurora Monzo Dashboard v1.4 (Manual Pot Carousel + 4-Weekly Payday + DD Filter + Total) ===================== -->
+<!-- ===================== Aurora Monzo Dashboard v1.4 – Final Fixed Version ===================== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
 <title>Aurora Monzo Dashboard v1.4 – Neon Blue + Coral Glow</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@500&display=swap" rel="stylesheet" />
 
 <style>
 :root {
-  --bg-color: #05060a;
-  --card-bg: rgba(255,255,255,0.05);
-  --text-color: #ffffff;
-  --glow-cyan: #00fff7;
-  --glow-coral: #ff6f61;
+  --bg-color:#05060a;
+  --card-bg:rgba(255,255,255,0.05);
+  --text-color:#fff;
+  --glow-cyan:#00fff7;
+  --glow-coral:#ff6f61;
 }
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Inter', sans-serif;
-  background: var(--bg-color);
-  color: var(--text-color);
-  overflow-x: hidden;
-  position: relative;
-  min-height: 100vh;
+body{
+  margin:0;padding:0;
+  font-family:'Inter',sans-serif;
+  color:var(--text-color);
+  background:var(--bg-color);
+  overflow-x:hidden;
+  min-height:100vh;
+  position:relative;
 }
-body::before {
-  content: "";
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: radial-gradient(circle at top right, #05060a 0%, #090d16 70%);
-  animation: auroraPulse 18s ease-in-out infinite alternate;
-  background-attachment: fixed;
-  z-index: -1;
+body::before{
+  content:"";
+  position:fixed;top:0;left:0;right:0;bottom:0;z-index:-1;
+  background:radial-gradient(circle at top right,#05060a 0%,#090d16 70%);
+  animation:auroraPulse 18s ease-in-out infinite alternate;
+  background-attachment:fixed;
 }
-@keyframes auroraPulse {
-  0% { background: radial-gradient(circle at top right, #05060a 0%, #090d16 70%); }
-  100% { background: radial-gradient(circle at bottom left, #0b1020 0%, #04060a 80%); }
+@keyframes auroraPulse{
+  0%{background:radial-gradient(circle at top right,#05060a 0%,#090d16 70%);}
+  100%{background:radial-gradient(circle at bottom left,#0b1020 0%,#04060a 80%);}
 }
-h1, h2, h3 {
-  font-family: 'Orbitron', sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+h1,h2,h3{font-family:'Orbitron',sans-serif;text-transform:uppercase;letter-spacing:1px;}
+.container{max-width:1100px;margin:auto;padding:20px;}
+header{
+  text-align:center;padding:25px 10px;
+  background:linear-gradient(90deg,var(--glow-cyan),var(--glow-coral));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:pulseGlow 4s ease-in-out infinite;
 }
-.container { max-width: 1100px; margin: auto; padding: 20px; }
-
-header {
-  text-align: center;
-  padding: 25px 10px;
-  background: linear-gradient(90deg, var(--glow-cyan), var(--glow-coral));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: pulseGlow 4s ease-in-out infinite;
+@keyframes pulseGlow{
+  0%,100%{text-shadow:0 0 10px var(--glow-coral),0 0 20px var(--glow-cyan);}
+  50%{text-shadow:0 0 25px var(--glow-coral),0 0 35px var(--glow-cyan);}
 }
-@keyframes pulseGlow {
-  0%, 100% { text-shadow: 0 0 10px var(--glow-coral), 0 0 20px var(--glow-cyan); }
-  50% { text-shadow: 0 0 25px var(--glow-coral), 0 0 35px var(--glow-cyan); }
+.card{
+  background:var(--card-bg);border-radius:14px;padding:18px 20px;margin-bottom:15px;
+  box-shadow:0 0 15px rgba(0,255,247,0.08);backdrop-filter:blur(6px);
+  transition:transform .25s ease,box-shadow .25s ease;
 }
-
-.card {
-  background: var(--card-bg);
-  border-radius: 14px;
-  padding: 18px 20px;
-  margin-bottom: 15px;
-  box-shadow: 0 0 15px rgba(0,255,247,0.08);
-  backdrop-filter: blur(6px);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+.card:hover{transform:translateY(-2px);box-shadow:0 0 18px rgba(255,111,97,0.25);}
+.pot-carousel{
+  display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:20px;
+  padding:10px 0 20px;scrollbar-width:none;-webkit-overflow-scrolling:touch;
 }
-.card:hover { transform: translateY(-2px); box-shadow: 0 0 18px rgba(255,111,97,0.25); }
-
-.pot-carousel {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  gap: 20px;
-  padding: 10px 0 20px 0;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+.pot-carousel::-webkit-scrollbar{display:none;}
+.pot-card{
+  flex:0 0 85%;scroll-snap-align:center;background:rgba(255,255,255,0.05);
+  border-radius:14px;padding:20px;text-align:center;
+  box-shadow:0 0 15px var(--glow-cyan);
+  animation:potPulse 2s infinite alternate;transition:transform .3s ease;
 }
-.pot-carousel::-webkit-scrollbar { display: none; }
-.pot-card {
-  flex: 0 0 85%;
-  scroll-snap-align: center;
-  background: rgba(255,255,255,0.05);
-  border-radius: 14px;
-  padding: 20px;
-  text-align: center;
-  box-shadow: 0 0 15px var(--glow-cyan);
-  animation: potPulse 2s infinite alternate;
-  transition: transform 0.3s ease;
-}
-.pot-card:hover { transform: scale(1.03); }
-@keyframes potPulse { from { box-shadow: 0 0 15px var(--glow-cyan); } to { box-shadow: 0 0 25px var(--glow-coral); } }
-.pot-card h3 { color: var(--glow-coral); text-shadow: 0 0 8px var(--glow-coral); }
-.pot-progress { height: 10px; border-radius: 8px; background: rgba(255,255,255,0.1); margin-top: 10px; overflow: hidden; }
-.pot-fill { height: 100%; background: linear-gradient(90deg,var(--glow-cyan),var(--glow-coral)); border-radius: 8px; transition: width .8s ease-in-out; }
-
-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: .95rem; }
-th, td { text-align: left; padding: 8px; }
-th { color: var(--glow-cyan); border-bottom: 1px solid rgba(255,255,255,0.1); }
-tr:nth-child(even) { background: rgba(255,255,255,0.03); }
+.pot-card:hover{transform:scale(1.03);}
+@keyframes potPulse{from{box-shadow:0 0 15px var(--glow-cyan);}to{box-shadow:0 0 25px var(--glow-coral);}}
+.pot-card h3{color:var(--glow-coral);text-shadow:0 0 8px var(--glow-coral);}
+.pot-progress{height:10px;border-radius:8px;background:rgba(255,255,255,0.1);margin-top:10px;overflow:hidden;}
+.pot-fill{height:100%;background:linear-gradient(90deg,var(--glow-cyan),var(--glow-coral));border-radius:8px;transition:width .8s ease-in-out;}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:.95rem;}
+th,td{text-align:left;padding:8px;}
+th{color:var(--glow-cyan);border-bottom:1px solid rgba(255,255,255,0.1);}
+tr:nth-child(even){background:rgba(255,255,255,0.03);}
 @media(max-width:600px){.container{padding:10px;}h1{font-size:1.4em;}}
 </style>
 </head>
@@ -116,17 +89,14 @@ tr:nth-child(even) { background: rgba(255,255,255,0.03); }
   <section id="account-summary" class="card">
     <h2>🏦 Main Account</h2>
     <p><strong>Balance:</strong> £<span id="mainBalance">0.00</span></p>
-    <p>
-      <strong>Payday (last):</strong> <span id="paydayLast">–</span> &nbsp;•&nbsp;
-      <strong>Next payday (4-weekly):</strong> <span id="paydayNext">–</span>
-    </p>
+    <p><strong>Payday (last):</strong> <span id="paydayLast">–</span> • <strong>Next payday (4-weekly):</strong> <span id="paydayNext">–</span></p>
     <p><strong>Income received:</strong> £<span id="payReceived">0.00</span></p>
   </section>
 
   <section id="flex-summary" class="card">
     <h2>💳 Flex Summary</h2>
     <p><strong>Total Balance:</strong> £<span id="flexBalance">0.00</span></p>
-    <p><strong>Next Payment:</strong> £419.00 on 2025-12-01</p>
+    <p><strong>Next Payment:</strong> £419.50 on 2025-12-01</p>
   </section>
 
   <section id="pots-section" class="card">
@@ -167,13 +137,12 @@ tr:nth-child(even) { background: rgba(255,255,255,0.03); }
 </div>
 
 <script>
-function addDays(d, days){ const r=new Date(d); r.setDate(r.getDate()+days); return r; }
-function formatISO(d){ return d.toISOString().split('T')[0]; }
-function computeNextPayday28(lastPaydayISO) {
-  const today = new Date(); today.setHours(0,0,0,0);
-  let next = new Date(lastPaydayISO);
-  next.setHours(0,0,0,0);
-  while (next <= today) next = addDays(next, 28);
+function addDays(d,days){const r=new Date(d);r.setDate(r.getDate()+days);return r;}
+function formatISO(d){return d.toISOString().split('T')[0];}
+function computeNextPayday28(last){
+  const today=new Date();today.setHours(0,0,0,0);
+  let next=new Date(last);next.setHours(0,0,0,0);
+  while(next<=today)next=addDays(next,28);
   return next;
 }
 
@@ -186,6 +155,7 @@ async function loadAuroraMonzo(){
     const data=await res.json();
 
     const core=data.monzo.account_core;
+    const flex=core.flex||{};
     const pots=core.pots||{};
     const dd=data.monzo.direct_debits||[];
     const subs=data.monzo.subscriptions_from_main||[];
@@ -200,31 +170,36 @@ async function loadAuroraMonzo(){
     document.getElementById("paydayNext").textContent=nextPaydayISO;
     document.getElementById("payReceived").textContent=core.income_received.toFixed(2);
 
-    // --- Direct Debits Filtered + Total ---
+    // ---- Flex summary ----
+    const flexBal=flex.total_balance??0;
+    document.getElementById("flexBalance").textContent=flexBal.toFixed(2);
+
+    // ---- Direct Debits up to next payday ----
     const ddBody=document.querySelector("#ddTable tbody");
     ddBody.innerHTML="";
     const nextPayday=new Date(nextPaydayISO);
-    const upcomingDDs=dd.map(e=>({...e,_due:new Date(e.due_date)}))
-                         .filter(e=>e._due<=nextPayday)
-                         .sort((a,b)=>a._due-b._due);
+    const paydayLast=new Date(lastPaydayISO);
 
-    let total=0;
-    upcomingDDs.forEach(e=>total+=e.amount);
-    document.getElementById("ddTotal").textContent=total.toFixed(2);
+    const upcoming=dd.map(e=>({...e,_due:new Date(e.due_date)}))
+                     .filter(e=>e._due>=paydayLast&&e._due<=nextPayday)
+                     .sort((a,b)=>a._due-b._due);
 
-    if(upcomingDDs.length===0){
-      const row=document.createElement("tr");
-      row.innerHTML=`<td colspan="3" style="text-align:center;color:#888;">No direct debits due before next payday</td>`;
-      ddBody.appendChild(row);
+    let totalDue=0;upcoming.forEach(e=>totalDue+=e.amount);
+    document.getElementById("ddTotal").textContent=totalDue.toFixed(2);
+
+    if(upcoming.length===0){
+      const r=document.createElement("tr");
+      r.innerHTML=`<td colspan="3" style="text-align:center;color:#888;">No direct debits due before next payday</td>`;
+      ddBody.appendChild(r);
     }else{
-      upcomingDDs.forEach(e=>{
+      upcoming.forEach(e=>{
         const r=document.createElement("tr");
         r.innerHTML=`<td>${e.payee}</td><td>${e.amount.toFixed(2)}</td><td>${e.due_date}</td>`;
         ddBody.appendChild(r);
       });
     }
 
-    // --- Subscriptions ---
+    // ---- Subscriptions ----
     const subBody=document.querySelector("#subTable tbody");
     subBody.innerHTML="";
     subs.forEach(i=>{
@@ -233,7 +208,7 @@ async function loadAuroraMonzo(){
       subBody.appendChild(r);
     });
 
-    // --- Transactions ---
+    // ---- Transactions ----
     const txnBody=document.querySelector("#txnTable tbody");
     txnBody.innerHTML="";
     if(!Array.isArray(txns)||txns.length===0){
@@ -280,9 +255,8 @@ function renderPotCarousel(pots){
     carousel.appendChild(card);
   });
 }
-
 document.addEventListener("DOMContentLoaded",loadAuroraMonzo);
 </script>
 </body>
 </html>
-<!-- ===================== END: Aurora Monzo Dashboard v1.4 (Manual Pot Carousel + 4-Weekly Payday + DD Filter + Total) ===================== -->
+<!-- ===================== END Aurora Monzo Dashboard v1.4 ===================== -->
