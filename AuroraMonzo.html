@@ -1,9 +1,10 @@
+<!-- ===================== SECTION: Aurora Monzo Dashboard v1.4 (with Pot Carousel) ===================== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Aurora Monzo Dashboard v1.3 – Neon Blue + Coral Glow</title>
+<title>Aurora Monzo Dashboard v1.4 – Neon Blue + Coral Glow</title>
 
 <!-- ===================== SECTION: FONTS & BASE ===================== -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@500&display=swap" rel="stylesheet" />
@@ -99,6 +100,53 @@ header {
   to { width: var(--target-width, 100%); }
 }
 
+/* ===================== SECTION: POTS CAROUSEL STYLES ===================== */
+.pot-carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  gap: 20px;
+  padding: 10px 0 20px 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.pot-card {
+  flex: 0 0 80%;
+  scroll-snap-align: center;
+  background: rgba(255,255,255,0.05);
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 0 15px var(--glow-cyan);
+  animation: potPulse 2s infinite alternate;
+  transition: transform 0.3s ease;
+}
+.pot-card:hover { transform: scale(1.03); }
+
+@keyframes potPulse {
+  from { box-shadow: 0 0 15px var(--glow-cyan); }
+  to { box-shadow: 0 0 25px var(--glow-coral); }
+}
+
+.pot-card h3 {
+  color: var(--glow-coral);
+  text-shadow: 0 0 8px var(--glow-coral);
+}
+.pot-progress {
+  height: 10px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.1);
+  margin-top: 10px;
+  overflow: hidden;
+}
+.pot-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--glow-cyan), var(--glow-coral));
+  border-radius: 8px;
+  transition: width 0.8s ease-in-out;
+}
+
 /* ===================== SECTION: TABLE STYLING ===================== */
 table {
   width: 100%;
@@ -114,9 +162,7 @@ th {
   color: var(--glow-cyan);
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
-tr:nth-child(even) {
-  background: rgba(255,255,255,0.03);
-}
+tr:nth-child(even) { background: rgba(255,255,255,0.03); }
 
 /* ===================== SECTION: RESPONSIVE ===================== */
 @media (max-width: 600px) {
@@ -149,10 +195,10 @@ tr:nth-child(even) {
     <p><strong>Next Payment:</strong> £419.00 on 2025-12-01</p>
   </section>
 
-  <!-- POTS GRID -->
-  <section id="pots-section">
-    <h2>💰 Pots</h2>
-    <div id="potsContainer" class="grid"></div>
+  <!-- ===================== SECTION: POTS CAROUSEL ===================== -->
+  <section id="pots-section" class="card">
+    <h2>💰 Pots Overview</h2>
+    <div class="pot-carousel" id="potCarousel"></div>
   </section>
 
   <!-- DIRECT DEBITS -->
@@ -208,26 +254,7 @@ async function loadAuroraMonzo() {
     document.getElementById("mainBalance").textContent = core.main_balance.toFixed(2);
     document.getElementById("payday").textContent = core.payday_last;
     document.getElementById("payReceived").textContent = core.income_received.toFixed(2);
-
-    // FLEX SUMMARY
     document.getElementById("flexBalance").textContent = (pots.FlexRepayment || 0).toFixed(2);
-
-    // POTS
-    const potsDiv = document.getElementById("potsContainer");
-    potsDiv.innerHTML = "";
-    Object.entries(pots).forEach(([name, balance]) => {
-      if (name.toLowerCase().includes("flex")) return;
-      const card = document.createElement("div");
-      card.className = "card";
-      const percent = Math.min((balance / 500) * 100, 100).toFixed(1);
-      card.innerHTML = `
-        <h3>${name}</h3>
-        <p>£${balance.toFixed(2)}</p>
-        <div class="progress-container">
-          <div class="progress-bar" style="--target-width:${percent}%;"></div>
-        </div>`;
-      potsDiv.appendChild(card);
-    });
 
     // DIRECT DEBITS
     const ddBody = document.querySelector("#ddTable tbody");
@@ -252,19 +279,64 @@ async function loadAuroraMonzo() {
     txnBody.innerHTML = "";
     txns.slice(0, 5).forEach(tx => {
       const row = document.createElement("tr");
-      row.innerHTML = `<td>${tx.Date}</td><td>${tx.Name}</td><td>${parseFloat(tx["Amount (£)"]).toFixed(2)}</td>`;
+      row.innerHTML = `<td>${tx.date}</td><td>${tx.merchant}</td><td>${tx.amount.toFixed(2)}</td>`;
       txnBody.appendChild(row);
     });
 
     // FOOTER STATUS
     status.textContent = "✅ Data loaded successfully – " + new Date().toLocaleString();
+
+    // Render pots into carousel
+    renderPotCarousel(pots);
   } catch (err) {
     console.error("❌ Aurora Monzo load error:", err);
     status.textContent = "❌ Failed to load Monzo data: " + err.message;
   }
 }
 
+/* ===================== SECTION: POT CAROUSEL FUNCTION ===================== */
+function renderPotCarousel(pots) {
+  const carousel = document.getElementById("potCarousel");
+  carousel.innerHTML = "";
+
+  const goals = {
+    FlexRepayment: 419,
+    DirectDebits: 416,
+    Holiday: 800,
+    CommentaryCityFC: 500,
+    IGTrading: 400,
+    CarMaintenance: 400,
+    WorkBuffer: 65,
+    Savings: 1000
+  };
+
+  Object.entries(pots).forEach(([name, balance]) => {
+    if (name === "FlexRepayment") return; // exclude flex
+    const goal = goals[name] || 500;
+    const pct = Math.min((balance / goal) * 100, 100).toFixed(1);
+
+    const card = document.createElement("div");
+    card.className = "pot-card";
+    card.innerHTML = `
+      <h3>${name}</h3>
+      <p>£${balance.toFixed(2)} / £${goal}</p>
+      <div class="pot-progress"><div class="pot-fill" style="width:${pct}%"></div></div>
+    `;
+    carousel.appendChild(card);
+  });
+
+  let current = 0;
+  function autoScrollPots() {
+    const cards = carousel.children;
+    if (cards.length === 0) return;
+    current = (current + 1) % cards.length;
+    cards[current].scrollIntoView({ behavior: "smooth", inline: "center" });
+  }
+  setInterval(autoScrollPots, 4000);
+}
+
 document.addEventListener("DOMContentLoaded", loadAuroraMonzo);
 </script>
 </body>
 </html>
+<!-- ===================== END: Aurora Monzo Dashboard v1.4 ===================== -->
