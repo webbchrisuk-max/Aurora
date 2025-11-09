@@ -1,0 +1,25 @@
+name: Aurora Monzo Data Sync
+on:
+  schedule:
+    - cron: "0 */2 * * *"  # every 2 hours
+  workflow_dispatch:
+
+jobs:
+  update-monzo-json:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Fetch Monzo tab data from Google Sheet
+        run: |
+          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Monzo" \
+          -o AuroraMonzo.json
+
+      - name: Commit and push updated Monzo JSON
+        run: |
+          git config user.name "Aurora Sync Bot"
+          git config user.email "aurora-bot@example.com"
+          git add AuroraMonzo.json
+          git commit -m "🔄 Monzo data sync update" || echo "No changes to commit"
+          git push
