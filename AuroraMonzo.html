@@ -1,250 +1,286 @@
+<!-- ===================== SECTION: Aurora Monzo Dashboard v1.4 (with Pot Carousel – Fixed Background) ===================== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aurora ISA Hub – PulseFlow Edition</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&family=Inter:wght@300;500&display=swap" rel="stylesheet">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aurora Monzo Dashboard v1.4 – Neon Blue + Coral Glow</title>
 
-<!-- ===================== SECTION: CORE STYLES ===================== -->
+<!-- ===================== SECTION: FONTS & BASE ===================== -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@500&display=swap" rel="stylesheet" />
+
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{
-  font-family:"Inter",sans-serif;
-  color:#fff;
-  overflow-x:hidden;
-  min-height:100vh;
-  margin:0;
-  position:relative;
+:root {
+  --bg-color: #05060a;
+  --card-bg: rgba(255,255,255,0.05);
+  --text-color: #ffffff;
+  --glow-cyan: #00fff7;
+  --glow-coral: #ff6f61;
 }
 
-/* Fixed animated background layer */
+/* ===================== SECTION: GLOBAL ===================== */
+body{
+  margin:0;
+  padding:0;
+  font-family:'Inter',sans-serif;
+  color:var(--text-color);
+  overflow-x:hidden;
+  overflow-y:auto;
+  min-height:100vh;
+  position:relative;
+}
+/* fixed animated gradient layer so body height never changes */
 body::before{
   content:"";
   position:fixed;
   top:0;left:0;right:0;bottom:0;
   z-index:-1;
-  background:radial-gradient(circle at top right,#070015 0%,#0b0220 70%);
-  animation:bgPulse 14s ease-in-out infinite alternate;
+  background:radial-gradient(circle at top right,#05060a 0%,#090d16 70%);
+  animation:auroraPulse 18s ease-in-out infinite alternate;
   background-attachment:fixed;
   will-change:background;
 }
-
-@keyframes bgPulse{
-  0%{background:radial-gradient(circle at top right,#070015 0%,#0b0220 70%);}
-  100%{background:radial-gradient(circle at bottom left,#150040 0%,#000010 80%);}
+@keyframes auroraPulse{
+  0%{background:radial-gradient(circle at top right,#05060a 0%,#090d16 70%);}
+  100%{background:radial-gradient(circle at bottom left,#0b1020 0%,#04060a 80%);}
 }
 
 h1,h2,h3{
-  font-family:"Orbitron",sans-serif;
-  letter-spacing:1px;
+  font-family:'Orbitron',sans-serif;
   text-transform:uppercase;
-}
-.container{
-  width:95%;
-  max-width:1200px;
-  margin:auto;
-  padding-top:70px;
+  letter-spacing:1px;
 }
 
-/* Loading Screen */
-#loadingScreen{
-  position:fixed;
-  top:0;left:0;width:100%;height:100%;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  background:radial-gradient(circle,#080020 0%,#000010 90%);
-  z-index:9999;
-}
-.loader{
-  width:80px;height:80px;border:6px solid rgba(0,255,200,0.2);
-  border-top-color:#00ffcc;border-radius:50%;
-  animation:spin 1.8s linear infinite;
-  margin-bottom:20px;
-}
-@keyframes spin{to{transform:rotate(360deg);}}
-#loadingText{font-family:"Orbitron";color:#00ffcc;font-size:1.2rem;}
+.container{max-width:1100px;margin:auto;padding:20px;}
 
-/* Panels and Cards */
-.section{
-  margin-bottom:40px;
-  background:rgba(255,255,255,0.04);
-  border-radius:12px;
-  padding:20px;
-  box-shadow:0 0 20px rgba(0,255,200,0.15);
-  backdrop-filter:blur(8px);
+/* ===================== SECTION: HEADER ===================== */
+header{
+  text-align:center;
+  padding:25px 10px;
+  background:linear-gradient(90deg,var(--glow-cyan),var(--glow-coral));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:pulseGlow 4s ease-in-out infinite;
 }
-.section h2{color:#00ffcc;margin-bottom:12px;}
-.flex{display:flex;flex-wrap:wrap;gap:20px;}
+@keyframes pulseGlow{
+  0%,100%{text-shadow:0 0 10px var(--glow-coral),0 0 20px var(--glow-cyan);}
+  50%{text-shadow:0 0 25px var(--glow-coral),0 0 35px var(--glow-cyan);}
+}
+
+/* ===================== SECTION: CARD DESIGN ===================== */
 .card{
-  flex:1 1 48%;
-  background:rgba(0,0,0,0.4);
-  border:1px solid rgba(255,255,255,0.08);
+  background:var(--card-bg);
+  border-radius:14px;
+  padding:18px 20px;
+  margin-bottom:15px;
+  box-shadow:0 0 15px rgba(0,255,247,0.08);
+  backdrop-filter:blur(6px);
+  transition:transform .25s ease,box-shadow .25s ease;
+}
+.card:hover{transform:translateY(-2px);box-shadow:0 0 18px rgba(255,111,97,0.25);}
+
+/* ===================== SECTION: PROGRESS BARS ===================== */
+.progress-container{
+  background:rgba(255,255,255,0.08);
   border-radius:10px;
-  padding:15px;
-  box-shadow:0 0 15px rgba(255,127,80,0.15);
+  height:14px;
+  overflow:hidden;
+  margin-top:6px;
 }
-.card h3{color:#ff7f50;margin-bottom:8px;}
-.value{font-size:1.3rem;font-weight:600;}
-.glowText{color:#00ffcc;text-shadow:0 0 10px #00ffcc;}
-.gain{color:#ff7f50;}
-
-/* Sector Bars */
-.barContainer{margin-top:10px;}
-.bar{
-  height:18px;
-  background:linear-gradient(90deg,#00ffcc,#ff7f50);
+.progress-bar{
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,var(--glow-cyan),var(--glow-coral));
+  box-shadow:0 0 10px var(--glow-cyan);
   border-radius:10px;
-  box-shadow:0 0 10px #00ffcc;
-  margin-bottom:6px;
-  transition:width 1.8s ease-out;
+  animation:loadBar 2s ease forwards;
 }
+@keyframes loadBar{from{width:0;}to{width:var(--target-width,100%);}}
 
-/* Dividend Bars */
-.dividendBar{
-  height:16px;
-  background:linear-gradient(90deg,#ff7f50,#00ffcc);
-  border-radius:10px;
-  box-shadow:0 0 8px #ff7f50;
-  margin-bottom:5px;
-  transition:width 2s ease-out;
+/* ===================== SECTION: POT CAROUSEL STYLES ===================== */
+.pot-carousel{
+  display:flex;
+  overflow:hidden;            /* lock height, no scroll jump */
+  position:relative;
+  height:240px;
 }
+.pot-card{
+  flex:0 0 100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  border-radius:14px;
+  background:rgba(255,255,255,0.05);
+  box-shadow:0 0 15px var(--glow-cyan);
+  animation:potPulse 2s infinite alternate;
+  transition:transform .3s ease;
+  position:absolute;
+  top:0;left:0;right:0;bottom:0;
+  opacity:0;
+  transform:translate3d(100%,0,0);
+}
+.pot-card.active{opacity:1;transform:translate3d(0,0,0);}
+.pot-card.exit-left{transform:translate3d(-100%,0,0);}
+@keyframes potPulse{from{box-shadow:0 0 15px var(--glow-cyan);}to{box-shadow:0 0 25px var(--glow-coral);}}
+.pot-card h3{color:var(--glow-coral);text-shadow:0 0 8px var(--glow-coral);}
+.pot-progress{width:80%;height:10px;border-radius:8px;background:rgba(255,255,255,0.1);margin-top:10px;overflow:hidden;}
+.pot-fill{height:100%;background:linear-gradient(90deg,var(--glow-cyan),var(--glow-coral));border-radius:8px;transition:width .8s ease-in-out;}
 
-/* Footer Pulse Line */
-#footerPulse{
-  position:fixed;bottom:0;left:0;width:100%;height:3px;
-  background:linear-gradient(90deg,#00ffcc,#ff7f50,#00ffcc);
-  background-size:300% 100%;
-  animation:pulseLine 6s linear infinite;
-}
-@keyframes pulseLine{
-  0%{background-position:0% 50%;}
-  100%{background-position:100% 50%;}
-}
+/* ===================== SECTION: TABLE STYLING ===================== */
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:.95rem;}
+th,td{text-align:left;padding:8px;}
+th{color:var(--glow-cyan);border-bottom:1px solid rgba(255,255,255,0.1);}
+tr:nth-child(even){background:rgba(255,255,255,0.03);}
 
-/* Responsive */
-@media(max-width:768px){.card{flex:1 1 100%;}}
+/* ===================== SECTION: RESPONSIVE ===================== */
+@media(max-width:600px){.container{padding:10px;}h1{font-size:1.4em;}}
 </style>
 </head>
 
 <body>
-<!-- ===================== SECTION: LOADING ===================== -->
-<div id="loadingScreen">
-  <div class="loader"></div>
-  <div id="loadingText">Loading Aurora ISA Hub…</div>
+<header>
+  <h1>Aurora Monzo Dashboard</h1>
+  <h3>Live Data Sync – Neon Blue + Coral Glow Edition</h3>
+</header>
+
+<div class="container">
+
+  <section id="account-summary" class="card">
+    <h2>🏦 Main Account</h2>
+    <p><strong>Balance:</strong> £<span id="mainBalance">0.00</span></p>
+    <p><strong>Payday:</strong> <span id="payday">–</span> (Received £<span id="payReceived">0.00</span>)</p>
+  </section>
+
+  <section id="flex-summary" class="card">
+    <h2>💳 Flex Summary</h2>
+    <p><strong>Total Balance:</strong> £<span id="flexBalance">0.00</span></p>
+    <p><strong>Next Payment:</strong> £419.00 on 2025-12-01</p>
+  </section>
+
+  <section id="pots-section" class="card">
+    <h2>💰 Pots Overview</h2>
+    <div class="pot-carousel" id="potCarousel"></div>
+  </section>
+
+  <section id="direct-debits" class="card">
+    <h2>🔁 Direct Debits</h2>
+    <table id="ddTable">
+      <thead><tr><th>Payee</th><th>Amount (£)</th><th>Due Date</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <section id="subscriptions" class="card">
+    <h2>📱 Subscriptions</h2>
+    <table id="subTable">
+      <thead><tr><th>Service</th><th>Amount (£)</th><th>Renewal Date</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <section id="recent-transactions" class="card">
+    <h2>🧾 Recent Transactions</h2>
+    <table id="txnTable">
+      <thead><tr><th>Date</th><th>Merchant</th><th>Amount (£)</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <footer style="text-align:center;margin-top:25px;color:#aaa;font-size:.85em;">
+    <span id="lastUpdated">Loading data…</span>
+  </footer>
 </div>
 
-<div class="container" style="display:none;" id="mainContent">
-
-<!-- ===================== SECTION: PORTFOLIO SUMMARY ===================== -->
-<div class="section" id="summary">
-  <h1>Aurora ISA Hub</h1>
-  <p class="glowText">Combined Portfolio Overview</p>
-  <p>Total Value: <span id="totalValue" class="value glowText">£XX,XXX.XX</span></p>
-  <p>Book Cost: <span id="bookCost" class="value">£XX,XXX.XX</span></p>
-  <p>Unrealised Gain: <span id="gainValue" class="value gain">£X,XXX.XX (+X.X%)</span></p>
-  <p>Dividend Yield: <span id="divYield" class="value">X.X%</span></p>
-</div>
-
-<!-- ===================== SECTION: SECTOR ALLOCATION ===================== -->
-<div class="section" id="sectors">
-  <h2>Sector Allocation</h2>
-  <div id="sectorBars"></div>
-</div>
-
-<!-- ===================== SECTION: ACCOUNT CARDS ===================== -->
-<div class="section">
-  <h2>Accounts</h2>
-  <div class="flex">
-    <div class="card">
-      <h3>IG ISA</h3>
-      <p>Balance: <span id="igValue" class="value">£XX,XXX.XX</span></p>
-      <p>Gain: <span id="igGain" class="gain">+X.X%</span></p>
-    </div>
-    <div class="card">
-      <h3>Trade212 ISA</h3>
-      <p>Balance: <span id="t212Value" class="value">£X,XXX.XX</span></p>
-      <p>Gain: <span id="t212Gain" class="gain">+X.X%</span></p>
-    </div>
-  </div>
-</div>
-
-<!-- ===================== SECTION: DIVIDEND OVERVIEW ===================== -->
-<div class="section" id="dividends">
-  <h2>Dividend Forecast</h2>
-  <div id="dividendBars"></div>
-</div>
-
-<!-- ===================== SECTION: UPCOMING DIVIDENDS ===================== -->
-<div class="section">
-  <h2>Upcoming Dividends</h2>
-  <ul id="upcomingList" style="list-style:none;"></ul>
-</div>
-
-</div>
-
-<!-- ===================== SECTION: FOOTER PULSE ===================== -->
-<div id="footerPulse"></div>
-
-<!-- ===================== SECTION: SCRIPT ===================== -->
 <script>
-async function loadData(){
-  const res = await fetch("https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json?nocache=" + Date.now());
-  const data = await res.json();
-  const ig = data.isa.ig_isa;
-  const t212 = data.isa.trade212_isa;
-  const port = data.isa.portfolio_summary;
+async function loadAuroraMonzo(){
+  const status=document.getElementById("lastUpdated");
+  const monzoJSON="https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraMonzo.json";
+  try{
+    const res=await fetch(monzoJSON+"?nocache="+Date.now());
+    if(!res.ok)throw new Error("HTTP "+res.status);
+    const data=await res.json();
+    const core=data.monzo.account_core;
+    const pots=core.pots||{};
+    const dd=data.monzo.direct_debits||[];
+    const subs=data.monzo.subscriptions_from_main||[];
+    const txns=data.monzo.transactions_feed.recent||[];
 
-  // Combined summary
-  document.getElementById("totalValue").innerText = "£" + (ig.balance + t212.balance).toLocaleString();
-  document.getElementById("bookCost").innerText = "£" + (ig.book_cost + t212.book_cost).toLocaleString();
-  const totalGain = ((ig.unrealised_gain + t212.unrealised_gain) || 0).toFixed(2);
-  document.getElementById("gainValue").innerText = "£" + totalGain + " (+" + port.gain_percent + "%)";
-  document.getElementById("divYield").innerText = port.dividend_yield + "%";
+    document.getElementById("mainBalance").textContent=core.main_balance.toFixed(2);
+    document.getElementById("payday").textContent=core.payday_last;
+    document.getElementById("payReceived").textContent=core.income_received.toFixed(2);
+    document.getElementById("flexBalance").textContent=(pots.FlexRepayment||0).toFixed(2);
 
-  // Individual cards
-  document.getElementById("igValue").innerText = "£" + ig.balance.toLocaleString();
-  document.getElementById("igGain").innerText = "+" + ig.gain_percent + "%";
-  document.getElementById("t212Value").innerText = "£" + t212.balance.toLocaleString();
-  document.getElementById("t212Gain").innerText = "+" + t212.gain_percent + "%";
-
-  // Sector Bars
-  const sectors = port.sector_allocation;
-  const sContainer = document.getElementById("sectorBars");
-  for(let key in sectors){
-    const wrap=document.createElement("div");
-    wrap.innerHTML=`<p>${key} - ${sectors[key]}%</p><div class='bar' style='width:${sectors[key]}%;'></div>`;
-    sContainer.appendChild(wrap);
-  }
-
-  // Dividend Bars (monthly_breakdown)
-  const divContainer=document.getElementById("dividendBars");
-  if(data.dividend_planner && data.dividend_planner.monthly_breakdown){
-    data.dividend_planner.monthly_breakdown.forEach(m=>{
-      const b=document.createElement("div");
-      b.className="dividendBar";
-      b.style.width=(Math.min(m.total_estimated_income/50,100))+"%";
-      const p=document.createElement("p");
-      p.innerHTML=`${m.month}: £${m.total_estimated_income}`;
-      divContainer.appendChild(p);
-      divContainer.appendChild(b);
+    const ddBody=document.querySelector("#ddTable tbody");
+    ddBody.innerHTML="";
+    dd.forEach(i=>{
+      const r=document.createElement("tr");
+      r.innerHTML=`<td>${i.payee}</td><td>${i.amount.toFixed(2)}</td><td>${i.due_date}</td>`;
+      ddBody.appendChild(r);
     });
+
+    const subBody=document.querySelector("#subTable tbody");
+    subBody.innerHTML="";
+    subs.forEach(i=>{
+      const r=document.createElement("tr");
+      r.innerHTML=`<td>${i.service}</td><td>${i.amount.toFixed(2)}</td><td>${i.renewal_date}</td>`;
+      subBody.appendChild(r);
+    });
+
+    const txnBody=document.querySelector("#txnTable tbody");
+    txnBody.innerHTML="";
+    txns.slice(0,5).forEach(tx=>{
+      const r=document.createElement("tr");
+      r.innerHTML=`<td>${tx.date}</td><td>${tx.merchant}</td><td>${tx.amount.toFixed(2)}</td>`;
+      txnBody.appendChild(r);
+    });
+
+    status.textContent="✅ Data loaded – "+new Date().toLocaleString();
+    renderPotCarousel(pots);
+  }catch(err){
+    console.error("❌ Aurora Monzo load error:",err);
+    status.textContent="❌ Failed to load Monzo data: "+err.message;
   }
-
-  // Upcoming Dividends
-  const upcoming = data.dividends_feed.filter(d => d.status && (d.status.includes("Confirmed") || d.status.includes("Estimated"))).slice(0,5);
-  const uList=document.getElementById("upcomingList");
-  upcoming.forEach(u=>{
-    const li=document.createElement("li");
-    li.innerHTML=`💎 <strong>${u.name}</strong> — Pay: ${u.pay_date} — £${u.total_dividend}`;
-    uList.appendChild(li);
-  });
-
-  // Show content
-  document.getElementById("loadingScreen").style.display="none";
-  document.getElementById("mainContent").style.display="block";
 }
 
-loadData();
+/* ===================== SECTION: POT CAROUSEL FUNCTION ===================== */
+function renderPotCarousel(pots){
+  const carousel=document.getElementById("potCarousel");
+  carousel.innerHTML="";
+  const goals={
+    FlexRepayment:419,DirectDebits:416,Holiday:800,
+    CommentaryCityFC:500,IGTrading:400,CarMaintenance:400,
+    WorkBuffer:65,Savings:1000
+  };
+  const entries=Object.entries(pots).filter(([n])=>n!=="FlexRepayment");
+  entries.forEach(([name,balance],i)=>{
+    const goal=goals[name]||500;
+    const pct=Math.min((balance/goal)*100,100).toFixed(1);
+    const card=document.createElement("div");
+    card.className="pot-card";
+    if(i===0)card.classList.add("active");
+    card.innerHTML=`
+      <h3>${name}</h3>
+      <p>£${balance.toFixed(2)} / £${goal}</p>
+      <div class="pot-progress"><div class="pot-fill" style="width:${pct}%"></div></div>`;
+    carousel.appendChild(card);
+  });
+
+  let idx=0;
+  setInterval(()=>{
+    const cards=carousel.querySelectorAll(".pot-card");
+    if(cards.length<2)return;
+    cards[idx].classList.remove("active");
+    cards[idx].classList.add("exit-left");
+    idx=(idx+1)%cards.length;
+    cards[idx].classList.add("active");
+    setTimeout(()=>cards.forEach(c=>c.classList.remove("exit-left")),1000);
+  },4000);
+}
+
+document.addEventListener("DOMContentLoaded",loadAuroraMonzo);
 </script>
 </body>
 </html>
+<!-- ===================== END: Aurora Monzo Dashboard v1.4 (Fixed Carousel) ===================== -->
