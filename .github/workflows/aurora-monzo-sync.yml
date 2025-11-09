@@ -1,25 +1,33 @@
-name: Aurora Monzo Data Sync
+name: Aurora Sync
+
 on:
   schedule:
-    - cron: "0 */2 * * *"   # every 2 hours
-  workflow_dispatch:
+    - cron: "0 8,12,16,20 * * *"
+  workflow_dispatch::
 
 jobs:
-  update-monzo-json:
+  update-monzo:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Fetch Monzo tab data from Google Sheet
+      - name: Fetch Monzo data from Google Sheet
         run: |
-          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Monzo" \
-          -o AuroraMonzo.json
+          curl -L "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Monzo" -o newMonzo.json
 
-      - name: Commit and push updated Monzo JSON
+      - name: Merge Monzo transactions safely
         run: |
-          git config user.name "Aurora Sync Bot"
-          git config user.email "aurora-bot@example.com"
+          sudo apt-get install -y jq
+          curl -L "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraMonzo.json" -o AuroraMonzo.json
+          jq '.monzo.transactions_feed = $new.monzo.transactions_feed' \
+            --argjson new "$(cat newMonzo.json)" AuroraMonzo.json > AuroraMonzo_merged.json
+          mv AuroraMonzo_merged.json AuroraMonzo.json
+
+      - name: Commit and push merged file
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
           git add AuroraMonzo.json
-          git commit -m "🔄 Aurora Monzo data sync update" || echo "No changes to commit"
+          git commit -m "Update Monzo transactions_feed safely"
           git push
