@@ -1,50 +1,115 @@
 {
   "monzo": {
     "account_core": {
-      "main_balance": 821.15,
+      "main_balance": 358.81,
       "payday_last": "2025-11-07",
       "income_received": 2078.78,
       "flex": {
         "total_balance": -810.77,
-        "next_payment_due": 419.50,
+        "next_payment_due": 419.5,
         "next_due_date": "2025-12-01"
       },
       "pots": {
         "Flex Repayment": 609.44,
-        "Direct Debits": 463.45,
+        "Direct Debits": 925.79,
         "Holiday": 174.45,
         "Coventry City FC": 167.86,
-        "IGTrading": 229.30,
+        "IGTrading": 229.3,
         "Car Maintenance": 294.49,
         "Work Buffer": 47.94,
-        "Christmas": 150.00,
-        "Savings": 501.00
+        "Christmas": 150,
+        "Savings": 501
       }
     },
-
     "direct_debits": [
-      { "payee": "Virgin Media", "amount": 46.39, "due_date": "2025-11-14" },
-      { "payee": "Barclays Partner Finance", "amount": 50.92, "due_date": "2025-11-17" },
-      { "payee": "Vodafone", "amount": 23.28, "due_date": "2025-11-30" },
-      { "payee": "Driver & Vehicle Licensing Agency", "amount": 23.18, "due_date": "2025-12-03" },
-      { "payee": "Octopus Energy", "amount": 94.90, "due_date": "2025-12-03" },
-      { "payee": "Sports Direct", "amount": 20.00, "due_date": "2025-12-04" },
-      { "payee": "ID Mobile", "amount": 10.00, "due_date": "2025-12-07" },
-      { "payee": "Postcode Lottery #1", "amount": 12.25, "due_date": "2025-12-07" },
-      { "payee": "Postcode Lottery #2", "amount": 12.25, "due_date": "2025-12-07" },
-      { "payee": "Postcode Lottery #3", "amount": 12.25, "due_date": "2025-12-07" },
-      { "payee": "Monzo Plus", "amount": 5.00, "due_date": "2025-12-08" },
-      { "payee": "Rugby B.C.", "amount": 139.00, "due_date": "2025-12-03" },
-      { "payee": "Legal & General", "amount": 17.92, "due_date": "2025-12-03" },
-      { "payee": "Severn Trent Water", "amount": 43.86, "due_date": "2025-12-03" }
+      {
+        "payee": "Virgin Media",
+        "amount": 46.39,
+        "due_date": "2025-11-14"
+      },
+      {
+        "payee": "Barclays Partner Finance",
+        "amount": 50.92,
+        "due_date": "2025-11-17"
+      },
+      {
+        "payee": "Vodafone",
+        "amount": 23.28,
+        "due_date": "2025-11-30"
+      },
+      {
+        "payee": "Driver & Vehicle Licensing Agency",
+        "amount": 23.18,
+        "due_date": "2025-12-03"
+      },
+      {
+        "payee": "Octopus Energy",
+        "amount": 94.9,
+        "due_date": "2025-12-03"
+      },
+      {
+        "payee": "Sports Direct",
+        "amount": 20,
+        "due_date": "2025-12-04"
+      },
+      {
+        "payee": "ID Mobile",
+        "amount": 10,
+        "due_date": "2025-12-07"
+      },
+      {
+        "payee": "Postcode Lottery #1",
+        "amount": 12.25,
+        "due_date": "2025-12-07"
+      },
+      {
+        "payee": "Postcode Lottery #2",
+        "amount": 12.25,
+        "due_date": "2025-12-07"
+      },
+      {
+        "payee": "Postcode Lottery #3",
+        "amount": 12.25,
+        "due_date": "2025-12-07"
+      },
+      {
+        "payee": "Monzo Plus",
+        "amount": 5,
+        "due_date": "2025-12-08"
+      },
+      {
+        "payee": "Rugby B.C.",
+        "amount": 139,
+        "due_date": "2025-12-03"
+      },
+      {
+        "payee": "Legal & General",
+        "amount": 17.92,
+        "due_date": "2025-12-03"
+      },
+      {
+        "payee": "Severn Trent Water",
+        "amount": 43.86,
+        "due_date": "2025-12-03"
+      }
     ],
-
     "subscriptions_from_main": [
-      { "service": "Contents Insurance", "amount": 7.73, "renewal_date": "2025-11-30" },
-      { "service": "Apple One", "amount": 18.95, "renewal_date": "2025-11-13" },
-      { "service": "ChatGPT Plus", "amount": 19.99, "renewal_date": "2025-11-23" }
+      {
+        "service": "Contents Insurance",
+        "amount": 7.73,
+        "renewal_date": "2025-11-30"
+      },
+      {
+        "service": "Apple One",
+        "amount": 18.95,
+        "renewal_date": "2025-11-13"
+      },
+      {
+        "service": "ChatGPT Plus",
+        "amount": 19.99,
+        "renewal_date": "2025-11-23"
+      }
     ],
-
     "transactions_feed": {
       "recent": [
         {
@@ -53,8 +118,7 @@
           "Name": "Rugby Workers Club Drinks",
           "Amount (£)": "14.85",
           "Category": "Debit",
-          "Email Subject": "IFTTT",
-          "Column 1": "I just spent £ 14.85 at Rugby Workers Club Drinks November 8, 2025 at 09:33AM"
+          "Note": "IFTTT"
         },
         {
           "Date": "07/11/2025 10:23:41",
@@ -62,41 +126,388 @@
           "Name": "400 Work Canteen",
           "Amount (£)": "1.61",
           "Category": "Debit",
-          "Email Subject": "IFTTT",
-          "Column 1": "I just spent £ 1.61 at 400 Work Canteen November 7, 2025 at 10:23AM"
+          "Note": "IFTTT"
         },
         {
           "Date": "07/11/2025 07:35:04",
           "Time": "07:35:00",
           "Name": "Nic Services Group Work Canteen",
-          "Amount (£)": "0.70",
+          "Amount (£)": "0.7",
           "Category": "Debit",
-          "Email Subject": "IFTTT",
-          "Column 1": "I just spent £ 0.70 at Nic Services Group Work Canteen November 7, 2025 at 07:35AM"
+          "Note": "IFTTT"
         },
         {
           "Date": "06/11/2025 10:25:11",
           "Time": "10:25:00",
           "Name": "400 Work Canteen",
-          "Amount (£)": "1.60",
+          "Amount (£)": "1.6",
           "Category": "Debit",
-          "Email Subject": "IFTTT",
-          "Column 1": "I just spent £ 1.60 at 400 Work Canteen November 6, 2025 at 10:25AM"
+          "Note": "IFTTT"
         },
         {
           "Date": "06/11/2025 08:03:35",
           "Time": "08:03:00",
           "Name": "Nic Services Group Work Canteen",
-          "Amount (£)": "1.10",
+          "Amount (£)": "1.1",
           "Category": "Debit",
-          "Email Subject": "IFTTT",
-          "Column 1": "I just spent £ 1.10 at Nic Services Group Work Canteen November 6, 2025 at 08:03AM"
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "06/11/2025 08:00:21",
+          "Time": "08:00:00",
+          "Name": "Daventry Cloth General",
+          "Amount (£)": "2",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "06/11/2025 05:55:45",
+          "Time": "05:55:00",
+          "Name": "Nic Services Group Work Canteen",
+          "Amount (£)": "0.35",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "05/11/2025 10:25:19",
+          "Time": "10:25:00",
+          "Name": "Nic Services Group Work Canteen",
+          "Amount (£)": "1.6",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "05/11/2025 10:04:37",
+          "Time": "10:04:00",
+          "Name": "400 Work Canteen",
+          "Amount (£)": "1.29",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "05/11/2025 08:34:31",
+          "Time": "08:34:00",
+          "Name": "Nic Services Group Work Canteen",
+          "Amount (£)": "0.7",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "04/11/2025 18:39:55",
+          "Time": "18:39:00",
+          "Name": "Ebar Entertainment",
+          "Amount (£)": "5",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "04/11/2025 16:35:11",
+          "Time": "16:35:00",
+          "Name": "Home Bargains Shopping",
+          "Amount (£)": "20.46",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "04/11/2025 10:04:40",
+          "Time": "10:04:00",
+          "Name": "400 Work Canteen",
+          "Amount (£)": "1.42",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "04/11/2025 07:36:50",
+          "Time": "07:36:00",
+          "Name": "Nic Services Group Work Canteen",
+          "Amount (£)": "0.7",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "03/11/2025 10:19:57",
+          "Time": "10:19:00",
+          "Name": "400 Work Canteen",
+          "Amount (£)": "1.6",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "03/11/2025 07:32:45",
+          "Time": "07:32:00",
+          "Name": "Nic Services Group Work Canteen",
+          "Amount (£)": "0.7",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "02/11/2025 19:55:04",
+          "Time": "19:55:00",
+          "Name": "One Stop Groceries",
+          "Amount (£)": "6.52",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "01/11/2025 18:59:03",
+          "Time": "18:59:00",
+          "Name": "Just Eat Takeaway",
+          "Amount (£)": "26.79",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "31/10/2025 18:40:04",
+          "Time": "18:40:00",
+          "Name": "Nic Services Group Work Canteen",
+          "Amount (£)": "0.95",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "31/10/2025 18:20:44",
+          "Time": "18:20:00",
+          "Name": "400 Work Canteen",
+          "Amount (£)": "1.95",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "31/10/2025 15:33:38",
+          "Time": "15:33:00",
+          "Name": "Nic Services Group Work Canteen",
+          "Amount (£)": "2",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "31/10/2025 13:59:51",
+          "Time": "13:59:00",
+          "Name": "Nic Services Group Work Canteen",
+          "Amount (£)": "1.1",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "30/10/2025 18:19:53",
+          "Time": "18:19:00",
+          "Name": "400 Work Canteen",
+          "Amount (£)": "1.52",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "30/10/2025 13:21:15",
+          "Time": "13:21:00",
+          "Name": "One Stop Groceries",
+          "Amount (£)": "3.6",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "29/10/2025 18:19:43",
+          "Time": "18:19:00",
+          "Name": "400 Work Canteen",
+          "Amount (£)": "2.5",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "29/10/2025 15:35:13",
+          "Time": "15:35:00",
+          "Name": "Nic Services Group Work Canteen",
+          "Amount (£)": "0.7",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "28/10/2025 18:18:52",
+          "Time": "",
+          "Name": "400",
+          "Amount (£)": "2.99",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "28/10/2025 15:36:07",
+          "Time": "",
+          "Name": "Nic Services Group",
+          "Amount (£)": "0.7",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "27/10/2025 18:18:13",
+          "Time": "",
+          "Name": "400",
+          "Amount (£)": "2.99",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "27/10/2025 16:03:23",
+          "Time": "",
+          "Name": "Nic Services Group",
+          "Amount (£)": "1.1",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "25/10/2025 11:49:53",
+          "Time": "",
+          "Name": "Cbs Arena Kiosk 10",
+          "Amount (£)": "8.1",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "25/10/2025 11:22:13",
+          "Time": "",
+          "Name": "Cbs Arena Mobile Bars",
+          "Amount (£)": "7.2",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "24/10/2025 19:24:59",
+          "Time": "",
+          "Name": "Home Bargains",
+          "Amount (£)": "23.77",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "24/10/2025 10:13:15",
+          "Time": "",
+          "Name": "400",
+          "Amount (£)": "1.48",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "23/10/2025 17:25:34",
+          "Time": "",
+          "Name": "Costcutter Rugby LTD",
+          "Amount (£)": "3.84",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "23/10/2025 10:21:16",
+          "Time": "",
+          "Name": "400",
+          "Amount (£)": "1.46",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "23/10/2025 00:19:52",
+          "Time": "",
+          "Name": "Apple",
+          "Amount (£)": "19.99",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "21/10/2025 17:12:57",
+          "Time": "",
+          "Name": "Costcutter Rugby LTD",
+          "Amount (£)": "2.65",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "19/10/2025 17:23:17",
+          "Time": "",
+          "Name": "Rugby Ccfc Supporters",
+          "Amount (£)": "53.9",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "19/10/2025 17:03:24",
+          "Time": "",
+          "Name": "One Stop",
+          "Amount (£)": "5.17",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "09/10/2025 17:18:45",
+          "Time": "",
+          "Name": "Costcutter Rug",
+          "Amount (£)": "3.35",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "09/10/2025 16:23:26",
+          "Time": "",
+          "Name": "IG Index",
+          "Amount (£)": "500",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "09/10/2025 10:28:12",
+          "Time": "",
+          "Name": "400",
+          "Amount (£)": "3.9",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "09/10/2025 08:32:16",
+          "Time": "",
+          "Name": "Nic Services Group",
+          "Amount (£)": "0.7",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "08/10/2025 10:42:02",
+          "Time": "",
+          "Name": "Nic Services Group",
+          "Amount (£)": "2",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "08/10/2025 10:19:44",
+          "Time": "",
+          "Name": "400",
+          "Amount (£)": "1.6",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "08/10/2025 08:33:15",
+          "Time": "",
+          "Name": "Nic Services Group",
+          "Amount (£)": "0.7",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "07/10/2025 10:10:20",
+          "Time": "",
+          "Name": "400",
+          "Amount (£)": "1.74",
+          "Category": "Debit",
+          "Note": "IFTTT"
+        },
+        {
+          "Date": "07/10/2025 08:31:43",
+          "Time": "",
+          "Name": "Nic Services Group",
+          "Amount (£)": "1.1",
+          "Category": "Debit",
+          "Note": "IFTTT"
         }
       ]
     },
-
     "integrity": {
-      "checksum": "aurora-monzo-2025-11-09-v7",
+      "checksum": "monzo-hourly-transactions-2025-11-09T17:14:16.741Z",
       "verified": true
     }
   }
