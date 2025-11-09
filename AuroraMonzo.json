@@ -4,6 +4,11 @@
       "main_balance": 826.15,
       "payday_last": "2025-11-07",
       "income_received": 2078.78,
+  "flex": {
+     "total_balance": -810.77,
+      "next_payment_due": 419.50,
+      "next_due_date": "2025-12-01"
+},
       "pots": {
         "Flex Repayment": 609.44,
         "Direct Debits": 458.45,
