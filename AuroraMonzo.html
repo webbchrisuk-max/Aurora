@@ -184,7 +184,6 @@ tr:nth-child(even) {
 </div>
 
 <!-- ===================== SECTION: SCRIPT ===================== -->
-<!-- ===================== SECTION: SCRIPT ===================== -->
 <script>
 async function loadAuroraMonzo() {
   const status = document.getElementById("lastUpdated");
@@ -196,7 +195,6 @@ async function loadAuroraMonzo() {
     Date.now();
 
   try {
-    // --- fetch both sources in parallel ---
     const [summaryRes, feedRes] = await Promise.all([
       fetch(monzoJSON),
       fetch(monzoFeed)
@@ -219,48 +217,62 @@ async function loadAuroraMonzo() {
     document.getElementById("payReceived").textContent = s.last_income.toFixed(2);
 
     // ===================== SECTION: FLEX SUMMARY =====================
-    const flex = summary.pots["Flex Repayment"];
-    document.getElementById("flexBalance").textContent = flex.balance.toFixed(2);
-    document.getElementById("flexNext").textContent = flex.target.toFixed(2);
-    document.getElementById("flexDate").textContent = flex.notes.match(/\d{1,2}\w{0,2}\s?\w+/)
-      ? flex.notes.match(/\d{1,2}\w{0,2}\s?\w+/)[0]
-      : "–";
+    const flex = summary.pots.find(p => p.name.toLowerCase().includes("flex"));
+    if (flex) {
+      document.getElementById("flexBalance").textContent = flex.balance.toFixed(2);
+      document.getElementById("flexNext").textContent = 419.00.toFixed(2);
+      document.getElementById("flexDate").textContent = "2025-12-01";
+    } else {
+      document.getElementById("flexBalance").textContent = "0.00";
+      document.getElementById("flexNext").textContent = "0.00";
+      document.getElementById("flexDate").textContent = "–";
+    }
 
     // ===================== SECTION: POTS GRID =====================
     const potsDiv = document.getElementById("potsContainer");
     potsDiv.innerHTML = "";
-    Object.entries(summary.pots).forEach(([name, info]) => {
-      if (name === "Flex Repayment") return; // already displayed
+    summary.pots.forEach(pot => {
+      if (pot.name.toLowerCase().includes("flex")) return; // skip flex card here
       const card = document.createElement("div");
       card.className = "card";
-      const value = parseFloat(info.balance);
-      const target = info.goal || info.target || 500;
+      const value = parseFloat(pot.balance);
+      const target = 500; // default visual goal
       const percent = Math.min((value / target) * 100, 100).toFixed(1);
       card.innerHTML = `
-        <h3>${name}</h3>
+        <h3>${pot.name}</h3>
         <p>£${value.toFixed(2)}</p>
         <div class="progress-container">
           <div class="progress-bar" style="--target-width:${percent}%;"></div>
         </div>
-        <small>${info.notes || ""}</small>
+        <small>${pot.notes || ""}</small>
       `;
       potsDiv.appendChild(card);
     });
 
-    // ===================== SECTION: DIRECT DEBITS + SUBSCRIPTIONS =====================
-    document.querySelector("#ddTable tbody").innerHTML = "";
-    document.querySelector("#subTable tbody").innerHTML = "";
+    // ===================== SECTION: DIRECT DEBITS =====================
+    const ddBody = document.querySelector("#ddTable tbody");
+    ddBody.innerHTML = "";
+    summary.direct_debits.forEach(dd => {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${dd.payee}</td><td>${dd.amount.toFixed(2)}</td><td>${dd.due_date}</td>`;
+      ddBody.appendChild(row);
+    });
 
-    // if you later want to populate these from feedData, you can hook it here
-    console.log("💡 Monzo feed contains", feed.length, "transactions.");
+    // ===================== SECTION: SUBSCRIPTIONS =====================
+    const subBody = document.querySelector("#subTable tbody");
+    subBody.innerHTML = "";
+    summary.subscriptions_from_main.forEach(sub => {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${sub.service}</td><td>${sub.amount.toFixed(2)}</td><td>${sub.renewal_date}</td>`;
+      subBody.appendChild(row);
+    });
 
     // ===================== SECTION: TIMESTAMP =====================
     status.textContent =
       "✅ Data successfully loaded – " + new Date().toLocaleString();
   } catch (err) {
     console.error("❌ Aurora Monzo load error:", err);
-    document.getElementById("lastUpdated").textContent =
-      "❌ Failed to load Monzo data: " + err.message;
+    status.textContent = "❌ Failed to load Monzo data: " + err.message;
   }
 }
 
