@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Aurora Monzo Dashboard v1.1 – Neon Blue + Coral Glow</title>
+<title>Aurora Monzo Dashboard v1.3 – Neon Blue + Coral Glow</title>
 
 <!-- ===================== SECTION: FONTS & BASE ===================== -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@500&display=swap" rel="stylesheet" />
@@ -146,7 +146,7 @@ tr:nth-child(even) {
   <section id="flex-summary" class="card">
     <h2>💳 Flex Summary</h2>
     <p><strong>Total Balance:</strong> £<span id="flexBalance">0.00</span></p>
-    <p><strong>Next Payment:</strong> £<span id="flexNext">0.00</span> on <span id="flexDate">–</span></p>
+    <p><strong>Next Payment:</strong> £419.00 on 2025-12-01</p>
   </section>
 
   <!-- POTS GRID -->
@@ -157,29 +157,33 @@ tr:nth-child(even) {
 
   <!-- DIRECT DEBITS -->
   <section id="direct-debits" class="card">
-    <h2>🔁 Direct Debits (Paid from Direct Debits Pot)</h2>
+    <h2>🔁 Direct Debits</h2>
     <table id="ddTable">
-      <thead>
-        <tr><th>Payee</th><th>Amount (£)</th><th>Due Date</th></tr>
-      </thead>
+      <thead><tr><th>Payee</th><th>Amount (£)</th><th>Due Date</th></tr></thead>
       <tbody></tbody>
     </table>
   </section>
 
   <!-- SUBSCRIPTIONS -->
   <section id="subscriptions" class="card">
-    <h2>📱 Subscriptions (Paid from Main Balance)</h2>
+    <h2>📱 Subscriptions</h2>
     <table id="subTable">
-      <thead>
-        <tr><th>Service</th><th>Amount (£)</th><th>Renewal Date</th></tr>
-      </thead>
+      <thead><tr><th>Service</th><th>Amount (£)</th><th>Renewal Date</th></tr></thead>
       <tbody></tbody>
     </table>
   </section>
 
-  <!-- TIMESTAMP FOOTER -->
+  <!-- RECENT TRANSACTIONS -->
+  <section id="recent-transactions" class="card">
+    <h2>🧾 Recent Transactions</h2>
+    <table id="txnTable">
+      <thead><tr><th>Date</th><th>Merchant</th><th>Amount (£)</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
   <footer style="text-align:center;margin-top:25px;color:#aaa;font-size:0.85em;">
-    <span id="lastUpdated">Last updated loading…</span>
+    <span id="lastUpdated">Loading data…</span>
   </footer>
 </div>
 
@@ -187,64 +191,73 @@ tr:nth-child(even) {
 <script>
 async function loadAuroraMonzo() {
   const status = document.getElementById("lastUpdated");
-
   const monzoJSON = "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraMonzo.json";
-  const monzoFeed = "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Monzo";
 
   try {
-    const [summaryRes, feedRes] = await Promise.all([
-      fetch(monzoJSON + "?nocache=" + Date.now()),
-      fetch(monzoFeed + "?nocache=" + Date.now())
-    ]);
+    const res = await fetch(monzoJSON + "?nocache=" + Date.now());
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
 
-    if (!summaryRes.ok || !feedRes.ok) {
-      throw new Error(`HTTP ${summaryRes.status} / ${feedRes.status}`);
-    }
+    const core = data.monzo.account_core;
+    const pots = core.pots || {};
+    const dd = data.monzo.direct_debits || [];
+    const subs = data.monzo.subscriptions_from_main || [];
+    const txns = data.monzo.transactions_feed.recent || [];
 
-    const summary = await summaryRes.json();
-    const feed = await feedRes.json();
+    // ACCOUNT SUMMARY
+    document.getElementById("mainBalance").textContent = core.main_balance.toFixed(2);
+    document.getElementById("payday").textContent = core.payday_last;
+    document.getElementById("payReceived").textContent = core.income_received.toFixed(2);
 
-    console.log("✅ AuroraMonzo.json loaded:", summary);
-    console.log("✅ Monzo feed loaded:", feed);
+    // FLEX SUMMARY
+    document.getElementById("flexBalance").textContent = (pots.FlexRepayment || 0).toFixed(2);
 
-    // ===================== SECTION: ACCOUNT CORE =====================
-    const c = summary.monzo.account_core;
-    document.getElementById("mainBalance").textContent = c.main_balance.toFixed(2);
-    document.getElementById("payday").textContent = c.payday_last;
-    document.getElementById("payReceived").textContent = c.income_received.toFixed(2);
-
-    // ===================== SECTION: FLEX SUMMARY =====================
-    const flexBalance = c.pots.FlexRepayment || 0;
-    document.getElementById("flexBalance").textContent = flexBalance.toFixed(2);
-    document.getElementById("flexNext").textContent = "419.00";
-    document.getElementById("flexDate").textContent = "2025-12-01";
-
-    // ===================== SECTION: POTS GRID =====================
+    // POTS
     const potsDiv = document.getElementById("potsContainer");
     potsDiv.innerHTML = "";
-    Object.entries(c.pots).forEach(([name, balance]) => {
+    Object.entries(pots).forEach(([name, balance]) => {
       if (name.toLowerCase().includes("flex")) return;
       const card = document.createElement("div");
       card.className = "card";
-      const value = parseFloat(balance);
-      const target = 500;
-      const percent = Math.min((value / target) * 100, 100).toFixed(1);
+      const percent = Math.min((balance / 500) * 100, 100).toFixed(1);
       card.innerHTML = `
         <h3>${name}</h3>
-        <p>£${value.toFixed(2)}</p>
+        <p>£${balance.toFixed(2)}</p>
         <div class="progress-container">
           <div class="progress-bar" style="--target-width:${percent}%;"></div>
-        </div>
-      `;
+        </div>`;
       potsDiv.appendChild(card);
     });
 
-    // ===================== SECTION: DIRECT DEBITS + SUBSCRIPTIONS =====================
-    document.querySelector("#ddTable tbody").innerHTML = "<tr><td colspan='3'>Loaded from AuroraMonzo.json</td></tr>";
-    document.querySelector("#subTable tbody").innerHTML = "<tr><td colspan='3'>Loaded from AuroraMonzo.json</td></tr>";
+    // DIRECT DEBITS
+    const ddBody = document.querySelector("#ddTable tbody");
+    ddBody.innerHTML = "";
+    dd.forEach(item => {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${item.payee}</td><td>${item.amount.toFixed(2)}</td><td>${item.due_date}</td>`;
+      ddBody.appendChild(row);
+    });
 
-    // ===================== SECTION: TIMESTAMP =====================
-    status.textContent = "✅ Data successfully loaded – " + new Date().toLocaleString();
+    // SUBSCRIPTIONS
+    const subBody = document.querySelector("#subTable tbody");
+    subBody.innerHTML = "";
+    subs.forEach(item => {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${item.service}</td><td>${item.amount.toFixed(2)}</td><td>${item.renewal_date}</td>`;
+      subBody.appendChild(row);
+    });
+
+    // TRANSACTIONS
+    const txnBody = document.querySelector("#txnTable tbody");
+    txnBody.innerHTML = "";
+    txns.slice(0, 5).forEach(tx => {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${tx.Date}</td><td>${tx.Name}</td><td>${parseFloat(tx["Amount (£)"]).toFixed(2)}</td>`;
+      txnBody.appendChild(row);
+    });
+
+    // FOOTER STATUS
+    status.textContent = "✅ Data loaded successfully – " + new Date().toLocaleString();
   } catch (err) {
     console.error("❌ Aurora Monzo load error:", err);
     status.textContent = "❌ Failed to load Monzo data: " + err.message;
