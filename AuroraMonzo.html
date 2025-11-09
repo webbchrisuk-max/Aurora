@@ -219,19 +219,19 @@ tr:nth-child(even) { background: rgba(255,255,255,0.03); }
     </table>
   </section>
 
-  <!-- RECENT TRANSACTIONS -->
-  <section id="recent-transactions" class="card">
-    <h2>🧾 Recent Transactions</h2>
-    <table id="txnTable">
-      <thead><tr><th>Date</th><th>Merchant</th><th>Amount (£)</th></tr></thead>
-      <tbody></tbody>
-    </table>
-  </section>
+  // TRANSACTIONS
+const txnBody = document.querySelector("#txnTable tbody");
+txnBody.innerHTML = "";
+txns.slice(0, 5).forEach(tx => {
+  const date = tx.date || tx.Date || "–";
+  const merchant = tx.merchant || tx.Merchant || tx.Name || "–";
+  const rawAmt = tx.amount ?? tx["Amount (£)"] ?? tx.Amount ?? 0;
+  const amount = parseFloat(rawAmt) || 0;
 
-  <footer style="text-align:center;margin-top:25px;color:#aaa;font-size:0.85em;">
-    <span id="lastUpdated">Loading data…</span>
-  </footer>
-</div>
+  const row = document.createElement("tr");
+  row.innerHTML = `<td>${date}</td><td>${merchant}</td><td>${amount.toFixed(2)}</td>`;
+  txnBody.appendChild(row);
+});
 
 <!-- ===================== SECTION: SCRIPT ===================== -->
 <script>
