@@ -1,7 +1,7 @@
 {
   "monzo": {
     "account_core": {
-      "main_balance": 1161.15,
+      "main_balance": 810.31,
       "payday_last": "2025-11-07",
       "income_received": 2078.78,
       "flex": {
@@ -14,8 +14,8 @@
         "Direct Debits": 463.45,
         "Holiday": 174.45,
         "Coventry City FC": 167.86,
-        "IGTrading": 229.3,
-        "Car Maintenance": -45.50999999999999,
+        "IGTrading": 231.60,
+        "Car Maintenance": 124.49,
         "Work Buffer": 47.94,
         "Christmas": 150,
         "Savings": 501
