@@ -72,9 +72,10 @@ jobs:
         run: |
           git config user.name "AuroraSync Bot"
           git config user.email "actions@github.com"
-          git pull --rebase
           git add AuroraSync.json
-          git commit -m "🔁 Auto-update: Full Aurora Data Sync with Monzo merge" || echo "No changes to commit."
-          git push
-
+          git commit -m "🔄 Auto-update: AuroraSync.json refreshed" || echo "No changes to commit"
+          git fetch origin main
+          git pull origin main --no-rebase --strategy-option ours || true
+          git push origin main --force
+          
           echo "✅ AuroraSync.json updated and pushed to GitHub successfully."
