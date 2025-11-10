@@ -1,9 +1,8 @@
-name: Aurora Data Sync
+name: 🪄 Aurora Data Sync
 
 on:
   schedule:
-    # Run every hour
-    - cron: "0 * * * *"
+    - cron: "0 8 * * *"   # ⏰ Runs daily at 08:00 UTC
   workflow_dispatch:
 
 jobs:
@@ -11,27 +10,75 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🧩 Checkout repository
+      - name: 🧰 Checkout repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: ⚙️ Set up Python
+      - name: ⚙️ Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.x"
+          python-version: "3.11"
 
-      - name: 🪄 Install dependencies
+      - name: 📦 Install jq for JSON merging
+        run: sudo apt-get install -y jq
+
+      - name: 🌐 Fetch data from Google Sheets
         run: |
-          python -m pip install --upgrade pip
-          pip install requests gspread oauth2client
+          echo "Fetching Google Sheets data..."
+          curl -L "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Holdings" -o holdings.json
+          curl -L "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Dividends" -o dividends.json
+          curl -L "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/DirectDebits" -o directdebits.json
+          curl -L "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transfers" -o transfers.json
+          echo "✅ Sheets pulled successfully."
 
-      - name: 📝 Commit and push changes
+      - name: 🧠 Build AuroraSync.json
+        run: |
+          echo "Building AuroraSync.json..."
+          jq -n \
+            --argfile holdings holdings.json \
+            --argfile dividends dividends.json \
+            --argfile directdebits directdebits.json \
+            --argfile transfers transfers.json \
+            '{
+              isa: {
+                holdings: $holdings,
+                dividends: $dividends
+              },
+              monzo: {},
+              direct_debits: $directdebits,
+              transfers: $transfers,
+              meta: {
+                last_updated: now | todate,
+                source: "Google Sheets + Monzo Merge"
+              }
+            }' > AuroraSync.json
+
+          echo "✅ Base AuroraSync.json created."
+
+      - name: 🔄 Merge Monzo JSON into AuroraSync
+        run: |
+          echo "Merging AuroraMonzo.json → AuroraSync.json..."
+          MONZO_URL="https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraMonzo.json"
+          curl -L "$MONZO_URL" -o AuroraMonzo.json
+
+          # Merge "monzo" section from AuroraMonzo.json into AuroraSync.json
+          jq '.monzo = (input.monzo)' AuroraSync.json AuroraMonzo.json > temp.json && mv temp.json AuroraSync.json
+
+          echo "✅ AuroraMonzo.json merged successfully into AuroraSync.json."
+
+      - name: 🧾 Validate final JSON
+        run: |
+          jq empty AuroraSync.json
+          echo "✅ AuroraSync.json validated successfully."
+
+      - name: 🚀 Commit and push changes
         run: |
           git config user.name "AuroraSync Bot"
           git config user.email "actions@github.com"
-          git pull --rebase origin main
+          git pull --rebase
           git add AuroraSync.json
-          git commit -m "Auto-update: Dividend yield & annual income recalculated" || echo "No changes to commit"
-          git push origin main
+          git commit -m "🔁 Auto-update: Full Aurora Data Sync with Monzo merge" || echo "No changes to commit."
+          git push
 
-      - name: ✅ Done
-        run: echo "AuroraSync.json updated successfully."
+          echo "✅ AuroraSync.json updated and pushed to GitHub successfully."
