@@ -3,26 +3,28 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Aurora Master Dashboard – Ultra Edition (Mobile Fixed)</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet" />
+<title>Aurora Tracker – Cinematic Edition (Ultra Fixed)</title>
+
+<!-- ===================== SECTION: FONTS & BASE ===================== -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
 
 <style>
 :root{
   --cyan:#00ffff;
-  --coral:#ff7f50;
-  --teal:#00ffd0;
+  --coral:#ff6f61;
   --amber:#ffb347;
-  --bg1:#060018;
-  --bg2:#120035;
-  --bg3:#001a33;
+  --teal:#00ffd0;
+  --bg1:#050505;
+  --bg2:#090018;
+  --bg3:#00101f;
 }
 body{
-  margin:0;padding:0;
-  font-family:'Orbitron',sans-serif;
+  margin:0;
+  font-family:'Inter',sans-serif;
   color:#fff;
   background:linear-gradient(120deg,var(--bg1),var(--bg2),var(--bg3));
   background-size:600% 600%;
-  animation:auroraDrift 45s ease-in-out infinite;
+  animation:auroraDrift 50s ease-in-out infinite;
   overflow-x:hidden;
 }
 @keyframes auroraDrift{
@@ -30,119 +32,90 @@ body{
   50%{background-position:100% 50%;}
   100%{background-position:0% 50%;}
 }
-h1{text-align:center;font-size:1.8rem;margin:20px 0;text-shadow:0 0 14px rgba(0,255,255,.7);}
+h1{text-align:center;font-family:'Orbitron',sans-serif;font-size:1.8rem;margin:20px 0;text-shadow:0 0 18px rgba(0,255,255,.8);}
 .dashboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:20px;max-width:1200px;margin:0 auto;padding:0 20px 30px;}
 .card{
-  background:rgba(10,10,30,0.65);
+  background:rgba(10,10,25,0.7);
   border:1px solid rgba(0,255,255,0.25);
   border-radius:10px;
   padding:20px;
-  box-shadow:0 0 20px rgba(0,255,255,0.15);
+  box-shadow:0 0 25px rgba(0,255,255,0.15),inset 0 0 8px rgba(255,111,97,.2);
   backdrop-filter:blur(6px);
   animation:fadeIn .8s ease-in-out;
 }
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-.targetBar{width:100%;background:rgba(255,255,255,.1);border-radius:10px;height:16px;margin-top:8px;overflow:hidden;}
+
+.targetBar{width:100%;background:rgba(255,255,255,.1);border-radius:10px;height:14px;margin-top:8px;overflow:hidden;}
 .targetFill{height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),#9dfcff);transition:width 1s ease;}
-.divTable{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:6px;}
-.divTable th,.divTable td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left;}
-.divTable th{color:var(--cyan);font-weight:600;text-shadow:0 0 8px rgba(0,255,255,.5);}
-.divTable tr:hover{background:rgba(0,255,255,.08);transition:background .3s;}
-.divTable td span.amount{color:#00ffcc;text-shadow:0 0 6px rgba(0,255,255,.5);}
-.divTable td span.date{color:#ff66cc;text-shadow:0 0 6px rgba(255,102,204,.4);}
 
-/* Holdings Table */
-.holdingsTable{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:8px;}
-.holdingsTable th,.holdingsTable td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left;}
-.holdingsTable th{color:var(--teal);font-weight:600;text-shadow:0 0 8px var(--teal);}
-.holdingsTable tr:nth-child(even){background:rgba(255,255,255,.03);}
-.holdingsTable tr:hover{background:rgba(0,255,255,.08);transition:background .3s;}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:6px;}
+th,td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left;}
+th{color:var(--cyan);font-weight:600;text-shadow:0 0 8px rgba(0,255,255,.5);}
+tr:hover{background:rgba(0,255,255,.08);transition:background .3s;}
+td span.amount{color:#00ffcc;text-shadow:0 0 6px rgba(0,255,255,.5);}
+td span.date{color:#ff66cc;text-shadow:0 0 6px rgba(255,102,204,.4);}
 
-/* Responsive fix for Holdings Tables (iPhone portrait safe) */
-.holdingsTable-wrapper {
-  width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 6px;
-  margin-bottom: 6px;
-}
-.holdingsTable-wrapper::-webkit-scrollbar {
-  height: 6px;
-}
-.holdingsTable-wrapper::-webkit-scrollbar-thumb {
-  background: rgba(0,255,255,0.4);
-  border-radius: 3px;
-}
-@media (max-width: 600px){
-  .holdingsTable th, .holdingsTable td {
-    white-space: nowrap;
-    font-size: 0.85rem;
-    padding: 5px 6px;
-  }
+.holdingsTable-wrapper{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:6px;}
+.holdingsTable-wrapper::-webkit-scrollbar{height:6px;}
+.holdingsTable-wrapper::-webkit-scrollbar-thumb{background:rgba(0,255,255,0.4);border-radius:3px;}
+
+@media(max-width:600px){
+  th,td{white-space:nowrap;font-size:0.85rem;padding:5px 6px;}
 }
 
-/* Mobile-friendly yearly chart */
-#yearlyBars{overflow-x:auto;display:flex;justify-content:flex-start;align-items:flex-end;height:240px;margin-top:12px;gap:10px;padding-bottom:10px;}
+#yearlyBars{overflow-x:auto;display:flex;justify-content:flex-start;align-items:flex-end;height:220px;margin-top:10px;gap:10px;padding-bottom:10px;}
 #yearlyBars>div{flex:0 0 auto;}
 </style>
 </head>
 
 <body>
-<h1>Aurora Master Dashboard – Ultra Edition</h1>
+<h1>Aurora Tracker – Cinematic Edition</h1>
 
 <div class="dashboard">
 
-  <!-- Portfolio Summary -->
+  <!-- ===================== SECTION: PORTFOLIO SUMMARY ===================== -->
   <div class="card" id="portfolio-summary">
     <h2>Portfolio Summary</h2>
     <p>Total Target: £<span id="targetValue">0.00</span></p>
     <div class="targetBar"><div id="targetFill" class="targetFill"></div></div>
     <p>Dividend Yield: <span id="divYield">0.00</span>%</p>
-    <p>Total Gain: <span id="totalGain">0.00</span> (<span id="gainPercent">0.00</span>%)</p>
+    <p>Annual Income: £<span id="annualIncome">0.00</span></p>
   </div>
 
-  <!-- ISA Balances -->
+  <!-- ===================== SECTION: ISA BALANCES ===================== -->
   <div class="card" id="isa-balances">
     <h2>ISA Balances</h2>
     <p>IG ISA: £<span id="igBalance">0.00</span></p>
     <p>Trade212 ISA: £<span id="t212Balance">0.00</span></p>
   </div>
 
-  <!-- Upcoming Dividends -->
+  <!-- ===================== SECTION: UPCOMING DIVIDENDS ===================== -->
   <div class="card" id="dividends-centre">
     <h2>📅 Upcoming Dividends</h2>
     <h3>💰 Next 5 Dividends</h3>
-    <table class="divTable">
-      <thead><tr><th>Company</th><th>Amount</th><th>Pay Date</th></tr></thead>
-      <tbody id="nextDivs"></tbody>
-    </table>
+    <table><thead><tr><th>Company</th><th>Amount</th><th>Pay Date</th></tr></thead><tbody id="nextDivs"></tbody></table>
     <h3 style="margin-top:18px;">🗓️ Next 5 Ex-Dividends</h3>
-    <table class="divTable">
-      <thead><tr><th>Company</th><th>Ex-Div Date</th></tr></thead>
-      <tbody id="nextExDivs"></tbody>
-    </table>
+    <table><thead><tr><th>Company</th><th>Ex-Div Date</th></tr></thead><tbody id="nextExDivs"></tbody></table>
   </div>
 
-  <!-- Dividend Overview -->
+  <!-- ===================== SECTION: DIVIDEND OVERVIEW ===================== -->
   <div class="card" id="dividend-overview">
     <h2>Dividend Overview</h2>
     <p>Forecast Annual Income: £<span id="forecastTotal">0.00</span></p>
     <p>YTD Received: £<span id="receivedYTD">0.00</span></p>
     <div class="targetBar"><div id="forecastProgress" class="targetFill"></div></div>
     <p style="font-size:.8rem;margin-top:6px;">Progress to £6 000 Goal: <span id="forecastPercent">0%</span></p>
-    <h3>Quarterly Totals</h3>
-    <div id="quarterlyBars" style="display:flex;justify-content:space-around;align-items:flex-end;height:220px;margin-top:12px;gap:10px;"></div>
     <h3 style="margin-top:20px;">Yearly Dividends (Jan–Dec)</h3>
     <div id="yearlyBars"></div>
   </div>
 
-  <!-- IG ISA Holdings -->
+  <!-- ===================== SECTION: IG ISA HOLDINGS ===================== -->
   <div class="card">
     <h2>IG ISA Holdings</h2>
     <div class="holdingsTable-wrapper"><div id="igContent"></div></div>
   </div>
 
-  <!-- Trade212 ISA Holdings -->
+  <!-- ===================== SECTION: TRADE212 ISA HOLDINGS ===================== -->
   <div class="card">
     <h2>Trade212 ISA Holdings</h2>
     <div class="holdingsTable-wrapper"><div id="t212Content"></div></div>
@@ -150,75 +123,120 @@ h1{text-align:center;font-size:1.8rem;margin:20px 0;text-shadow:0 0 14px rgba(0,
 
 </div>
 
-<!-- ===================== FIXED SCRIPT ===================== -->
-<!-- ===================== SECTION: DATA FETCH + RENDER ===================== -->
+<!-- ===================== SECTION: SCRIPT ===================== -->
 <script>
 const JSON_URL = "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json?nocache=";
+const asNum = v => isNaN(+v)?0:+v;
 
-async function loadAurora() {
-  try {
-    console.log("Fetching Aurora data...");
-    const res = await fetch(JSON_URL + Date.now(), { cache: "no-store" });
-    if (!res.ok) throw new Error("HTTP " + res.status);
+async function loadAurora(){
+  try{
+    const res = await fetch(JSON_URL + Date.now(), {cache:"no-store"});
+    if(!res.ok) throw new Error(res.status);
     const d = await res.json();
-    console.log("✅ Aurora data loaded:", d);
-
     renderAll(d);
-  } catch (e) {
-    console.error("❌ Failed to load Aurora data:", e);
-    alert("Data fetch failed. Check your internet connection or JSON link.");
-  }
+  }catch(e){console.error("❌ Aurora data fetch failed:", e);}
 }
 
-// ===================== SECTION: RENDER FUNCTIONS =====================
-
-// Simple example renderer — your existing style remains unchanged
-function renderSection(containerId, holdings, color) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-
-  if (!holdings || holdings.length === 0) {
-    container.innerHTML = `<p style="color:#888;">No holdings found</p>`;
-    return;
-  }
-
-  container.innerHTML = holdings.map(h => `
-    <div class="holding-card" style="border-left:4px solid ${color};padding:8px;margin:6px 0;background:rgba(255,255,255,0.05);border-radius:6px;">
-      <strong>${h.name}</strong> (${h.ticker})<br>
-      Shares: ${h.shares}<br>
-      Value: £${Number(h.value).toLocaleString()}<br>
-      Gain: £${Number(h.gain_value).toLocaleString()} (${Number(h.gain_percentage).toFixed(2)}%)<br>
-      Yield: ${Number(h.annual_div_yield).toFixed(2)}% | Income £${Number(h.annual_income).toFixed(2)}
-    </div>
-  `).join("");
+function renderAll(d){
+  renderSummary(d);
+  renderBalances(d);
+  renderDividends(d);
+  renderForecast(d);
+  renderYearly(d);
+  renderHoldings(d);
 }
 
-function renderAll(d) {
-  // ===================== IG ISA =====================
-  renderSection("igContent", d.isa?.holdings?.filter(x => x.account === "IG ISA") || [], "var(--teal)");
-
-  // ===================== Trade212 ISA =====================
-  renderSection("t212Content", d.isa?.holdings?.filter(x => x.account === "TRADE212") || [], "var(--blue)");
-
-  // ===================== Dividends (if present) =====================
-  if (document.getElementById("dividendsContent")) {
-    const upcoming = d.isa?.dividends || [];
-    const sorted = upcoming.sort((a, b) => new Date(a.pay_date) - new Date(b.pay_date));
-    document.getElementById("dividendsContent").innerHTML = sorted.slice(0, 10).map(div => `
-      <div class="div-card" style="border-left:4px solid var(--coral);padding:8px;margin:6px 0;background:rgba(255,255,255,0.05);border-radius:6px;">
-        <strong>${div.name}</strong> (${div.ticker})<br>
-        Pay Date: ${div.pay_date}<br>
-        Dividend: £${Number(div.total_dividend).toFixed(2)} (${div.status})
-      </div>
-    `).join("");
-  }
+/* ===================== PORTFOLIO SUMMARY ===================== */
+function renderSummary(d){
+  const s = d.isa?.portfolio_summary || {};
+  document.getElementById("targetValue").textContent = asNum(s.annual_target_value).toLocaleString();
+  document.getElementById("divYield").textContent = asNum(s.dividend_yield).toFixed(2);
+  document.getElementById("annualIncome").textContent = asNum(s.annual_income_gbp).toLocaleString();
+  const pct = (asNum(s.annual_income_gbp)/6000*100).toFixed(1);
+  document.getElementById("targetFill").style.width = Math.min(pct,100) + "%";
 }
 
-loadAurora();
+/* ===================== ISA BALANCES ===================== */
+function renderBalances(d){
+  document.getElementById("igBalance").textContent = asNum(d.isa?.ig_isa?.balance).toLocaleString(undefined,{minimumFractionDigits:2});
+  document.getElementById("t212Balance").textContent = asNum(d.isa?.trade212_isa?.balance).toLocaleString(undefined,{minimumFractionDigits:2});
+}
+
+/* ===================== UPCOMING DIVIDENDS ===================== */
+function renderDividends(d){
+  const now = new Date();
+  const divs = document.getElementById("nextDivs");
+  const exs = document.getElementById("nextExDivs");
+  divs.innerHTML = exs.innerHTML = "";
+  const feed = d.isa?.dividends || [];
+  const upcoming = feed.filter(v => new Date(v.pay_date) > now).sort((a,b)=>new Date(a.pay_date)-new Date(b.pay_date)).slice(0,5);
+  const exUpcoming = feed.filter(v => new Date(v.ex_div_date) > now).sort((a,b)=>new Date(a.ex_div_date)-new Date(b.ex_div_date)).slice(0,5);
+  upcoming.forEach(v=>{
+    divs.insertAdjacentHTML("beforeend",`<tr><td>${v.name}</td><td><span class='amount'>£${asNum(v.total_dividend).toFixed(2)}</span></td><td><span class='date'>${v.pay_date}</span></td></tr>`);
+  });
+  exUpcoming.forEach(v=>{
+    exs.insertAdjacentHTML("beforeend",`<tr><td>${v.name}</td><td><span class='date'>${v.ex_div_date}</span></td></tr>`);
+  });
+}
+
+/* ===================== DIVIDEND OVERVIEW ===================== */
+function renderForecast(d){
+  const f = d.isa?.dividend_planner || {};
+  const total = asNum(f.forecast_total);
+  const ytd = asNum(f.received_ytd);
+  const pct = (total/6000*100).toFixed(1);
+  document.getElementById("forecastTotal").textContent = total.toFixed(2);
+  document.getElementById("receivedYTD").textContent = ytd.toFixed(2);
+  document.getElementById("forecastPercent").textContent = pct + "%";
+  document.getElementById("forecastProgress").style.width = Math.min(pct,100)+"%";
+}
+
+/* ===================== YEARLY CHART ===================== */
+function renderYearly(d){
+  const el = document.getElementById("yearlyBars"); el.innerHTML = "";
+  const m = d.isa?.dividend_planner?.monthly_breakdown || {};
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const vals = months.map(k => +m[k] || 0);
+  const max = Math.max(1,...vals);
+  months.forEach((k,i)=>{
+    const v = vals[i];
+    const bar=document.createElement("div");
+    bar.style.width="40px";
+    bar.style.height=(v/max*180)+"px";
+    bar.style.borderRadius="6px 6px 0 0";
+    bar.style.background="linear-gradient(180deg,var(--cyan),var(--coral))";
+    bar.style.boxShadow="0 0 15px rgba(0,255,255,0.5)";
+    const lbl=document.createElement("div");
+    lbl.innerHTML=`${k}<br>£${v.toFixed(0)}`;
+    lbl.style.fontSize=".75rem";lbl.style.textAlign="center";lbl.style.marginTop="6px";
+    const wrap=document.createElement("div");
+    wrap.style.display="flex";wrap.style.flexDirection="column";wrap.style.alignItems="center";
+    wrap.appendChild(bar);wrap.appendChild(lbl);el.appendChild(wrap);
+  });
+}
+
+/* ===================== HOLDINGS ===================== */
+function renderHoldings(d){
+  const holdings = d.isa?.holdings || [];
+  const ig = holdings.filter(x=>x.account==="IG ISA");
+  const t212 = holdings.filter(x=>x.account==="TRADE212");
+  renderSection("igContent", ig, "var(--teal)");
+  renderSection("t212Content", t212, "var(--amber)");
+}
+
+function renderSection(id,list,color){
+  const el=document.getElementById(id);el.innerHTML="";
+  if(!list.length){el.innerHTML="<p>No holdings available.</p>";return;}
+  let h=`<table><thead><tr style="color:${color};text-shadow:0 0 8px ${color};"><th>Name</th><th>Value (£)</th><th>Gain (£)</th><th>Gain (%)</th><th>Yield (%)</th><th>Income (£)</th></tr></thead><tbody>`;
+  list.forEach(v=>{
+    const gcls=asNum(v.gain_value)>=0?"style='color:#00ffcc'":"style='color:#ff5555'";
+    h+=`<tr><td>${v.name}</td><td>${asNum(v.value).toFixed(2)}</td><td ${gcls}>${asNum(v.gain_value).toFixed(2)}</td><td ${gcls}>${asNum(v.gain_percentage).toFixed(2)}%</td><td>${asNum(v.annual_div_yield).toFixed(2)}%</td><td>${asNum(v.annual_income).toFixed(2)}</td></tr>`;
+  });
+  h+="</tbody></table>";el.innerHTML=h;
+}
+
+document.addEventListener("DOMContentLoaded",loadAurora);
 </script>
-<!-- ===================== END OF FILE ===================== -->
 
-<!-- ===================== NAV DISCOUNT LEADERBOARD SECTION REMAINS UNCHANGED ===================== -->
-<!-- (Your existing NAV leaderboard code from the previous version continues here exactly as is) -->
 </body>
 </html>
