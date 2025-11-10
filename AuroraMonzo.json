@@ -1,7 +1,7 @@
 {
   "monzo": {
     "account_core": {
-      "main_balance": 821.15,
+      "main_balance": 991.15,
       "payday_last": "2025-11-07",
       "income_received": 2078.78,
       "flex": {
@@ -15,7 +15,7 @@
         "Holiday": 174.45,
         "Coventry City FC": 167.86,
         "IGTrading": 229.3,
-        "Car Maintenance": 294.49,
+        "Car Maintenance": 124.49000000000001,
         "Work Buffer": 47.94,
         "Christmas": 150,
         "Savings": 501
@@ -114,7 +114,19 @@
       "recent": [
         {
           "Date": "10/11/2025",
-          "Time": "14:09:09",
+          "Time": "18:20:00",
+          "Merchant": "Rural Motor Re Car",
+          "Amount (£)": "170",
+          "Type": "Debit",
+          "Source": "IFTTT",
+          "Email Subject": "I just spent £ 170 at Rural Motor Re Car Bills November 10, 2025 at 03:50PM",
+          "Category": "other",
+          "Processed": "✅",
+          "Gmail ID": "19a6e7691b13c9b4"
+        },
+        {
+          "Date": "10/11/2025",
+          "Time": "09:19:00",
           "Merchant": "One Stop",
           "Amount (£)": "3.6",
           "Type": "Debit",
@@ -125,8 +137,8 @@
           "Gmail ID": "19a6d1055210ab2d"
         },
         {
-          "Date": "08/11/2025",
-          "Time": "09:33:04",
+          "Date": "06/11/2025",
+          "Time": "10:25:00",
           "Merchant": "Nic Services Group",
           "Amount (£)": "1.1",
           "Type": "Debit",
@@ -136,8 +148,20 @@
           "Processed": "✅"
         },
         {
+          "Date": "10/11/2025",
+          "Time": "15:12:00",
+          "Merchant": "Costcutter Rugby LTD",
+          "Amount (£)": "4.94",
+          "Type": "Debit",
+          "Source": "IFTTT",
+          "Email Subject": "I just spent £ 4.94 at Costcutter Rugby LTD Groceries November 10, 2025 at 03:12PM",
+          "Category": "groceries",
+          "Processed": "✅",
+          "Gmail ID": "19a6e53b056fb9a2"
+        },
+        {
           "Date": "07/11/2025",
-          "Time": "07:35:04",
+          "Time": "07:35:00",
           "Merchant": "Nic Services Group",
           "Amount (£)": "0.7",
           "Type": "Debit",
@@ -147,8 +171,8 @@
           "Processed": "✅"
         },
         {
-          "Date": "07/11/2025",
-          "Time": "10:23:41",
+          "Date": "07/10/2025",
+          "Time": "09:33:04",
           "Merchant": "400",
           "Amount (£)": "1.74",
           "Type": "Debit",
@@ -158,8 +182,8 @@
           "Processed": "✅"
         },
         {
-          "Date": "07/11/2025",
-          "Time": "09:33:00",
+          "Date": "08/11/2025",
+          "Time": "10:23:41",
           "Merchant": "Rugby Workers Club Drinks",
           "Amount (£)": "14.85",
           "Type": "Debit",
@@ -180,8 +204,8 @@
           "Processed": "✅"
         },
         {
-          "Date": "07/11/2025",
-          "Time": "07:35:00",
+          "Date": "05/11/2025",
+          "Time": "09:33:00",
           "Merchant": "Nic Services Group Work Canteen",
           "Amount (£)": "0.7",
           "Type": "Debit",
@@ -191,8 +215,8 @@
           "Processed": "✅"
         },
         {
-          "Date": "06/11/2025",
-          "Time": "05:55:45",
+          "Date": "07/11/2025",
+          "Time": "07:35:04",
           "Merchant": "400",
           "Amount (£)": "3.9",
           "Type": "Debit",
@@ -202,8 +226,8 @@
           "Processed": "✅"
         },
         {
-          "Date": "06/11/2025",
-          "Time": "08:00:21",
+          "Date": "07/11/2025",
+          "Time": "07:35:00",
           "Merchant": "Nic Services Group",
           "Amount (£)": "0.7",
           "Type": "Debit",
@@ -214,7 +238,7 @@
         },
         {
           "Date": "06/11/2025",
-          "Time": "08:03:35",
+          "Time": "10:25:11",
           "Merchant": "Nic Services Group",
           "Amount (£)": "2",
           "Type": "Debit",
@@ -225,7 +249,7 @@
         },
         {
           "Date": "06/11/2025",
-          "Time": "10:25:11",
+          "Time": "10:25:00",
           "Merchant": "400",
           "Amount (£)": "1.6",
           "Type": "Debit",
@@ -236,7 +260,7 @@
         },
         {
           "Date": "06/11/2025",
-          "Time": "08:00:00",
+          "Time": "08:03:35",
           "Merchant": "Daventry Cloth General",
           "Amount (£)": "2",
           "Type": "Debit",
@@ -247,7 +271,7 @@
         },
         {
           "Date": "06/11/2025",
-          "Time": "05:55:00",
+          "Time": "08:03:00",
           "Merchant": "Nic Services Group Work Canteen",
           "Amount (£)": "0.35",
           "Type": "Debit",
@@ -258,7 +282,7 @@
         },
         {
           "Date": "06/11/2025",
-          "Time": "10:25:00",
+          "Time": "08:00:21",
           "Merchant": "400 Work Canteen",
           "Amount (£)": "1.6",
           "Type": "Debit",
@@ -269,7 +293,7 @@
         },
         {
           "Date": "06/11/2025",
-          "Time": "08:03:00",
+          "Time": "08:00:00",
           "Merchant": "Nic Services Group Work Canteen",
           "Amount (£)": "1.1",
           "Type": "Debit",
@@ -279,8 +303,8 @@
           "Processed": "✅"
         },
         {
-          "Date": "05/11/2025",
-          "Time": "08:34:31",
+          "Date": "06/11/2025",
+          "Time": "05:55:45",
           "Merchant": "One Stop",
           "Amount (£)": "5.17",
           "Type": "Debit",
@@ -290,8 +314,8 @@
           "Processed": "✅"
         },
         {
-          "Date": "05/11/2025",
-          "Time": "10:04:37",
+          "Date": "06/11/2025",
+          "Time": "05:55:00",
           "Merchant": "Costcutter Rug",
           "Amount (£)": "3.35",
           "Type": "Debit",
@@ -313,7 +337,7 @@
         },
         {
           "Date": "05/11/2025",
-          "Time": "08:34:00",
+          "Time": "10:25:00",
           "Merchant": "Nic Services Group Work Canteen",
           "Amount (£)": "0.7",
           "Type": "Debit",
@@ -324,7 +348,7 @@
         },
         {
           "Date": "05/11/2025",
-          "Time": "10:25:00",
+          "Time": "10:04:37",
           "Merchant": "Nic Services Group Work Canteen",
           "Amount (£)": "1.6",
           "Type": "Debit",
@@ -345,8 +369,8 @@
           "Processed": "✅"
         },
         {
-          "Date": "04/11/2025",
-          "Time": "07:36:50",
+          "Date": "05/11/2025",
+          "Time": "08:34:31",
           "Merchant": "400",
           "Amount (£)": "1.46",
           "Type": "Debit",
@@ -356,8 +380,8 @@
           "Processed": "✅"
         },
         {
-          "Date": "04/11/2025",
-          "Time": "10:04:40",
+          "Date": "05/11/2025",
+          "Time": "08:34:00",
           "Merchant": "Apple",
           "Amount (£)": "19.99",
           "Type": "Debit",
@@ -368,7 +392,7 @@
         },
         {
           "Date": "04/11/2025",
-          "Time": "16:35:11",
+          "Time": "18:39:55",
           "Merchant": "Costcutter Rugby LTD",
           "Amount (£)": "2.65",
           "Type": "Debit",
@@ -379,7 +403,7 @@
         },
         {
           "Date": "04/11/2025",
-          "Time": "18:39:55",
+          "Time": "18:39:00",
           "Merchant": "Rugby Ccfc Supporters",
           "Amount (£)": "53.9",
           "Type": "Debit",
@@ -390,7 +414,7 @@
         },
         {
           "Date": "04/11/2025",
-          "Time": "10:04:00",
+          "Time": "16:35:11",
           "Merchant": "400 Work Canteen",
           "Amount (£)": "1.42",
           "Type": "Debit",
@@ -401,7 +425,7 @@
         },
         {
           "Date": "04/11/2025",
-          "Time": "07:36:00",
+          "Time": "16:35:00",
           "Merchant": "Nic Services Group Work Canteen",
           "Amount (£)": "0.7",
           "Type": "Debit",
@@ -412,7 +436,7 @@
         },
         {
           "Date": "04/11/2025",
-          "Time": "16:35:00",
+          "Time": "10:04:40",
           "Merchant": "Home Bargains Shopping",
           "Amount (£)": "20.46",
           "Type": "Debit",
@@ -423,7 +447,7 @@
         },
         {
           "Date": "04/11/2025",
-          "Time": "18:39:00",
+          "Time": "10:04:00",
           "Merchant": "Ebar Entertainment",
           "Amount (£)": "5",
           "Type": "Debit",
@@ -433,8 +457,8 @@
           "Processed": "✅"
         },
         {
-          "Date": "03/11/2025",
-          "Time": "07:32:45",
+          "Date": "04/11/2025",
+          "Time": "07:36:50",
           "Merchant": "400",
           "Amount (£)": "1.48",
           "Type": "Debit",
@@ -444,8 +468,8 @@
           "Processed": "✅"
         },
         {
-          "Date": "03/11/2025",
-          "Time": "10:19:57",
+          "Date": "04/11/2025",
+          "Time": "07:36:00",
           "Merchant": "Costcutter Rugby LTD",
           "Amount (£)": "3.84",
           "Type": "Debit",
@@ -456,7 +480,7 @@
         },
         {
           "Date": "03/11/2025",
-          "Time": "07:32:00",
+          "Time": "10:19:57",
           "Merchant": "Nic Services Group Work Canteen",
           "Amount (£)": "0.7",
           "Type": "Debit",
@@ -477,8 +501,8 @@
           "Processed": "✅"
         },
         {
-          "Date": "02/11/2025",
-          "Time": "19:55:04",
+          "Date": "03/11/2025",
+          "Time": "07:32:45",
           "Merchant": "Home Bargains",
           "Amount (£)": "23.77",
           "Type": "Debit",
@@ -488,8 +512,8 @@
           "Processed": "✅"
         },
         {
-          "Date": "02/11/2025",
-          "Time": "19:55:00",
+          "Date": "03/11/2025",
+          "Time": "07:32:00",
           "Merchant": "One Stop Groceries",
           "Amount (£)": "6.52",
           "Type": "Debit",
@@ -499,8 +523,8 @@
           "Processed": "✅"
         },
         {
-          "Date": "01/11/2025",
-          "Time": "18:59:03",
+          "Date": "02/11/2025",
+          "Time": "19:55:04",
           "Merchant": "Cbs Arena Mobile Bars",
           "Amount (£)": "7.2",
           "Type": "Debit",
@@ -510,8 +534,8 @@
           "Processed": "✅"
         },
         {
-          "Date": "01/11/2025",
-          "Time": "18:59:00",
+          "Date": "02/11/2025",
+          "Time": "19:55:00",
           "Merchant": "Just Eat Takeaway",
           "Amount (£)": "26.79",
           "Type": "Debit",
@@ -521,13 +545,57 @@
           "Processed": "✅"
         },
         {
-          "Date": "31/10/2025",
-          "Time": "13:59:51",
+          "Date": "01/11/2025",
+          "Time": "18:59:03",
           "Merchant": "Nic Services Group",
           "Amount (£)": "0.7",
           "Type": "Debit",
           "Source": "IFTTT",
           "Email Subject": "I just spent £ 0.70 at Nic Services Group",
+          "Category": "Work",
+          "Processed": "✅"
+        },
+        {
+          "Date": "01/11/2025",
+          "Time": "18:59:00",
+          "Merchant": "400",
+          "Amount (£)": "2.99",
+          "Type": "Debit",
+          "Source": "IFTTT",
+          "Email Subject": "I just spent £ 2.99 at 400",
+          "Category": "Work",
+          "Processed": "✅"
+        },
+        {
+          "Date": "31/10/2025",
+          "Time": "18:40:04",
+          "Merchant": "Nic Services Group",
+          "Amount (£)": "1.1",
+          "Type": "Debit",
+          "Source": "IFTTT",
+          "Email Subject": "I just spent £ 1.10 at Nic Services Group",
+          "Category": "Work",
+          "Processed": "✅"
+        },
+        {
+          "Date": "31/10/2025",
+          "Time": "18:40:00",
+          "Merchant": "Cbs Arena Kiosk 10",
+          "Amount (£)": "8.1",
+          "Type": "Debit",
+          "Source": "IFTTT",
+          "Email Subject": "I just spent £ 8.10 at Cbs Arena Kiosk 10",
+          "Category": "Drinks",
+          "Processed": "✅"
+        },
+        {
+          "Date": "31/10/2025",
+          "Time": "18:20:44",
+          "Merchant": "Nic Services Group Work Canteen",
+          "Amount (£)": "0.95",
+          "Type": "Debit",
+          "Source": "IFTTT",
+          "Email Subject": "I just spent £ 0.95 at Nic Services Group Work Canteen October 31, 2025 at 06:40PM",
           "Category": "Work",
           "Processed": "✅"
         },
@@ -544,51 +612,7 @@
         },
         {
           "Date": "31/10/2025",
-          "Time": "18:20:44",
-          "Merchant": "Nic Services Group",
-          "Amount (£)": "1.1",
-          "Type": "Debit",
-          "Source": "IFTTT",
-          "Email Subject": "I just spent £ 1.10 at Nic Services Group",
-          "Category": "Work",
-          "Processed": "✅"
-        },
-        {
-          "Date": "31/10/2025",
-          "Time": "18:40:04",
-          "Merchant": "Cbs Arena Kiosk 10",
-          "Amount (£)": "8.1",
-          "Type": "Debit",
-          "Source": "IFTTT",
-          "Email Subject": "I just spent £ 8.10 at Cbs Arena Kiosk 10",
-          "Category": "Drinks",
-          "Processed": "✅"
-        },
-        {
-          "Date": "31/10/2025",
-          "Time": "18:40:00",
-          "Merchant": "Nic Services Group Work Canteen",
-          "Amount (£)": "0.95",
-          "Type": "Debit",
-          "Source": "IFTTT",
-          "Email Subject": "I just spent £ 0.95 at Nic Services Group Work Canteen October 31, 2025 at 06:40PM",
-          "Category": "Work",
-          "Processed": "✅"
-        },
-        {
-          "Date": "30/10/2025",
-          "Time": "18:19:53",
-          "Merchant": "400",
-          "Amount (£)": "2.99",
-          "Type": "Debit",
-          "Source": "IFTTT",
-          "Email Subject": "I just spent £ 2.99 at 400",
-          "Category": "Work",
-          "Processed": "✅"
-        },
-        {
-          "Date": "30/10/2025",
-          "Time": "13:21:00",
+          "Time": "13:59:51",
           "Merchant": "One Stop Groceries",
           "Amount (£)": "3.6",
           "Type": "Debit",
@@ -598,8 +622,8 @@
           "Processed": "✅"
         },
         {
-          "Date": "29/10/2025",
-          "Time": "15:35:00",
+          "Date": "30/10/2025",
+          "Time": "18:19:53",
           "Merchant": "Nic Services Group Work Canteen",
           "Amount (£)": "0.7",
           "Type": "Debit",
@@ -609,8 +633,8 @@
           "Processed": "✅"
         },
         {
-          "Date": "29/10/2025",
-          "Time": "18:19:00",
+          "Date": "30/10/2025",
+          "Time": "13:21:00",
           "Merchant": "400 Work Canteen",
           "Amount (£)": "2.5",
           "Type": "Debit",
@@ -620,8 +644,8 @@
           "Processed": "✅"
         },
         {
-          "Date": "28/10/2025",
-          "Time": "13:59:00",
+          "Date": "29/10/2025",
+          "Time": "18:19:00",
           "Merchant": "Nic Services Group Work Canteen",
           "Amount (£)": "1.1",
           "Type": "Debit",
@@ -631,8 +655,8 @@
           "Processed": "✅"
         },
         {
-          "Date": "28/10/2025",
-          "Time": "18:19:00",
+          "Date": "29/10/2025",
+          "Time": "15:35:00",
           "Merchant": "400 Work Canteen",
           "Amount (£)": "1.52",
           "Type": "Debit",
@@ -642,8 +666,8 @@
           "Processed": "✅"
         },
         {
-          "Date": "27/10/2025",
-          "Time": "18:20:00",
+          "Date": "28/10/2025",
+          "Time": "18:19:00",
           "Merchant": "400 Work Canteen",
           "Amount (£)": "1.95",
           "Type": "Debit",
@@ -653,8 +677,8 @@
           "Processed": "✅"
         },
         {
-          "Date": "27/10/2025",
-          "Time": "15:33:00",
+          "Date": "28/10/2025",
+          "Time": "13:59:00",
           "Merchant": "Nic Services Group Work Canteen",
           "Amount (£)": "2",
           "Type": "Debit",
@@ -666,9 +690,9 @@
       ]
     },
     "integrity": {
-      "checksum": "aurora-monzo-2025-11-10T15:39:57.631Z",
+      "checksum": "aurora-monzo-2025-11-10T16:52:29.449Z",
       "verified": true,
-      "last_updated": "2025-11-10T15:39:57.631Z"
+      "last_updated": "2025-11-10T16:52:29.449Z"
     }
   }
 }
