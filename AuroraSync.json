@@ -1368,6 +1368,7 @@
       "automation_rules",
       "isa",
       "watchlist"
+      "share_plan_suite"
     ],
     "notes": "These sections are user-managed and excluded from YAML auto-update overwrites."
   },
