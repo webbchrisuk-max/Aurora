@@ -31,11 +31,20 @@ header{text-align:center;padding:25px 10px;
   50%{text-shadow:0 0 25px var(--glow-coral),0 0 35px var(--glow-cyan);}
 }
 
-/* === CARD DESIGN === */
-.card{background:var(--card-bg);border-radius:14px;padding:18px 20px;margin-bottom:15px;
-  box-shadow:0 0 15px rgba(0,255,247,0.08);backdrop-filter:blur(6px);
-  transition:transform .25s ease,box-shadow .25s ease;}
-.card:hover{transform:translateY(-2px);box-shadow:0 0 18px rgba(255,111,97,0.25);}
+/* === CARD DESIGN (Improved spacing + glow) === */
+.card {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 20px 22px;
+  margin: 25px 0; /* ⬅ adds vertical spacing between cards */
+  box-shadow: 0 0 20px rgba(0,255,247,0.12);
+  backdrop-filter: blur(6px);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 25px rgba(255,111,97,0.3);
+  }
 
 /* === CARD GLOW EFFECT (Soft Pulse for All Sections) === */
 .card {
@@ -48,7 +57,8 @@ header{text-align:center;padding:25px 10px;
   backdrop-filter: blur(6px);
   position: relative;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
-  animation: cardGlow 4s ease-in-out infinite alternate;
+  animation: cardGlow 
+  2s ease-in-out infinite alternate;
 }
 
 .card:hover {
@@ -119,15 +129,68 @@ header{text-align:center;padding:25px 10px;
   to   { box-shadow: 0 0 25px var(--glow-coral); }
 }
 
-/* === RESPONSIVE (tightened mobile) === */
+/* === RESPONSIVE (Optimised for iPhone screens) === */
 @media(max-width:600px){
-  .container{padding:10px;}
-  h1{font-size:1.4em;}
-  .card{padding:12px 14px;margin-bottom:10px;}
-  h2{font-size:1rem;margin-bottom:6px;}
-  p,td,th{font-size:.9rem;}
-  table{font-size:.85rem;}
-  footer{font-size:.75em;padding:5px 0 8px 0;}
+  .container { padding: 10px; }
+
+  h1 {
+    font-size: 1.6em;
+    line-height: 1.3em;
+  }
+
+  h2 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+
+  .card {
+    padding: 18px 16px;
+    margin: 22px 0; /* consistent vertical spacing between cards */
+  }
+
+  p, td, th {
+    font-size: 1rem;
+    line-height: 1.5em;
+  }
+
+  .pot-card h3 {
+    font-size: 1.2em;
+    margin-bottom: 8px;
+  }
+
+  table { 
+    font-size: 0.95rem; 
+    word-wrap: break-word;
+  }
+
+  footer { 
+    font-size: 0.8em;
+    padding: 8px 0 10px 0;
+  }
+
+  /* General text (paragraphs and table text) */
+  p, td, th {
+    font-size: 1rem; /* bump up slightly */
+    line-height: 1.4em;
+  }
+
+  /* Pots headings look nice slightly larger */
+  .pot-card h3 {
+    font-size: 1.2em;
+    margin-bottom: 8px;
+  }
+
+  /* Table readability improvements */
+  table { 
+    font-size: 0.95rem; 
+    word-wrap: break-word;
+  }
+
+  /* Footer smaller so screen fits neatly */
+  footer { 
+    font-size: 0.8em;
+    padding: 6px 0 10px 0;
+  }
 }
 /* === CARD TEXT + TABLE CLEANUP (Aurora Neon Layout) === */
 
@@ -474,10 +537,10 @@ function renderPotCarousel(pots) {
   carousel.innerHTML = "";
   const goals = {
     "Flex Repayment": 419,
-    "Direct Debits": 459.45,
-    Holiday: 297.79,
+    "Direct Debits": 416,
+    Holiday: 800,
     "Coventry City FC": 500,
-    IGTrading: 500,
+    IGTrading: 400,
     "Car Maintenance": 400,
     "Work Buffer": 65,
     Savings: 1000,
