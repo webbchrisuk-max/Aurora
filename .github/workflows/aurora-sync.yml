@@ -24,10 +24,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests gspread oauth2client
 
-      - name: 🧠 Run AuroraSync update
-        run: |
-          python3 scripts/update_data.py
-
       - name: 📝 Commit and push changes
         run: |
           git config user.name "AuroraSync Bot"
