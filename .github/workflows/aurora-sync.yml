@@ -32,30 +32,26 @@ jobs:
           curl -L "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transfers" -o transfers.json
           echo "✅ Sheets pulled successfully."
 
-      - name: 🧠 Build AuroraSync.json
+      - name: 🧩 Build AuroraSync.json
         run: |
-          echo "Building AuroraSync.json..."
-          jq -n \
-            --argfile holdings holdings.json \
-            --argfile dividends dividends.json \
-            --argfile directdebits directdebits.json \
-            --argfile transfers transfers.json \
-            '{
-              isa: {
-                holdings: $holdings,
-                dividends: $dividends
-              },
-              monzo: {},
-              direct_debits: $directdebits,
-              transfers: $transfers,
-              meta: {
-                last_updated: now | todate,
-                source: "Google Sheets + Monzo Merge"
-              }
-            }' > AuroraSync.json
-
+         echo "Building AuroraSync.json..."
+         jq -s '
+         {
+          isa: {
+            holdings: (.[0]),
+            dividends: (.[1])
+         },
+         monzo: {},
+         direct_debits: (.[2]),
+         transfers: (.[3]),
+         meta: {
+            last_updated: now | todate,
+            source: "Google Sheets + Monzo Merge"
+          }
+         }
+         ' holdings.json dividends.json directdebits.json transfers.json > AuroraSync.json
+    
           echo "✅ Base AuroraSync.json created."
-
       - name: 🔄 Merge Monzo JSON into AuroraSync
         run: |
           echo "Merging AuroraMonzo.json → AuroraSync.json..."
