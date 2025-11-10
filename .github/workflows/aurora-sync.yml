@@ -67,9 +67,10 @@ jobs:
         run: |
           git config user.name "AuroraSync Bot"
           git config user.email "actions@github.com"
+					git pull --rebase origin main
           git add AuroraSync.json
           git commit -m "Auto-update: Dividend yield & annual income recalculated" || echo "No changes to commit."
-          git push
+          git push origin main
           echo "✅ AuroraSync.json updated successfully."
 
       - name: ✅ Mark workflow success
