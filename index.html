@@ -152,19 +152,27 @@ h1{text-align:center;font-size:1.8rem;margin:20px 0;text-shadow:0 0 14px rgba(0,
 
 <!-- ============== CONTINUES IN PART 2 ============== -->
 <script>
-const JSON_URL="https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json?nocache=";
-const asNum=v=>isNaN(+v)?0:+v;
+const JSON_URL = "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json?nocache=";
+const asNum = v => isNaN(+v) ? 0 : +v;
 
-async function loadAurora(){
-  try{
-    const res=await fetch(JSON_URL+Date.now(),{cache:"no-store"});
-    if(!res.ok)throw new Error("HTTP "+res.status);
-    const d=await res.json();
+async function loadAurora() {
+  try {
+    const res = await fetch(JSON_URL + Date.now(), { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const d = await res.json();
     renderAll(d);
-  }catch(e){console.error(e);}
+  } catch (e) {
+    console.error(e);
+  }
 }
 
-function renderAll(d){
+// 👇 This actually triggers the data fetch when the page loads
+loadAurora();
+
+function renderAll(d) {
+  renderBalances(d);
+
+  function renderAll(d){
   renderBalances(d);
   renderDividends(d);
   renderForecast(d);
