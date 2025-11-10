@@ -14,7 +14,7 @@
         "Direct Debits": 463.45,
         "Holiday": 174.45,
         "Coventry City FC": 167.86,
-        "IGTrading": 231.60,
+        "IGTrading": 231.6,
         "Car Maintenance": 124.49,
         "Work Buffer": 47.94,
         "Christmas": 150,
@@ -122,7 +122,8 @@
           "Email Subject": "I just spent £ 170 at Rural Motor Re Car Bills November 10, 2025 at 03:50PM",
           "Category": "Car Maintenance",
           "Processed": "✅",
-          "Gmail ID": "19a6e7691b13c9b4"
+          "Gmail ID": "19a6e7691b13c9b4",
+          "Exclude From Spend": "✅"
         },
         {
           "Date": "10/11/2025",
@@ -690,9 +691,9 @@
       ]
     },
     "integrity": {
-      "checksum": "aurora-monzo-2025-11-10T17:33:42.714Z",
+      "checksum": "aurora-monzo-2025-11-10T18:49:55.689Z",
       "verified": true,
-      "last_updated": "2025-11-10T17:33:42.714Z"
+      "last_updated": "2025-11-10T18:49:55.689Z"
     }
   }
 }
