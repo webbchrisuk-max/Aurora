@@ -6,7 +6,7 @@
       "unrealised_gain": 2851.49,
       "gain_percent": 4.99,
       "dividend_yield": 6.94,
-      "annual_income_gbp": 4109.80,
+      "annual_income_gbp": 4109.8,
       "last_calculated": "2025-11-10T23:55:00Z"
     },
     "ig_isa": {
@@ -241,7 +241,7 @@
         "Savings": 501
       }
     },
-        "direct_debits": [
+    "direct_debits": [
       { "payee": "Virgin Media", "amount": 46.39, "due_date": "2025-11-14" },
       { "payee": "Barclays Partner Finance", "amount": 50.92, "due_date": "2025-11-17" },
       { "payee": "Vodafone", "amount": 23.28, "due_date": "2025-11-30" },
@@ -278,6 +278,22 @@
   "meta": {
     "last_updated": "2025-11-10T23:59:59Z",
     "source": "AuroraSync Master",
-    "verified": true
+    "verified": true,
+    "write_protection": true,
+    "protected_sections": [
+      "isa.portfolio_summary",
+      "isa.ig_isa",
+      "isa.trade212_isa",
+      "isa.tesco_share_account",
+      "reits_outlook",
+      "financials_outlook",
+      "watchlist"
+    ],
+    "backup_policy": {
+      "enabled": true,
+      "location": "backups/",
+      "naming_format": "AuroraSync_YYYYMMDD_HHMMSS.json",
+      "retain_copies": 10
+    }
   }
 }
