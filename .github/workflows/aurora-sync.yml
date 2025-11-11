@@ -32,36 +32,63 @@ jobs:
           curl -L "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transfers" -o transfers.json
           echo "✅ Sheets pulled successfully."
 
-      - name: 🧩 Build AuroraSync.json
+      - name: 🧩 Build AuroraSync.json (temporary)
         run: |
-         echo "Building AuroraSync.json..."
-         jq -s '
-         {
-          isa: {
-            holdings: (.[0]),
-            dividends: (.[1])
-         },
-         monzo: {},
-         direct_debits: (.[2]),
-         transfers: (.[3]),
-         meta: {
-            last_updated: now | todate,
-            source: "Google Sheets + Monzo Merge"
+          echo "Building temporary AuroraSync.json..."
+          jq -s '
+          {
+            isa: {
+              holdings: (.[0]),
+              dividends: (.[1])
+            },
+            monzo: {},
+            direct_debits: (.[2]),
+            transfers: (.[3]),
+            meta: {
+              last_updated: now | todate,
+              source: "Google Sheets + Monzo Merge"
+            }
           }
-         }
-         ' holdings.json dividends.json directdebits.json transfers.json > AuroraSync.json
-    
-          echo "✅ Base AuroraSync.json created."
+          ' holdings.json dividends.json directdebits.json transfers.json > AuroraSync_temp.json
+
+          echo "✅ Temporary AuroraSync.json built."
+
+      - name: 🛡️ Protect & Merge with Master AuroraSync
+        run: |
+          echo "🛡️ Checking for write-protection..."
+          MASTER_URL="https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json"
+          curl -L "$MASTER_URL" -o AuroraSync_master.json
+
+          # Backup the master file
+          mkdir -p backups
+          cp AuroraSync_master.json "backups/AuroraSync_$(date +'%Y%m%d_%H%M%S').json"
+          echo "📦 Master backup created."
+
+          # If write protection enabled, preserve protected sections
+          if jq -e '.meta.write_protection == true' AuroraSync_master.json > /dev/null; then
+            echo "✅ Write protection active, preserving protected sections..."
+            PROTECTED=$(jq -r '.meta.protected_sections[]' AuroraSync_master.json)
+            cp AuroraSync_temp.json AuroraSync.json
+            for section in $PROTECTED; do
+              jq --arg path "$section" \
+                 --slurpfile src AuroraSync_master.json \
+                 'setpath(($path | split(".")); getpath(($path | split("."))) as $v | $v)' \
+                 AuroraSync.json > temp.json && mv temp.json AuroraSync.json
+            done
+          else
+            echo "⚠️ No write protection flag detected — proceeding with normal merge."
+            mv AuroraSync_temp.json AuroraSync.json
+          fi
+
+          echo "✅ Merge completed with protection."
+
       - name: 🔄 Merge Monzo JSON into AuroraSync
         run: |
           echo "Merging AuroraMonzo.json → AuroraSync.json..."
           MONZO_URL="https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraMonzo.json"
           curl -L "$MONZO_URL" -o AuroraMonzo.json
-
-          # Merge "monzo" section from AuroraMonzo.json into AuroraSync.json
           jq '.monzo = (input.monzo)' AuroraSync.json AuroraMonzo.json > temp.json && mv temp.json AuroraSync.json
-
-          echo "✅ AuroraMonzo.json merged successfully into AuroraSync.json."
+          echo "✅ AuroraMonzo.json merged successfully."
 
       - name: 🧾 Validate final JSON
         run: |
@@ -73,9 +100,8 @@ jobs:
           git config user.name "AuroraSync Bot"
           git config user.email "actions@github.com"
           git add AuroraSync.json
-          git commit -m "🔄 Auto-update: AuroraSync.json refreshed" || echo "No changes to commit"
+          git commit -m "🔄 Auto-update: AuroraSync.json refreshed (Protected Merge)" || echo "No changes to commit"
           git fetch origin main
           git pull origin main --no-rebase --strategy-option ours || true
           git push origin main --force
-          
           echo "✅ AuroraSync.json updated and pushed to GitHub successfully."
