@@ -689,13 +689,52 @@
           "Email Subject": "I just spent £ 1.74 at 400",
           "Category": "Work",
           "Processed": "Yes"
+        },
+        {
+          "Date": "11/11/2025",
+          "Time": "18:20:18",
+          "Merchant": "6",
+          "Amount (£)": "2.15",
+          "Type": "Debit",
+          "Source": "Monzo",
+          "Email Subject": "I just spent £ 2.15 at 400 Work Canteen November 11, 2025 at 06:20PM",
+          "Category": "Work",
+          "Processed": "✅",
+          "Exclude From Spend": "✅",
+          "Gmail ID": "19a7425ae6b2c511"
+        },
+        {
+          "Date": "11/11/2025",
+          "Time": "11:32:46",
+          "Merchant": "11",
+          "Amount (£)": "5.74",
+          "Type": "Debit",
+          "Source": "Monzo",
+          "Email Subject": "I just spent £ 5.74 at Asda Fuel November 11, 2025 at 11:32AM",
+          "Category": "Groceries",
+          "Processed": "✅",
+          "Exclude From Spend": "",
+          "Gmail ID": "19a72b095884b296"
+        },
+        {
+          "Date": "11/11/2025",
+          "Time": "11:22:27",
+          "Merchant": "11",
+          "Amount (£)": "160",
+          "Type": "Debit",
+          "Source": "Monzo",
+          "Email Subject": "I just spent £ 160 at Saving Smiles Northamp Personal care November 11, 2025 at 11:22AM",
+          "Category": "Personal Care",
+          "Processed": "✅",
+          "Exclude From Spend": "",
+          "Gmail ID": "19a72a722155c629"
         }
       ]
     },
     "integrity": {
-      "checksum": "aurora-monzo-2025-11-11T22:38:05.492Z",
+      "checksum": "aurora-monzo-2025-11-11T23:30:47.814Z",
       "verified": true,
-      "last_updated": "2025-11-11T22:38:05.492Z"
+      "last_updated": "2025-11-11T23:30:47.814Z"
     }
   }
 }
