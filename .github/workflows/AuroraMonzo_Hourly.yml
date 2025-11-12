@@ -1,128 +1,101 @@
-# ==========================================================
-# 🌌  Aurora Monzo – Hourly Pot + Transaction Sync
-# ==========================================================
-# • Runs every hour to pull live Monzo data from OpenSheet
-# • Updates AuroraMonzo.json automatically
-# • Commits safely (with rebase) even if manual changes exist
-# ==========================================================
-
-name: 💰 Hourly Monzo Sync
+name: Aurora Monzo – Hourly Pot + Transaction Sync
 
 on:
   schedule:
-    - cron: "0 * * * *"      # every hour, on the hour (UTC)
-  workflow_dispatch:          # allow manual trigger
+    - cron: "0 * * * *"   # every hour UTC
+  workflow_dispatch:
+
+concurrency:
+  group: aurora-monzo-hourly
+  cancel-in-progress: false
 
 jobs:
-  aurora_monzo_sync:
+  sync_monzo_hourly:
     runs-on: ubuntu-latest
 
     steps:
-      # --------------------- CHECKOUT ---------------------
-      - name: 🛠 Checkout repository
+      # =====================================================
+      # STEP 1 – Checkout repository
+      # =====================================================
+      - name: 🧩 Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      # --------------------- SETUP NODE ---------------------
-      - name: ⚙️ Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      # --------------------- FETCH LATEST DATA ---------------------
-      - name: 📥 Fetch Monzo data from OpenSheet
+      # =====================================================
+      # STEP 2 – Fetch Transactions sheet
+      # =====================================================
+      - name: 🟢 Fetch Transactions sheet
         run: |
-          echo "Fetching Monzo transactions + pot transfers..."
+          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transactions" -o transactions.json
+
+      # =====================================================
+      # STEP 3 – Ensure state tracking
+      # =====================================================
+      - name: 📦 Ensure state folder
+        run: |
           mkdir -p .aurora
+          if [ ! -f .aurora/monzo_transfers_applied.json ]; then
+            echo "[]" > .aurora/monzo_transfers_applied.json
+          fi
 
-          # === Google Sheet IDs ===
-          SHEET_ID="10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE"
-          TRANSFERS_URL="https://opensheet.elk.sh/${SHEET_ID}/Transfers"
-          TRANSACTIONS_URL="https://opensheet.elk.sh/${SHEET_ID}/Transactions"
-
-          curl -s "$TRANSFERS_URL" -o .aurora/transfers.json
-          curl -s "$TRANSACTIONS_URL" -o .aurora/transactions.json
-
-          echo "✅ Downloaded latest Transfers & Transactions data"
-
-      # --------------------- APPLY TO JSON ---------------------
-      - name: 🧮 Apply updates to AuroraMonzo.json
+      # =====================================================
+      # STEP 4 – Apply NEW Transactions
+      # =====================================================
+      - name: 🔄 Apply NEW Transactions
         run: |
-          echo "Updating AuroraMonzo.json..."
-
           node <<'EOF'
-          const fs = require('fs');
+          const fs = require("fs");
 
-          const path = 'AuroraMonzo.json';
-          const transfers = JSON.parse(fs.readFileSync('.aurora/transfers.json', 'utf8'));
-          const transactions = JSON.parse(fs.readFileSync('.aurora/transactions.json', 'utf8'));
-          const aurora = JSON.parse(fs.readFileSync(path, 'utf8'));
+          const sheet = JSON.parse(fs.readFileSync("transactions.json", "utf8"));
+          const statePath = ".aurora/monzo_transfers_applied.json";
+          const state = fs.existsSync(statePath)
+            ? JSON.parse(fs.readFileSync(statePath, "utf8"))
+            : [];
 
-          // --- Update transactions ---
-          aurora.monzo.transactions_feed = { recent: transactions };
+          // Read current AuroraSync.json
+          const auroraPath = "AuroraSync.json";
+          const aurora = fs.existsSync(auroraPath)
+            ? JSON.parse(fs.readFileSync(auroraPath, "utf8"))
+            : {};
 
-          // --- Apply pot transfers ---
-          if (!aurora.monzo.account_core.pots) aurora.monzo.account_core.pots = {};
-          const pots = aurora.monzo.account_core.pots;
+          if (!aurora.monzo) aurora.monzo = {};
+          if (!aurora.monzo.core_balance) aurora.monzo.core_balance = 0;
 
-          const appliedLogPath = '.aurora/monzo_transfers_applied.json';
+          let coreBalance = aurora.monzo.core_balance;
           let applied = [];
-          if (fs.existsSync(appliedLogPath)) {
-            try { applied = JSON.parse(fs.readFileSync(appliedLogPath, 'utf8')); } catch {}
-          }
 
-          const today = new Date().toISOString().split('T')[0];
-          const makeId = t => [t.Date, t["From Pot"], t["To Pot"], t.Amount, t.Note].join('|');
+          for (const row of sheet) {
+            const id = row["Gmail ID"];
+            if (state.includes(id)) continue;
 
-          for (const t of transfers) {
-            const id = makeId(t);
-            if (applied.includes(id)) continue;
-            const date = (t.Date || '').trim();
-            if (!date || date > today) continue;
+            // ✅ Clean the amount (strip £ and commas)
+            const rawAmount = row["Amount (£)"] || "0";
+            const amount = parseFloat(rawAmount.toString().replace(/[£,]/g, ""));
 
-            const from = (t["From Pot"] || '').trim();
-            const to = (t["To Pot"] || '').trim();
-            const amount = parseFloat(t.Amount);
-            if (!from || !to || !Number.isFinite(amount)) continue;
+            // ✅ Interpret "Yes"/"TRUE" as boolean
+            const processed = row["Processed"] === true || row["Processed"] === "Yes" || row["Processed"] === "TRUE";
+            const excluded = row["Exclude From Spend"] === true || row["Exclude From Spend"] === "Yes" || row["Exclude From Spend"] === "TRUE";
 
-            // Main Account debit/credit
-            if (from === 'Main Account') aurora.monzo.account_core.main_balance -= amount;
-            else pots[from] = (pots[from] || 0) - amount;
+            if (!processed || excluded || isNaN(amount)) continue;
 
-            if (to === 'Main Account') aurora.monzo.account_core.main_balance += amount;
-            else pots[to] = (pots[to] || 0) + amount;
-
+            // Apply the transaction
+            coreBalance -= amount;
+            console.log(`Applied transaction: £${amount.toFixed(2)} ${row["Merchant"] || "Unknown"} | New main balance: £${coreBalance.toFixed(2)}`);
             applied.push(id);
           }
 
-          // --- Integrity update ---
-          aurora.monzo.integrity = {
-            checksum: `aurora-monzo-${new Date().toISOString()}`,
-            verified: true,
-            last_updated: new Date().toISOString()
-          };
+          aurora.monzo.core_balance = parseFloat(coreBalance.toFixed(2));
 
-          fs.writeFileSync(path, JSON.stringify(aurora, null, 2));
-          fs.writeFileSync(appliedLogPath, JSON.stringify(applied, null, 2));
-          console.log(`✅ AuroraMonzo.json updated successfully`);
+          // Save updates
+          fs.writeFileSync(auroraPath, JSON.stringify(aurora, null, 2));
+          fs.writeFileSync(statePath, JSON.stringify([...state, ...applied], null, 2));
           EOF
 
-      # --------------------- COMMIT + SAFE PUSH ---------------------
-      - name: 💾 Commit and push updates (safe rebase)
-        run: |
-          git config user.name "aurora-bot"
-          git config user.email "aurora@users.noreply.github.com"
-
-          git fetch origin main
-          git rebase origin/main || true
-
-          git add AuroraMonzo.json .aurora/monzo_transfers_applied.json || true
-          git commit -m "💰 Hourly Monzo Sync (pots + transactions)" || echo "No changes to commit"
-
-          git pull --rebase origin main || true
-          git push origin main || echo "Push failed – will retry next run"
-
-      # --------------------- COMPLETION ---------------------
-      - name: ✅ Summary
-        run: echo "Aurora Monzo hourly sync completed successfully 🚀"
+      # =====================================================
+      # STEP 5 – Commit & Push Updated JSON
+      # =====================================================
+      - name: 📤 Commit AuroraSync.json
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "🟢 Monzo transactions synced & core balance updated"
+          file_pattern: AuroraSync.json .aurora/monzo_transfers_applied.json
+          branch: main
