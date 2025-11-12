@@ -1783,7 +1783,8 @@
       "checksum": "aurora-monzo-2025-11-12T08:53:45.825Z",
       "verified": true,
       "last_updated": "2025-11-12T08:53:45.825Z"
-    }
+    },
+    "core_balance": -1100.17
   },
   "direct_debits": [
     {
