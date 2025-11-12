@@ -699,8 +699,8 @@
           "Source": "Monzo",
           "Email Subject": "I just spent £ 2.15 at 400 Work Canteen November 11, 2025 at 06:20PM",
           "Category": "Work",
-          "Processed": "✅",
-          "Exclude From Spend": "✅",
+          "Processed": "Yes",
+          "Exclude From Spend": "",
           "Gmail ID": "19a7425ae6b2c511"
         },
         {
@@ -712,7 +712,7 @@
           "Source": "Monzo",
           "Email Subject": "I just spent £ 5.74 at Asda Fuel November 11, 2025 at 11:32AM",
           "Category": "Groceries",
-          "Processed": "✅",
+          "Processed": "Yes",
           "Exclude From Spend": "",
           "Gmail ID": "19a72b095884b296"
         },
@@ -726,15 +726,15 @@
           "Email Subject": "I just spent £ 160 at Saving Smiles Northamp Personal care November 11, 2025 at 11:22AM",
           "Category": "Personal Care",
           "Processed": "✅",
-          "Exclude From Spend": "",
+          "Exclude From Spend": "✅",
           "Gmail ID": "19a72a722155c629"
         }
       ]
     },
     "integrity": {
-      "checksum": "aurora-monzo-2025-11-11T23:30:47.814Z",
+      "checksum": "aurora-monzo-2025-11-12T03:36:22.873Z",
       "verified": true,
-      "last_updated": "2025-11-11T23:30:47.814Z"
+      "last_updated": "2025-11-12T03:36:22.873Z"
     }
   }
 }
