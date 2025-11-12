@@ -126,8 +126,8 @@
         "annual_dividend_per_share": "0.55",
         "annual_div_yield": "4.67886006",
         "annual_income": "105.6",
-        "sector": "Utilitie",
-        "last_updated": "10-Nov-2025 20:09:19"
+        "sector": "Utilities",
+        "last_updated": "12-Nov-2025 22:42:29"
       },
       {
         "account": "IG ISA",
@@ -1047,7 +1047,7 @@
   },
   "monzo": {
     "account_core": {
-      "main_balance": 810.31,
+      "main_balance": 1140.31,
       "payday_last": "2025-11-07",
       "income_received": 2078.78,
       "flex": {
@@ -1061,12 +1061,12 @@
         "Holiday": 174.45,
         "Coventry City FC": 167.86,
         "IGTrading": 231.6,
-        "Car Maintenance": 124.49,
+        "Car Maintenance": -45.510000000000005,
         "Work Buffer": 47.94,
         "Christmas": 150,
         "Savings": 501,
-        "Holding Pot": -200,
-        "Dentist": 200
+        "Holding Pot": -500,
+        "Dentist": 340
       }
     },
     "direct_debits": [
@@ -1161,28 +1161,67 @@
     "transactions_feed": {
       "recent": [
         {
+          "Date": "11/11/2025",
+          "Time": "18:20:18",
+          "Merchant": "400 Work Canteen",
+          "Amount (£)": "2.15",
+          "Type": "Debit",
+          "Source": "Monzo",
+          "Email Subject": "I just spent £ 2.15 at 400 Work Canteen November 11, 2025 at 06:20PM",
+          "Category": "Work",
+          "Processed": "TRUE",
+          "Exclude From Spend": "",
+          "Gmail ID": "19a7425ae6b2c511"
+        },
+        {
+          "Date": "11/11/2025",
+          "Time": "11:32:46",
+          "Merchant": "Asda Far Cotton Supermarket",
+          "Amount (£)": "5.74",
+          "Type": "Debit",
+          "Source": "Monzo",
+          "Email Subject": "I just spent £ 5.74 at Asda Fuel November 11, 2025 at 11:32AM",
+          "Category": "Groceries",
+          "Processed": "TRUE",
+          "Exclude From Spend": "",
+          "Gmail ID": "19a72b095884b296"
+        },
+        {
+          "Date": "11/11/2025",
+          "Time": "11:22:27",
+          "Merchant": "Saving Smiles Northampton",
+          "Amount (£)": "160.00",
+          "Type": "Debit",
+          "Source": "Monzo",
+          "Email Subject": "I just spent £ 160 at Saving Smiles Northamp Personal care November 11, 2025 at 11:22AM",
+          "Category": "Personal Care",
+          "Processed": "TRUE",
+          "Exclude From Spend": "✅",
+          "Gmail ID": "19a72a722155c629"
+        },
+        {
           "Date": "10/11/2025",
           "Time": "18:20:00",
           "Merchant": "Rural Motor Re Car",
-          "Amount (?)": "170",
+          "Amount (£)": "170.00",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 170 at Rural Motor Re Car Bills November 10, 2025 at 03:50PM",
+          "Email Subject": "I just spent £ 170 at Rural Motor Re Car Bills November 10, 2025 at 03:50PM",
           "Category": "Car Maintenance",
-          "Processed": "Yes",
-          "Exclude From Spend": "?",
+          "Processed": "TRUE",
+          "Exclude From Spend": "✅",
           "Gmail ID": "19a6e7691b13c9b4"
         },
         {
           "Date": "10/11/2025",
           "Time": "09:19:00",
           "Merchant": "One Stop",
-          "Amount (?)": "3.6",
+          "Amount (£)": "3.60",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 3.60 at One Stop Groceries November 10, 2025 at 09:19AM",
+          "Email Subject": "I just spent £ 3.60 at One Stop Groceries November 10, 2025 at 09:19AM",
           "Category": "Groceries",
-          "Processed": "Yes",
+          "Processed": "TRUE",
           "Exclude From Spend": "",
           "Gmail ID": "19a6d1055210ab2d"
         },
@@ -1190,12 +1229,12 @@
           "Date": "10/11/2025",
           "Time": "15:12:00",
           "Merchant": "Costcutter Rugby LTD",
-          "Amount (?)": "4.94",
+          "Amount (£)": "4.94",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 4.94 at Costcutter Rugby LTD Groceries November 10, 2025 at 03:12PM",
+          "Email Subject": "I just spent £ 4.94 at Costcutter Rugby LTD Groceries November 10, 2025 at 03:12PM",
           "Category": "groceries",
-          "Processed": "Yes",
+          "Processed": "TRUE",
           "Exclude From Spend": "",
           "Gmail ID": "19a6e53b056fb9a2"
         },
@@ -1203,691 +1242,651 @@
           "Date": "08/11/2025",
           "Time": "09:33:00",
           "Merchant": "Rugby Workers Club Drinks",
-          "Amount (?)": "14.85",
+          "Amount (£)": "14.85",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 14.85 at Rugby Workers Club Drinks November 8, 2025 at 09:33AM",
+          "Email Subject": "I just spent £ 14.85 at Rugby Workers Club Drinks November 8, 2025 at 09:33AM",
           "Category": "Food/Drinks",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "07/11/2025",
           "Time": "10:23:00",
           "Merchant": "400 Work Canteen",
-          "Amount (?)": "1.61",
+          "Amount (£)": "1.61",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 1.61 at 400 Work Canteen November 7, 2025 at 10:23AM",
+          "Email Subject": "I just spent £ 1.61 at 400 Work Canteen November 7, 2025 at 10:23AM",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "07/11/2025",
           "Time": "07:35:00",
           "Merchant": "Nic Services Group Work Canteen",
-          "Amount (?)": "0.7",
+          "Amount (£)": "0.70",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 0.70 at Nic Services Group Work Canteen November 7, 2025 at 07:35AM",
+          "Email Subject": "I just spent £ 0.70 at Nic Services Group Work Canteen November 7, 2025 at 07:35AM",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "07/11/2025",
           "Time": "07:35:00",
           "Merchant": "400",
-          "Amount (?)": "3.9",
+          "Amount (£)": "3.90",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 3.90 at 400",
+          "Email Subject": "I just spent £ 3.90 at 400",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "07/11/2025",
           "Time": "07:35:00",
           "Merchant": "Nic Services Group",
-          "Amount (?)": "0.7",
+          "Amount (£)": "0.70",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 0.70 at Nic Services Group",
+          "Email Subject": "I just spent £ 0.70 at Nic Services Group",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "06/11/2025",
           "Time": "10:25:00",
           "Merchant": "Nic Services Group",
-          "Amount (?)": "1.1",
+          "Amount (£)": "1.10",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 1.10 at Nic Services Group",
+          "Email Subject": "I just spent £ 1.10 at Nic Services Group",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "06/11/2025",
           "Time": "10:25:11",
           "Merchant": "Nic Services Group",
-          "Amount (?)": "2",
+          "Amount (£)": "2.00",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 2 at Nic Services Group",
+          "Email Subject": "I just spent £ 2 at Nic Services Group",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "06/11/2025",
           "Time": "10:25:00",
           "Merchant": "400",
-          "Amount (?)": "1.6",
+          "Amount (£)": "1.60",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 1.60 at 400",
+          "Email Subject": "I just spent £ 1.60 at 400",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "06/11/2025",
           "Time": "08:03:35",
           "Merchant": "Daventry Cloth General",
-          "Amount (?)": "2",
+          "Amount (£)": "2.00",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 2 at Daventry Cloth General November 6, 2025 at 08:00AM",
+          "Email Subject": "I just spent £ 2 at Daventry Cloth General November 6, 2025 at 08:00AM",
           "Category": "Charity",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "06/11/2025",
           "Time": "08:03:00",
           "Merchant": "Nic Services Group Work Canteen",
-          "Amount (?)": "0.35",
+          "Amount (£)": "0.35",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 0.35 at Nic Services Group Work Canteen November 6, 2025 at 05:55AM",
+          "Email Subject": "I just spent £ 0.35 at Nic Services Group Work Canteen November 6, 2025 at 05:55AM",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "06/11/2025",
           "Time": "08:00:21",
           "Merchant": "400 Work Canteen",
-          "Amount (?)": "1.6",
+          "Amount (£)": "1.60",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 1.60 at 400 Work Canteen November 6, 2025 at 10:25AM",
+          "Email Subject": "I just spent £ 1.60 at 400 Work Canteen November 6, 2025 at 10:25AM",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "06/11/2025",
           "Time": "08:00:00",
           "Merchant": "Nic Services Group Work Canteen",
-          "Amount (?)": "1.1",
+          "Amount (£)": "1.10",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 1.10 at Nic Services Group Work Canteen November 6, 2025 at 08:03AM",
+          "Email Subject": "I just spent £ 1.10 at Nic Services Group Work Canteen November 6, 2025 at 08:03AM",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "06/11/2025",
           "Time": "05:55:45",
           "Merchant": "One Stop",
-          "Amount (?)": "5.17",
+          "Amount (£)": "5.17",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 5.17 at One Stop",
+          "Email Subject": "I just spent £ 5.17 at One Stop",
           "Category": "Groceries",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "06/11/2025",
           "Time": "05:55:00",
           "Merchant": "Costcutter Rug",
-          "Amount (?)": "3.35",
+          "Amount (£)": "3.35",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 3.35 at Costcutter Rug",
+          "Email Subject": "I just spent £ 3.35 at Costcutter Rug",
           "Category": "Groceries",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "05/11/2025",
           "Time": "10:25:19",
           "Merchant": "IG Index",
-          "Amount (?)": "500",
+          "Amount (£)": "500.00",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 500 at IG Index",
+          "Email Subject": "I just spent £ 500 at IG Index",
           "Category": "Finance",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "05/11/2025",
           "Time": "10:25:00",
           "Merchant": "Nic Services Group Work Canteen",
-          "Amount (?)": "0.7",
+          "Amount (£)": "0.70",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 0.70 at Nic Services Group Work Canteen November 5, 2025 at 08:34AM",
+          "Email Subject": "I just spent £ 0.70 at Nic Services Group Work Canteen November 5, 2025 at 08:34AM",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "05/11/2025",
           "Time": "10:04:37",
           "Merchant": "Nic Services Group Work Canteen",
-          "Amount (?)": "1.6",
+          "Amount (£)": "1.60",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 1.60 at Nic Services Group Work Canteen November 5, 2025 at 10:25AM",
+          "Email Subject": "I just spent £ 1.60 at Nic Services Group Work Canteen November 5, 2025 at 10:25AM",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "05/11/2025",
           "Time": "10:04:00",
           "Merchant": "400 Work Canteen",
-          "Amount (?)": "1.29",
+          "Amount (£)": "1.29",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 1.29 at 400 Work Canteen November 5, 2025 at 10:04AM",
+          "Email Subject": "I just spent £ 1.29 at 400 Work Canteen November 5, 2025 at 10:04AM",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "05/11/2025",
           "Time": "08:34:31",
           "Merchant": "400",
-          "Amount (?)": "1.46",
+          "Amount (£)": "1.46",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 1.46 at 400",
+          "Email Subject": "I just spent £ 1.46 at 400",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "05/11/2025",
           "Time": "08:34:00",
           "Merchant": "Apple",
-          "Amount (?)": "19.99",
+          "Amount (£)": "19.99",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 19.99 at Apple",
+          "Email Subject": "I just spent £ 19.99 at Apple",
           "Category": "Subscription",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "04/11/2025",
           "Time": "18:39:55",
           "Merchant": "Costcutter Rugby LTD",
-          "Amount (?)": "2.65",
+          "Amount (£)": "2.65",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 2.65 at Costcutter Rugby LTD",
+          "Email Subject": "I just spent £ 2.65 at Costcutter Rugby LTD",
           "Category": "Groceries",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "04/11/2025",
           "Time": "18:39:00",
           "Merchant": "Rugby Ccfc Supporters",
-          "Amount (?)": "53.9",
+          "Amount (£)": "53.90",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 53.90 at Rugby Ccfc Supporters",
+          "Email Subject": "I just spent £ 53.90 at Rugby Ccfc Supporters",
           "Category": "Matchday Tickets",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "04/11/2025",
           "Time": "16:35:11",
           "Merchant": "400 Work Canteen",
-          "Amount (?)": "1.42",
+          "Amount (£)": "1.42",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 1.42 at 400 Work Canteen November 4, 2025 at 10:04AM",
+          "Email Subject": "I just spent £ 1.42 at 400 Work Canteen November 4, 2025 at 10:04AM",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "04/11/2025",
           "Time": "16:35:00",
           "Merchant": "Nic Services Group Work Canteen",
-          "Amount (?)": "0.7",
+          "Amount (£)": "0.70",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 0.70 at Nic Services Group Work Canteen November 4, 2025 at 07:36AM",
+          "Email Subject": "I just spent £ 0.70 at Nic Services Group Work Canteen November 4, 2025 at 07:36AM",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "04/11/2025",
           "Time": "10:04:40",
           "Merchant": "Home Bargains Shopping",
-          "Amount (?)": "20.46",
+          "Amount (£)": "20.46",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 20.46 at Home Bargains Shopping November 4, 2025 at 04:35PM",
+          "Email Subject": "I just spent £ 20.46 at Home Bargains Shopping November 4, 2025 at 04:35PM",
           "Category": "Groceries",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "04/11/2025",
           "Time": "10:04:00",
           "Merchant": "Ebar Entertainment",
-          "Amount (?)": "5",
+          "Amount (£)": "5.00",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 5 at Ebar Entertainment November 4, 2025 at 06:39PM",
+          "Email Subject": "I just spent £ 5 at Ebar Entertainment November 4, 2025 at 06:39PM",
           "Category": "Drinks",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "04/11/2025",
           "Time": "07:36:50",
           "Merchant": "400",
-          "Amount (?)": "1.48",
+          "Amount (£)": "1.48",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 1.48 at 400",
+          "Email Subject": "I just spent £ 1.48 at 400",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "04/11/2025",
           "Time": "07:36:00",
           "Merchant": "Costcutter Rugby LTD",
-          "Amount (?)": "3.84",
+          "Amount (£)": "3.84",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 3.84 at Costcutter Rugby LTD",
+          "Email Subject": "I just spent £ 3.84 at Costcutter Rugby LTD",
           "Category": "Groceries",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "03/11/2025",
           "Time": "10:19:57",
           "Merchant": "Nic Services Group Work Canteen",
-          "Amount (?)": "0.7",
+          "Amount (£)": "0.70",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 0.70 at Nic Services Group Work Canteen November 3, 2025 at 07:32AM",
+          "Email Subject": "I just spent £ 0.70 at Nic Services Group Work Canteen November 3, 2025 at 07:32AM",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "03/11/2025",
           "Time": "10:19:00",
           "Merchant": "400 Work Canteen",
-          "Amount (?)": "1.6",
+          "Amount (£)": "1.60",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 1.60 at 400 Work Canteen November 3, 2025 at 10:19AM",
+          "Email Subject": "I just spent £ 1.60 at 400 Work Canteen November 3, 2025 at 10:19AM",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "03/11/2025",
           "Time": "07:32:45",
           "Merchant": "Home Bargains",
-          "Amount (?)": "23.77",
+          "Amount (£)": "23.77",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 23.77 at Home Bargains",
+          "Email Subject": "I just spent £ 23.77 at Home Bargains",
           "Category": "Groceries",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "03/11/2025",
           "Time": "07:32:00",
           "Merchant": "One Stop Groceries",
-          "Amount (?)": "6.52",
+          "Amount (£)": "6.52",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 6.52 at One Stop Groceries November 2, 2025 at 07:55PM",
+          "Email Subject": "I just spent £ 6.52 at One Stop Groceries November 2, 2025 at 07:55PM",
           "Category": "Groceries",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "02/11/2025",
           "Time": "19:55:04",
           "Merchant": "Cbs Arena Mobile Bars",
-          "Amount (?)": "7.2",
+          "Amount (£)": "7.20",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 7.20 at Cbs Arena Mobile Bars",
+          "Email Subject": "I just spent £ 7.20 at Cbs Arena Mobile Bars",
           "Category": "Drinks",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "02/11/2025",
           "Time": "19:55:00",
           "Merchant": "Just Eat Takeaway",
-          "Amount (?)": "26.79",
+          "Amount (£)": "26.79",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 26.79 at Just Eat Takeaway November 1, 2025 at 06:59PM",
+          "Email Subject": "I just spent £ 26.79 at Just Eat Takeaway November 1, 2025 at 06:59PM",
           "Category": "Takeaway",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "01/11/2025",
           "Time": "18:59:03",
           "Merchant": "Nic Services Group",
-          "Amount (?)": "0.7",
+          "Amount (£)": "0.70",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 0.70 at Nic Services Group",
+          "Email Subject": "I just spent £ 0.70 at Nic Services Group",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "01/11/2025",
           "Time": "18:59:00",
           "Merchant": "400",
-          "Amount (?)": "2.99",
+          "Amount (£)": "2.99",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 2.99 at 400",
+          "Email Subject": "I just spent £ 2.99 at 400",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "31/10/2025",
           "Time": "18:40:04",
           "Merchant": "Nic Services Group",
-          "Amount (?)": "1.1",
+          "Amount (£)": "1.10",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 1.10 at Nic Services Group",
+          "Email Subject": "I just spent £ 1.10 at Nic Services Group",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "31/10/2025",
           "Time": "18:40:00",
           "Merchant": "Cbs Arena Kiosk 10",
-          "Amount (?)": "8.1",
+          "Amount (£)": "8.10",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 8.10 at Cbs Arena Kiosk 10",
+          "Email Subject": "I just spent £ 8.10 at Cbs Arena Kiosk 10",
           "Category": "Drinks",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "31/10/2025",
           "Time": "18:20:44",
           "Merchant": "Nic Services Group Work Canteen",
-          "Amount (?)": "0.95",
+          "Amount (£)": "0.95",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 0.95 at Nic Services Group Work Canteen October 31, 2025 at 06:40PM",
+          "Email Subject": "I just spent £ 0.95 at Nic Services Group Work Canteen October 31, 2025 at 06:40PM",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "31/10/2025",
           "Time": "15:33:38",
           "Merchant": "400",
-          "Amount (?)": "2.99",
+          "Amount (£)": "2.99",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 2.99 at 400",
+          "Email Subject": "I just spent £ 2.99 at 400",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "31/10/2025",
           "Time": "13:59:51",
           "Merchant": "One Stop Groceries",
-          "Amount (?)": "3.6",
+          "Amount (£)": "3.60",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 3.60 at One Stop Groceries October 30, 2025 at 01:21PM",
+          "Email Subject": "I just spent £ 3.60 at One Stop Groceries October 30, 2025 at 01:21PM",
           "Category": "Groceries",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "31/10/2025",
           "Time": "18:19:00",
           "Merchant": "Nic Services Group Work Canteen",
-          "Amount (?)": "1.1",
+          "Amount (£)": "1.10",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 1.10 at Nic Services Group Work Canteen October 31, 2025 at 01:59PM",
+          "Email Subject": "I just spent £ 1.10 at Nic Services Group Work Canteen October 31, 2025 at 01:59PM",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "31/10/2025",
           "Time": "18:19:00",
           "Merchant": "400 Work Canteen",
-          "Amount (?)": "1.95",
+          "Amount (£)": "1.95",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 1.95 at 400 Work Canteen October 31, 2025 at 06:20PM",
+          "Email Subject": "I just spent £ 1.95 at 400 Work Canteen October 31, 2025 at 06:20PM",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "31/10/2025",
           "Time": "13:59:00",
           "Merchant": "Nic Services Group Work Canteen",
-          "Amount (?)": "2",
+          "Amount (£)": "2.00",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 2 at Nic Services Group Work Canteen October 31, 2025 at 03:33PM",
+          "Email Subject": "I just spent £ 2 at Nic Services Group Work Canteen October 31, 2025 at 03:33PM",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "30/10/2025",
           "Time": "18:19:53",
           "Merchant": "Nic Services Group Work Canteen",
-          "Amount (?)": "0.7",
+          "Amount (£)": "0.70",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 0.70 at Nic Services Group Work Canteen October 29, 2025 at 03:35PM",
+          "Email Subject": "I just spent £ 0.70 at Nic Services Group Work Canteen October 29, 2025 at 03:35PM",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "30/10/2025",
           "Time": "13:21:00",
           "Merchant": "400 Work Canteen",
-          "Amount (?)": "2.5",
+          "Amount (£)": "2.50",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 2.50 at 400 Work Canteen October 29, 2025 at 06:19PM",
+          "Email Subject": "I just spent £ 2.50 at 400 Work Canteen October 29, 2025 at 06:19PM",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "30/10/2025",
           "Time": "15:35:00",
           "Merchant": "400 Work Canteen",
-          "Amount (?)": "1.52",
+          "Amount (£)": "1.52",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 1.52 at 400 Work Canteen October 30, 2025 at 06:19PM",
+          "Email Subject": "I just spent £ 1.52 at 400 Work Canteen October 30, 2025 at 06:19PM",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "29/10/2025",
           "Time": "07:35:00",
           "Merchant": "Nic Services Group",
-          "Amount (?)": "0.7",
+          "Amount (£)": "0.70",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 0.70 at Nic Services Group",
+          "Email Subject": "I just spent £ 0.70 at Nic Services Group",
           "Category": "Work",
-          "Processed": "Yes"
+          "Processed": "TRUE"
         },
         {
           "Date": "25/09/2025",
           "Time": "09:33:04",
           "Merchant": "400",
-          "Amount (?)": "1.74",
+          "Amount (£)": "1.74",
           "Type": "Debit",
           "Source": "IFTTT",
-          "Email Subject": "I just spent ? 1.74 at 400",
+          "Email Subject": "I just spent £ 1.74 at 400",
           "Category": "Work",
-          "Processed": "Yes"
-        },
-        {
-          "Date": "11/11/2025",
-          "Time": "18:20:18",
-          "Merchant": "6",
-          "Amount (?)": "2.15",
-          "Type": "Debit",
-          "Source": "Monzo",
-          "Email Subject": "I just spent ? 2.15 at 400 Work Canteen November 11, 2025 at 06:20PM",
-          "Category": "Work",
-          "Processed": "Yes",
-          "Exclude From Spend": "",
-          "Gmail ID": "19a7425ae6b2c511"
-        },
-        {
-          "Date": "11/11/2025",
-          "Time": "11:32:46",
-          "Merchant": "11",
-          "Amount (?)": "5.74",
-          "Type": "Debit",
-          "Source": "Monzo",
-          "Email Subject": "I just spent ? 5.74 at Asda Fuel November 11, 2025 at 11:32AM",
-          "Category": "Groceries",
-          "Processed": "Yes",
-          "Exclude From Spend": "",
-          "Gmail ID": "19a72b095884b296"
-        },
-        {
-          "Date": "11/11/2025",
-          "Time": "11:22:27",
-          "Merchant": "11",
-          "Amount (?)": "160",
-          "Type": "Debit",
-          "Source": "Monzo",
-          "Email Subject": "I just spent ? 160 at Saving Smiles Northamp Personal care November 11, 2025 at 11:22AM",
-          "Category": "Personal Care",
-          "Processed": "?",
-          "Exclude From Spend": "?",
-          "Gmail ID": "19a72a722155c629"
+          "Processed": "TRUE"
         }
       ]
     },
     "integrity": {
-      "checksum": "aurora-monzo-2025-11-12T08:53:45.825Z",
+      "checksum": "aurora-monzo-2025-11-12T09:42:13.439Z",
       "verified": true,
-      "last_updated": "2025-11-12T08:53:45.825Z"
-    },
-    "core_balance": -9394.3
+      "last_updated": "2025-11-12T09:42:13.439Z"
+    }
   },
   "direct_debits": [
     {
       "Payee": "Virgin Media",
-      "Amount (?)": "46.39",
+      "Amount (£)": "46.39",
       "Due Date": "2025-11-14",
       "Day": "14",
       "Status": "Upcoming"
     },
     {
       "Payee": "Barclays Partner Finance",
-      "Amount (?)": "50.92",
+      "Amount (£)": "50.92",
       "Due Date": "2025-11-17",
       "Day": "17",
       "Status": "Upcoming"
     },
     {
       "Payee": "Vodafone",
-      "Amount (?)": "23.28",
+      "Amount (£)": "23.28",
       "Due Date": "2025-11-30",
       "Day": "30",
       "Status": "Upcoming"
     },
     {
       "Payee": "ID Mobile",
-      "Amount (?)": "10",
+      "Amount (£)": "10",
       "Due Date": "2025-12-07",
       "Day": "7",
       "Status": "Future"
     },
     {
       "Payee": "Postcode Lottery #1",
-      "Amount (?)": "12.25",
+      "Amount (£)": "12.25",
       "Due Date": "2025-12-07",
       "Day": "7",
       "Status": "Future"
     },
     {
       "Payee": "Postcode Lottery #2",
-      "Amount (?)": "12.25",
+      "Amount (£)": "12.25",
       "Due Date": "2025-12-07",
       "Day": "7",
       "Status": "Future"
     },
     {
       "Payee": "Postcode Lottery #3",
-      "Amount (?)": "12.25",
+      "Amount (£)": "12.25",
       "Due Date": "2025-12-07",
       "Day": "7",
       "Status": "Future"
     },
     {
       "Payee": "Driver & Vehicle Licencing Agency ",
-      "Amount (?)": "23.18",
+      "Amount (£)": "23.18",
       "Due Date": "2025-12-03",
       "Day": "3",
       "Status": "Upcoming"
     },
     {
       "Payee": "Octopus Energy",
-      "Amount (?)": "94.9",
+      "Amount (£)": "94.9",
       "Due Date": "2025-12-03",
       "Day": "3",
       "Status": "Upcoming"
     },
     {
       "Payee": "Sports Direct",
-      "Amount (?)": "20",
+      "Amount (£)": "20",
       "Due Date": "2025-12-04",
       "Day": "4",
       "Status": "Upcoming"
     },
     {
       "Payee": "Rugby B.C",
-      "Amount (?)": "139",
+      "Amount (£)": "139",
       "Due Date": "2025-12-03",
       "Day": "3",
       "Status": "Upcoming"
     },
     {
       "Payee": "Legal & General",
-      "Amount (?)": "17.92",
+      "Amount (£)": "17.92",
       "Due Date": "2025-12-03",
       "Day": "3",
       "Status": "Upcoming"
     },
     {
       "Payee": "Severn Trent",
-      "Amount (?)": "43.86",
+      "Amount (£)": "43.86",
       "Due Date": "2025-12-03",
       "Day": "3",
       "Status": "Upcoming"
     },
     {
       "Payee": "Monzo Plus",
-      "Amount (?)": "5",
+      "Amount (£)": "5",
       "Due Date": "2025-12-08",
       "Day": "8",
       "Status": "Future"
     },
     {
       "Payee": "",
-      "Amount (?)": "511.2"
+      "Amount (£)": "511.2"
     }
   ],
   "transfers": [
@@ -1897,8 +1896,8 @@
       "To Pot": "Main Account",
       "Amount": "170",
       "Note": "Car Service and Door Fixed ",
-      "Processed": "?",
-      "Is Transfer": "?"
+      "Processed": "✅",
+      "Is Transfer": "✅"
     },
     {
       "Date": "2025-11-11",
@@ -1907,7 +1906,7 @@
       "Amount": "200",
       "Note": "",
       "Processed": "",
-      "Is Transfer": "?"
+      "Is Transfer": "✅"
     },
     {
       "Date": "2025-11-11",
@@ -1916,7 +1915,7 @@
       "Amount": "160",
       "Note": "",
       "Processed": "",
-      "Is Transfer": "?"
+      "Is Transfer": "✅"
     },
     {
       "Date": "2025-11-11",
@@ -1925,11 +1924,11 @@
       "Amount": "300",
       "Note": "",
       "Processed": "",
-      "Is Transfer": "?"
+      "Is Transfer": "✅"
     }
   ],
   "meta": {
-    "source": "AuroraSync.gs",
-    "last_updated": "2025-11-12T20:40:50.600Z"
+    "last_updated": "2025-11-12T23:27:52Z",
+    "source": "Google Sheets + Monzo Merge"
   }
 }
