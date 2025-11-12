@@ -7,63 +7,15 @@
         "name": "M&G PLC",
         "shares": "3916",
         "book_cost": "8026.66",
-        "live_price": "2.7048",
-        "value": "10591.9968",
-        "gain_value": "2565.3368",
-        "gain_percentage": "31.96020262",
+        "live_price": "2.71",
+        "value": "10612.36",
+        "gain_value": "2585.7",
+        "gain_percentage": "32.21389719",
         "annual_dividend_per_share": "0.20",
-        "annual_div_yield": "7.394262053",
+        "annual_div_yield": "7.380073801",
         "annual_income": "783.2",
         "sector": "Financials",
-        "last_updated": "10-Nov-2025 20:18:03"
-      },
-      {
-        "account": "IG ISA",
-        "ticker": "LON:PHNX",
-        "name": "Phoenix Group Holdings",
-        "shares": "1467",
-        "book_cost": "9604.35",
-        "live_price": "6.895",
-        "value": "10114.965",
-        "gain_value": "510.615",
-        "gain_percentage": "5.316497212",
-        "annual_dividend_per_share": "0.52",
-        "annual_div_yield": "7.541696882",
-        "annual_income": "762.84",
-        "sector": "Fianacials",
-        "last_updated": "10-Nov-2025 20:14:01"
-      },
-      {
-        "account": "IG ISA",
-        "ticker": "LON:BP",
-        "name": "BP PLC",
-        "shares": "707",
-        "book_cost": "2890.99",
-        "live_price": "4.728",
-        "value": "3342.696",
-        "gain_value": "451.706",
-        "gain_percentage": "15.62461302",
-        "annual_dividend_per_share": "0.27",
-        "annual_div_yield": "5.710659898",
-        "annual_income": "190.89",
-        "sector": "Energy",
-        "last_updated": "10-Nov-2025 20:09:15"
-      },
-      {
-        "account": "IG ISA",
-        "ticker": "LON:SVT",
-        "name": "Severn Trent Plc",
-        "shares": "78",
-        "book_cost": "1895.42",
-        "live_price": "27.85",
-        "value": "2172.3",
-        "gain_value": "276.88",
-        "gain_percentage": "14.60784417",
-        "annual_dividend_per_share": "1.11",
-        "annual_div_yield": "3.985637343",
-        "annual_income": "86.58",
-        "sector": "Utilities",
-        "last_updated": "10-Nov-2025 20:09:15"
+        "last_updated": "12-Nov-2025 13:09:01"
       },
       {
         "account": "IG ISA",
@@ -71,31 +23,47 @@
         "name": "Vodafone Group PLC",
         "shares": "7658",
         "book_cost": "6500.31",
-        "live_price": "0.955",
-        "value": "7313.39",
-        "gain_value": "813.08",
-        "gain_percentage": "12.50832653",
+        "live_price": "0.9496",
+        "value": "7272.0368",
+        "gain_value": "771.7268",
+        "gain_percentage": "11.87215379",
         "annual_dividend_per_share": "0.045",
-        "annual_div_yield": "4.712041885",
+        "annual_div_yield": "4.738837405",
         "annual_income": "344.61",
         "sector": "Communications",
         "last_updated": "10-Nov-2025 20:09:16"
       },
       {
         "account": "IG ISA",
-        "ticker": "LON:LAND",
-        "name": "Land Securities",
-        "shares": "317",
-        "book_cost": "1763.47",
-        "live_price": "6.45",
-        "value": "2044.65",
-        "gain_value": "281.18",
-        "gain_percentage": "15.94469994",
-        "annual_dividend_per_share": "0.38",
-        "annual_div_yield": "5.891472868",
-        "annual_income": "120.46",
-        "sector": "Real Estate",
-        "last_updated": "10-Nov-2025 20:09:17"
+        "ticker": "LON:PHNX",
+        "name": "Phoenix Group Holdings",
+        "shares": "1467",
+        "book_cost": "9604.35",
+        "live_price": "6.87",
+        "value": "10078.29",
+        "gain_value": "473.94",
+        "gain_percentage": "4.934638992",
+        "annual_dividend_per_share": "0.52",
+        "annual_div_yield": "7.569141194",
+        "annual_income": "762.84",
+        "sector": "Fianacials",
+        "last_updated": "12-Nov-2025 13:01:16"
+      },
+      {
+        "account": "IG ISA",
+        "ticker": "LON:BP",
+        "name": "BP PLC",
+        "shares": "707",
+        "book_cost": "2890.99",
+        "live_price": "4.6895",
+        "value": "3315.4765",
+        "gain_value": "424.4865",
+        "gain_percentage": "14.68308434",
+        "annual_dividend_per_share": "0.27",
+        "annual_div_yield": "5.757543448",
+        "annual_income": "190.89",
+        "sector": "Energy",
+        "last_updated": "10-Nov-2025 20:09:15"
       },
       {
         "account": "IG ISA",
@@ -103,15 +71,47 @@
         "name": "Legal & General Group",
         "shares": "3445",
         "book_cost": "8076.92",
-        "live_price": "2.4482",
-        "value": "8434.049",
-        "gain_value": "357.129",
-        "gain_percentage": "4.421598827",
+        "live_price": "2.435",
+        "value": "8388.575",
+        "gain_value": "311.655",
+        "gain_percentage": "3.858587184",
         "annual_dividend_per_share": "0.2",
-        "annual_div_yield": "8.169267217",
+        "annual_div_yield": "8.213552361",
         "annual_income": "689",
         "sector": "Financials",
         "last_updated": "10-Nov-2025 20:09:18"
+      },
+      {
+        "account": "IG ISA",
+        "ticker": "LON:LAND",
+        "name": "Land Securities",
+        "shares": "317",
+        "book_cost": "1763.47",
+        "live_price": "6.4288",
+        "value": "2037.9296",
+        "gain_value": "274.4596",
+        "gain_percentage": "15.56361038",
+        "annual_dividend_per_share": "0.38",
+        "annual_div_yield": "5.910900946",
+        "annual_income": "120.46",
+        "sector": "Real Estate",
+        "last_updated": "10-Nov-2025 20:09:17"
+      },
+      {
+        "account": "IG ISA",
+        "ticker": "LON:SVT",
+        "name": "Severn Trent Plc",
+        "shares": "78",
+        "book_cost": "1895.42",
+        "live_price": "27.69",
+        "value": "2159.82",
+        "gain_value": "264.4",
+        "gain_percentage": "13.94941491",
+        "annual_dividend_per_share": "1.11",
+        "annual_div_yield": "4.008667389",
+        "annual_income": "86.58",
+        "sector": "Utilities",
+        "last_updated": "10-Nov-2025 20:09:15"
       },
       {
         "account": "IG ISA",
@@ -119,31 +119,31 @@
         "name": "National Grid",
         "shares": "192",
         "book_cost": "1983.01",
-        "live_price": "11.67",
-        "value": "2240.64",
-        "gain_value": "257.63",
-        "gain_percentage": "12.9918659",
+        "live_price": "11.755",
+        "value": "2256.96",
+        "gain_value": "273.95",
+        "gain_percentage": "13.81485721",
         "annual_dividend_per_share": "0.55",
-        "annual_div_yield": "4.71293916",
+        "annual_div_yield": "4.67886006",
         "annual_income": "105.6",
         "sector": "Utilitie",
         "last_updated": "10-Nov-2025 20:09:19"
       },
       {
         "account": "IG ISA",
-        "ticker": "LON:UKID",
+        "ticker": "LON:IUKD",
         "name": "iShares Uk Dividend UCITS ETF",
         "shares": "343",
         "book_cost": "2881.53",
-        "live_price": "9.104",
-        "value": "3122.672",
-        "gain_value": "241.142",
-        "gain_percentage": "8.368540324",
+        "live_price": "9.124",
+        "value": "3129.532",
+        "gain_value": "248.002",
+        "gain_percentage": "8.606608295",
         "annual_dividend_per_share": "0.39",
-        "annual_div_yield": "4.283831283",
+        "annual_div_yield": "4.274441035",
         "annual_income": "133.77",
         "sector": "ETF/Financials",
-        "last_updated": "11-Nov-2025 08:11:54"
+        "last_updated": "12-Nov-2025 13:08:48"
       },
       {
         "account": "IG ISA",
@@ -151,31 +151,15 @@
         "name": "Supermarket Income REIT PLC",
         "shares": "8055",
         "book_cost": "6345.89",
-        "live_price": "0.815",
-        "value": "6564.825",
-        "gain_value": "218.935",
-        "gain_percentage": "3.450028286",
+        "live_price": "0.809",
+        "value": "6516.495",
+        "gain_value": "170.605",
+        "gain_percentage": "2.688432986",
         "annual_dividend_per_share": "0.075",
-        "annual_div_yield": "9.202453988",
+        "annual_div_yield": "9.270704574",
         "annual_income": "604.125",
         "sector": "Real Estate REIT",
         "last_updated": "11-Nov-2025 08:10:54"
-      },
-      {
-        "account": "IG ISA",
-        "ticker": "LON:ASHM",
-        "name": "Ashmore Group PLC",
-        "shares": "620",
-        "book_cost": "994.5",
-        "live_price": "1.626",
-        "value": "1008.12",
-        "gain_value": "13.62",
-        "gain_percentage": "1.369532428",
-        "annual_dividend_per_share": "0.12",
-        "annual_div_yield": "7.380073801",
-        "annual_income": "74.4",
-        "sector": "Financials",
-        "last_updated": "02-Nov-2025 13:38:46"
       },
       {
         "account": "IG ISA",
@@ -183,12 +167,12 @@
         "name": "Lloyds Banking Group PLC",
         "shares": "606",
         "book_cost": "496.92",
-        "live_price": "0.9514",
-        "value": "576.5484",
-        "gain_value": "79.6284",
-        "gain_percentage": "16.02439024",
+        "live_price": "0.9452",
+        "value": "572.7912",
+        "gain_value": "75.8712",
+        "gain_percentage": "15.26829268",
         "annual_dividend_per_share": "0.02",
-        "annual_div_yield": "2.10216523",
+        "annual_div_yield": "2.115954295",
         "annual_income": "12.12",
         "sector": "Financial",
         "last_updated": "02-Nov-2025 13:34:39"
@@ -199,15 +183,31 @@
         "name": "Tritax Big Box REIT PLC",
         "shares": "350",
         "book_cost": "496.27",
-        "live_price": "1.53",
-        "value": "535.5",
-        "gain_value": "39.23",
-        "gain_percentage": "7.904971084",
+        "live_price": "1.523",
+        "value": "533.05",
+        "gain_value": "36.78",
+        "gain_percentage": "7.41128821",
         "annual_dividend_per_share": "0.0766",
-        "annual_div_yield": "5.006535948",
+        "annual_div_yield": "5.029546947",
         "annual_income": "26.81",
         "sector": "Real Estate REIT",
         "last_updated": "02-Nov-2025 13:35:41"
+      },
+      {
+        "account": "IG ISA",
+        "ticker": "LON:ASHM",
+        "name": "Ashmore Group PLC",
+        "shares": "620",
+        "book_cost": "994.5",
+        "live_price": "1.645",
+        "value": "1019.9",
+        "gain_value": "25.4",
+        "gain_percentage": "2.55404726",
+        "annual_dividend_per_share": "0.12",
+        "annual_div_yield": "7.294832827",
+        "annual_income": "74.4",
+        "sector": "Financials",
+        "last_updated": "02-Nov-2025 13:38:46"
       },
       {
         "account": "TRADE212",
@@ -215,12 +215,12 @@
         "name": "Primary Health Properties ",
         "shares": "299",
         "book_cost": "276.46",
-        "live_price": "0.9735",
-        "value": "291.0765",
-        "gain_value": "14.6165",
-        "gain_percentage": "5.287021631",
+        "live_price": "0.963",
+        "value": "287.937",
+        "gain_value": "11.477",
+        "gain_percentage": "4.151414309",
         "annual_dividend_per_share": "0.06",
-        "annual_div_yield": "6.163328197",
+        "annual_div_yield": "6.230529595",
         "annual_income": "17.94",
         "sector": "Real Estate/Healthcare REIT",
         "last_updated": "02-Nov-2025 13:36:15"
@@ -231,12 +231,12 @@
         "name": "Sequoia Economic Infrastructure",
         "shares": "300",
         "book_cost": "232.8",
-        "live_price": "0.79",
-        "value": "237",
-        "gain_value": "4.2",
-        "gain_percentage": "1.804123711",
+        "live_price": "0.792",
+        "value": "237.6",
+        "gain_value": "4.8",
+        "gain_percentage": "2.06185567",
         "annual_dividend_per_share": "0.06",
-        "annual_div_yield": "7.594936709",
+        "annual_div_yield": "7.575757576",
         "annual_income": "18",
         "sector": "Infrastructure REIT",
         "last_updated": "02-Nov-2025 14:10:29"
@@ -247,12 +247,12 @@
         "name": "GCP Infrastructure Investments",
         "shares": "1000",
         "book_cost": "749",
-        "live_price": "0.736",
-        "value": "736",
-        "gain_value": "-13",
-        "gain_percentage": "-1.73564753",
+        "live_price": "0.734",
+        "value": "734",
+        "gain_value": "-15",
+        "gain_percentage": "-2.002670227",
         "annual_dividend_per_share": "0.072",
-        "annual_div_yield": "9.782608696",
+        "annual_div_yield": "9.809264305",
         "annual_income": "72",
         "sector": "Infrastructure REIT",
         "last_updated": "10-Nov-2025 20:10:59"
@@ -263,19 +263,19 @@
         "name": "Foresight Solar Fund",
         "shares": "924",
         "book_cost": "723.53",
-        "live_price": "0.714",
-        "value": "659.736",
-        "gain_value": "-63.794",
-        "gain_percentage": "-8.817049742",
+        "live_price": "0.702",
+        "value": "648.648",
+        "gain_value": "-74.882",
+        "gain_percentage": "-10.3495363",
         "annual_dividend_per_share": "0.073",
-        "annual_div_yield": "10.22408964",
+        "annual_div_yield": "10.3988604",
         "annual_income": "67.452",
         "sector": "Utilities/Renewable Energy",
         "last_updated": "02-Nov-2025 13:36:08"
       },
       {
         "account": "IG ISA",
-        "ticker": "ASTRID",
+        "ticker": "FRA:6XS",
         "name": "Astrid Intelligence ",
         "shares": "617065",
         "book_cost": "2989.92",
@@ -287,7 +287,7 @@
         "annual_div_yield": "0",
         "annual_income": "0",
         "sector": "Ai",
-        "last_updated": "11-Nov-2025 08:15:14"
+        "last_updated": "12-Nov-2025 13:14:26"
       }
     ],
     "dividends": [
@@ -1789,66 +1789,105 @@
   "direct_debits": [
     {
       "Payee": "Virgin Media",
-      "Amount": "46.39",
-      "Due Date": "2025-11-14"
+      "Amount (?)": "46.39",
+      "Due Date": "2025-11-14",
+      "Day": "14",
+      "Status": "Upcoming"
     },
     {
       "Payee": "Barclays Partner Finance",
-      "Amount": "50.92",
-      "Due Date": "2025-11-17"
+      "Amount (?)": "50.92",
+      "Due Date": "2025-11-17",
+      "Day": "17",
+      "Status": "Upcoming"
     },
     {
       "Payee": "Vodafone",
-      "Amount": "23.28",
-      "Due Date": "2025-11-30"
+      "Amount (?)": "23.28",
+      "Due Date": "2025-11-30",
+      "Day": "30",
+      "Status": "Upcoming"
     },
     {
       "Payee": "ID Mobile",
-      "Amount": "10",
-      "Due Date": "2025-11-07"
+      "Amount (?)": "10",
+      "Due Date": "2025-12-07",
+      "Day": "7",
+      "Status": "Future"
     },
     {
       "Payee": "Postcode Lottery #1",
-      "Amount": "12.25",
-      "Due Date": "2025-11-07"
+      "Amount (?)": "12.25",
+      "Due Date": "2025-12-07",
+      "Day": "7",
+      "Status": "Future"
     },
     {
       "Payee": "Postcode Lottery #2",
-      "Amount": "12.25",
-      "Due Date": "2025-11-07"
+      "Amount (?)": "12.25",
+      "Due Date": "2025-12-07",
+      "Day": "7",
+      "Status": "Future"
     },
     {
       "Payee": "Postcode Lottery #3",
-      "Amount": "12.25",
-      "Due Date": "2025-11-07"
+      "Amount (?)": "12.25",
+      "Due Date": "2025-12-07",
+      "Day": "7",
+      "Status": "Future"
     },
     {
       "Payee": "Driver & Vehicle Licencing Agency ",
-      "Amount": "23.18",
-      "Due Date": "2025-12-03"
+      "Amount (?)": "23.18",
+      "Due Date": "2025-12-03",
+      "Day": "3",
+      "Status": "Upcoming"
     },
     {
       "Payee": "Octopus Energy",
-      "Amount": "94.9",
-      "Due Date": "2025-12-03"
+      "Amount (?)": "94.9",
+      "Due Date": "2025-12-03",
+      "Day": "3",
+      "Status": "Upcoming"
     },
     {
       "Payee": "Sports Direct",
-      "Amount": "20",
-      "Due Date": "2025-12-04"
+      "Amount (?)": "20",
+      "Due Date": "2025-12-04",
+      "Day": "4",
+      "Status": "Upcoming"
     },
     {
       "Payee": "Rugby B.C",
-      "Amount": "139",
-      "Due Date": "2025-12-03"
+      "Amount (?)": "139",
+      "Due Date": "2025-12-03",
+      "Day": "3",
+      "Status": "Upcoming"
     },
     {
       "Payee": "Legal & General",
-      "Amount": "17.92",
-      "Due Date": "2025-12-03"
+      "Amount (?)": "17.92",
+      "Due Date": "2025-12-03",
+      "Day": "3",
+      "Status": "Upcoming"
     },
     {
-      "Payee": "DSevern Trent Water"
+      "Payee": "Severn Trent",
+      "Amount (?)": "43.86",
+      "Due Date": "2025-12-03",
+      "Day": "3",
+      "Status": "Upcoming"
+    },
+    {
+      "Payee": "Monzo Plus",
+      "Amount (?)": "5",
+      "Due Date": "2025-12-08",
+      "Day": "8",
+      "Status": "Future"
+    },
+    {
+      "Payee": "",
+      "Amount (?)": "511.2"
     }
   ],
   "transfers": [
@@ -1891,6 +1930,6 @@
   ],
   "meta": {
     "source": "AuroraSync.gs",
-    "last_updated": "2025-11-12T09:34:49.700Z"
+    "last_updated": "2025-11-12T20:40:50.600Z"
   }
 }
