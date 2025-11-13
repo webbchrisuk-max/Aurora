@@ -1,0 +1,57 @@
+{
+  "isa": {
+    "ig_isa": {
+      "account_name": "IG ISA",
+      "balance": 58754.25,
+      "positions_value": 58250.0,
+      "book_cost": 55126.16,
+      "unrealised_gain": 3123.84,
+      "gain_percent": 5.67,
+      "cash_balance": 504.25
+    },
+    "trade212_isa": {
+      "account_name": "Trade212 ISA",
+      "balance": 1906.46,
+      "positions_value": 1886.52,
+      "book_cost": 1886.52,
+      "unrealised_gain": 19.94,
+      "gain_percent": 1.06,
+      "cash_balance": 19.94
+    },
+    "portfolio_summary": {
+      "total_value": 60660.71,
+      "dividend_yield": 0.0,
+      "annual_income_gbp": 0.0,
+      "last_calculated": "2025-11-13T11:38:07.306153"
+    }
+  },
+  "dividend_planner": {
+    "received_ytd": 0.0,
+    "forecast_total": 0.0,
+    "monthly_breakdown": {
+      "Jan": 0,
+      "Feb": 0,
+      "Mar": 0,
+      "Apr": 0,
+      "May": 0,
+      "Jun": 0,
+      "Jul": 0,
+      "Aug": 0,
+      "Sep": 0,
+      "Oct": 0,
+      "Nov": 0,
+      "Dec": 0
+    },
+    "schedule_by_holding": {
+      "Unknown": {
+        "next_pay_date": "",
+        "next_ex_div": "",
+        "expected_dividend": 0.0
+      }
+    }
+  },
+  "meta": {
+    "last_updated": "2025-11-13T11:38:07.306161",
+    "source": "Google Sheets + ISA Builder"
+  }
+}
