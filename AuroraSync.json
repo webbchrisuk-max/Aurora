@@ -1,11 +1,7 @@
 {
   "isa": {
-    "holdings": [
-      /* Your holdings rows from Holdings sheet inserted here as an array */
-    ],
-    "dividends": [
-      /* Your dividend rows from Dividends sheet inserted here as an array */
-    ],
+    "holdings": [],
+    "dividends": [],
     "portfolio_summary": {
       "total_value": 0,
       "annual_income_gbp": 0,
@@ -23,15 +19,7 @@
     }
   },
   "dividend_planner": {
-    "schedule_by_holding": {
-      /* Example:
-      "GCP": {
-        "next_pay_date": "2025-12-15",
-        "next_ex_div": "2025-12-01",
-        "expected_dividend": 120.00
-      }
-      */
-    },
+    "schedule_by_holding": {},
     "monthly_breakdown": {
       "Jan": 0,
       "Feb": 0,
@@ -51,33 +39,33 @@
   },
   "reits_outlook": {
     "SUPR": {
-      "status": "🟢",
+      "status": "",
       "notes": ""
     },
     "PHP": {
-      "status": "🟢",
+      "status": "",
       "notes": ""
     },
     "FSFL": {
-      "status": "🟢",
+      "status": "",
       "notes": ""
     },
     "GCP": {
-      "status": "🟢",
+      "status": "",
       "notes": ""
     }
   },
   "financials_outlook": {
     "MNG.GB": {
-      "status": "🟢",
+      "status": "",
       "notes": ""
     },
     "LGEN.GB": {
-      "status": "🟢",
+      "status": "",
       "notes": ""
     },
     "PHNX.GB": {
-      "status": "🟢",
+      "status": "",
       "notes": ""
     }
   },
