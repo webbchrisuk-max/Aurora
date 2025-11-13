@@ -1,11 +1,9 @@
-name: Aurora ISA – 5-Minute Live Shares Sync
+name: Aurora ISA – 5-Minute Live Shares + Dividends Sync
 
 on:
   schedule:
-    # Every 5 minutes between 08:00–16:30 UK time (Nov = UTC)
-    - cron: "*/5 8-16 * * 1-5"
-    # Also run at 16:30 exactly
-    - cron: "30 16 * * 1-5"
+    - cron: "*/5 8-16 * * 1-5"      # Every 5 mins 08:00–16:59 (UK time = UTC in Nov)
+    - cron: "30 16 * * 1-5"         # Final run exactly at 16:30
   workflow_dispatch:
 
 concurrency:
@@ -31,7 +29,14 @@ jobs:
           curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Holdings" -o holdings.json
 
       # =====================================================
-      # STEP 3 — Install Node
+      # STEP 3 — Fetch Dividends sheet
+      # =====================================================
+      - name: 🟣 Fetch Dividends sheet
+        run: |
+          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Dividends" -o dividends.json
+
+      # =====================================================
+      # STEP 4 — Install Node
       # =====================================================
       - name: 🔧 Install Node.js
         uses: actions/setup-node@v4
@@ -39,53 +44,55 @@ jobs:
           node-version: 20
 
       # =====================================================
-      # STEP 4 — Update AuroraSync.json with new prices
+      # STEP 5 — Update AuroraSync.json
       # =====================================================
-      - name: 🔄 Update ISA prices
+      - name: 🔄 Update ISA prices + dividends
         run: |
           node << 'EOF'
           const fs = require("fs");
 
-          // Load Google Sheet holdings
           const holdings = JSON.parse(fs.readFileSync("holdings.json", "utf8"));
+          const dividendsSheet = JSON.parse(fs.readFileSync("dividends.json", "utf8"));
 
-          // Load AuroraSync.json
           const auroraPath = "AuroraSync.json";
           const aurora = JSON.parse(fs.readFileSync(auroraPath, "utf8"));
 
-          // Prepare date/time for last_updated field
+          aurora.isa = aurora.isa || {};
+          aurora.isa.holdings = aurora.isa.holdings || {};
+          aurora.isa.dividends = aurora.isa.dividends || {};
+
           const now = new Date().toISOString().replace("T", " ").substring(0, 19);
 
-          // Function to fetch live price
+          // -----------------------------------------------------
+          // Fetch live price per ticker
+          // -----------------------------------------------------
           async function getLivePrice(ticker) {
             try {
-              const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${ticker}.L`;
+              const symbol = ticker.replace("LON:", "") + ".L";
+              const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbol}`;
               const res = await fetch(url);
               const data = await res.json();
-
               return data.quoteResponse.result[0]?.regularMarketPrice ?? null;
             } catch {
               return null;
             }
           }
 
-          // Wrapper for async/await
-          async function update() {
+          // -----------------------------------------------------
+          // Update ISA holdings with live prices
+          // -----------------------------------------------------
+          async function updateHoldings() {
             for (const row of holdings) {
               const ticker = row["ticker"];
               const shares = parseFloat(row["shares"] || 0);
               const book = parseFloat(row["book cost"] || 0);
 
-              // Fetch price
-              const price = await getLivePrice(ticker.replace("LON:", ""));
+              const price = await getLivePrice(ticker);
               if (!price) continue;
 
               const value = price * shares;
               const gain = value - book;
 
-              // Update AuroraSync JSON
-              aurora.isa = aurora.isa || {};
-              aurora.isa.holdings = aurora.isa.holdings || {};
               aurora.isa.holdings[ticker] = {
                 name: row["name"] || "",
                 shares,
@@ -100,21 +107,88 @@ jobs:
                 last_updated: now
               };
             }
-
-            // Write updated file
-            fs.writeFileSync(auroraPath, JSON.stringify(aurora, null, 2));
           }
 
-          await update();
+          // -----------------------------------------------------
+          // Process Dividends data
+          // -----------------------------------------------------
+          function processDividends() {
+            const today = new Date().toISOString().split("T")[0];
+
+            const upcoming = [];
+            const nextFive = [];
+            const monthlyTotals = {};
+            let yearlyTotal = 0;
+
+            for (const d of dividendsSheet) {
+              const ticker = d["ticker"];
+              const exDiv = d["ex_div_date"];
+              const payDate = d["pay_date"];
+              const total = parseFloat(d["total_dividend"] || 0);
+              const status = d["status"] || "Estimated";
+
+              // Decide if paid
+              let autoStatus = status;
+              if (payDate && payDate < today) autoStatus = "Paid";
+
+              // Push to upcoming lists
+              if (payDate && payDate >= today) {
+                upcoming.push({
+                  ticker: ticker,
+                  name: d["name"] || "",
+                  ex_div_date: exDiv,
+                  pay_date: payDate,
+                  dividend_per_share: d["dividend_per_share"],
+                  shares_at_exdiv: d["shares_at_exdiv"],
+                  total_dividend: total,
+                  frequency: d["frequency"],
+                  status: autoStatus
+                });
+              }
+
+              // Monthly totals
+              if (payDate) {
+                const month = payDate.substring(0, 7);
+                monthlyTotals[month] = (monthlyTotals[month] || 0) + total;
+              }
+
+              yearlyTotal += total;
+            }
+
+            // Sort upcoming dividends soonest → furthest
+            upcoming.sort((a, b) => a.pay_date.localeCompare(b.pay_date));
+
+            // Next 5
+            nextFive.push(...upcoming.slice(0, 5));
+
+            // Save into AuroraSync.json
+            aurora.isa.dividends = {
+              last_updated: now,
+              upcoming: upcoming,
+              next_five: nextFive,
+              monthly_totals: monthlyTotals,
+              annual_total: yearlyTotal
+            };
+          }
+
+          // -----------------------------------------------------
+          // Run everything
+          // -----------------------------------------------------
+          (async () => {
+            await updateHoldings();
+            processDividends();
+
+            fs.writeFileSync(auroraPath, JSON.stringify(aurora, null, 2));
+          })();
           EOF
 
       # =====================================================
-      # STEP 5 — Commit & Push
+      # STEP 6 — Commit & Push
       # =====================================================
       - name: 📤 Commit changes
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
           git add AuroraSync.json
-          git commit -m "🔄 ISA Auto-Price Update $(date)" || echo "No changes"
+          git commit -m "🔄 Auto ISA update: prices + dividends $(date)" || echo "No changes"
           git push
