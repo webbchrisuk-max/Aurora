@@ -357,8 +357,7 @@ tr:hover td {
 async function loadAuroraMonzo() {
   const status = document.getElementById("syncStatus");
   const monzoJSON =
-    "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json";
-
+  "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraMonzo.json";
   try {
     const res = await fetch(monzoJSON + "?nocache=" + Date.now());
     if (!res.ok) throw new Error("HTTP " + res.status);
