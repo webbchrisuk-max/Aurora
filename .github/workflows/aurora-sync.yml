@@ -97,7 +97,7 @@ div_planner = {
     "schedule_by_holding": schedule
 }
 
-# IG ISA object
+# --- Build objects for JSON output ---
 ig_obj = {
     "account_name": "IG ISA",
     "balance": ig_positions_value + ig_cash,
@@ -108,7 +108,6 @@ ig_obj = {
     "cash_balance": ig_cash
 }
 
-# T212 ISA object
 t212_obj = {
     "account_name": "Trade212 ISA",
     "balance": t212_total,
@@ -143,29 +142,3 @@ with open("isa_build.json","w") as f:
     json.dump(build,f,indent=2)
 
 EOF
-
-      # ================================
-      # STEP 5 — Merge into AuroraSync.json
-      # ================================
-      - name: 🔄 Merge ISA into AuroraSync.json
-        run: |
-          MASTER="https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json"
-          curl -s "$MASTER" -o AuroraSync.json
-          jq -s '
-            .[0] *
-            { isa: .[1].isa,
-              dividend_planner: .[1].dividend_planner,
-              meta: .[1].meta }
-          ' AuroraSync.json isa_build.json > temp.json
-          mv temp.json AuroraSync.json
-
-      # ================================
-      # STEP 6 — Commit & Push
-      # ================================
-      - name: 🚀 Commit Changes
-        run: |
-          git config user.name "Aurora Bot"
-          git config user.email "bot@aurora"
-          git add AuroraSync.json
-          git commit -m "✨ ISA Auto-Build Update (Market Hours)" || echo "No changes"
-          git push
