@@ -2,7 +2,7 @@ name: 🪄 Aurora Data Sync – ISA Auto Builder (Market Hours)
 
 on:
   schedule:
-    - cron: "0 8-17 * * 1-5"   # ✔ Every hour during UK market hours (Mon–Fri)
+    - cron: "0 8-17 * * 1-5"
   workflow_dispatch:
 
 jobs:
@@ -10,17 +10,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # =====================================================
+      # ================================
       # STEP 1 — Checkout Repo
-      # =====================================================
+      # ================================
       - name: 🧩 Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # =====================================================
+      # ================================
       # STEP 2 — Python + jq
-      # =====================================================
+      # ================================
       - name: ⚙ Setup Python
         uses: actions/setup-python@v5
         with:
@@ -29,17 +29,17 @@ jobs:
       - name: 📦 Install jq
         run: sudo apt-get install -y jq
 
-      # =====================================================
+      # ================================
       # STEP 3 — Fetch Google Sheets
-      # =====================================================
+      # ================================
       - name: 🌐 Fetch Sheets (Holdings + Dividends)
         run: |
           curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Holdings"  -o holdings.json
           curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Dividends" -o dividends.json
 
-      # =====================================================
-      # STEP 4 — Build ISA Objects (Python)
-      # =====================================================
+      # ================================
+      # STEP 4 — Build ISA Summary
+      # ================================
       - name: 🧮 Build ISA Summary + Dividend Planner
         run: |
           python3 << 'EOF'
@@ -48,7 +48,6 @@ import json, datetime
 # Load sheets
 with open("holdings.json") as f:
     holdings = json.load(f)
-
 with open("dividends.json") as f:
     dividends = json.load(f)
 
@@ -81,10 +80,8 @@ for row in dividends:
     if m in monthly:
         monthly[m] += amt
 
-# Dividend Planner → Next Pay + Ex-Div
+# Dividend Planner
 schedule = {}
-today = datetime.date.today()
-
 for row in dividends:
     name = row.get("Ticker","Unknown")
     schedule[name] = {
@@ -93,7 +90,6 @@ for row in dividends:
         "expected_dividend": float(row.get("Amount",0))
     }
 
-# Build planner object
 div_planner = {
     "received_ytd": sum(float(x.get("ReceivedYTD",0)) for x in dividends),
     "forecast_total": annual_income,
@@ -123,7 +119,6 @@ t212_obj = {
     "cash_balance": t212_cash
 }
 
-# Portfolio summary object
 portfolio_summary = {
     "total_value": round(total_value,2),
     "dividend_yield": round(div_yield,2),
@@ -131,7 +126,6 @@ portfolio_summary = {
     "last_calculated": datetime.datetime.utcnow().isoformat()
 }
 
-# Write build JSON
 build = {
     "isa": {
         "ig_isa": ig_obj,
@@ -150,19 +144,24 @@ with open("isa_build.json","w") as f:
 
 EOF
 
-      # =====================================================
-      # STEP 5 — Merge ISA Build → AuroraSync.json
-      # =====================================================
+      # ================================
+      # STEP 5 — Merge into AuroraSync.json
+      # ================================
       - name: 🔄 Merge ISA into AuroraSync.json
         run: |
           MASTER="https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json"
           curl -s "$MASTER" -o AuroraSync.json
-          jq -s '.[0] * {isa: .[1].isa, dividend_planner: .[1].dividend_planner, meta: .[1].meta}' AuroraSync.json isa_build.json > temp.json
+          jq -s '
+            .[0] *
+            { isa: .[1].isa,
+              dividend_planner: .[1].dividend_planner,
+              meta: .[1].meta }
+          ' AuroraSync.json isa_build.json > temp.json
           mv temp.json AuroraSync.json
 
-      # =====================================================
+      # ================================
       # STEP 6 — Commit & Push
-      # =====================================================
+      # ================================
       - name: 🚀 Commit Changes
         run: |
           git config user.name "Aurora Bot"
