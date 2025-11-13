@@ -1,4 +1,4 @@
-name: Aurora Monzo – Hourly Pot + Transaction Sync
+name: Aurora Monzo – Hourly Sync
 
 on:
   schedule:
@@ -14,36 +14,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # =====================================================
+      # STEP 1 — Checkout
+      # =====================================================
       - name: 🧩 Checkout repository
         uses: actions/checkout@v4
 
 
       # =====================================================
-      # STEP 1 – Fetch Transfers sheet
+      # STEP 2 — Fetch Google Sheets (Transfers / DirectDebits / Transactions / MonzoCore)
       # =====================================================
+
       - name: 🟢 Fetch Transfers sheet
         run: |
           curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transfers" -o transfers.json
 
-
-      # =====================================================
-      # STEP 2 – Fetch Direct Debits sheet
-      # =====================================================
       - name: 🟢 Fetch Direct Debits sheet
         run: |
           curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/DirectDebits" -o directdebits.json
 
-
-      # =====================================================
-      # STEP 3 – Fetch Transactions sheet
-      # =====================================================
       - name: 🟢 Fetch Transactions sheet
         run: |
           curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transactions" -o transactions.json
 
+      - name: 🟢 Fetch Monzo Core sheet
+        run: |
+          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/MonzoCore" -o monzocore.json
+
 
       # =====================================================
-      # STEP 4 – Ensure state folder
+      # STEP 3 — Ensure State Tracking
       # =====================================================
       - name: 📦 Ensure state folder
         run: |
@@ -54,7 +54,7 @@ jobs:
 
 
       # =====================================================
-      # STEP 5 – Apply NEW Transfers
+      # STEP 4 — Apply NEW Transfers into AuroraMonzo.json
       # =====================================================
       - name: 🔄 Apply NEW Transfers
         run: |
@@ -65,8 +65,8 @@ jobs:
           const applied = JSON.parse(fs.readFileSync('.aurora/monzo_transfers_applied.json', 'utf8'));
 
           const newTransfers = transfers.filter(t => !applied.includes(t.GmailID));
-          const monzoFile = './AuroraMonzo.json';
 
+          const monzoFile = './AuroraMonzo.json';
           let monzo = {};
           if (fs.existsSync(monzoFile)) {
             monzo = JSON.parse(fs.readFileSync(monzoFile, 'utf8'));
@@ -82,7 +82,6 @@ jobs:
               type: t.Type,
               gmail_id: t.GmailID
             });
-
             applied.push(t.GmailID);
           });
 
@@ -92,7 +91,7 @@ jobs:
 
 
       # =====================================================
-      # STEP 6 – Process Direct Debits (paid ✓ logic)
+      # STEP 5 — Process Direct Debits into JSON
       # =====================================================
       - name: 🧮 Process Direct Debits
         run: |
@@ -107,39 +106,30 @@ jobs:
             monzo = JSON.parse(fs.readFileSync(monzoFile, 'utf8'));
           }
 
-          const today = new Date();
-
-          const processed = raw.map(row => {
-            const due = new Date(row.DateDue);
-            const paid = row.Paid && row.Paid.trim() !== "";  // ✓ means paid
-
-            let status = "upcoming";
-            if (paid) status = "paid";
-            else if (due < today) status = "overdue";
-
-            return {
-              description: row.Description,
-              amount: parseFloat(row.Amount),
-              from_pot: row.FromPot,
-              date_due: row.DateDue,
-              status
-            };
-          });
+          const processed = raw.map(row => ({
+            payee: row.Payee,
+            amount: parseFloat(row["Amount (£)"] || 0),
+            due_date: row["Due Date"],
+            status: row.Status,
+            from_pot: row["From Pot"],
+            paid: row["Paid?"]
+          }));
 
           monzo.direct_debits = processed;
+
           fs.writeFileSync(monzoFile, JSON.stringify(monzo, null, 2));
           EOF
 
 
       # =====================================================
-      # STEP 7 – Process Transactions (NEW)
+      # STEP 6 — Process Transactions into JSON
       # =====================================================
       - name: 🧾 Process Transactions
         run: |
           node <<'EOF'
           const fs = require('fs');
 
-          const txRaw = JSON.parse(fs.readFileSync('transactions.json', 'utf8'));
+          const tx = JSON.parse(fs.readFileSync('transactions.json', 'utf8'));
           const monzoFile = './AuroraMonzo.json';
 
           let monzo = {};
@@ -147,17 +137,17 @@ jobs:
             monzo = JSON.parse(fs.readFileSync(monzoFile, 'utf8'));
           }
 
-          const mapped = txRaw.map(row => ({
+          const mapped = tx.map(row => ({
             date: row.Date,
             time: row.Time,
             merchant: row.Merchant,
-            amount: parseFloat(row["Amount (£)"] || row.Amount || 0),
+            amount: parseFloat(row["Amount (£)"] || 0),
             type: row.Type,
             source: row.Source,
-            email_subject: row["Email Subject"],
+            subject: row["Email Subject"],
             category: row.Category,
             processed: row.Processed,
-            exclude_from_spend: row.ExcludeFromSpend,
+            exclude: row["Exclude From Spend"],
             gmail_id: row["Gmail ID"]
           }));
 
@@ -168,12 +158,45 @@ jobs:
 
 
       # =====================================================
-      # STEP 8 – Commit & Push changes
+      # STEP 7 — EXPORT MONZO CORE (FINAL VALUES)
+      # =====================================================
+      - name: 🧱 Export Monzo Core
+        run: |
+          node <<'EOF'
+          const fs = require('fs');
+
+          const core = JSON.parse(fs.readFileSync('monzocore.json', 'utf8'));
+          const monzoFile = './AuroraMonzo.json';
+
+          let monzo = {};
+          if (fs.existsSync(monzoFile)) {
+            monzo = JSON.parse(fs.readFileSync(monzoFile, 'utf8'));
+          }
+
+          const extract = {};
+          core.forEach(row => {
+            const name = row.Label;
+            extract[name] = {
+              value: parseFloat(row["Value (£)"] || 0),
+              target: parseFloat(row["Target"] || 0),
+              total_due: parseFloat(row["Total Due"] || 0),
+              remaining: parseFloat(row["Remaining After Payments"] || 0)
+            };
+          });
+
+          monzo.monzo_core = extract;
+
+          fs.writeFileSync(monzoFile, JSON.stringify(monzo, null, 2));
+          EOF
+
+
+      # =====================================================
+      # STEP 8 — Commit & Push
       # =====================================================
       - name: 💾 Commit & Push changes
         run: |
           git config user.name "AuroraBot"
           git config user.email "aurora@example.com"
           git add .
-          git commit -m "Monzo sync update (Transfers + DirectDebits + Transactions)" || echo "No changes"
+          git commit -m "Aurora Monzo Sync Update" || echo "No changes to commit"
           git push
