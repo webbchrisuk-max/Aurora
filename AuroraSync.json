@@ -72,5 +72,8 @@
   "meta": {
     "last_updated": "2025-11-13T00:00:00Z",
     "source": "Clean rebuild – Full Sections"
+  },
+  "monzo": {
+    "core_balance": -349.42
   }
 }
