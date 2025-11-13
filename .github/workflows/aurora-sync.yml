@@ -1,107 +1,90 @@
-name: 🪄 Aurora Data Sync
+name: 🪄 Aurora Data Sync (ISA Only)
 
 on:
   schedule:
-    - cron: "0 8 * * *"   # ⏰ Runs daily at 08:00 UTC
+    # Every 10 minutes during UK market hours (Mon–Fri)
+    - cron: "*/10 8-16 * * 1-5"
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🧰 Checkout repo
+      - name: 🧰 Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: ⚙️ Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: 📦 Install jq for JSON merging
+      - name: ⚙️ Install jq
         run: sudo apt-get install -y jq
 
-      - name: 🌐 Fetch data from Google Sheets
+      # =====================================================
+      # STEP 1 — Fetch ISA data (Holdings + Dividends)
+      # =====================================================
+      - name: 🌐 Fetch ISA Sheets
         run: |
-          echo "Fetching Google Sheets data..."
           curl -L "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Holdings" -o holdings.json
           curl -L "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Dividends" -o dividends.json
-          curl -L "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/DirectDebits" -o directdebits.json
-          curl -L "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transfers" -o transfers.json
-          echo "✅ Sheets pulled successfully."
+          echo "✅ ISA sheets pulled."
 
-      - name: 🧩 Build AuroraSync.json (temporary)
+      # =====================================================
+      # STEP 2 — Build ISA block ONLY
+      # =====================================================
+      - name: 🧩 Build ISA block
         run: |
-          echo "Building temporary AuroraSync.json..."
           jq -s '
           {
             isa: {
               holdings: (.[0]),
               dividends: (.[1])
-            },
-            monzo: {},
-            direct_debits: (.[2]),
-            transfers: (.[3]),
-            meta: {
-              last_updated: now | todate,
-              source: "Google Sheets + Monzo Merge"
             }
           }
-          ' holdings.json dividends.json directdebits.json transfers.json > AuroraSync_temp.json
+          ' holdings.json dividends.json > isa_block.json
 
-          echo "✅ Temporary AuroraSync.json built."
+          echo "✅ ISA block built."
 
-      - name: 🛡️ Protect & Merge with Master AuroraSync
+      # =====================================================
+      # STEP 3 — Load current AuroraSync.json
+      # =====================================================
+      - name: 📥 Load existing AuroraSync.json
         run: |
-          echo "🛡️ Checking for write-protection..."
-          MASTER_URL="https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json"
-          curl -L "$MASTER_URL" -o AuroraSync_master.json
+          curl -L "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json" -o AuroraSync_master.json
+          echo "📥 Loaded existing AuroraSync.json."
 
-          # Backup the master file
-          mkdir -p backups
-          cp AuroraSync_master.json "backups/AuroraSync_$(date +'%Y%m%d_%H%M%S').json"
-          echo "📦 Master backup created."
-
-          # If write protection enabled, preserve protected sections
-          if jq -e '.meta.write_protection == true' AuroraSync_master.json > /dev/null; then
-            echo "✅ Write protection active, preserving protected sections..."
-            PROTECTED=$(jq -r '.meta.protected_sections[]' AuroraSync_master.json)
-            cp AuroraSync_temp.json AuroraSync.json
-            for section in $PROTECTED; do
-              jq --arg path "$section" \
-                 --slurpfile src AuroraSync_master.json \
-                 'setpath(($path | split(".")); getpath(($path | split("."))) as $v | $v)' \
-                 AuroraSync.json > temp.json && mv temp.json AuroraSync.json
-            done
-          else
-            echo "⚠️ No write protection flag detected — proceeding with normal merge."
-            mv AuroraSync_temp.json AuroraSync.json
-          fi
-
-          echo "✅ Merge completed with protection."
-
-      - name: 🔄 Merge Monzo JSON into AuroraSync
+      # =====================================================
+      # STEP 4 — Merge new ISA data into AuroraSync.json
+      #          WITHOUT touching monzo, reits_outlook, etc.
+      # =====================================================
+      - name: 🔄 Merge ISA → AuroraSync
         run: |
-          echo "Merging AuroraMonzo.json → AuroraSync.json..."
-          MONZO_URL="https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraMonzo.json"
-          curl -L "$MONZO_URL" -o AuroraMonzo.json
-          jq '.monzo = (input.monzo)' AuroraSync.json AuroraMonzo.json > temp.json && mv temp.json AuroraSync.json
-          echo "✅ AuroraMonzo.json merged successfully."
+          jq -s '
+            .[1].isa as $newISA |
+            .[0] * { isa: $newISA }
+          ' AuroraSync_master.json isa_block.json > AuroraSync.json
 
-      - name: 🧾 Validate final JSON
+          echo "✅ ISA data merged safely."
+
+      # =====================================================
+      # STEP 5 — Validate JSON
+      # =====================================================
+      - name: 🧾 Validate JSON
         run: |
           jq empty AuroraSync.json
-          echo "✅ AuroraSync.json validated successfully."
+          echo "✅ JSON is valid."
 
-      - name: 🚀 Commit and push changes
+      # =====================================================
+      # STEP 6 — Commit updates
+      # =====================================================
+      - name: 🚀 Commit & Push
         run: |
           git config user.name "AuroraSync Bot"
           git config user.email "actions@github.com"
           git add AuroraSync.json
-          git commit -m "🔄 Auto-update: AuroraSync.json refreshed (Protected Merge)" || echo "No changes to commit"
-          git fetch origin main
-          git pull origin main --no-rebase --strategy-option ours || true
-          git push origin main --force
-          echo "✅ AuroraSync.json updated and pushed to GitHub successfully."
+          git commit -m "🔄 ISA Sync (10-minute market update)" || echo "No changes to commit"
+          git pull --no-rebase
+          git push origin main
+          echo "🚀 Sync complete."
