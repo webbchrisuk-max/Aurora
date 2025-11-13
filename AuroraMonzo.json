@@ -23,142 +23,38 @@
         "Dentist": 340
       }
     },
+
     "direct_debits": [
-      {
-        "payee": "Virgin Media",
-        "amount": 46.39,
-        "due_date": "2025-11-14"
-      },
-      {
-        "payee": "Barclays Partner Finance",
-        "amount": 50.92,
-        "due_date": "2025-11-17"
-      },
-      {
-        "payee": "Vodafone",
-        "amount": 23.28,
-        "due_date": "2025-11-30"
-      },
-      {
-        "payee": "Driver & Vehicle Licensing Agency",
-        "amount": 23.18,
-        "due_date": "2025-12-03"
-      },
-      {
-        "payee": "Octopus Energy",
-        "amount": 94.9,
-        "due_date": "2025-12-03"
-      },
-      {
-        "payee": "Sports Direct",
-        "amount": 20,
-        "due_date": "2025-12-04"
-      },
-      {
-        "payee": "ID Mobile",
-        "amount": 10,
-        "due_date": "2025-12-07"
-      },
-      {
-        "payee": "Postcode Lottery #1",
-        "amount": 12.25,
-        "due_date": "2025-12-07"
-      },
-      {
-        "payee": "Postcode Lottery #2",
-        "amount": 12.25,
-        "due_date": "2025-12-07"
-      },
-      {
-        "payee": "Postcode Lottery #3",
-        "amount": 12.25,
-        "due_date": "2025-12-07"
-      },
-      {
-        "payee": "Monzo Plus",
-        "amount": 5,
-        "due_date": "2025-12-08"
-      },
-      {
-        "payee": "Rugby B.C.",
-        "amount": 139,
-        "due_date": "2025-12-03"
-      },
-      {
-        "payee": "Legal & General",
-        "amount": 17.92,
-        "due_date": "2025-12-03"
-      },
-      {
-        "payee": "Severn Trent Water",
-        "amount": 43.86,
-        "due_date": "2025-12-03"
-      }
+      { "payee": "Virgin Media", "amount": 46.39, "due_date": "2025-11-14" },
+      { "payee": "Barclays Partner Finance", "amount": 50.92, "due_date": "2025-11-17" },
+      { "payee": "Vodafone", "amount": 23.28, "due_date": "2025-11-30" },
+      { "payee": "Driver & Vehicle Licensing Agency", "amount": 23.18, "due_date": "2025-12-03" },
+      { "payee": "Octopus Energy", "amount": 94.9, "due_date": "2025-12-03" },
+      { "payee": "Sports Direct", "amount": 20, "due_date": "2025-12-04" },
+      { "payee": "ID Mobile", "amount": 10, "due_date": "2025-12-07" },
+      { "payee": "Postcode Lottery #1", "amount": 12.25, "due_date": "2025-12-07" },
+      { "payee": "Postcode Lottery #2", "amount": 12.25, "due_date": "2025-12-07" },
+      { "payee": "Postcode Lottery #3", "amount": 12.25, "due_date": "2025-12-07" },
+      { "payee": "Monzo Plus", "amount": 5, "due_date": "2025-12-08" },
+      { "payee": "Rugby B.C.", "amount": 139, "due_date": "2025-12-03" },
+      { "payee": "Legal & General", "amount": 17.92, "due_date": "2025-12-03" },
+      { "payee": "Severn Trent Water", "amount": 43.86, "due_date": "2025-12-03" }
     ],
+
     "subscriptions_from_main": [
-      {
-        "service": "Contents Insurance",
-        "amount": 7.73,
-        "renewal_date": "2025-11-30"
-      },
-      {
-        "service": "Apple One",
-        "amount": 18.95,
-        "renewal_date": "2025-11-13"
-      },
-      {
-        "service": "ChatGPT Plus",
-        "amount": 19.99,
-        "renewal_date": "2025-11-23"
-      }
+      { "service": "Contents Insurance", "amount": 7.73, "renewal_date": "2025-11-30" },
+      { "service": "Apple One", "amount": 18.95, "renewal_date": "2025-11-13" },
+      { "service": "ChatGPT Plus", "amount": 19.99, "renewal_date": "2025-11-23" }
     ],
+
     "transactions_feed": {
-      "recent": [
-        {
-          "Date": "11/11/2025",
-          "Time": "18:20:18",
-          "Merchant": "400 Work Canteen",
-          "Amount (£)": "2.15",
-          "Type": "Debit",
-          "Source": "Monzo",
-          "Email Subject": "I just spent £ 2.15 at 400 Work Canteen November 11, 2025 at 06:20PM",
-          "Category": "Work",
-          "Processed": "TRUE",
-          "Exclude From Spend": "",
-          "Gmail ID": "19a7425ae6b2c511"
-        },
-        {
-          "Date": "11/11/2025",
-          "Time": "11:32:46",
-          "Merchant": "Asda Far Cotton Supermarket",
-          "Amount (£)": "5.74",
-          "Type": "Debit",
-          "Source": "Monzo",
-          "Email Subject": "I just spent £ 5.74 at Asda Fuel November 11, 2025 at 11:32AM",
-          "Category": "Groceries",
-          "Processed": "TRUE",
-          "Exclude From Spend": "",
-          "Gmail ID": "19a72b095884b296"
-        },
-        {
-          "Date": "11/11/2025",
-          "Time": "11:22:27",
-          "Merchant": "Saving Smiles Northampton",
-          "Amount (£)": "160.00",
-          "Type": "Debit",
-          "Source": "Monzo",
-          "Email Subject": "I just spent £ 160 at Saving Smiles Northamp Personal care November 11, 2025 at 11:22AM",
-          "Category": "Personal Care",
-          "Processed": "TRUE",
-          "Exclude From Spend": "✅",
-          "Gmail ID": "19a72a722155c629"
-        }
-      ]
+      "recent": []
     },
+
     "integrity": {
-      "checksum": "aurora-monzo-2025-11-12T09:42:13.439Z",
+      "checksum": "aurora-monzo-rebuild-2025-11-13T10:54:00Z",
       "verified": true,
-      "last_updated": "2025-11-12T09:42:13.439Z"
+      "last_updated": "2025-11-13T10:54:00Z"
     }
   }
 }
