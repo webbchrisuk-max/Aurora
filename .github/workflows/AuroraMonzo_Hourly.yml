@@ -2,11 +2,8 @@ name: Aurora Monzo – Hourly Pot + Transaction Sync
 
 on:
   schedule:
-    - cron: "0 * * * *"
+    - cron: "0 * * * *"   # every hour UTC
   workflow_dispatch:
-
-permissions:
-  contents: write
 
 concurrency:
   group: aurora-monzo-hourly
@@ -17,18 +14,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      # =====================================================
+      # STEP 1 – Checkout repository
+      # =====================================================
       - name: 🧩 Checkout repository
         uses: actions/checkout@v4
 
       # =====================================================
-      # STEP 1 – Fetch Transactions sheet
+      # STEP 2 – Fetch Transactions sheet
       # =====================================================
       - name: 🟢 Fetch Transactions sheet
         run: |
-          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transactions" -o transactions.json
+          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transactions" \
+            -o transactions.json
 
       # =====================================================
-      # STEP 2 – Ensure state tracking file exists
+      # STEP 3 – Ensure state tracking folder
       # =====================================================
       - name: 📦 Ensure state folder
         run: |
@@ -38,66 +40,75 @@ jobs:
           fi
 
       # =====================================================
-      # STEP 3 – Apply NEW Transactions
+      # STEP 4 – APPLY NEW TRANSACTIONS
       # =====================================================
       - name: 🔄 Apply NEW Transactions
         run: |
           node <<'EOF'
           const fs = require("fs");
 
+          // Load the transactions from Google Sheets
           const sheet = JSON.parse(fs.readFileSync("transactions.json", "utf8"));
+
+          // Load applied transaction IDs
           const statePath = ".aurora/monzo_transfers_applied.json";
-          const state = JSON.parse(fs.readFileSync(statePath, "utf8"));
+          const state = fs.existsSync(statePath)
+            ? JSON.parse(fs.readFileSync(statePath, "utf8"))
+            : [];
 
-          const monzoPath = "AuroraMonzo.json";
-          const monzo = fs.existsSync(monzoPath)
-            ? JSON.parse(fs.readFileSync(monzoPath, "utf8"))
-            : { core_balance: 0, transactions: [] };
+          // Load AuroraSync.json
+          const auroraPath = "AuroraSync.json";
+          const aurora = fs.existsSync(auroraPath)
+            ? JSON.parse(fs.readFileSync(auroraPath, "utf8"))
+            : {};
 
-          let { core_balance } = monzo;
+          if (!aurora.monzo) aurora.monzo = {};
+          if (!aurora.monzo.core_balance) aurora.monzo.core_balance = 0;
+
+          let coreBalance = aurora.monzo.core_balance;
           let applied = [];
 
           for (const row of sheet) {
             const id = row["Gmail ID"];
             if (!id || state.includes(id)) continue;
 
-            // Clean amount
-            const rawAmount = row["Amount"] || "0";
+            const rawAmount = row["Amount (£)"] || "0";
             const amount = parseFloat(rawAmount.toString().replace(/[£,]/g, ""));
 
-            // Boolean flags
-            const processed = ["TRUE", "Yes", "YES", true].includes(row["Processed"]);
-            const excluded = ["TRUE", "Yes", "YES", true].includes(row["Exclude from Spend"]);
+            const processed = row["Processed"] === true ||
+                              row["Processed"] === "Yes" ||
+                              row["Processed"] === "TRUE";
+
+            const excluded = row["Exclude From Spend"] === true ||
+                             row["Exclude From Spend"] === "Yes" ||
+                             row["Exclude From Spend"] === "TRUE";
 
             if (!processed || excluded || isNaN(amount)) continue;
 
-            // Apply balance
-            core_balance -= amount;
+            // Apply to core balance
+            coreBalance -= amount;
 
-            // Save transaction
-            monzo.transactions.push(row);
+            console.log(
+              `Applied: £${amount.toFixed(2)} ${row["Merchant"] || "Unknown"} | New balance: £${coreBalance.toFixed(2)}`
+            );
 
             applied.push(id);
-
-            console.log(`Applied £${amount.toFixed(2)} | ${row["Merchant"]}`);
           }
 
-          monzo.core_balance = parseFloat(core_balance.toFixed(2));
+          aurora.monzo.core_balance = parseFloat(coreBalance.toFixed(2));
 
-          // Write outputs
-          fs.writeFileSync(monzoPath, JSON.stringify(monzo, null, 2));
+          // Save JSON
+          fs.writeFileSync(auroraPath, JSON.stringify(aurora, null, 2));
           fs.writeFileSync(statePath, JSON.stringify([...state, ...applied], null, 2));
 
           EOF
 
       # =====================================================
-      # STEP 4 – Commit Changes
+      # STEP 5 – Commit Updated Files
       # =====================================================
-      - name: 📤 Commit updated files
+      - name: 📤 Commit AuroraSync.json
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "🟢 Monzo transactions synced & core balance updated"
-          file_pattern: |
-            AuroraMonzo.json
-            .aurora/monzo_transfers_applied.json
+          file_pattern: AuroraSync.json .aurora/monzo_transfers_applied.json
           branch: main
