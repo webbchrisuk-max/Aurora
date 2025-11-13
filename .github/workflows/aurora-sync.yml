@@ -1,4 +1,4 @@
-name: 🪄 Aurora Data Sync (ISA Only)
+name: 🪄 Aurora Data Sync (Enhanced ISA)
 
 on:
   schedule:
@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🧰 Checkout repository
+      - name: 🧰 Checkout repo
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -23,68 +23,149 @@ jobs:
         run: sudo apt-get install -y jq
 
       # =====================================================
-      # STEP 1 — Fetch ISA data (Holdings + Dividends)
+      # STEP 1 — Fetch Sheets (Holdings + Dividends)
       # =====================================================
       - name: 🌐 Fetch ISA Sheets
         run: |
           curl -L "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Holdings" -o holdings.json
           curl -L "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Dividends" -o dividends.json
-          echo "✅ ISA sheets pulled."
 
       # =====================================================
-      # STEP 2 — Build ISA block ONLY
+      # STEP 2 — Build ISA blocks + calculations
       # =====================================================
-      - name: 🧩 Build ISA block
+      - name: 🧩 Build ISA Calculations
         run: |
-          jq -s '
+          # Read the sheet arrays
+          HOLD=$(cat holdings.json)
+          DIVS=$(cat dividends.json)
+
+          # Calculate total value, yields, income
+          TOTAL_VALUE=$(jq '[.[] | .CurrentValue | tonumber] | add' holdings.json)
+          ANNUAL_INCOME=$(jq '[.[] | .AnnualIncome | tonumber] | add' dividends.json)
+          DIV_YIELD=$(echo "$ANNUAL_INCOME / $TOTAL_VALUE * 100" | bc -l)
+
+          # IG ISA + T212 summaries
+          IG_BAL=$(jq '[.[] | select(.Account=="IG") | .CurrentValue | tonumber] | add' holdings.json)
+          IG_GAIN=$(jq '[.[] | select(.Account=="IG") | .Gain | tonumber] | add' holdings.json)
+          IG_GPCT=$(echo "$IG_GAIN / ($IG_BAL - $IG_GAIN) * 100" | bc -l)
+
+          T212_BAL=$(jq '[.[] | select(.Account=="T212") | .CurrentValue | tonumber] | add' holdings.json)
+          T212_GAIN=$(jq '[.[] | select(.Account=="T212") | .Gain | tonumber] | add' holdings.json)
+          T212_GPCT=$(echo "$T212_GAIN / ($T212_BAL - $T212_GAIN) * 100" | bc -l)
+
+          # Build portfolio summary
+          jq -n --argjson holdings "$HOLD" \
+                --argjson dividends "$DIVS" \
+                --arg total "$TOTAL_VALUE" \
+                --arg income "$ANNUAL_INCOME" \
+                --arg dy "$DIV_YIELD" \
+                --arg igbal "$IG_BAL" \
+                --arg iggain "$IG_GAIN" \
+                --arg igpct "$IG_GPCT" \
+                --arg tbal "$T212_BAL" \
+                --arg tgain "$T212_GAIN" \
+                --arg tpct "$T212_GPCT" \
+          '
           {
             isa: {
-              holdings: (.[0]),
-              dividends: (.[1])
+              holdings: $holdings,
+              dividends: $dividends,
+              portfolio_summary: {
+                total_value: ($total|tonumber),
+                annual_income_gbp: ($income|tonumber),
+                dividend_yield: ($dy|tonumber)
+              },
+              ig_isa: {
+                balance: ($igbal|tonumber),
+                unrealised_gain: ($iggain|tonumber),
+                gain_percent: ($igpct|tonumber)
+              },
+              trade212_isa: {
+                balance: ($tbal|tonumber),
+                unrealised_gain: ($tgain|tonumber),
+                gain_percent: ($tpct|tonumber)
+              }
             }
           }
-          ' holdings.json dividends.json > isa_block.json
-
-          echo "✅ ISA block built."
+          ' > isa_block.json
 
       # =====================================================
-      # STEP 3 — Load current AuroraSync.json
+      # STEP 3 — Build dividend planner
       # =====================================================
-      - name: 📥 Load existing AuroraSync.json
+      - name: 📅 Build Dividend Planner
+        run: |
+          node << 'EOF'
+          const fs = require("fs");
+
+          const divs = JSON.parse(fs.readFileSync("dividends.json", "utf8"));
+
+          const planner = {
+            schedule_by_holding: {},
+            monthly_breakdown: {
+              Jan:0,Feb:0,Mar:0,Apr:0,May:0,Jun:0,
+              Jul:0,Aug:0,Sep:0,Oct:0,Nov:0,Dec:0
+            },
+            forecast_total: 0,
+            received_ytd: 0
+          };
+
+          for(const row of divs){
+            const name = row["Ticker"];
+            const pay = row["NextPaymentDate"];
+            const ex = row["NextExDivDate"];
+            const amt = parseFloat(row["AnnualIncome"]||"0");
+
+            if(!planner.schedule_by_holding[name]) planner.schedule_by_holding[name]={};
+            planner.schedule_by_holding[name].next_pay_date = pay;
+            planner.schedule_by_holding[name].next_ex_div = ex;
+            planner.schedule_by_holding[name].expected_dividend = amt;
+
+            planner.forecast_total += amt;
+
+            const month = row["Month"];
+            if(planner.monthly_breakdown[month] !== undefined){
+              planner.monthly_breakdown[month] += amt;
+            }
+          }
+
+          fs.writeFileSync("planner_block.json", JSON.stringify({dividend_planner:planner}, null, 2));
+          EOF
+
+      # =====================================================
+      # STEP 4 — Load Master AuroraSync
+      # =====================================================
+      - name: 📥 Load Master AuroraSync.json
         run: |
           curl -L "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json" -o AuroraSync_master.json
-          echo "📥 Loaded existing AuroraSync.json."
 
       # =====================================================
-      # STEP 4 — Merge new ISA data into AuroraSync.json
-      #          WITHOUT touching monzo, reits_outlook, etc.
+      # STEP 5 — Merge ESA + Planner safely
       # =====================================================
-      - name: 🔄 Merge ISA → AuroraSync
+      - name: 🔄 Merge ISA + Planner
         run: |
           jq -s '
-            .[1].isa as $newISA |
-            .[0] * { isa: $newISA }
-          ' AuroraSync_master.json isa_block.json > AuroraSync.json
-
-          echo "✅ ISA data merged safely."
+            .[0] as $master
+            | .[1].isa as $newISA
+            | .[2].dividend_planner as $planner
+            | $master
+              * { isa: $newISA }
+              * { dividend_planner: $planner }
+          ' AuroraSync_master.json isa_block.json planner_block.json > AuroraSync.json
 
       # =====================================================
-      # STEP 5 — Validate JSON
+      # STEP 6 — Validate
       # =====================================================
       - name: 🧾 Validate JSON
-        run: |
-          jq empty AuroraSync.json
-          echo "✅ JSON is valid."
+        run: jq empty AuroraSync.json
 
       # =====================================================
-      # STEP 6 — Commit updates
+      # STEP 7 — Commit
       # =====================================================
       - name: 🚀 Commit & Push
         run: |
           git config user.name "AuroraSync Bot"
           git config user.email "actions@github.com"
           git add AuroraSync.json
-          git commit -m "🔄 ISA Sync (10-minute market update)" || echo "No changes to commit"
+          git commit -m "🔄 Enhanced ISA Sync (live market update)" || echo "No changes"
           git pull --no-rebase
           git push origin main
-          echo "🚀 Sync complete."
