@@ -2,7 +2,10 @@ name: 🪄 Aurora Data Sync – ISA Auto Builder (Market Hours)
 
 on:
   schedule:
-    - cron: "0 8-17 * * 1-5"   # Runs hourly between 08:00–17:00 Monday–Friday
+    # Every 5 minutes from 08:00–15:55 (UTC, Mon–Fri)
+    - cron: "*/5 8-15 * * 1-5"
+    # Every 5 minutes from 16:00–16:30 (UTC, Mon–Fri)
+    - cron: "0-30/5 16 * * 1-5"
   workflow_dispatch:
 
 jobs:
