@@ -1,158 +1,120 @@
-name: 🪄 Aurora Data Sync – ISA Auto Builder (Market Hours)
+name: Aurora ISA – 5-Minute Live Shares Sync
 
 on:
   schedule:
-    # Every 5 minutes from 08:00–15:55 (UTC, Mon–Fri)
-    - cron: "*/5 8-15 * * 1-5"
-    # Every 5 minutes from 16:00–16:30 (UTC, Mon–Fri)
-    - cron: "0-30/5 16 * * 1-5"
+    # Every 5 minutes between 08:00–16:30 UK time (Nov = UTC)
+    - cron: "*/5 8-16 * * 1-5"
+    # Also run at 16:30 exactly
+    - cron: "30 16 * * 1-5"
   workflow_dispatch:
 
+concurrency:
+  group: aurora-isa-sync
+  cancel-in-progress: false
+
 jobs:
-  build_aurora:
+  isa_sync:
     runs-on: ubuntu-latest
 
     steps:
-      # ================================
-      # STEP 1 — Checkout Repo
-      # ================================
-      - name: 🧩 Checkout Repository
+      # =====================================================
+      # STEP 1 — Checkout repo
+      # =====================================================
+      - name: 🧩 Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      # ================================
-      # STEP 2 — Python + jq
-      # ================================
-      - name: ⚙ Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: 📦 Install jq
-        run: sudo apt-get install -y jq
-
-      # ================================
-      # STEP 3 — Fetch Google Sheets
-      # ================================
-      - name: 🌐 Fetch Sheets (Holdings + Dividends)
+      # =====================================================
+      # STEP 2 — Fetch Holdings sheet
+      # =====================================================
+      - name: 🟢 Fetch Holdings sheet
         run: |
-          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Holdings"  -o holdings.json
-          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Dividends" -o dividends.json
+          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Holdings" -o holdings.json
 
-      # ================================
-      # STEP 4 — Build ISA Summary
-      # ================================
-      - name: 🧮 Build ISA Summary + Dividend Planner
+      # =====================================================
+      # STEP 3 — Install Node
+      # =====================================================
+      - name: 🔧 Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # =====================================================
+      # STEP 4 — Update AuroraSync.json with new prices
+      # =====================================================
+      - name: 🔄 Update ISA prices
         run: |
-          python3 << 'EOF'
-          import json, datetime
+          node << 'EOF'
+          const fs = require("fs");
 
-          # Load sheets
-          with open("holdings.json") as f:
-              holdings = json.load(f)
+          // Load Google Sheet holdings
+          const holdings = JSON.parse(fs.readFileSync("holdings.json", "utf8"));
 
-          with open("dividends.json") as f:
-              dividends = json.load(f)
+          // Load AuroraSync.json
+          const auroraPath = "AuroraSync.json";
+          const aurora = JSON.parse(fs.readFileSync(auroraPath, "utf8"));
 
-          # --- IG ISA Snapshot (from Webby) ---
-          ig_positions_value = 58250.00
-          ig_book_cost = 55126.16
-          ig_gain = ig_positions_value - ig_book_cost
-          ig_gain_pct = (ig_gain / ig_book_cost) * 100
-          ig_cash = 504.25
+          // Prepare date/time for last_updated field
+          const now = new Date().toISOString().replace("T", " ").substring(0, 19);
 
-          # --- Trade212 ISA Snapshot (from Webby) ---
-          t212_positions = 1886.52
-          t212_cash = 19.94
-          t212_total = 1906.46
-          t212_book_cost = t212_positions
-          t212_gain = t212_total - t212_book_cost
-          t212_gain_pct = (t212_gain / t212_book_cost) * 100
+          // Function to fetch live price
+          async function getLivePrice(ticker) {
+            try {
+              const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${ticker}.L`;
+              const res = await fetch(url);
+              const data = await res.json();
 
-          # --- Portfolio summary ---
-          total_value = ig_positions_value + ig_cash + t212_total
-          annual_income = sum(float(x.get("AnnualIncome",0)) for x in dividends)
-          div_yield = (annual_income / total_value) * 100 if total_value else 0
-
-          # Build monthly breakdown
-          months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
-          monthly = {m:0 for m in months}
-          for row in dividends:
-              m = row.get("Month","")
-              amt = float(row.get("Amount",0))
-              if m in monthly:
-                  monthly[m] += amt
-
-          # Dividend Planner
-          schedule = {}
-          for row in dividends:
-              name = row.get("Ticker","Unknown")
-              schedule[name] = {
-                  "next_pay_date": row.get("PayDate",""),
-                  "next_ex_div": row.get("ExDiv",""),
-                  "expected_dividend": float(row.get("Amount",0))
-              }
-
-          div_planner = {
-              "received_ytd": sum(float(x.get("ReceivedYTD",0)) for x in dividends),
-              "forecast_total": annual_income,
-              "monthly_breakdown": monthly,
-              "schedule_by_holding": schedule
+              return data.quoteResponse.result[0]?.regularMarketPrice ?? null;
+            } catch {
+              return null;
+            }
           }
 
-          # --- Build objects for JSON output ---
-          ig_obj = {
-              "account_name": "IG ISA",
-              "balance": ig_positions_value + ig_cash,
-              "positions_value": ig_positions_value,
-              "book_cost": ig_book_cost,
-              "unrealised_gain": round(ig_gain,2),
-              "gain_percent": round(ig_gain_pct,2),
-              "cash_balance": ig_cash
+          // Wrapper for async/await
+          async function update() {
+            for (const row of holdings) {
+              const ticker = row["ticker"];
+              const shares = parseFloat(row["shares"] || 0);
+              const book = parseFloat(row["book cost"] || 0);
+
+              // Fetch price
+              const price = await getLivePrice(ticker.replace("LON:", ""));
+              if (!price) continue;
+
+              const value = price * shares;
+              const gain = value - book;
+
+              // Update AuroraSync JSON
+              aurora.isa = aurora.isa || {};
+              aurora.isa.holdings = aurora.isa.holdings || {};
+              aurora.isa.holdings[ticker] = {
+                name: row["name"] || "",
+                shares,
+                book_cost: book,
+                live_price: price,
+                value,
+                gain_value: gain,
+                gain_percent: book > 0 ? (gain / book) * 100 : 0,
+                annual_dividend_per_share: parseFloat(row["annual_dividend_per_share"] || 0),
+                annual_income: parseFloat(row["annual_income"] || 0),
+                sector: row["sector"] || "",
+                last_updated: now
+              };
+            }
+
+            // Write updated file
+            fs.writeFileSync(auroraPath, JSON.stringify(aurora, null, 2));
           }
 
-          t212_obj = {
-              "account_name": "Trade212 ISA",
-              "balance": t212_total,
-              "positions_value": t212_positions,
-              "book_cost": t212_book_cost,
-              "unrealised_gain": round(t212_gain,2),
-              "gain_percent": round(t212_gain_pct,2),
-              "cash_balance": t212_cash
-          }
-
-          portfolio_summary = {
-              "total_value": round(total_value,2),
-              "dividend_yield": round(div_yield,2),
-              "annual_income_gbp": round(annual_income,2),
-              "last_calculated": datetime.datetime.utcnow().isoformat()
-          }
-
-          build = {
-              "isa": {
-                  "ig_isa": ig_obj,
-                  "trade212_isa": t212_obj,
-                  "portfolio_summary": portfolio_summary
-              },
-              "dividend_planner": div_planner,
-              "meta": {
-                  "last_updated": datetime.datetime.utcnow().isoformat(),
-                  "source": "Google Sheets + ISA Builder"
-              }
-          }
-
-          with open("isa_build.json","w") as f:
-              json.dump(build,f,indent=2)
+          await update();
           EOF
 
-      # ================================
-      # STEP 5 — Commit to Repo
-      # ================================
-      - name: 🚀 Commit ISA Build JSON
+      # =====================================================
+      # STEP 5 — Commit & Push
+      # =====================================================
+      - name: 📤 Commit changes
         run: |
-          git config user.name "AuroraSync Bot"
-          git config user.email "actions@github.com"
-          git add isa_build.json
-          git commit -m "🔄 Auto-update: ISA Build (Market Hours)" || echo "No changes"
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add AuroraSync.json
+          git commit -m "🔄 ISA Auto-Price Update $(date)" || echo "No changes"
           git push
