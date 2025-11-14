@@ -161,7 +161,6 @@ async function initAurora(){
   </div>
 
 </div>
-
 <script>
 /* ---------------- IG ---------------- */
 function renderIG(sync){
@@ -253,7 +252,7 @@ function renderNextFive(sync){
     return;
   }
 
-  // Force exactly FIRST 5
+  // Force exactly FIRST 5 from next_five
   const list = next.slice(0,5);
 
   let html = "";
@@ -273,7 +272,7 @@ function renderNextFive(sync){
   document.getElementById("next5").innerHTML = html;
 }
 
-/* ---------------- Upcoming ---------------- */
+/* ---------------- FIXED — Upcoming (5 only) ---------------- */
 function renderUpcoming(sync){
   const up = sync?.isa?.dividends?.upcoming || [];
   if(up.length === 0){
@@ -281,8 +280,11 @@ function renderUpcoming(sync){
     return;
   }
 
+  // 🔒 Only show the first 5 upcoming (by whatever order JSON gives – which is already earliest → latest)
+  const list = up.slice(0,5);
+
   let html = "";
-  up.forEach(d=>{
+  list.forEach(d=>{
     html += `
       <div class="dividend-item">
         <div>
