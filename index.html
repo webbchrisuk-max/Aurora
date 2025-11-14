@@ -269,18 +269,30 @@ function renderNextFive(sync){
 /* ---------------- Upcoming ---------------- */
 function renderUpcoming(sync){
   const up = sync?.isa?.dividends?.upcoming || [];
-  if(up.length === 0){
+  if (up.length === 0){
     document.getElementById("upcoming").innerHTML = "<p>No upcoming dividends.</p>";
     return;
   }
 
+  // 👉 Sort by EX-DIV date ascending
+  const sorted = up
+    .map(d => ({
+      ...d,
+      ex: new Date(d.ex_div_date)
+    }))
+    .sort((a,b) => a.ex - b.ex);
+
+  // 👉 Take the NEXT 5
+  const nextFiveExDiv = sorted.slice(0, 5);
+
   let html = "";
-  up.forEach(d=>{
+  nextFiveExDiv.forEach(d=>{
     html += `
       <div class="dividend-item">
         <div>
           <strong>${d.ticker}</strong> – ${d.name}<br>
-          Ex: ${d.ex_div_date} — Pay: ${d.pay_date}<br>
+          Ex: ${d.ex_div_date}<br>
+          Pay: ${d.pay_date}<br>
           Status: ${d.status}
         </div>
         <div>£${Number(d.total_dividend).toFixed(2)}</div>
