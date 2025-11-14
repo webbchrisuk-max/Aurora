@@ -1,20 +1,20 @@
 {
   "monzo": {
     "account_core": {
-      "main_balance": 797.53,
+      "main_balance": 793.78,
       "payday_last": "2025-11-07",
       "payday_next": "2025-12-05",
       "payday_cycle": "four_week",
       "pay_period_days": 28,
       "pots": {
-        "Main Account": 797.53,
+        "Main Account": 793.78,
         "Flex Repayment": 609.44,
         "Direct Debits": 398.11,
         "Holiday Pot": 174.45,
         "Coventry City F.C": 167.86,
-        "IGTrading": 240.95,
+        "IGTrading": 244.7,
         "Car Maintenance": 124.49,
-        "Work Buffer": 37.54,
+        "Work Buffer": 33.59,
         "Savings": 501,
         "Christmas": 150,
         "Dentist": 340,
@@ -903,32 +903,39 @@
         "to_pot": "Main Account",
         "amount": 10.4,
         "note": "Work Spending",
-        "processed": "",
+        "processed": "✅",
         "type": "Transfer",
         "uid": "45975-Work Buffer-Main Account-10.4"
       },
       {
-        "amount": 0
+        "date": "2025-11-14",
+        "from_pot": "Work Buffer",
+        "to_pot": "Main Account",
+        "amount": 3.95,
+        "note": "Work Spending",
+        "processed": "",
+        "type": "Transfer",
+        "uid": "45975-Work Buffer-Main Account-3.95"
       },
       {
-        "amount": 0
+        "date": "2025-11-14",
+        "from_pot": "Main Account",
+        "to_pot": "IG Trading",
+        "amount": 3.75,
+        "note": "Roundup from Work Canteen ",
+        "processed": "",
+        "type": "Transfer",
+        "uid": "45975-Main Account-IG Trading-3.75"
       },
       {
-        "amount": 0
-      },
-      {
-        "amount": 0
-      },
-      {
-        "amount": 0
-      },
-      {
-        "amount": 0
-      },
-      {
-        "date": "",
-        "from_pot": "10.4",
-        "amount": 0
+        "date": "2025-11-13",
+        "from_pot": "Main Account",
+        "to_pot": "IG Trading",
+        "amount": 3.25,
+        "note": "Roundup from Work Canteen ",
+        "processed": "",
+        "type": "Transfer",
+        "uid": "45974-Main Account-IG Trading-3.25"
       }
     ]
   }
