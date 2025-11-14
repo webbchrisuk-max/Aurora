@@ -2,7 +2,10 @@
   "monzo": {
     "account_core": {
       "main_balance": 787.13,
-      "payday_last": "",
+      "payday_last": "2025-11-07",
+      "payday_next": "2025-12-05",
+      "payday_cycle": "four_week",
+      "pay_period_days": 28,
       "income_received": 0,
       "pots": {
         "Main Account": 787.13,
@@ -19,80 +22,6 @@
         "Holding Pot": 8.34
       }
     },
-    "monzo_core": {
-      "Main Account": {
-        "value": 787.13,
-        "target": null,
-        "total_due": null,
-        "remaining": null
-      },
-      "Flex Repayment": {
-        "value": 609.44,
-        "target": 427.79,
-        "total_due": 0,
-        "remaining": 609.44
-      },
-      "Direct Debits": {
-        "value": 444.5,
-        "target": 511.2,
-        "total_due": 487.17,
-        "remaining": -42.67
-      },
-      "Holiday Pot": {
-        "value": 174.45,
-        "target": 297.79,
-        "total_due": 123.34,
-        "remaining": null
-      },
-      "Coventry City F.C": {
-        "value": 167.86,
-        "target": 500,
-        "total_due": 332.14,
-        "remaining": null
-      },
-      "IGTrading": {
-        "value": 240.95,
-        "target": 500,
-        "total_due": 259.05,
-        "remaining": null
-      },
-      "Car Maintenance": {
-        "value": 124.49,
-        "target": 300,
-        "total_due": 175.51,
-        "remaining": null
-      },
-      "Work Buffer": {
-        "value": 47.94,
-        "target": 65,
-        "total_due": 17.06,
-        "remaining": null
-      },
-      "Savings": {
-        "value": 501,
-        "target": 1000,
-        "total_due": 499,
-        "remaining": null
-      },
-      "Christmas": {
-        "value": 150,
-        "target": 300,
-        "total_due": 150,
-        "remaining": null
-      },
-      "Dentist": {
-        "value": 340,
-        "target": 1800,
-        "total_due": 1460,
-        "remaining": null
-      },
-      "Holding Pot": {
-        "value": 8.34,
-        "target": 500,
-        "total_due": 491.66,
-        "remaining": null
-      }
-    },
     "direct_debits": [
       {
         "payee": "Virgin Media",
@@ -100,7 +29,8 @@
         "due_date": "2025-11-14",
         "day": "14",
         "status": "Upcoming",
-        "from_pot": "Direct Debit"
+        "from_pot": "Direct Debit",
+        "paid": "✅ "
       },
       {
         "payee": "Barclays Partner Finance",
@@ -209,10 +139,11 @@
       {
         "payee": "Apple One",
         "amount": 18.95,
-        "due_date": "2025-12-13",
+        "due_date": "2025-11-13",
         "day": "13",
-        "status": "Future",
-        "from_pot": "Main Account"
+        "status": "Paid",
+        "from_pot": "Direct Debits",
+        "paid": "✅"
       },
       {
         "payee": "ChatGPT",
@@ -239,28 +170,7 @@
         "from_pot": "Main Account"
       }
     ],
-    "subscriptions_from_main": [
-      {
-        "service": "Apple One",
-        "amount": 18.95,
-        "renewal_date": "2025-12-13"
-      },
-      {
-        "service": "ChatGPT",
-        "amount": 19.99,
-        "renewal_date": "2025-11-23"
-      },
-      {
-        "service": "Amazon Prime",
-        "amount": 8.99,
-        "renewal_date": "2025-12-23"
-      },
-      {
-        "service": "Monzo Contents Insurance",
-        "amount": 7.73,
-        "renewal_date": "2025-11-29"
-      }
-    ],
+    "subscriptions_from_main": [],
     "transactions_feed": {
       "recent": [
         {
