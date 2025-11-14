@@ -2,7 +2,7 @@ name: Aurora Monzo – Hourly Pot + Transaction Sync
 
 on:
   schedule:
-    - cron: "0 * * * *"
+    - cron: "0 * * * *"   # Every hour UTC
   workflow_dispatch:
 
 jobs:
@@ -34,7 +34,6 @@ jobs:
 
       # =====================================================
       # STEP 2 – Build AuroraMonzo.json
-      # (Correct headers + correct JSON layout + payday logic)
       # =====================================================
       - name: 🛠 Build AuroraMonzo.json
         run: |
@@ -93,11 +92,21 @@ jobs:
           }));
 
           // ============================
-          // CORE (Pots + Balances)
+          // MONZO CORE (pots + balances)
           // ============================
           const pots = {};
+          const monzoCoreObject = {};
+
           core.forEach(row => {
-            pots[row["Label"]] = num(row["Value (£)"]);
+            const label = row["Label"];
+            pots[label] = num(row["Value (£)"]);
+
+            monzoCoreObject[label] = {
+              value: num(row["Value (£)"]),
+              target: num(row["Target"]) || null,
+              total_due: num(row["Total Due"]) || null,
+              remaining: row["Remaining After Payments"] === "" ? null : num(row["Remaining After Payments"])
+            };
           });
 
           const output = {
@@ -106,11 +115,12 @@ jobs:
                 main_balance: pots["Main Account"] || 0,
                 payday_last: "",
                 payday_next: "",
-                payday_cycle: "",
-                pay_period_days: 0,
+                payday_cycle: "four_week",
+                pay_period_days: 28,
                 income_received: 0,
                 pots: pots
               },
+              monzo_core: monzoCoreObject,
               direct_debits: mappedDD,
               subscriptions_from_main: [],
               transactions_feed: { recent: mappedTx },
@@ -121,8 +131,7 @@ jobs:
           // =====================================================
           // PAYDAY CALCULATION – 4 WEEK CYCLE (28 DAYS)
           // =====================================================
-
-          const BASE_PAYDAY = new Date("2025-11-07T00:00:00Z"); // last confirmed payday
+          const BASE_PAYDAY = new Date("2025-11-07T00:00:00Z");
           const today = new Date();
 
           let payday_last = new Date(BASE_PAYDAY);
@@ -130,13 +139,24 @@ jobs:
 
           while (payday_next <= today) {
             payday_last = new Date(payday_next);
-            payday_next = new Date(payday_next.getTime() + 28 * 24 * 60 * 60 * 1000);
+            payday_next = new Date(payday_next.getTime() + 28 * 86400000);
           }
 
           output.monzo.account_core.payday_last = payday_last.toISOString().split("T")[0];
           output.monzo.account_core.payday_next = payday_next.toISOString().split("T")[0];
-          output.monzo.account_core.payday_cycle = "four_week";
-          output.monzo.account_core.pay_period_days = 28;
+
+          // =====================================================
+          // SUBSCRIPTIONS FROM MAIN ACCOUNT
+          // =====================================================
+          const subscriptions = mappedDD
+            .filter(d => (d.from_pot || "").toLowerCase() === "main account")
+            .map(d => ({
+              service: d.payee,
+              amount: d.amount,
+              renewal_date: d.due_date
+            }));
+
+          output.monzo.subscriptions_from_main = subscriptions;
 
           // =====================================================
           // WRITE FINAL JSON
