@@ -105,7 +105,7 @@ async function initAurora(){
   renderT212(sync);
   renderPortfolio(sync);
   renderNextFive(sync);
-  renderUpcoming(sync);
+  renderUpcoming(sync); // FIXED
   renderYTD(sync);
   renderChart(sync);
 }
@@ -144,7 +144,7 @@ async function initAurora(){
 
   <!-- Upcoming Dividends -->
   <div class="card">
-    <h2 class="section-title">Upcoming Dividends</h2>
+    <h2 class="section-title">Upcoming Ex-Dividend Dates</h2>
     <div id="upcoming"></div>
   </div>
 
@@ -161,6 +161,7 @@ async function initAurora(){
   </div>
 
 </div>
+
 <script>
 /* ---------------- IG ---------------- */
 function renderIG(sync){
@@ -243,27 +244,19 @@ function renderPortfolio(sync){
   `;
 }
 
-/* ---------------- FIXED — Next 5 Dividends ---------------- */
+/* ---------------- Next 5 ---------------- */
 function renderNextFive(sync){
   const next = sync?.isa?.dividends?.next_five || [];
-
   if(next.length === 0){
     document.getElementById("next5").innerHTML = "<p>No data.</p>";
     return;
   }
 
-  // Force exactly FIRST 5 from next_five
-  const list = next.slice(0,5);
-
   let html = "";
-  list.forEach(d=>{
+  next.forEach(d=>{
     html += `
       <div class="dividend-item">
-        <div>
-          <strong>${d.ticker}</strong><br>
-          Ex: ${d.ex_div_date}<br>
-          Pay: ${d.pay_date}
-        </div>
+        <div><strong>${d.ticker}</strong><br>Ex: ${d.ex_div_date}<br>Pay: ${d.pay_date}</div>
         <div>£${Number(d.total_dividend).toFixed(2)}</div>
       </div>
     `;
@@ -272,7 +265,7 @@ function renderNextFive(sync){
   document.getElementById("next5").innerHTML = html;
 }
 
-/* ---------------- FIXED — Upcoming (5 only) ---------------- */
+/* ---------------- Upcoming → FIXED to show next 5 ex-divs ---------------- */
 function renderUpcoming(sync){
   const up = sync?.isa?.dividends?.upcoming || [];
   if(up.length === 0){
@@ -280,11 +273,15 @@ function renderUpcoming(sync){
     return;
   }
 
-  // 🔒 Only show the first 5 upcoming (by whatever order JSON gives – which is already earliest → latest)
-  const list = up.slice(0,5);
+  const today = new Date();
+
+  const sorted = up
+    .filter(d => new Date(d.ex_div_date) >= today)
+    .sort((a,b) => new Date(a.ex_div_date) - new Date(b.ex_div_date))
+    .slice(0,5);
 
   let html = "";
-  list.forEach(d=>{
+  sorted.forEach(d=>{
     html += `
       <div class="dividend-item">
         <div>
