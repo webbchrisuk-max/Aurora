@@ -2,15 +2,11 @@ name: Aurora Monzo – Hourly Pot + Transaction Sync
 
 on:
   schedule:
-    - cron: "0 * * * *"    # every hour
+    - cron: "0 * * * *"
   workflow_dispatch:
 
-concurrency:
-  group: aurora-monzo-hourly
-  cancel-in-progress: false
-
 jobs:
-  sync_monzo_hourly:
+  sync_monzo:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,83 +14,74 @@ jobs:
         uses: actions/checkout@v4
 
       # =====================================================
-      # STEP 1 – Fetch ALL Google Sheets
+      # STEP 1 – Fetch Google Sheets (ALL FOUR)
       # =====================================================
-      - name: 📄 Fetch Transactions sheet
+      - name: 📥 Fetch Transactions Sheet
         run: |
-          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transactions" \
-          -o transactions.json
+          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transactions" -o transactions.json
 
-      - name: 📄 Fetch Transfers sheet
+      - name: 📥 Fetch Transfers Sheet
         run: |
-          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transfers" \
-          -o transfers.json
+          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transfers" -o transfers.json
 
-      - name: 📄 Fetch DirectDebits sheet
+      - name: 📥 Fetch Direct Debits Sheet
         run: |
-          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/DirectDebits" \
-          -o direct_debits.json
+          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/DirectDebits" -o dd.json
 
-      - name: 📄 Fetch MonzoCore sheet
+      - name: 📥 Fetch MonzoCore Sheet
         run: |
-          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/MonzoCore" \
-          -o monzocore.json
+          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/MonzoCore" -o monzocore.json
 
       # =====================================================
-      # STEP 2 – Build auroraMonzo.json using your EXACT headers
+      # STEP 2 – Build AuroraMonzo.json (MATCHES YOUR HTML)
       # =====================================================
-      - name: 🔧 Generate AuroraMonzo.json
+      - name: 🛠 Build AuroraMonzo.json
         run: |
-          node <<'EOF'
+          node << 'EOF'
           const fs = require('fs');
 
-          // Load all sheets
-          const transactions = JSON.parse(fs.readFileSync('transactions.json', 'utf8'));
-          const transfers    = JSON.parse(fs.readFileSync('transfers.json', 'utf8'));
-          const directDebits = JSON.parse(fs.readFileSync('direct_debits.json', 'utf8'));
-          const monzoCore    = JSON.parse(fs.readFileSync('monzocore.json', 'utf8'));
+          const tx = JSON.parse(fs.readFileSync('transactions.json', 'utf8'));
+          const transfers = JSON.parse(fs.readFileSync('transfers.json', 'utf8'));
+          const dd = JSON.parse(fs.readFileSync('dd.json', 'utf8'));
+          const core = JSON.parse(fs.readFileSync('monzocore.json', 'utf8'));
 
-          // Helper: convert blank or "-" into null
-          const num = v => {
-            if (v === undefined || v === null || v === "" || v === "-") return null;
-            return Number(v);
-          };
+          const num = (v) => v === "" || v === null || v === undefined ? 0 : Number(v);
 
-          // =======================
-          // PROCESS TRANSACTIONS
-          // =======================
-          const mappedTransactions = transactions.map(t => ({
+          // ============================
+          // MAP TRANSACTIONS → HTML format
+          // ============================
+          const mappedTx = tx.map(t => ({
+            Date: t["Date"],
+            Time: t["Time"],
+            Merchant: t["Merchant"],
+            "Amount (£)": num(t["Amount (£)"]),
+            Type: t["Type"],
+            Source: t["Source"],
+            "Email Subject": t["Email Subject"],
+            Category: t["Category"],
+            Processed: t["Processed"],
+            "Exclude From Spend": t["Exclude From Spend"],
+            "Gmail ID": t["Gmail ID"]
+          }));
+
+          // ============================
+          // MAP TRANSFERS
+          // ============================
+          const mappedTransfers = transfers.map(t => ({
             date: t["Date"],
-            time: t["Time"],
-            merchant: t["Merchant"],
-            amount: num(t["Amount (£)"]),
-            type: t["Type"],
-            source: t["Source"],
-            subject: t["Email Subject"],
-            category: t["Category"],
+            from_pot: t["From Pot"],
+            to_pot: t["To Pot"],
+            amount: num(t["Amount"]),
+            note: t["Note"],
             processed: t["Processed"],
-            exclude: t["Exclude From Spend"],
-            gmail_id: t["Gmail ID"]
+            type: t["Type"],
+            uid: t["UID"]
           }));
 
-          // =======================
-          // PROCESS TRANSFERS
-          // =======================
-          const mappedTransfers = transfers.map(r => ({
-            date: r["Date"],
-            from_pot: r["From Pot"],
-            to_pot: r["To Pot"],
-            amount: num(r["Amount"]),
-            type: r["Type"],
-            note: r["Note"],
-            processed: r["Processed"],
-            uid: r["UID"]
-          }));
-
-          // =======================
-          // PROCESS DIRECT DEBITS
-          // =======================
-          const mappedDDs = directDebits.map(d => ({
+          // ============================
+          // MAP DIRECT DEBITS
+          // ============================
+          const mappedDD = dd.map(d => ({
             payee: d["Payee"],
             amount: num(d["Amount (£)"]),
             due_date: d["Due Date"],
@@ -104,44 +91,41 @@ jobs:
             paid: d["Paid?"]
           }));
 
-          // =======================
-          // PROCESS MONZO CORE (POTS)
-          // =======================
-          const mappedCore = {};
-          monzoCore.forEach(row => {
-            mappedCore[row["Label"]] = {
-              value: num(row["Value (£)"]),
-              target: num(row["Target"]),
-              total_due: num(row["Total Due"]),
-              remaining: num(row["Remaining After Payments"])
-            };
+          // ============================
+          // MAP MONZO CORE (pots + balances)
+          // ============================
+          const pots = {};
+          core.forEach(row => {
+            const label = row["Label"];
+            pots[label] = num(row["Value (£)"]);
           });
 
-          // =======================
-          // FINAL JSON STRUCTURE
-          // =======================
           const output = {
             monzo: {
-              monzo_core: mappedCore,
-              pot_transfers: mappedTransfers,
-              direct_debits: mappedDDs,
-              transactions_feed: mappedTransactions
+              account_core: {
+                main_balance: pots["Main Account"] || 0,
+                payday_last: "",
+                income_received: 0,
+                pots: pots
+              },
+              direct_debits: mappedDD,
+              subscriptions_from_main: [],
+              transactions_feed: {
+                recent: mappedTx
+              },
+              pot_transfers: mappedTransfers
             }
           };
 
-          fs.writeFileSync(
-            'AuroraMonzo.json',
-            JSON.stringify(output, null, 2)
-          );
+          fs.writeFileSync("AuroraMonzo.json", JSON.stringify(output, null, 2));
+          console.log("AuroraMonzo.json built successfully!");
           EOF
 
       # =====================================================
-      # STEP 3 – Commit changes
+      # STEP 3 – Push Updated JSON
       # =====================================================
-      - name: 💾 Commit Monzo JSON
-        run: |
-          git config user.name "AuroraBot"
-          git config user.email "aurora@github"
-          git add AuroraMonzo.json
-          git commit -m "Updated AuroraMonzo.json (Auto-sync)" || echo "No changes"
-          git push
+      - name: 🔼 Push AuroraMonzo.json
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Updated AuroraMonzo.json (Monzo Sync)"
+          file_pattern: AuroraMonzo.json
