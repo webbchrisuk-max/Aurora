@@ -827,6 +827,19 @@
           "Email Subject": "I just spent £ 1.74 at 400",
           "Category": "Work",
           "Processed": "Yes"
+        },
+        {
+          "Date": "14/11/2025",
+          "Time": "15:32:16",
+          "Merchant": "Nic Services Group Work Canteen November 14, 2025 at 03:32PM",
+          "Amount (£)": 0.7,
+          "Type": "Debit",
+          "Source": "Monzo",
+          "Email Subject": "I just spent £ 0.70 at Nic Services Group Work Canteen November 14, 2025 at 03:32PM",
+          "Category": "",
+          "Processed": "✅",
+          "Exclude From Spend": "",
+          "Gmail ID": "19a82feee3810d16"
         }
       ]
     },
