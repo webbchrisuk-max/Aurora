@@ -64,7 +64,7 @@ jobs:
           const transfers = JSON.parse(fs.readFileSync('transfers.json', 'utf8'));
           const applied = JSON.parse(fs.readFileSync('.aurora/monzo_transfers_applied.json', 'utf8'));
 
-          const newTransfers = transfers.filter(t => !applied.includes(t.GmailID));
+          const newTransfers = transfers.filter(t => !applied.includes(t.UID));
 
           const monzoFile = './AuroraMonzo.json';
           let monzo = {};
