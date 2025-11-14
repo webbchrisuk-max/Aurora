@@ -101,10 +101,6 @@ body{
   margin-bottom:10px;
   font-size:14px;
 }
-
-/* ===========================================================
-   JS DATA SOURCES
-=========================================================== */
 </style>
 
 <script>
@@ -147,43 +143,47 @@ async function initAurora(){
     <h2 class="section-title">Trade212 ISA Holdings</h2>
     <div id="t212-table"></div>
   </div>
-
-  <!-- ================= PORTFOLIO SUMMARY ================ -->
+     <!-- ================= PORTFOLIO SUMMARY ================ -->
   <div class="card" id="summary-card">
     <h2 class="section-title">Portfolio Summary</h2>
     <div id="portfolio-summary"></div>
   </div>
+
   <!-- ================= NEXT 5 DIVIDENDS ================= -->
-<div class="card">
-  <h2 class="section-title">Next 5 Dividends</h2>
-  <div id="next5"></div>
-</div>
+  <div class="card">
+    <h2 class="section-title">Next 5 Dividends</h2>
+    <div id="next5"></div>
+  </div>
 
-<!-- ================= UPCOMING DIVIDENDS FULL LIST ================= -->
-<div class="card">
-  <h2 class="section-title">Upcoming Dividends</h2>
-  <div id="upcoming"></div>
-</div>
+  <!-- ================= UPCOMING DIVIDENDS FULL LIST ================= -->
+  <div class="card">
+    <h2 class="section-title">Upcoming Dividends</h2>
+    <div id="upcoming"></div>
+  </div>
 
-<!-- ================= DIVIDEND CHART ================= -->
-<div class="card chart-box">
-  <h2 class="section-title">12-Month Dividend Forecast</h2>
-  <canvas id="divChart"></canvas>
-</div>
+  <!-- ================= DIVIDEND CHART ================= -->
+  <div class="card chart-box">
+    <h2 class="section-title">12-Month Dividend Forecast</h2>
+    <canvas id="divChart"></canvas>
+  </div>
 
-<!-- ================= YEAR-TO-DATE ================= -->
-<div class="card">
-  <h2 class="section-title">Year-To-Date Income</h2>
-  <div id="ytd"></div>
-</div>
+  <!-- ================= YEAR-TO-DATE INCOME ================= -->
+  <div class="card">
+    <h2 class="section-title">Year-To-Date Income</h2>
+    <div id="ytd"></div>
+  </div>
+
+</div> <!-- end container -->
+
 
 <!-- ===========================================================
-   RENDER FUNCTIONS
+   RENDER FUNCTIONS (ALL FIXED TO MATCH YOUR JSON)
 =========================================================== -->
 <script>
+
 /* ---------------------- IG HOLDINGS ---------------------- */
 function renderIG(sync){
-  const ig = sync.isa?.ig_isa?.holdings;
+  const ig = sync?.isa?.holdings?.ig_isa;
   if(!ig){
     document.getElementById("ig-table").innerHTML = "<p>No IG ISA holdings found.</p>";
     return;
@@ -196,12 +196,11 @@ function renderIG(sync){
       </tr>
   `;
 
-  Object.keys(ig).forEach(t=>{
-    const h = ig[t];
+  ig.forEach(h=>{
     const gain = h.gain_value.toFixed(2);
     html += `
       <tr>
-        <td>${t}</td>
+        <td>${h.ticker}</td>
         <td>${h.name}</td>
         <td>${h.shares}</td>
         <td>£${h.value.toFixed(2)}</td>
@@ -215,9 +214,10 @@ function renderIG(sync){
   document.getElementById("ig-table").innerHTML = html;
 }
 
-/* ---------------------- T212 HOLDINGS ---------------------- */
+
+/* ---------------------- TRADE212 HOLDINGS ---------------------- */
 function renderT212(sync){
-  const t212 = sync.isa?.trade212_isa?.holdings;
+  const t212 = sync?.isa?.holdings?.trade212_isa;
   if(!t212){
     document.getElementById("t212-table").innerHTML = "<p>No Trade212 holdings found.</p>";
     return;
@@ -230,12 +230,11 @@ function renderT212(sync){
       </tr>
   `;
 
-  Object.keys(t212).forEach(t=>{
-    const h = t212[t];
+  t212.forEach(h=>{
     const gain = h.gain_value.toFixed(2);
     html += `
       <tr>
-        <td>${t}</td>
+        <td>${h.ticker}</td>
         <td>${h.name}</td>
         <td>${h.shares}</td>
         <td>£${h.value.toFixed(2)}</td>
@@ -249,19 +248,20 @@ function renderT212(sync){
   document.getElementById("t212-table").innerHTML = html;
 }
 
+
 /* ---------------------- PORTFOLIO SUMMARY ---------------------- */
 function renderPortfolio(sync){
-  const ig = sync.isa?.ig_isa?.holdings || {};
-  const t212 = sync.isa?.trade212_isa?.holdings || {};
+  const ig = sync?.isa?.holdings?.ig_isa || [];
+  const t212 = sync?.isa?.holdings?.trade212_isa || [];
 
-  const igTotal = Object.values(ig).reduce((a,h)=>a+h.value,0);
-  const t212Total = Object.values(t212).reduce((a,h)=>a+h.value,0);
+  const igTotal = ig.reduce((a,h)=>a + (h.value || 0), 0);
+  const t212Total = t212.reduce((a,h)=>a + (h.value || 0), 0);
+
   const combined = igTotal + t212Total;
 
-  const annualDiv = (
-    Object.values(ig).reduce((a,h)=>a+(h.annual_income||0),0) +
-    Object.values(t212).reduce((a,h)=>a+(h.annual_income||0),0)
-  );
+  const annualDiv =
+    ig.reduce((a,h)=>a + (h.annual_income || 0), 0) +
+    t212.reduce((a,h)=>a + (h.annual_income || 0), 0);
 
   document.getElementById("portfolio-summary").innerHTML = `
     <p><strong>IG ISA Value:</strong> £${igTotal.toFixed(2)}</p>
@@ -271,10 +271,11 @@ function renderPortfolio(sync){
   `;
 }
 
+
 /* ---------------------- NEXT 5 DIVIDENDS ---------------------- */
 function renderNextFive(sync){
-  const next = sync.isa?.dividends?.next_five;
-  if(!next){
+  const next = sync?.isa?.dividends?.next_five;
+  if(!next || next.length === 0){
     document.getElementById("next5").innerHTML = "<p>No upcoming dividends.</p>";
     return;
   }
@@ -288,7 +289,7 @@ function renderNextFive(sync){
           Ex: ${d.ex_div_date}<br>
           Pay: ${d.pay_date}
         </div>
-        <div>£${d.total_dividend}</div>
+        <div>£${Number(d.total_dividend).toFixed(2)}</div>
       </div>
     `;
   });
@@ -296,10 +297,11 @@ function renderNextFive(sync){
   document.getElementById("next5").innerHTML = html;
 }
 
+
 /* ---------------------- UPCOMING DIVIDENDS FULL LIST ---------------------- */
 function renderUpcoming(sync){
-  const up = sync.isa?.dividends?.upcoming;
-  if(!up){
+  const up = sync?.isa?.dividends?.upcoming;
+  if(!up || up.length === 0){
     document.getElementById("upcoming").innerHTML = "<p>No dividend data available.</p>";
     return;
   }
@@ -313,7 +315,7 @@ function renderUpcoming(sync){
           Ex: ${d.ex_div_date} — Pay: ${d.pay_date}<br>
           Status: ${d.status}
         </div>
-        <div>£${d.total_dividend}</div>
+        <div>£${Number(d.total_dividend).toFixed(2)}</div>
       </div>
     `;
   });
@@ -321,9 +323,10 @@ function renderUpcoming(sync){
   document.getElementById("upcoming").innerHTML = html;
 }
 
-/* ---------------------- YTD ---------------------- */
+
+/* ---------------------- YEAR TO DATE ---------------------- */
 function renderYTD(sync){
-  const totals = sync.isa?.dividends?.monthly_totals || {};
+  const totals = sync?.isa?.dividends?.monthly_totals || {};
   let ytd = 0;
 
   const currentYear = new Date().getFullYear();
@@ -339,9 +342,10 @@ function renderYTD(sync){
   `;
 }
 
-/* ---------------------- DIVIDEND FORECAST CHART ---------------------- */
+
+/* ---------------------- DIVIDEND CHART ---------------------- */
 function renderChart(sync){
-  const totals = sync.isa?.dividends?.monthly_totals;
+  const totals = sync?.isa?.dividends?.monthly_totals;
   if(!totals) return;
 
   const labels = Object.keys(totals);
@@ -364,11 +368,12 @@ function renderChart(sync){
     }
   });
 }
+
 </script>
 
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-</div>
 </body>
 </html>
+  
