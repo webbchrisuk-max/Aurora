@@ -873,5 +873,19 @@
         "uid": "45972-Holding Pot-Dentist-300"
       }
     ]
+  },
+  "pots": {
+    "Flex Repayment": 0,
+    "Direct Debits": 0,
+    "Holiday Pot": 0,
+    "Coventry City F.C": 0,
+    "IGTrading": 0,
+    "Car Maintenance": 0,
+    "Work Buffer": -10.4,
+    "Savings": 0,
+    "Christmas": 0,
+    "Dentist": 0,
+    "Holding Pot": 0,
+    "Main Account": 10.4
   }
 }
