@@ -2,8 +2,10 @@ name: Aurora ISA – 5-Minute Live Shares + Dividends Sync
 
 on:
   schedule:
-    - cron: "*/5 8-16 * * 1-5"      # Every 5 mins 08:00–16:59 (UK time = UTC in Nov)
-    - cron: "30 16 * * 1-5"         # Final run exactly at 16:30
+    # Every 5 minutes between 08:00 and 16:59, Monday–Friday (UTC)
+    - cron: "*/5 8-16 * * 1-5"
+    # Extra run at 16:30 exactly
+    - cron: "30 16 * * 1-5"
   workflow_dispatch:
 
 concurrency:
@@ -15,62 +17,66 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # =====================================================
-      # STEP 1 — Checkout repo
-      # =====================================================
-      - name: 🧩 Checkout repository
+      # -----------------------------
+      # 1. Checkout repo
+      # -----------------------------
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      # =====================================================
-      # STEP 2 — Fetch Holdings sheet
-      # =====================================================
-      - name: 🟢 Fetch Holdings sheet
+      # -----------------------------
+      # 2. Fetch Holdings sheet
+      # -----------------------------
+      - name: Fetch Holdings sheet
         run: |
           curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Holdings" -o holdings.json
 
-      # =====================================================
-      # STEP 3 — Fetch Dividends sheet
-      # =====================================================
-      - name: 🟣 Fetch Dividends sheet
+      # -----------------------------
+      # 3. Fetch Dividends sheet
+      # -----------------------------
+      - name: Fetch Dividends sheet
         run: |
           curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Dividends" -o dividends.json
 
-      # =====================================================
-      # STEP 4 — Install Node
-      # =====================================================
-      - name: 🔧 Install Node.js
+      # -----------------------------
+      # 4. Install Node
+      # -----------------------------
+      - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # =====================================================
-      # STEP 5 — Update AuroraSync.json
-      # =====================================================
-      - name: 🔄 Update ISA prices + dividends
+      # -----------------------------
+      # 5. Update AuroraSync.json
+      # -----------------------------
+      - name: Update ISA prices + dividends
         run: |
           node << 'EOF'
           const fs = require("fs");
 
+          // Load sheets
           const holdings = JSON.parse(fs.readFileSync("holdings.json", "utf8"));
           const dividendsSheet = JSON.parse(fs.readFileSync("dividends.json", "utf8"));
 
+          // Load Aurora master JSON
           const auroraPath = "AuroraSync.json";
           const aurora = JSON.parse(fs.readFileSync(auroraPath, "utf8"));
 
           const now = new Date().toISOString().replace("T", " ").substring(0, 19);
 
+          // Ensure isa structure exists
           aurora.isa = aurora.isa || {};
           aurora.isa.holdings = aurora.isa.holdings || {};
           aurora.isa.holdings.ig_isa = [];
           aurora.isa.holdings.trade212_isa = [];
+          aurora.isa.dividends = aurora.isa.dividends || {};
 
-          // -----------------------------------------------------
+          // -----------------------------
           // Fetch live price per ticker
-          // -----------------------------------------------------
+          // -----------------------------
           async function getLivePrice(ticker) {
             try {
               const symbol = ticker.replace("LON:", "") + ".L";
-              const url = \`https://query1.finance.yahoo.com/v7/finance/quote?symbols=\${symbol}\`;
+              const url = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=" + symbol;
               const res = await fetch(url);
               const data = await res.json();
               return data.quoteResponse.result[0]?.regularMarketPrice ?? null;
@@ -79,15 +85,17 @@ jobs:
             }
           }
 
-          // -----------------------------------------------------
-          // Update holdings with correct IG ISA / TRADE212 split
-          // -----------------------------------------------------
+          // -----------------------------
+          // Update holdings from sheet
+          // -----------------------------
           async function updateHoldings() {
             for (const row of holdings) {
-              const account = (row["account"] || "").trim().toUpperCase(); // IG ISA or TRADE212
+              const account = (row["account"] || "").trim().toUpperCase();
               const ticker = row["ticker"];
               const shares = parseFloat(row["shares"] || 0);
               const book = parseFloat(row["book_cost"] || 0);
+
+              if (!ticker || !shares) continue;
 
               const price = await getLivePrice(ticker);
               if (!price) continue;
@@ -119,9 +127,9 @@ jobs:
             }
           }
 
-          // -----------------------------------------------------
-          // Process Dividends data
-          // -----------------------------------------------------
+          // -----------------------------
+          // Process dividends sheet
+          // -----------------------------
           function processDividends() {
             const today = new Date().toISOString().split("T")[0];
 
@@ -142,7 +150,7 @@ jobs:
 
               if (payDate && payDate >= today) {
                 upcoming.push({
-                  ticker: ticker,
+                  ticker,
                   name: d["name"] || "",
                   ex_div_date: exDiv,
                   pay_date: payDate,
@@ -175,9 +183,9 @@ jobs:
             };
           }
 
-          // -----------------------------------------------------
-          // Run everything and save
-          // -----------------------------------------------------
+          // -----------------------------
+          // Run and save
+          // -----------------------------
           (async () => {
             await updateHoldings();
             processDividends();
@@ -185,13 +193,13 @@ jobs:
           })();
           EOF
 
-      # =====================================================
-      # STEP 6 — Commit & Push
-      # =====================================================
-      - name: 📤 Commit changes
+      # -----------------------------
+      # 6. Commit & push
+      # -----------------------------
+      - name: Commit changes
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
           git add AuroraSync.json
-          git commit -m "🔄 Auto ISA update: Live prices + dividends $(date)" || echo "No changes"
+          git commit -m "🔄 Auto ISA update: prices + dividends $(date)" || echo "No changes"
           git push
