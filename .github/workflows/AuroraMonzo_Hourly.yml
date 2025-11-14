@@ -2,7 +2,7 @@ name: Aurora Monzo – Hourly Pot + Transaction Sync
 
 on:
   schedule:
-    - cron: "0 * * * *"   # Every hour UTC
+    - cron: "0 * * * *"    # every hour
   workflow_dispatch:
 
 concurrency:
@@ -15,12 +15,10 @@ jobs:
 
     steps:
       # =====================================================
-      # STEP 1 — Checkout Repository
+      # STEP 1 – Checkout repository
       # =====================================================
       - name: 🧩 Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0   # REQUIRED so pull --rebase works
 
       # =====================================================
       # STEP 2 – Fetch Transfers sheet
@@ -30,21 +28,7 @@ jobs:
           curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transfers" -o transfers.json
 
       # =====================================================
-      # STEP 3 – Fetch Transactions sheet
-      # =====================================================
-      - name: 🟣 Fetch Transactions sheet
-        run: |
-          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transactions" -o transactions.json
-
-      # =====================================================
-      # STEP 4 – Fetch Direct Debits sheet
-      # =====================================================
-      - name: 🟡 Fetch Direct Debits sheet
-        run: |
-          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/DirectDebits" -o directdebits.json
-
-      # =====================================================
-      # STEP 5 – Ensure State Folder
+      # STEP 3 – Ensure state tracking
       # =====================================================
       - name: 📦 Ensure state folder
         run: |
@@ -54,67 +38,101 @@ jobs:
           fi
 
       # =====================================================
-      # STEP 6 – Apply NEW Transfers + Build AuroraMonzo.json
+      # STEP 4 – Apply NEW transfers to AuroraMonzo.json
       # =====================================================
-      - name: 🔄 Apply Transfer + Transaction Sync Logic
+      - name: 🔄 Apply NEW Transfers
         run: |
           node << 'EOF'
           const fs = require("fs");
 
           const transfers = JSON.parse(fs.readFileSync("transfers.json", "utf8"));
-          const transactions = JSON.parse(fs.readFileSync("transactions.json", "utf8"));
-          const directDebits = JSON.parse(fs.readFileSync("directdebits.json", "utf8"));
-          const appliedPath = ".aurora/monzo_transfers_applied.json";
-
-          const appliedTransfers = JSON.parse(fs.readFileSync(appliedPath, "utf8"));
+          const statePath = ".aurora/monzo_transfers_applied.json";
           const monzoPath = "AuroraMonzo.json";
 
-          let monzo = { pots: {}, transactions: [], direct_debits: [] };
+          const applied = JSON.parse(fs.readFileSync(statePath, "utf8"));
+          const monzo = JSON.parse(fs.readFileSync(monzoPath, "utf8"));
 
-          if (fs.existsSync(monzoPath)) {
-            monzo = JSON.parse(fs.readFileSync(monzoPath, "utf8"));
-          }
+          monzo.pots = monzo.pots || {};
 
-          // --- Apply transfers only once ---
-          const newTransfers = transfers.filter(t => !appliedTransfers.includes(t.id));
+          // Only apply NEW transfers
+          const newOnes = transfers.filter(t => !applied.includes(t.id));
 
-          newTransfers.forEach(t => {
-            const amt = Number(t.Amount || 0);
+          newOnes.forEach(t => {
+            const pot = t.pot?.trim();
+            const amount = Number(t.amount || 0);
 
-            if (!monzo.pots[t["From Pot"]]) monzo.pots[t["From Pot"]] = 0;
-            if (!monzo.pots[t["To Pot"]]) monzo.pots[t["To Pot"]] = 0;
+            if (!pot) return;
 
-            monzo.pots[t["From Pot"]] -= amt;
-            monzo.pots[t["To Pot"]] += amt;
+            monzo.pots[pot] = monzo.pots[pot] || { balance: 0, target: 0 };
+            monzo.pots[pot].balance = Number(monzo.pots[pot].balance || 0) + amount;
 
-            appliedTransfers.push(t.id);
+            applied.push(t.id);
           });
 
-          // Save updated transfer state
-          fs.writeFileSync(appliedPath, JSON.stringify(appliedTransfers, null, 2));
-
-          // Save transactions + DDs
-          monzo.transactions = transactions;
-          monzo.direct_debits = directDebits;
-
           fs.writeFileSync(monzoPath, JSON.stringify(monzo, null, 2));
+          fs.writeFileSync(statePath, JSON.stringify(applied, null, 2));
           EOF
 
       # =====================================================
-      # STEP 7 — GIT SAFETY: Pull latest before push
+      # STEP 5 – Rebuild Monzo pot structure (LOCKED LIST)
       # =====================================================
-      - name: 📥 Pull latest (fix non-fast-forward)
+      - name: 🧮 Rebuild Monzo pots from fixed list
         run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
-          git pull --rebase origin main || true
+          node << 'EOF'
+          const fs = require("fs");
+
+          const path = "AuroraMonzo.json";
+          const data = JSON.parse(fs.readFileSync(path, "utf8"));
+
+          // 🔒 Your final, locked pot names (order matters)
+          const potNames = [
+            "Flex Repayment",
+            "Direct Debits",
+            "Holiday Pot",
+            "Coventry City F.C",
+            "IGTrading",
+            "Car Maintenance",
+            "Work Buffer",
+            "Savings",
+            "Christmas",
+            "Dentist",
+            "Holding Pot"
+          ];
+
+          // Ensure pots object exists
+          data.pots = data.pots || {};
+          const oldPots = data.pots;
+          const newPots = {};
+
+          potNames.forEach((name, index) => {
+            const existing = oldPots[name] || {};
+
+            newPots[name] = {
+              ...existing,
+              balance: existing.balance ?? 0,
+              target: existing.target ?? 0,
+              sort_order: index + 1
+            };
+          });
+
+          // Remove any pots not in the list
+          data.pots = newPots;
+
+          // Update timestamp
+          data.meta = data.meta || {};
+          data.meta.last_updated = new Date().toISOString();
+
+          fs.writeFileSync(path, JSON.stringify(data, null, 2));
+          EOF
 
       # =====================================================
-      # STEP 8 — Commit & Push JSON
+      # STEP 6 – Commit & Push
       # =====================================================
-      - name: 📤 Push AuroraMonzo.json
+      - name: 📤 Commit Monzo JSON updates
         run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+
           git add AuroraMonzo.json
-          git add .aurora/monzo_transfers_applied.json
-          git commit -m "Monzo Sync Update" || true
-          git push origin main || true
+          git commit -m "🔄 Auto-update AuroraMonzo.json pots + transfers" || echo "No changes"
+          git push
