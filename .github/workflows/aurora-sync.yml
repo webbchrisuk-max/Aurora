@@ -2,8 +2,8 @@ name: Aurora ISA – 5-Minute Live Shares + Dividends Sync
 
 on:
   schedule:
-    - cron: "*/5 8-16 * * 1-5"      # Every 5 mins 08:00–16:59 (UK time = UTC in Nov)
-    - cron: "30 16 * * 1-5"         # Final run exactly at 16:30
+    - cron: "*/5 8-16 * * 1-5"      # Every 5 mins 08:00–16:59
+    - cron: "30 16 * * 1-5"         # Final run at 16:30
   workflow_dispatch:
 
 concurrency:
@@ -58,7 +58,8 @@ jobs:
           const aurora = JSON.parse(fs.readFileSync(auroraPath, "utf8"));
 
           aurora.isa = aurora.isa || {};
-          aurora.isa.holdings = aurora.isa.holdings || {};
+          aurora.isa.ig_isa = aurora.isa.ig_isa || { holdings: {} };
+          aurora.isa.trade212_isa = aurora.isa.trade212_isa || { holdings: {} };
           aurora.isa.dividends = aurora.isa.dividends || {};
 
           const now = new Date().toISOString().replace("T", " ").substring(0, 19);
@@ -83,9 +84,10 @@ jobs:
           // -----------------------------------------------------
           async function updateHoldings() {
             for (const row of holdings) {
+              const account = row["account"];    // 🔵 IMPORTANT
               const ticker = row["ticker"];
               const shares = parseFloat(row["shares"] || 0);
-              const book = parseFloat(row["book cost"] || 0);
+              const book = parseFloat(row["book_cost"] || 0);
 
               const price = await getLivePrice(ticker);
               if (!price) continue;
@@ -93,7 +95,7 @@ jobs:
               const value = price * shares;
               const gain = value - book;
 
-              aurora.isa.holdings[ticker] = {
+              const item = {
                 name: row["name"] || "",
                 shares,
                 book_cost: book,
@@ -106,11 +108,20 @@ jobs:
                 sector: row["sector"] || "",
                 last_updated: now
               };
+
+              // 🟦 Correct separation
+              if (account === "IG ISA") {
+                aurora.isa.ig_isa.holdings[ticker] = item;
+              }
+
+              if (account === "TRADE212") {
+                aurora.isa.trade212_isa.holdings[ticker] = item;
+              }
             }
           }
 
           // -----------------------------------------------------
-          // Process Dividends data
+          // Process Dividends
           // -----------------------------------------------------
           function processDividends() {
             const today = new Date().toISOString().split("T")[0];
@@ -127,11 +138,9 @@ jobs:
               const total = parseFloat(d["total_dividend"] || 0);
               const status = d["status"] || "Estimated";
 
-              // Decide if paid
               let autoStatus = status;
               if (payDate && payDate < today) autoStatus = "Paid";
 
-              // Push to upcoming lists
               if (payDate && payDate >= today) {
                 upcoming.push({
                   ticker: ticker,
@@ -146,7 +155,6 @@ jobs:
                 });
               }
 
-              // Monthly totals
               if (payDate) {
                 const month = payDate.substring(0, 7);
                 monthlyTotals[month] = (monthlyTotals[month] || 0) + total;
@@ -155,16 +163,12 @@ jobs:
               yearlyTotal += total;
             }
 
-            // Sort upcoming dividends soonest → furthest
             upcoming.sort((a, b) => a.pay_date.localeCompare(b.pay_date));
-
-            // Next 5
             nextFive.push(...upcoming.slice(0, 5));
 
-            // Save into AuroraSync.json
             aurora.isa.dividends = {
               last_updated: now,
-              upcoming: upcoming,
+              upcoming,
               next_five: nextFive,
               monthly_totals: monthlyTotals,
               annual_total: yearlyTotal
@@ -172,12 +176,11 @@ jobs:
           }
 
           // -----------------------------------------------------
-          // Run everything
+          // Run updates
           // -----------------------------------------------------
           (async () => {
             await updateHoldings();
             processDividends();
-
             fs.writeFileSync(auroraPath, JSON.stringify(aurora, null, 2));
           })();
           EOF
