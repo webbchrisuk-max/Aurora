@@ -2,7 +2,7 @@
   "isa": {
     "holdings": [],
     "dividends": {
-      "last_updated": "2025-11-13 17:40:16",
+      "last_updated": "2025-11-14 03:15:10",
       "upcoming": [
         {
           "ticker": "LON:PHP",
@@ -80,17 +80,6 @@
           "total_dividend": 74.4,
           "frequency": "Semi-Annual",
           "status": "Confirmed"
-        },
-        {
-          "ticker": "LON:ASHM",
-          "name": "Ashmore Group PLC",
-          "ex_div_date": "2026-03-27",
-          "pay_date": "2025-12-08",
-          "dividend_per_share": "0.048",
-          "shares_at_exdiv": "620",
-          "total_dividend": 29.76,
-          "frequency": "Semi-Annual",
-          "status": "Estimated"
         },
         {
           "ticker": "LON:GCP",
@@ -203,6 +192,17 @@
           "status": "Estimated"
         },
         {
+          "ticker": "LON:SEQI",
+          "name": "Sequoia Economic Infrastructure",
+          "ex_div_date": "2026-01-30",
+          "pay_date": "2026-02-27",
+          "dividend_per_share": "0.0172",
+          "shares_at_exdiv": "300",
+          "total_dividend": 5.15,
+          "frequency": "Quarterly ",
+          "status": "Estimated"
+        },
+        {
           "ticker": "LON:GCP",
           "name": "GCP Infrastructure ",
           "ex_div_date": "2026-02-06",
@@ -210,6 +210,17 @@
           "dividend_per_share": "0.0175",
           "shares_at_exdiv": "1000",
           "total_dividend": 17.5,
+          "frequency": "Quarterly ",
+          "status": "Estimated"
+        },
+        {
+          "ticker": "LON:UKID",
+          "name": "iShares Uk Dividend UCITS ETF",
+          "ex_div_date": "2026-03-13",
+          "pay_date": "2026-03-26",
+          "dividend_per_share": "0.0453",
+          "shares_at_exdiv": "343",
+          "total_dividend": 15.54,
           "frequency": "Quarterly ",
           "status": "Estimated"
         },
@@ -346,6 +357,28 @@
           "status": "Estimated"
         },
         {
+          "ticker": "LON:BBOX",
+          "name": "Tritax Big Box REIT PLC",
+          "ex_div_date": "2026-05-22",
+          "pay_date": "2026-06-12",
+          "dividend_per_share": "0.0191",
+          "shares_at_exdiv": "350",
+          "total_dividend": 6.7,
+          "frequency": "Quarterly ",
+          "status": "Estimated"
+        },
+        {
+          "ticker": "LON:UKID",
+          "name": "iShares Uk Dividend UCITS ETF",
+          "ex_div_date": "2026-06-11",
+          "pay_date": "2026-06-25",
+          "dividend_per_share": "0.1983",
+          "shares_at_exdiv": "343",
+          "total_dividend": 68.01,
+          "frequency": "Quarterly ",
+          "status": "Estimated"
+        },
+        {
           "ticker": "LON:BP",
           "name": "BP PLC",
           "ex_div_date": "2026-05-15",
@@ -401,6 +434,17 @@
           "status": "Estimated"
         },
         {
+          "ticker": "LON:SEQI",
+          "name": "Sequoia Economic Infrastructure",
+          "ex_div_date": "2026-07-24",
+          "pay_date": "2026-08-21",
+          "dividend_per_share": "0.0172",
+          "shares_at_exdiv": "300",
+          "total_dividend": 5.15,
+          "frequency": "Quarterly ",
+          "status": "Estimated"
+        },
+        {
           "ticker": "LON:FSFL",
           "name": "Foresight Solar Fund",
           "ex_div_date": "2026-07-24",
@@ -419,6 +463,17 @@
           "dividend_per_share": "0.0175",
           "shares_at_exdiv": "1000",
           "total_dividend": 17.5,
+          "frequency": "Quarterly ",
+          "status": "Estimated"
+        },
+        {
+          "ticker": "LON:BBOX",
+          "name": "Tritax Big Box REIT PLC",
+          "ex_div_date": "2026-08-14",
+          "pay_date": "2026-09-07",
+          "dividend_per_share": "0.0191",
+          "shares_at_exdiv": "350",
+          "total_dividend": 6.7,
           "frequency": "Quarterly ",
           "status": "Estimated"
         },
@@ -445,6 +500,17 @@
           "status": "Estimated"
         },
         {
+          "ticker": "LON:UKID",
+          "name": "iShares Uk Dividend UCITS ETF",
+          "ex_div_date": "2026-09-11",
+          "pay_date": "2026-09-24",
+          "dividend_per_share": "0.1436",
+          "shares_at_exdiv": "343",
+          "total_dividend": 49.25,
+          "frequency": "Quarterly ",
+          "status": "Estimated"
+        },
+        {
           "ticker": "LON:LAND",
           "name": "Land Securities",
           "ex_div_date": "2026-08-21",
@@ -453,6 +519,17 @@
           "shares_at_exdiv": "317",
           "total_dividend": 31.17,
           "frequency": "Quarterly",
+          "status": "Estimated"
+        },
+        {
+          "ticker": "LON:ASHM",
+          "name": "Ashmore Group PLC",
+          "ex_div_date": "2026-03-27",
+          "pay_date": "2026-12-08",
+          "dividend_per_share": "0.048",
+          "shares_at_exdiv": "620",
+          "total_dividend": 29.76,
+          "frequency": "Semi-Annual",
           "status": "Estimated"
         }
       ],
@@ -514,23 +591,21 @@
         }
       ],
       "monthly_totals": {
-        "2025-08": 5.15,
-        "2025-09": 88.44720000000001,
+        "2025-08": 0,
+        "2025-09": 32.4972,
         "2025-10": 1677.4405,
         "2025-11": 168.84949999999995,
-        "2025-12": 202.85000000000002,
+        "2025-12": 173.09000000000003,
         "2026-01": 105.41999999999999,
-        "2026-02": 167.95,
-        "2025-02": 5.15,
-        "2026-03": 312.12,
+        "2026-02": 173.1,
+        "2026-03": 327.66,
         "2026-04": 30.96,
-        "2025-03": 15.54,
+        "2026-12": 29.76,
         "2026-05": 1100.65,
-        "2026-06": 602.97,
-        "2025-06": 74.71000000000001,
+        "2026-06": 677.6800000000001,
         "2026-07": 152.01,
-        "2026-08": 24.42,
-        "2026-09": 78.84,
+        "2026-08": 29.57,
+        "2026-09": 134.79,
         "2026-10": 31.17
       },
       "annual_total": 4844.647199999998
