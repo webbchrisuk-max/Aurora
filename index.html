@@ -269,37 +269,36 @@ function renderNextFive(sync){
 /* ---------------- Upcoming ---------------- */
 function renderUpcoming(sync){
   const all = sync?.isa?.dividends?.upcoming || [];
-
   if (!all.length){
-    document.getElementById("upcoming").innerHTML = "<p>No ex-dividend data.</p>";
+    document.getElementById("upcoming").innerHTML = "<p>No upcoming ex-dividend dates.</p>";
     return;
   }
 
-  // 1. Keep ONLY rows that have a valid EX-DIVIDEND DATE
-  const valid = all.filter(d => {
-    if (!d.ex_div_date) return false;
-    const t = new Date(d.ex_div_date);
-    return !isNaN(t);
+  const today = new Date();
+
+  // Only future ex-dividend dates
+  const futureEx = all.filter(d => {
+    const exDate = new Date(d.ex_div_date);
+    return exDate >= today;
   });
 
-  // 2. Sort strictly by EX-DIVIDEND DATE (ascending)
-  valid.sort((a,b) =>
+  // Sort them by ex-div date
+  futureEx.sort((a, b) =>
     new Date(a.ex_div_date) - new Date(b.ex_div_date)
   );
 
-  // 3. Take ONLY the next 5 EX-DIV items
-  const nextFiveEx = valid.slice(0, 5);
+  // Only next 5 ex-dividend dates
+  const next5 = futureEx.slice(0, 5);
 
-  // 4. Render
   let html = "";
-  nextFiveEx.forEach(d => {
+  next5.forEach(d => {
     html += `
       <div class="dividend-item">
         <div>
           <strong>${d.ticker}</strong> – ${d.name}<br>
-          <span>Ex-Div: ${d.ex_div_date}</span><br>
-          <span>Pay: ${d.pay_date}</span><br>
-          <span>Status: ${d.status}</span>
+          Ex: ${d.ex_div_date}<br>
+          Pay: ${d.pay_date}<br>
+          Status: ${d.status}
         </div>
         <div>£${Number(d.total_dividend).toFixed(2)}</div>
       </div>
