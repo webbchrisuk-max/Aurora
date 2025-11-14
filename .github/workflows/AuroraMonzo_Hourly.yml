@@ -5,171 +5,116 @@ on:
     - cron: "0 * * * *"   # Every hour UTC
   workflow_dispatch:
 
+concurrency:
+  group: aurora-monzo-hourly
+  cancel-in-progress: false
+
 jobs:
-  sync_monzo:
+  sync_monzo_hourly:
     runs-on: ubuntu-latest
 
     steps:
+      # =====================================================
+      # STEP 1 — Checkout Repository
+      # =====================================================
       - name: 🧩 Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # REQUIRED so pull --rebase works
 
       # =====================================================
-      # STEP 1 – Fetch ALL Sheets
+      # STEP 2 – Fetch Transfers sheet
       # =====================================================
-      - name: 📥 Fetch Transactions Sheet
-        run: |
-          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transactions" -o transactions.json
-
-      - name: 📥 Fetch Transfers Sheet
+      - name: 🟢 Fetch Transfers sheet
         run: |
           curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transfers" -o transfers.json
 
-      - name: 📥 Fetch Direct Debits Sheet
+      # =====================================================
+      # STEP 3 – Fetch Transactions sheet
+      # =====================================================
+      - name: 🟣 Fetch Transactions sheet
         run: |
-          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/DirectDebits" -o dd.json
-
-      - name: 📥 Fetch MonzoCore Sheet
-        run: |
-          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/MonzoCore" -o monzocore.json
+          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transactions" -o transactions.json
 
       # =====================================================
-      # STEP 2 – Build AuroraMonzo.json
+      # STEP 4 – Fetch Direct Debits sheet
       # =====================================================
-      - name: 🛠 Build AuroraMonzo.json
+      - name: 🟡 Fetch Direct Debits sheet
+        run: |
+          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/DirectDebits" -o directdebits.json
+
+      # =====================================================
+      # STEP 5 – Ensure State Folder
+      # =====================================================
+      - name: 📦 Ensure state folder
+        run: |
+          mkdir -p .aurora
+          if [ ! -f .aurora/monzo_transfers_applied.json ]; then
+            echo "[]" > .aurora/monzo_transfers_applied.json
+          fi
+
+      # =====================================================
+      # STEP 6 – Apply NEW Transfers + Build AuroraMonzo.json
+      # =====================================================
+      - name: 🔄 Apply Transfer + Transaction Sync Logic
         run: |
           node << 'EOF'
-          const fs = require('fs');
+          const fs = require("fs");
 
-          const tx = JSON.parse(fs.readFileSync('transactions.json', 'utf8'));
-          const transfers = JSON.parse(fs.readFileSync('transfers.json', 'utf8'));
-          const dd = JSON.parse(fs.readFileSync('dd.json', 'utf8'));
-          const core = JSON.parse(fs.readFileSync('monzocore.json', 'utf8'));
+          const transfers = JSON.parse(fs.readFileSync("transfers.json", "utf8"));
+          const transactions = JSON.parse(fs.readFileSync("transactions.json", "utf8"));
+          const directDebits = JSON.parse(fs.readFileSync("directdebits.json", "utf8"));
+          const appliedPath = ".aurora/monzo_transfers_applied.json";
 
-          const num = (v) => v === "" || v === null || v === undefined ? 0 : Number(v);
+          const appliedTransfers = JSON.parse(fs.readFileSync(appliedPath, "utf8"));
+          const monzoPath = "AuroraMonzo.json";
 
-          // ============================
-          // TRANSACTIONS
-          // ============================
-          const mappedTx = tx.map(t => ({
-            Date: t["Date"],
-            Time: t["Time"],
-            Merchant: t["Merchant"],
-            "Amount (£)": num(t["Amount (£)"]),
-            Type: t["Type"],
-            Source: t["Source"],
-            "Email Subject": t["Email Subject"],
-            Category: t["Category"],
-            Processed: t["Processed"],
-            "Exclude From Spend": t["Exclude From Spend"],
-            "Gmail ID": t["Gmail ID"]
-          }));
+          let monzo = { pots: {}, transactions: [], direct_debits: [] };
 
-          // ============================
-          // TRANSFERS
-          // ============================
-          const mappedTransfers = transfers.map(t => ({
-            date: t["Date"],
-            from_pot: t["From Pot"],
-            to_pot: t["To Pot"],
-            amount: num(t["Amount"]),
-            note: t["Note"],
-            processed: t["Processed"],
-            type: t["Type"],
-            uid: t["UID"]
-          }));
-
-          // ============================
-          // DIRECT DEBITS
-          // ============================
-          const mappedDD = dd.map(d => ({
-            payee: d["Payee"],
-            amount: num(d["Amount (£)"]),
-            due_date: d["Due Date"],
-            day: d["Day"],
-            status: d["Status"],
-            from_pot: d["FromPot"],
-            paid: d["Paid?"]
-          }));
-
-          // ============================
-          // MONZO CORE (pots + balances)
-          // ============================
-          const pots = {};
-          const monzoCoreObject = {};
-
-          core.forEach(row => {
-            const label = row["Label"];
-            pots[label] = num(row["Value (£)"]);
-
-            monzoCoreObject[label] = {
-              value: num(row["Value (£)"]),
-              target: num(row["Target"]) || null,
-              total_due: num(row["Total Due"]) || null,
-              remaining: row["Remaining After Payments"] === "" ? null : num(row["Remaining After Payments"])
-            };
-          });
-
-          const output = {
-            monzo: {
-              account_core: {
-                main_balance: pots["Main Account"] || 0,
-                payday_last: "",
-                payday_next: "",
-                payday_cycle: "four_week",
-                pay_period_days: 28,
-                income_received: 0,
-                pots: pots
-              },
-              monzo_core: monzoCoreObject,
-              direct_debits: mappedDD,
-              subscriptions_from_main: [],
-              transactions_feed: { recent: mappedTx },
-              pot_transfers: mappedTransfers
-            }
-          };
-
-          // =====================================================
-          // PAYDAY CALCULATION – 4 WEEK CYCLE (28 DAYS)
-          // =====================================================
-          const BASE_PAYDAY = new Date("2025-11-07T00:00:00Z");
-          const today = new Date();
-
-          let payday_last = new Date(BASE_PAYDAY);
-          let payday_next = new Date(BASE_PAYDAY);
-
-          while (payday_next <= today) {
-            payday_last = new Date(payday_next);
-            payday_next = new Date(payday_next.getTime() + 28 * 86400000);
+          if (fs.existsSync(monzoPath)) {
+            monzo = JSON.parse(fs.readFileSync(monzoPath, "utf8"));
           }
 
-          output.monzo.account_core.payday_last = payday_last.toISOString().split("T")[0];
-          output.monzo.account_core.payday_next = payday_next.toISOString().split("T")[0];
+          // --- Apply transfers only once ---
+          const newTransfers = transfers.filter(t => !appliedTransfers.includes(t.id));
 
-          // =====================================================
-          // SUBSCRIPTIONS FROM MAIN ACCOUNT
-          // =====================================================
-          const subscriptions = mappedDD
-            .filter(d => (d.from_pot || "").toLowerCase() === "main account")
-            .map(d => ({
-              service: d.payee,
-              amount: d.amount,
-              renewal_date: d.due_date
-            }));
+          newTransfers.forEach(t => {
+            const amt = Number(t.Amount || 0);
 
-          output.monzo.subscriptions_from_main = subscriptions;
+            if (!monzo.pots[t["From Pot"]]) monzo.pots[t["From Pot"]] = 0;
+            if (!monzo.pots[t["To Pot"]]) monzo.pots[t["To Pot"]] = 0;
 
-          // =====================================================
-          // WRITE FINAL JSON
-          // =====================================================
-          fs.writeFileSync("AuroraMonzo.json", JSON.stringify(output, null, 2));
-          console.log("AuroraMonzo.json built successfully!");
+            monzo.pots[t["From Pot"]] -= amt;
+            monzo.pots[t["To Pot"]] += amt;
+
+            appliedTransfers.push(t.id);
+          });
+
+          // Save updated transfer state
+          fs.writeFileSync(appliedPath, JSON.stringify(appliedTransfers, null, 2));
+
+          // Save transactions + DDs
+          monzo.transactions = transactions;
+          monzo.direct_debits = directDebits;
+
+          fs.writeFileSync(monzoPath, JSON.stringify(monzo, null, 2));
           EOF
 
       # =====================================================
-      # STEP 3 – Commit final JSON
+      # STEP 7 — GIT SAFETY: Pull latest before push
       # =====================================================
-      - name: 🔼 Push AuroraMonzo.json
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "Updated AuroraMonzo.json (Monzo Sync)"
-          file_pattern: AuroraMonzo.json
+      - name: 📥 Pull latest (fix non-fast-forward)
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git pull --rebase origin main || true
+
+      # =====================================================
+      # STEP 8 — Commit & Push JSON
+      # =====================================================
+      - name: 📤 Push AuroraMonzo.json
+        run: |
+          git add AuroraMonzo.json
+          git add .aurora/monzo_transfers_applied.json
+          git commit -m "Monzo Sync Update" || true
+          git push origin main || true
