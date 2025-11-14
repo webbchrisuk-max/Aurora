@@ -54,39 +54,50 @@ jobs:
 
 
       # =====================================================
-      # STEP 4 — Apply NEW Transfers into AuroraMonzo.json
+      # STEP 4 — Apply NEW Transfers (UID-based)
       # =====================================================
-      - name: 🔄 Apply NEW Transfers
+      - name: 🔄 Apply NEW Transfers (UID Safe)
         run: |
           node <<'EOF'
           const fs = require('fs');
 
+          // Load transfers and state file
           const transfers = JSON.parse(fs.readFileSync('transfers.json', 'utf8'));
-          const applied = JSON.parse(fs.readFileSync('.aurora/monzo_transfers_applied.json', 'utf8'));
+          const stateFile = '.aurora/monzo_transfers_applied.json';
 
-          const newTransfers = transfers.filter(t => !applied.includes(t.UID));
-
-          const monzoFile = './AuroraMonzo.json';
-          let monzo = {};
-          if (fs.existsSync(monzoFile)) {
-            monzo = JSON.parse(fs.readFileSync(monzoFile, 'utf8'));
+          let applied = [];
+          if (fs.existsSync(stateFile)) {
+            applied = JSON.parse(fs.readFileSync(stateFile, 'utf8'));
           }
 
+          const monzoFile = './AuroraMonzo.json';
+          let monzo = fs.existsSync(monzoFile)
+            ? JSON.parse(fs.readFileSync(monzoFile, 'utf8'))
+            : {};
+
           if (!monzo.pot_transfers) monzo.pot_transfers = [];
+
+          // Process NEW transfers using UID
+          const newTransfers = transfers.filter(t => t.UID && !applied.includes(t.UID));
 
           newTransfers.forEach(t => {
             monzo.pot_transfers.push({
               date: t.Date,
-              pot: t.Pot,
-              amount: t.Amount,
+              from_pot: t["From Pot"],
+              to_pot: t["To Pot"],
+              amount: parseFloat(t.Amount || 0),
               type: t.Type,
-              gmail_id: t.GmailID
+              note: t.Note,
+              uid: t.UID
             });
-            applied.push(t.GmailID);
+
+            // Add to state file so it's never imported again
+            applied.push(t.UID);
           });
 
+          // Save updated JSON + state
           fs.writeFileSync(monzoFile, JSON.stringify(monzo, null, 2));
-          fs.writeFileSync('.aurora/monzo_transfers_applied.json', JSON.stringify(applied, null, 2));
+          fs.writeFileSync(stateFile, JSON.stringify(applied, null, 2));
           EOF
 
 
