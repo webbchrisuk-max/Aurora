@@ -1,13 +1,13 @@
 {
   "monzo": {
     "account_core": {
-      "main_balance": 793.78,
+      "main_balance": 793.03,
       "payday_last": "2025-11-07",
       "payday_next": "2025-12-05",
       "payday_cycle": "four_week",
       "pay_period_days": 28,
       "pots": {
-        "Main Account": 793.78,
+        "Main Account": 793.03,
         "Flex Repayment": 609.44,
         "Direct Debits": 398.11,
         "Holiday Pot": 174.45,
@@ -836,7 +836,7 @@
           "Type": "Debit",
           "Source": "Monzo",
           "Email Subject": "I just spent £ 0.70 at Nic Services Group Work Canteen November 14, 2025 at 03:32PM",
-          "Category": "",
+          "Category": "Work",
           "Processed": "✅",
           "Exclude From Spend": "",
           "Gmail ID": "19a82feee3810d16"
@@ -849,10 +849,23 @@
           "Type": "Debit",
           "Source": "Monzo",
           "Email Subject": "I just spent £ 3.25 at 400 Work Canteen November 14, 2025 at 05:44PM",
-          "Category": "",
+          "Category": "Work",
           "Processed": "✅",
           "Exclude From Spend": "",
           "Gmail ID": "19a8377b9e6ecbc1"
+        },
+        {
+          "Date": "14/11/2025",
+          "Time": "21:31:10",
+          "Merchant": "ShopTo Shopping November 14, 2025 at 09:31PM",
+          "Amount (£)": 87.85,
+          "Type": "Debit",
+          "Source": "Monzo",
+          "Email Subject": "I just spent £ 87.85 at ShopTo Shopping November 14, 2025 at 09:31PM",
+          "Category": "Gaming Subscriptions ",
+          "Processed": "✅",
+          "Exclude From Spend": "",
+          "Gmail ID": "19a84478592b3a8c"
         }
       ]
     },
@@ -936,6 +949,16 @@
         "processed": "",
         "type": "Transfer",
         "uid": "45974-Main Account-IG Trading-3.25"
+      },
+      {
+        "date": "2025-11-14",
+        "from_pot": "Main Account",
+        "to_pot": "IG Trading",
+        "amount": 0.75,
+        "note": "",
+        "processed": "",
+        "type": "Transfer",
+        "uid": "45975-Main Account-IG Trading-0.75"
       }
     ]
   }
