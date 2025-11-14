@@ -105,7 +105,7 @@ async function initAurora(){
   renderT212(sync);
   renderPortfolio(sync);
   renderNextFive(sync);
-  renderUpcoming(sync); // FIXED
+  renderUpcoming(sync);
   renderYTD(sync);
   renderChart(sync);
 }
@@ -117,6 +117,13 @@ async function initAurora(){
 <div class="container">
 
   <h1 class="section-title">🌌 Aurora ISA Tracker – Cinematic Edition</h1>
+
+  <!-- ⭐⭐⭐ MOVED TO TOP ⭐⭐⭐ -->
+  <div class="card">
+    <h2 class="section-title">Portfolio Summary</h2>
+    <div id="portfolio-summary"></div>
+  </div>
+  <!-- ⭐⭐⭐ END MOVE ⭐⭐⭐ -->
 
   <!-- IG -->
   <div class="card">
@@ -130,12 +137,6 @@ async function initAurora(){
     <div id="t212-table"></div>
   </div>
 
-   <!-- Portfolio -->
-  <div class="card">
-    <h2 class="section-title">Portfolio Summary</h2>
-    <div id="portfolio-summary"></div>
-  </div>
-
   <!-- Next 5 -->
   <div class="card">
     <h2 class="section-title">Next 5 Dividends</h2>
@@ -144,7 +145,7 @@ async function initAurora(){
 
   <!-- Upcoming Dividends -->
   <div class="card">
-    <h2 class="section-title">Upcoming Ex-Dividend Dates</h2>
+    <h2 class="section-title">Upcoming Dividends</h2>
     <div id="upcoming"></div>
   </div>
 
@@ -265,7 +266,7 @@ function renderNextFive(sync){
   document.getElementById("next5").innerHTML = html;
 }
 
-/* ---------------- Upcoming → FIXED to show next 5 ex-divs ---------------- */
+/* ---------------- Upcoming ---------------- */
 function renderUpcoming(sync){
   const up = sync?.isa?.dividends?.upcoming || [];
   if(up.length === 0){
@@ -273,15 +274,8 @@ function renderUpcoming(sync){
     return;
   }
 
-  const today = new Date();
-
-  const sorted = up
-    .filter(d => new Date(d.ex_div_date) >= today)
-    .sort((a,b) => new Date(a.ex_div_date) - new Date(b.ex_div_date))
-    .slice(0,5);
-
   let html = "";
-  sorted.forEach(d=>{
+  up.forEach(d=>{
     html += `
       <div class="dividend-item">
         <div>
