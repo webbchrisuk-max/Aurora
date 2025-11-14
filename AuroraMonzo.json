@@ -840,6 +840,19 @@
           "Processed": "✅",
           "Exclude From Spend": "",
           "Gmail ID": "19a82feee3810d16"
+        },
+        {
+          "Date": "14/11/2025",
+          "Time": "17:44:12",
+          "Merchant": "400 Work Canteen November 14, 2025 at 05:44PM",
+          "Amount (£)": 3.25,
+          "Type": "Debit",
+          "Source": "Monzo",
+          "Email Subject": "I just spent £ 3.25 at 400 Work Canteen November 14, 2025 at 05:44PM",
+          "Category": "",
+          "Processed": "✅",
+          "Exclude From Spend": "",
+          "Gmail ID": "19a8377b9e6ecbc1"
         }
       ]
     },
