@@ -161,6 +161,7 @@ async function initAurora(){
   </div>
 
 </div>
+
 <script>
 /* ---------------- IG ---------------- */
 function renderIG(sync){
@@ -243,19 +244,27 @@ function renderPortfolio(sync){
   `;
 }
 
-/* ---------------- Next 5 ---------------- */
+/* ---------------- FIXED — Next 5 Dividends ---------------- */
 function renderNextFive(sync){
   const next = sync?.isa?.dividends?.next_five || [];
+
   if(next.length === 0){
     document.getElementById("next5").innerHTML = "<p>No data.</p>";
     return;
   }
 
+  // Force exactly FIRST 5
+  const list = next.slice(0,5);
+
   let html = "";
-  next.forEach(d=>{
+  list.forEach(d=>{
     html += `
       <div class="dividend-item">
-        <div><strong>${d.ticker}</strong><br>Ex: ${d.ex_div_date}<br>Pay: ${d.pay_date}</div>
+        <div>
+          <strong>${d.ticker}</strong><br>
+          Ex: ${d.ex_div_date}<br>
+          Pay: ${d.pay_date}
+        </div>
         <div>£${Number(d.total_dividend).toFixed(2)}</div>
       </div>
     `;
