@@ -1,21 +1,20 @@
 {
   "monzo": {
     "account_core": {
-      "main_balance": 787.13,
+      "main_balance": 797.53,
       "payday_last": "2025-11-07",
       "payday_next": "2025-12-05",
       "payday_cycle": "four_week",
       "pay_period_days": 28,
-      "income_received": 0,
       "pots": {
-        "Main Account": 787.13,
+        "Main Account": 797.53,
         "Flex Repayment": 609.44,
-        "Direct Debits": 444.5,
+        "Direct Debits": 398.11,
         "Holiday Pot": 174.45,
         "Coventry City F.C": 167.86,
         "IGTrading": 240.95,
         "Car Maintenance": 124.49,
-        "Work Buffer": 47.94,
+        "Work Buffer": 37.54,
         "Savings": 501,
         "Christmas": 150,
         "Dentist": 340,
@@ -848,7 +847,7 @@
         "to_pot": "Dentist",
         "amount": 200,
         "note": "",
-        "processed": "",
+        "processed": "✅",
         "type": "Transfer",
         "uid": "45972-Holding Pot-Dentist-200"
       },
@@ -858,7 +857,7 @@
         "to_pot": "Main Account",
         "amount": 160,
         "note": "",
-        "processed": "",
+        "processed": "✅",
         "type": "Transfer",
         "uid": "45972-Dentist-Main Account-160"
       },
@@ -868,24 +867,43 @@
         "to_pot": "Dentist",
         "amount": 300,
         "note": "",
-        "processed": "",
+        "processed": "✅",
         "type": "Transfer",
         "uid": "45972-Holding Pot-Dentist-300"
+      },
+      {
+        "date": "2025-11-14",
+        "from_pot": "Work Buffer",
+        "to_pot": "Main Account",
+        "amount": 10.4,
+        "note": "Work Spending",
+        "processed": "",
+        "type": "Transfer",
+        "uid": "45975-Work Buffer-Main Account-10.4"
+      },
+      {
+        "amount": 0
+      },
+      {
+        "amount": 0
+      },
+      {
+        "amount": 0
+      },
+      {
+        "amount": 0
+      },
+      {
+        "amount": 0
+      },
+      {
+        "amount": 0
+      },
+      {
+        "date": "",
+        "from_pot": "10.4",
+        "amount": 0
       }
     ]
-  },
-  "pots": {
-    "Flex Repayment": 0,
-    "Direct Debits": 0,
-    "Holiday Pot": 0,
-    "Coventry City F.C": 0,
-    "IGTrading": 0,
-    "Car Maintenance": 0,
-    "Work Buffer": -10.4,
-    "Savings": 0,
-    "Christmas": 0,
-    "Dentist": 0,
-    "Holding Pot": 0,
-    "Main Account": 10.4
   }
 }
