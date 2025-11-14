@@ -2,7 +2,7 @@ name: Aurora Monzo – Hourly Pot + Transaction Sync
 
 on:
   schedule:
-    - cron: "0 * * * *"   # every hour
+    - cron: "0 * * * *"   # Every hour
   workflow_dispatch:
 
 concurrency:
@@ -10,115 +10,154 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  sync_monzo_hourly:
+  sync_monzo:
     runs-on: ubuntu-latest
 
     steps:
+      # =====================================================
+      # STEP 1 – Checkout Repository
+      # =====================================================
       - name: 🧩 Checkout repository
         uses: actions/checkout@v4
 
       # =====================================================
-      # STEP 1 – Fetch Transfers sheet
+      # STEP 2 – Fetch All Required Sheets
       # =====================================================
-      - name: 🟢 Fetch Transfers sheet
+
+      - name: 📥 Fetch Transactions Sheet
         run: |
-          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transfers" \
-          -o transfers.json
+          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transactions" -o transactions.json
+
+      - name: 📥 Fetch Transfers Sheet
+        run: |
+          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transfers" -o transfers.json
+
+      - name: 📥 Fetch Direct Debits Sheet
+        run: |
+          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/DirectDebits" -o dd.json
+
+      - name: 📥 Fetch MonzoCore Sheet
+        run: |
+          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/MonzoCore" -o monzocore.json
 
       # =====================================================
-      # STEP 2 – Ensure state tracking
+      # STEP 3 – Build AuroraMonzo.json (MONZO ONLY)
       # =====================================================
-      - name: 📦 Ensure state folder
-        run: |
-          mkdir -p .aurora
-          if [ ! -f .aurora/monzo_transfers_applied.json ]; then
-            echo "[]" > .aurora/monzo_transfers_applied.json
-          fi
-
-      # =====================================================
-      # STEP 3 – Apply NEW Transfers
-      # =====================================================
-      - name: 🔄 Apply NEW Transfers
+      - name: 🛠 Build AuroraMonzo.json
         run: |
           node << 'EOF'
-          const fs = require("fs");
+          const fs = require('fs');
 
+          const tx = JSON.parse(fs.readFileSync('transactions.json', 'utf8'));
+          const transfers = JSON.parse(fs.readFileSync('transfers.json', 'utf8'));
+          const dd = JSON.parse(fs.readFileSync('dd.json', 'utf8'));
+          const core = JSON.parse(fs.readFileSync('monzocore.json', 'utf8'));
 
-          // ------------------------------
-          // Load all data
-          // ------------------------------
-          const transfers = JSON.parse(fs.readFileSync("transfers.json", "utf8"));
-          const appliedUIDs = new Set(JSON.parse(fs.readFileSync(".aurora/monzo_transfers_applied.json", "utf8")));
-          const monzoPath = "AuroraMonzo.json";
+          const num = (v) => v === "" || v === null || v === undefined ? 0 : Number(v);
 
-          const monzo = JSON.parse(fs.readFileSync(monzoPath, "utf8"));
+          // =====================================================
+          // MAP TRANSACTIONS  (EXACT HEADERS)
+          // =====================================================
+          const mappedTx = tx.map(t => ({
+            Date: t["Date"],
+            Time: t["Time"],
+            Merchant: t["Merchant"],
+            "Amount (£)": num(t["Amount (£)"]),
+            Type: t["Type"],
+            Source: t["Source"],
+            "Email Subject": t["Email Subject"],
+            Category: t["Category"],
+            Processed: t["Processed"],
+            "Exclude From Spend": t["Exclude From Spend"],
+            "Gmail ID": t["Gmail ID"]
+          }));
 
+          // =====================================================
+          // MAP TRANSFERS  (EXACT HEADERS)
+          // =====================================================
+          const mappedTransfers = transfers.map(t => ({
+            date: t["Date"],
+            from_pot: t["From Pot"],
+            to_pot: t["To Pot"],
+            amount: num(t["Amount"]),
+            note: t["Note"],
+            processed: t["Processed"],
+            type: t["Type"],
+            uid: t["UID"]
+          }));
 
-          // ------------------------------
-          // Ensure pots exist (your list)
-          // ------------------------------
-          const pots = [
-            "Flex Repayment",
-            "Direct Debits",
-            "Holiday Pot",
-            "Coventry City F.C",
-            "IGTrading",
-            "Car Maintenance",
-            "Work Buffer",
-            "Savings",
-            "Christmas",
-            "Dentist",
-            "Holding Pot"
-          ];
+          // =====================================================
+          // MAP DIRECT DEBITS  (EXACT HEADERS)
+          // =====================================================
+          const mappedDD = dd.map(d => ({
+            payee: d["Payee"],
+            amount: num(d["Amount (£)"]),
+            due_date: d["Due Date"],
+            day: d["Day"],
+            status: d["Status"],
+            from_pot: d["FromPot"],
+            paid: d["Paid?"]
+          }));
 
-          monzo.pots = monzo.pots || {};
-          pots.forEach(p => {
-            if (!monzo.pots[p]) monzo.pots[p] = 0;
+          // =====================================================
+          // MAP MONZO CORE → Pots + Main Balance
+          // =====================================================
+          const pots = {};
+          core.forEach(row => {
+            pots[row["Label"]] = num(row["Value (£)"]);
           });
 
+          // =====================================================
+          // PAYDAY LOGIC (EVERY 28 DAYS)
+          // =====================================================
+          const BASE_PAYDAY = new Date("2025-11-07T00:00:00Z");
+          const today = new Date();
 
-          // ------------------------------
-          // Apply unprocessed transfers
-          // ------------------------------
-          for (const row of transfers) {
-            const uid = row["UID"];
-            const processed = row["Processed"];
-            const type = row["Type"];
-            const fromPot = row["From Pot"];
-            const toPot = row["To Pot"];
-            const amount = parseFloat(row["Amount"] || 0);
+          let payday_last = new Date(BASE_PAYDAY);
+          let payday_next = new Date(BASE_PAYDAY);
 
-            if (!uid || appliedUIDs.has(uid)) continue;
-            if (processed && processed.toLowerCase() === "yes") continue;
-            if (!amount || amount === 0) continue;
-
-            // Validate pots
-            if (!monzo.pots[fromPot]) monzo.pots[fromPot] = 0;
-            if (!monzo.pots[toPot]) monzo.pots[toPot] = 0;
-
-            // Transfer logic
-            monzo.pots[fromPot] -= amount;
-            monzo.pots[toPot] += amount;
-
-            appliedUIDs.add(uid);
+          while (payday_next <= today) {
+            payday_last = new Date(payday_next);
+            payday_next = new Date(payday_next.getTime() + 28 * 24 * 60 * 60 * 1000);
           }
 
+          // =====================================================
+          // FINAL MONZO JSON OUTPUT (MONZO ONLY — CLEAN)
+          // =====================================================
+          const output = {
+            monzo: {
+              account_core: {
+                main_balance: pots["Main Account"] || 0,
+                payday_last: payday_last.toISOString().split("T")[0],
+                payday_next: payday_next.toISOString().split("T")[0],
+                payday_cycle: "four_week",
+                pay_period_days: 28,
+                pots: pots
+              },
 
-          // ------------------------------
-          // Save updates
-          // ------------------------------
-          fs.writeFileSync(monzoPath, JSON.stringify(monzo, null, 2));
-          fs.writeFileSync(".aurora/monzo_transfers_applied.json", JSON.stringify([...appliedUIDs], null, 2));
+              direct_debits: mappedDD,
+              subscriptions_from_main: [],
 
+              transactions_feed: {
+                recent: mappedTx
+              },
+
+              pot_transfers: mappedTransfers
+            }
+          };
+
+          fs.writeFileSync("AuroraMonzo.json", JSON.stringify(output, null, 2));
+          console.log("AuroraMonzo.json built successfully!");
           EOF
 
       # =====================================================
-      # STEP 4 – Commit + Push
+      # STEP 4 – Commit & Push Safely
       # =====================================================
-      - name: 📤 Commit changes
+      - name: 🔼 Commit AuroraMonzo.json
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          git add AuroraMonzo.json .aurora/monzo_transfers_applied.json
-          git commit -m "🔄 Applied Monzo transfers $(date)" || echo "No changes"
+          git pull --no-edit
+          git add AuroraMonzo.json
+          git commit -m "Updated AuroraMonzo.json (Monzo Sync)" || echo "No changes"
           git push
