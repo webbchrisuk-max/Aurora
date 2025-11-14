@@ -2,7 +2,7 @@ name: Aurora Monzo – Hourly Pot + Transaction Sync
 
 on:
   schedule:
-    - cron: "0 * * * *"   # hourly
+    - cron: "0 * * * *"
   workflow_dispatch:
 
 jobs:
@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v4
 
       # =====================================================
-      # STEP 1 – Fetch Google Sheets (ALL FOUR TABS)
+      # STEP 1 – Fetch ALL Sheets
       # =====================================================
       - name: 📥 Fetch Transactions Sheet
         run: |
@@ -33,36 +33,24 @@ jobs:
           curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/MonzoCore" -o monzocore.json
 
       # =====================================================
-      # STEP 2 – Build AuroraMonzo.json (MATCHES YOUR HTML)
+      # STEP 2 – Build AuroraMonzo.json
+      # (Correct headers + correct JSON layout + payday logic)
       # =====================================================
       - name: 🛠 Build AuroraMonzo.json
         run: |
           node << 'EOF'
           const fs = require('fs');
 
-          // ---------- Load raw JSON from the four sheets ----------
-          const tx = JSON.parse(fs.readFileSync('transactions.json', 'utf8'));   // Transactions
-          const transfers = JSON.parse(fs.readFileSync('transfers.json', 'utf8')); // Transfers
-          const dd = JSON.parse(fs.readFileSync('dd.json', 'utf8'));             // DirectDebits
-          const core = JSON.parse(fs.readFileSync('monzocore.json', 'utf8'));    // MonzoCore
+          const tx = JSON.parse(fs.readFileSync('transactions.json', 'utf8'));
+          const transfers = JSON.parse(fs.readFileSync('transfers.json', 'utf8'));
+          const dd = JSON.parse(fs.readFileSync('dd.json', 'utf8'));
+          const core = JSON.parse(fs.readFileSync('monzocore.json', 'utf8'));
 
-          const num = (v) => {
-            if (v === "" || v === null || v === undefined) return 0;
-            const n = Number(v);
-            return isNaN(n) ? 0 : n;
-          };
-
-          const numOrNull = (v) => {
-            if (v === "" || v === null || v === undefined) return null;
-            const n = Number(v);
-            return isNaN(n) ? null : n;
-          };
+          const num = (v) => v === "" || v === null || v === undefined ? 0 : Number(v);
 
           // ============================
-          // MAP TRANSACTIONS → EXACT HEADERS YOU GAVE
+          // TRANSACTIONS
           // ============================
-          // Transactions sheet headers:
-          // Date | Time | Merchant | Amount (£) | Type | Source | Email Subject | Category | Processed | Exclude From Spend | Gmail ID
           const mappedTx = tx.map(t => ({
             Date: t["Date"],
             Time: t["Time"],
@@ -78,10 +66,8 @@ jobs:
           }));
 
           // ============================
-          // MAP TRANSFERS
+          // TRANSFERS
           // ============================
-          // Transfers sheet:
-          // Date | From Pot | To Pot | Amount | Note | Processed | Type | UID
           const mappedTransfers = transfers.map(t => ({
             date: t["Date"],
             from_pot: t["From Pot"],
@@ -94,10 +80,8 @@ jobs:
           }));
 
           // ============================
-          // MAP DIRECT DEBITS
+          // DIRECT DEBITS
           // ============================
-          // Direct Debits sheet:
-          // Payee | Amount (£) | Due Date | Day | Status | FromPot | Paid?
           const mappedDD = dd.map(d => ({
             payee: d["Payee"],
             amount: num(d["Amount (£)"]),
@@ -109,85 +93,60 @@ jobs:
           }));
 
           // ============================
-          // MAP MONZO CORE (pots + summary)
+          // CORE (Pots + Balances)
           // ============================
-          // MonzoCore sheet:
-          // Label | Value (£) | Target | Total Due | Remaining After Payments
           const pots = {};
-          const monzoCoreObj = {};
-
           core.forEach(row => {
-            const label = row["Label"];
-            if (!label) return;
-
-            const value = num(row["Value (£)"]);
-            const target = numOrNull(row["Target"]);
-            const totalDue = numOrNull(row["Total Due"]);
-            const remaining = numOrNull(row["Remaining After Payments"]);
-
-            // For your HTML pots: simple NUMBER
-            pots[label] = value;
-
-            // For more detailed dashboards: full object
-            monzoCoreObj[label] = {
-              value,
-              target,
-              total_due: totalDue,
-              remaining
-            };
+            pots[row["Label"]] = num(row["Value (£)"]);
           });
 
-          const mainBalance = pots["Main Account"] || 0;
-
-          // ============================
-          // OPTIONAL: SUBSCRIPTIONS FROM MAIN ACCOUNT
-          // (Anything with FromPot = "Main Account")
-          // ============================
-          const subscriptionsFromMain = mappedDD
-            .filter(d => (d.from_pot || "").toLowerCase() === "main account")
-            .map(d => ({
-              service: d.payee,
-              amount: d.amount,
-              renewal_date: d.due_date
-            }));
-
-          // ============================
-          // FINAL OUTPUT – MATCHES YOUR HTML EXPECTATIONS
-          // ============================
           const output = {
             monzo: {
-              // Used by your HTML:
-              // const core = data.monzo.account_core;
               account_core: {
-                main_balance: mainBalance,
+                main_balance: pots["Main Account"] || 0,
                 payday_last: "",
+                payday_next: "",
+                payday_cycle: "",
+                pay_period_days: 0,
                 income_received: 0,
                 pots: pots
               },
-
-              // Extra rich view you were using before – safe for other dashboards
-              monzo_core: monzoCoreObj,
-
               direct_debits: mappedDD,
-
-              subscriptions_from_main: subscriptionsFromMain,
-
-              // Used by your HTML:
-              // const txns = data.monzo.transactions_feed?.recent || [];
-              transactions_feed: {
-                recent: mappedTx
-              },
-
+              subscriptions_from_main: [],
+              transactions_feed: { recent: mappedTx },
               pot_transfers: mappedTransfers
             }
           };
 
+          // =====================================================
+          // PAYDAY CALCULATION – 4 WEEK CYCLE (28 DAYS)
+          // =====================================================
+
+          const BASE_PAYDAY = new Date("2025-11-07T00:00:00Z"); // last confirmed payday
+          const today = new Date();
+
+          let payday_last = new Date(BASE_PAYDAY);
+          let payday_next = new Date(BASE_PAYDAY);
+
+          while (payday_next <= today) {
+            payday_last = new Date(payday_next);
+            payday_next = new Date(payday_next.getTime() + 28 * 24 * 60 * 60 * 1000);
+          }
+
+          output.monzo.account_core.payday_last = payday_last.toISOString().split("T")[0];
+          output.monzo.account_core.payday_next = payday_next.toISOString().split("T")[0];
+          output.monzo.account_core.payday_cycle = "four_week";
+          output.monzo.account_core.pay_period_days = 28;
+
+          // =====================================================
+          // WRITE FINAL JSON
+          // =====================================================
           fs.writeFileSync("AuroraMonzo.json", JSON.stringify(output, null, 2));
-          console.log("✅ AuroraMonzo.json built successfully");
+          console.log("AuroraMonzo.json built successfully!");
           EOF
 
       # =====================================================
-      # STEP 3 – Commit & Push Updated JSON
+      # STEP 3 – Commit final JSON
       # =====================================================
       - name: 🔼 Push AuroraMonzo.json
         uses: stefanzweifel/git-auto-commit-action@v5
