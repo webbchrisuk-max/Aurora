@@ -3,12 +3,16 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Aurora Tracker – Cinematic Edition (ISA Only)</title>
+<title>Aurora ISA Tracker – Cinematic Edition</title>
 
+<!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
 
 <style>
-:root{
+/* ===========================================================
+   AURORA CINEMATIC GLOBAL
+=========================================================== */
+:root {
   --cyan:#00eaff;
   --coral:#ff7f50;
   --teal:#00ffd0;
@@ -17,259 +21,353 @@
   --bg2:#120035;
   --bg3:#001a33;
 }
+
 body{
-  margin:0;
-  padding:0;
+  margin:0;padding:0;
   font-family:'Orbitron',sans-serif;
   background:linear-gradient(120deg,var(--bg1),var(--bg2),var(--bg3));
   background-size:600% 600%;
   animation:auroraDrift 40s ease-in-out infinite;
   color:#fff;
 }
+
 @keyframes auroraDrift{
   0%{background-position:0% 50%;}
   50%{background-position:100% 50%;}
   100%{background-position:0% 50%;}
 }
 
+/* ===========================================================
+   CONTAINERS + TITLES
+=========================================================== */
 .container{
+  padding:20px;
   max-width:1100px;
   margin:auto;
-  padding:20px;
 }
 
 .section-title{
   font-size:22px;
-  text-align:center;
+  font-weight:700;
   color:var(--cyan);
+  margin-top:35px;
+  text-align:center;
   text-shadow:0 0 10px var(--cyan);
-  margin-top:30px;
 }
 
+/* ===========================================================
+   CARD STYLING
+=========================================================== */
 .card{
   background:rgba(255,255,255,0.06);
   border:1px solid rgba(255,255,255,0.15);
   border-radius:16px;
   padding:18px;
-  margin-bottom:18px;
+  margin-bottom:20px;
   backdrop-filter:blur(8px);
-  box-shadow:0 0 15px rgba(0,255,255,0.15);
+  box-shadow:0 0 15px rgba(0,255,255,0.2);
 }
 
+/* ===========================================================
+   TABLE STYLING
+=========================================================== */
 .table{
   width:100%;
   border-collapse:collapse;
+  margin-top:12px;
 }
+
 .table th{
-  background:rgba(0,200,255,0.3);
   padding:10px;
+  background:rgba(0,200,255,0.3);
+  border-bottom:1px solid var(--cyan);
 }
+
 .table td{
   padding:8px;
   border-bottom:1px solid rgba(255,255,255,0.1);
 }
 
+/* ===========================================================
+   DIVIDEND ITEMS
+=========================================================== */
 .dividend-item{
-  padding:10px;
+  padding:10px 12px;
   background:rgba(255,255,255,0.07);
-  border-radius:10px;
-  margin-bottom:10px;
   border:1px solid rgba(255,255,255,0.15);
+  border-radius:12px;
   display:flex;
   justify-content:space-between;
+  margin-bottom:10px;
+  font-size:14px;
 }
+
+/* ===========================================================
+   JS DATA SOURCES
+=========================================================== */
 </style>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
+// Load JSON
 const AURORA_SYNC =
   "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json";
 
 async function loadJSON(url){
-  const r=await fetch(url+"?nocache="+Date.now());
-  return r.json();
+  const r = await fetch(url + "?nocache=" + Date.now());
+  return await r.json();
 }
 
-async function init(){
+async function initAurora(){
   const sync = await loadJSON(AURORA_SYNC);
 
-  renderHoldings(sync);
+  renderIG(sync);
+  renderT212(sync);
   renderPortfolio(sync);
   renderNextFive(sync);
   renderUpcoming(sync);
   renderYTD(sync);
   renderChart(sync);
-  renderOutlook(sync);
 }
-
-/*** HOLDINGS TABLE ***/
-function renderHoldings(sync){
-  const holdings = sync.isa?.holdings || [];
-  
-  if(holdings.length===0){
-    document.getElementById("holdings").innerHTML="<p>No holdings found.</p>";
-    return;
-  }
-
-  let html=`<table class="table">
-  <tr>
-    <th>Ticker</th>
-    <th>Name</th>
-    <th>Shares</th>
-    <th>Value</th>
-    <th>Book</th>
-    <th>G/L</th>
-  </tr>`;
-
-  holdings.forEach(h=>{
-    const gain=(h.current_value - h.book_cost).toFixed(2);
-    html+=`
-      <tr>
-        <td>${h.ticker}</td>
-        <td>${h.name}</td>
-        <td>${h.shares}</td>
-        <td>£${h.current_value}</td>
-        <td>£${h.book_cost}</td>
-        <td style="color:${gain>=0?'lime':'red'}">£${gain}</td>
-      </tr>
-    `;
-  });
-
-  html+=`</table>`;
-  document.getElementById("holdings").innerHTML=html;
-}
-
-/*** PORTFOLIO SUMMARY ***/
-function renderPortfolio(sync){
-  const p = sync.isa.portfolio_summary;
-  document.getElementById("portfolio").innerHTML=`
-    <p><strong>Total Value:</strong> £${p.total_value}</p>
-    <p><strong>Annual Yield:</strong> ${p.dividend_yield}%</p>
-    <p><strong>Projected Annual Income:</strong> £${p.annual_total || p.annual_income_gbp}</p>
-  `;
-}
-
-/*** NEXT FIVE DIVIDENDS ***/
-function renderNextFive(sync){
-  const list = sync.isa?.dividends?.next_five || [];
-  let html="";
-  list.forEach(d=>{
-    html+=`
-      <div class="dividend-item">
-        <div><strong>${d.ticker}</strong><br>${d.name}<br>Pay: ${d.pay_date}</div>
-        <div>£${d.total_dividend.toFixed(2)}</div>
-      </div>
-    `;
-  });
-  document.getElementById("next5").innerHTML=html;
-}
-
-/*** FULL UPCOMING LIST ***/
-function renderUpcoming(sync){
-  const list = sync.isa?.dividends?.upcoming || [];
-  let html="";
-  list.forEach(d=>{
-    html+=`
-      <div class="dividend-item">
-        <div>
-          <strong>${d.ticker}</strong> – ${d.name}<br>
-          Ex: ${d.ex_div_date}<br>
-          Pay: ${d.pay_date}
-        </div>
-        <div>£${d.total_dividend.toFixed(2)}</div>
-      </div>
-    `;
-  });
-  document.getElementById("upcoming").innerHTML=html;
-}
-
-/*** YTD ***/
-function renderYTD(sync){
-  const totals = sync.isa?.dividends?.monthly_totals || {};
-  let sum = 0;
-  Object.values(totals).forEach(v=> sum+=v);
-  document.getElementById("ytd").innerHTML=`<h2>£${sum.toFixed(2)}</h2>`;
-}
-
-/*** 12-MONTH CHART ***/
-function renderChart(sync){
-  const totals = sync.isa?.dividends?.monthly_totals || {};
-  const labels = Object.keys(totals);
-  const values = Object.values(totals);
-
-  new Chart(document.getElementById("divchart"),{
-    type:"bar",
-    data:{ labels, datasets:[{ data:values, borderWidth:1 }] },
-    options:{ plugins:{legend:false}, scales:{y:{beginAtZero:true}} }
-  });
-}
-
-/*** OUTLOOK PANELS ***/
-function renderOutlook(sync){
-  const r = sync.reits_outlook;
-  const f = sync.financials_outlook;
-
-  let htmlR="", htmlF="";
-  for(const k in r){
-    htmlR+=`<p><strong>${k}:</strong> ${r[k].status || "–"} — ${r[k].notes || ""}</p>`;
-  }
-  for(const k in f){
-    htmlF+=`<p><strong>${k}:</strong> ${f[k].status || "–"} — ${f[k].notes || ""}</p>`;
-  }
-
-  document.getElementById("reits").innerHTML=htmlR;
-  document.getElementById("financials").innerHTML=htmlF;
-}
-
 </script>
-
 </head>
-<body onload="init()">
+
+<body onload="initAurora()">
 
 <div class="container">
+  <h1 class="section-title">🌌 Aurora ISA Tracker – Cinematic Edition</h1>
 
-<h1 class="section-title">🌌 Aurora Tracker – Cinematic Edition (ISA)</h1>
+  <!-- ================= IG ISA HOLDINGS ================= -->
+  <div class="card" id="ig-card">
+    <h2 class="section-title">IG ISA Holdings</h2>
+    <div id="ig-table"></div>
+  </div>
 
-<div class="card">
-  <h2 class="section-title">Holdings</h2>
-  <div id="holdings"></div>
-</div>
+  <!-- ================= TRADE212 ISA HOLDINGS ============ -->
+  <div class="card" id="t212-card">
+    <h2 class="section-title">Trade212 ISA Holdings</h2>
+    <div id="t212-table"></div>
+  </div>
 
-<div class="card">
-  <h2 class="section-title">Portfolio Summary</h2>
-  <div id="portfolio"></div>
-</div>
-
+  <!-- ================= PORTFOLIO SUMMARY ================ -->
+  <div class="card" id="summary-card">
+    <h2 class="section-title">Portfolio Summary</h2>
+    <div id="portfolio-summary"></div>
+  </div>
+  <!-- ================= NEXT 5 DIVIDENDS ================= -->
 <div class="card">
   <h2 class="section-title">Next 5 Dividends</h2>
   <div id="next5"></div>
 </div>
 
+<!-- ================= UPCOMING DIVIDENDS FULL LIST ================= -->
 <div class="card">
-  <h2 class="section-title">All Upcoming Dividends</h2>
+  <h2 class="section-title">Upcoming Dividends</h2>
   <div id="upcoming"></div>
 </div>
 
-<div class="card">
-  <h2 class="section-title">Dividend Forecast (12 Months)</h2>
-  <canvas id="divchart"></canvas>
+<!-- ================= DIVIDEND CHART ================= -->
+<div class="card chart-box">
+  <h2 class="section-title">12-Month Dividend Forecast</h2>
+  <canvas id="divChart"></canvas>
 </div>
 
+<!-- ================= YEAR-TO-DATE ================= -->
 <div class="card">
-  <h2 class="section-title">YTD Dividend Income</h2>
+  <h2 class="section-title">Year-To-Date Income</h2>
   <div id="ytd"></div>
 </div>
 
-<div class="card">
-  <h2 class="section-title">REITs Outlook</h2>
-  <div id="reits"></div>
-</div>
+<!-- ===========================================================
+   RENDER FUNCTIONS
+=========================================================== -->
+<script>
+/* ---------------------- IG HOLDINGS ---------------------- */
+function renderIG(sync){
+  const ig = sync.isa?.ig_isa?.holdings;
+  if(!ig){
+    document.getElementById("ig-table").innerHTML = "<p>No IG ISA holdings found.</p>";
+    return;
+  }
 
-<div class="card">
-  <h2 class="section-title">Financials Outlook</h2>
-  <div id="financials"></div>
-</div>
+  let html = `
+    <table class="table">
+      <tr>
+        <th>Ticker</th><th>Name</th><th>Shares</th><th>Value</th><th>Book</th><th>Gain</th>
+      </tr>
+  `;
+
+  Object.keys(ig).forEach(t=>{
+    const h = ig[t];
+    const gain = h.gain_value.toFixed(2);
+    html += `
+      <tr>
+        <td>${t}</td>
+        <td>${h.name}</td>
+        <td>${h.shares}</td>
+        <td>£${h.value.toFixed(2)}</td>
+        <td>£${h.book_cost.toFixed(2)}</td>
+        <td style="color:${gain>=0?"lime":"red"}">£${gain}</td>
+      </tr>
+    `;
+  });
+
+  html += `</table>`;
+  document.getElementById("ig-table").innerHTML = html;
+}
+
+/* ---------------------- T212 HOLDINGS ---------------------- */
+function renderT212(sync){
+  const t212 = sync.isa?.trade212_isa?.holdings;
+  if(!t212){
+    document.getElementById("t212-table").innerHTML = "<p>No Trade212 holdings found.</p>";
+    return;
+  }
+
+  let html = `
+    <table class="table">
+      <tr>
+        <th>Ticker</th><th>Name</th><th>Shares</th><th>Value</th><th>Book</th><th>Gain</th>
+      </tr>
+  `;
+
+  Object.keys(t212).forEach(t=>{
+    const h = t212[t];
+    const gain = h.gain_value.toFixed(2);
+    html += `
+      <tr>
+        <td>${t}</td>
+        <td>${h.name}</td>
+        <td>${h.shares}</td>
+        <td>£${h.value.toFixed(2)}</td>
+        <td>£${h.book_cost.toFixed(2)}</td>
+        <td style="color:${gain>=0?"lime":"red"}">£${gain}</td>
+      </tr>
+    `;
+  });
+
+  html += `</table>`;
+  document.getElementById("t212-table").innerHTML = html;
+}
+
+/* ---------------------- PORTFOLIO SUMMARY ---------------------- */
+function renderPortfolio(sync){
+  const ig = sync.isa?.ig_isa?.holdings || {};
+  const t212 = sync.isa?.trade212_isa?.holdings || {};
+
+  const igTotal = Object.values(ig).reduce((a,h)=>a+h.value,0);
+  const t212Total = Object.values(t212).reduce((a,h)=>a+h.value,0);
+  const combined = igTotal + t212Total;
+
+  const annualDiv = (
+    Object.values(ig).reduce((a,h)=>a+(h.annual_income||0),0) +
+    Object.values(t212).reduce((a,h)=>a+(h.annual_income||0),0)
+  );
+
+  document.getElementById("portfolio-summary").innerHTML = `
+    <p><strong>IG ISA Value:</strong> £${igTotal.toFixed(2)}</p>
+    <p><strong>Trade212 ISA Value:</strong> £${t212Total.toFixed(2)}</p>
+    <p><strong>Total Portfolio Value:</strong> £${combined.toFixed(2)}</p>
+    <p><strong>Projected Annual Income:</strong> £${annualDiv.toFixed(2)}</p>
+  `;
+}
+
+/* ---------------------- NEXT 5 DIVIDENDS ---------------------- */
+function renderNextFive(sync){
+  const next = sync.isa?.dividends?.next_five;
+  if(!next){
+    document.getElementById("next5").innerHTML = "<p>No upcoming dividends.</p>";
+    return;
+  }
+
+  let html = "";
+  next.forEach(d=>{
+    html += `
+      <div class="dividend-item">
+        <div>
+          <strong>${d.ticker}</strong><br>
+          Ex: ${d.ex_div_date}<br>
+          Pay: ${d.pay_date}
+        </div>
+        <div>£${d.total_dividend}</div>
+      </div>
+    `;
+  });
+
+  document.getElementById("next5").innerHTML = html;
+}
+
+/* ---------------------- UPCOMING DIVIDENDS FULL LIST ---------------------- */
+function renderUpcoming(sync){
+  const up = sync.isa?.dividends?.upcoming;
+  if(!up){
+    document.getElementById("upcoming").innerHTML = "<p>No dividend data available.</p>";
+    return;
+  }
+
+  let html = "";
+  up.forEach(d=>{
+    html += `
+      <div class="dividend-item">
+        <div>
+          <strong>${d.ticker}</strong> – ${d.name}<br>
+          Ex: ${d.ex_div_date} — Pay: ${d.pay_date}<br>
+          Status: ${d.status}
+        </div>
+        <div>£${d.total_dividend}</div>
+      </div>
+    `;
+  });
+
+  document.getElementById("upcoming").innerHTML = html;
+}
+
+/* ---------------------- YTD ---------------------- */
+function renderYTD(sync){
+  const totals = sync.isa?.dividends?.monthly_totals || {};
+  let ytd = 0;
+
+  const currentYear = new Date().getFullYear();
+
+  Object.keys(totals).forEach(m=>{
+    if(m.startsWith(currentYear.toString())){
+      ytd += totals[m];
+    }
+  });
+
+  document.getElementById("ytd").innerHTML = `
+    <h3>£${ytd.toFixed(2)}</h3>
+  `;
+}
+
+/* ---------------------- DIVIDEND FORECAST CHART ---------------------- */
+function renderChart(sync){
+  const totals = sync.isa?.dividends?.monthly_totals;
+  if(!totals) return;
+
+  const labels = Object.keys(totals);
+  const values = labels.map(l=>totals[l]);
+
+  const ctx = document.getElementById("divChart").getContext("2d");
+  new Chart(ctx,{
+    type:"bar",
+    data:{
+      labels:labels,
+      datasets:[{
+        label:"Total (£)",
+        data:values,
+        borderWidth:1
+      }]
+    },
+    options:{
+      plugins:{legend:{display:false}},
+      scales:{y:{beginAtZero:true}}
+    }
+  });
+}
+</script>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </div>
 </body>
