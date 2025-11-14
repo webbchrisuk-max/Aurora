@@ -268,30 +268,31 @@ function renderNextFive(sync){
 
 /* ---------------- Upcoming ---------------- */
 function renderUpcoming(sync){
-  const up = sync?.isa?.dividends?.upcoming || [];
-  if (up.length === 0){
+  const all = sync?.isa?.dividends?.upcoming || [];
+
+  if (all.length === 0){
     document.getElementById("upcoming").innerHTML = "<p>No upcoming dividends.</p>";
     return;
   }
 
-  // 👉 Sort by EX-DIV date ascending
-  const sorted = up
-    .map(d => ({
-      ...d,
-      ex: new Date(d.ex_div_date)
-    }))
-    .sort((a,b) => a.ex - b.ex);
+  // Filter out invalid or empty ex-dividend dates
+  const withExDiv = all.filter(d => d.ex_div_date && !isNaN(new Date(d.ex_div_date)));
 
-  // 👉 Take the NEXT 5
-  const nextFiveExDiv = sorted.slice(0, 5);
+  // Sort by EX-DIV date ascending
+  const sorted = withExDiv.sort((a,b) =>
+    new Date(a.ex_div_date) - new Date(b.ex_div_date)
+  );
+
+  // Take ONLY 5 nearest ex-dividend dates
+  const nextFiveEx = sorted.slice(0, 5);
 
   let html = "";
-  nextFiveExDiv.forEach(d=>{
+  nextFiveEx.forEach(d=>{
     html += `
       <div class="dividend-item">
         <div>
           <strong>${d.ticker}</strong> – ${d.name}<br>
-          Ex: ${d.ex_div_date}<br>
+          Ex-Date: ${d.ex_div_date}<br>
           Pay: ${d.pay_date}<br>
           Status: ${d.status}
         </div>
