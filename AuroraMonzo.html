@@ -519,7 +519,8 @@ subs.forEach((item) => {
 const txnBody = document.querySelector("#txnTable tbody");
 txnBody.innerHTML = "";
 
-txns.slice(0, 5).forEach((tx) => {
+// Get the LAST 5 (newest)
+txns.slice(-5).forEach((tx) => {
   const date = tx.Date || tx.date || "—";
   const name = tx.Merchant || tx.Name || tx.merchant || tx.name || "Unknown";
   const amt = parseFloat(tx["Amount (£)"] || tx.amount || 0);
