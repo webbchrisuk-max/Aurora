@@ -892,6 +892,19 @@
           "Processed": "✅",
           "Exclude From Spend": "",
           "Gmail ID": "19a87d0c8ad909da"
+        },
+        {
+          "Date": "15/11/2025",
+          "Time": "18:54:32",
+          "Merchant": "Ubsidi Fin Indian Que General November 15, 2025 at 06:54PM",
+          "Amount (£)": 20.43,
+          "Type": "Debit",
+          "Source": "Monzo",
+          "Email Subject": "I just spent £ 20.43 at Ubsidi Fin Indian Que General November 15, 2025 at 06:54PM",
+          "Category": "",
+          "Processed": "✅",
+          "Exclude From Spend": "",
+          "Gmail ID": "19a88de774c8f525"
         }
       ]
     },
