@@ -866,6 +866,19 @@
           "Processed": "✅",
           "Exclude From Spend": "",
           "Gmail ID": "19a84478592b3a8c"
+        },
+        {
+          "Date": "15/11/2025",
+          "Time": "12:13:56",
+          "Merchant": "Kings Barber Personal care November 15, 2025 at 12:13PM",
+          "Amount (£)": 21,
+          "Type": "Debit",
+          "Source": "Monzo",
+          "Email Subject": "I just spent £ 21 at Kings Barber Personal care November 15, 2025 at 12:13PM",
+          "Category": "",
+          "Processed": "✅",
+          "Exclude From Spend": "",
+          "Gmail ID": "19a876fb772028d8"
         }
       ]
     },
