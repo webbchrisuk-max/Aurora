@@ -879,6 +879,19 @@
           "Processed": "✅",
           "Exclude From Spend": "",
           "Gmail ID": "19a876fb772028d8"
+        },
+        {
+          "Date": "15/11/2025",
+          "Time": "13:59:58",
+          "Merchant": "Asda Groceries November 15, 2025 at 01:59PM",
+          "Amount (£)": 23.08,
+          "Type": "Debit",
+          "Source": "Monzo",
+          "Email Subject": "I just spent £ 23.08 at Asda Groceries November 15, 2025 at 01:59PM",
+          "Category": "",
+          "Processed": "✅",
+          "Exclude From Spend": "",
+          "Gmail ID": "19a87d0c8ad909da"
         }
       ]
     },
