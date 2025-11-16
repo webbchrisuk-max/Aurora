@@ -1,18 +1,18 @@
 {
   "monzo": {
     "account_core": {
-      "main_balance": 793.03,
+      "main_balance": 721.07,
       "payday_last": "2025-11-07",
       "payday_next": "2025-12-05",
       "payday_cycle": "four_week",
       "pay_period_days": 28,
       "pots": {
-        "Main Account": 793.03,
+        "Main Account": 721.07,
         "Flex Repayment": 609.44,
         "Direct Debits": 398.11,
         "Holiday Pot": 174.45,
         "Coventry City F.C": 167.86,
-        "IGTrading": 244.7,
+        "IGTrading": 252.9,
         "Car Maintenance": 124.49,
         "Work Buffer": 33.59,
         "Savings": 501,
@@ -28,62 +28,6 @@
       },
       {
         "amount": 0,
-        "status": "Upcoming"
-      },
-      {
-        "amount": 0,
-        "status": "Upcoming"
-      },
-      {
-        "amount": 0,
-        "status": "Future"
-      },
-      {
-        "amount": 0,
-        "status": "Future"
-      },
-      {
-        "amount": 0,
-        "status": "Future"
-      },
-      {
-        "amount": 0,
-        "status": "Future"
-      },
-      {
-        "amount": 0,
-        "status": "Upcoming"
-      },
-      {
-        "amount": 0,
-        "status": "Upcoming"
-      },
-      {
-        "amount": 0,
-        "status": "Upcoming"
-      },
-      {
-        "amount": 0,
-        "status": "Upcoming"
-      },
-      {
-        "amount": 0,
-        "status": "Upcoming"
-      },
-      {
-        "amount": 0,
-        "status": "Upcoming"
-      },
-      {
-        "amount": 0,
-        "status": "Upcoming"
-      },
-      {
-        "amount": 0,
-        "status": "Future"
-      },
-      {
-        "amount": 0,
         "status": "Paid"
       },
       {
@@ -97,6 +41,62 @@
       {
         "amount": 0,
         "status": "Upcoming"
+      },
+      {
+        "amount": 0,
+        "status": "Upcoming"
+      },
+      {
+        "amount": 0,
+        "status": "Upcoming"
+      },
+      {
+        "amount": 0,
+        "status": "Upcoming"
+      },
+      {
+        "amount": 0,
+        "status": "Upcoming"
+      },
+      {
+        "amount": 0,
+        "status": "Upcoming"
+      },
+      {
+        "amount": 0,
+        "status": "Upcoming"
+      },
+      {
+        "amount": 0,
+        "status": "Upcoming"
+      },
+      {
+        "amount": 0,
+        "status": "Upcoming"
+      },
+      {
+        "amount": 0,
+        "status": "Upcoming"
+      },
+      {
+        "amount": 0,
+        "status": "Future"
+      },
+      {
+        "amount": 0,
+        "status": "Future"
+      },
+      {
+        "amount": 0,
+        "status": "Future"
+      },
+      {
+        "amount": 0,
+        "status": "Future"
+      },
+      {
+        "amount": 0,
+        "status": "Future"
       }
     ],
     "subscriptions_from_main": [],
@@ -902,22 +902,22 @@
       {
         "date": "2025-11-14",
         "from_pot": "Main Account",
-        "to_pot": "IG Trading",
+        "to_pot": "IGTrading",
         "amount": 3.75,
         "note": "Roundup from Work Canteen ",
         "processed": "TRUE",
         "type": "Transfer",
-        "uid": "45975-Main Account-IG Trading-3.75"
+        "uid": "45975-Main Account-IGTrading-3.75"
       },
       {
         "date": "2025-11-13",
         "from_pot": "Main Account",
-        "to_pot": "IG Trading",
+        "to_pot": "IGTrading",
         "amount": 3.25,
         "note": "Roundup from Work Canteen ",
         "processed": "TRUE",
         "type": "Transfer",
-        "uid": "45974-Main Account-IG Trading-3.25"
+        "uid": "45974-Main Account-IGTrading-3.25"
       },
       {
         "date": "2025-11-14",
@@ -928,6 +928,26 @@
         "processed": "TRUE",
         "type": "Transfer",
         "uid": "45975-Main Account-IG Trading-0.75"
+      },
+      {
+        "date": "2025-11-15",
+        "from_pot": "Main Account",
+        "to_pot": "IGTrading",
+        "amount": 2.85,
+        "note": "Roundup from Indian Queen Takeaway",
+        "processed": "FALSE",
+        "type": "Transfer",
+        "uid": "45976-Main Account-IGTrading-2.85"
+      },
+      {
+        "date": "2025-11-15",
+        "from_pot": "Main Account",
+        "to_pot": "IGTrading",
+        "amount": 4.6,
+        "note": "Roundup from ASDA",
+        "processed": "FALSE",
+        "type": "Transfer",
+        "uid": "45976-Main Account-IGTrading-4.6"
       }
     ]
   }
