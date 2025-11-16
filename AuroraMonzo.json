@@ -27,146 +27,186 @@
         "amount": 46.39,
         "due_date": "2025-11-14",
         "day": "14",
-        "status": "Paid",
+        "status": "#REF!",
         "from_pot": "Direct Debit",
-        "paid": "✅ "
+        "paid": "FALSE"
       },
       {
         "payee": "Barclays Partner Finance",
         "amount": 50.92,
         "due_date": "2025-11-17",
         "day": "17",
-        "status": "Upcoming",
-        "from_pot": "Direct Debit"
+        "status": "",
+        "from_pot": "Direct Debit",
+        "paid": "FALSE"
       },
       {
         "payee": "Vodafone",
         "amount": 23.28,
         "due_date": "2025-11-30",
         "day": "30",
-        "status": "Upcoming",
-        "from_pot": "Direct Debit"
+        "status": "",
+        "from_pot": "Direct Debit",
+        "paid": "FALSE"
       },
       {
         "payee": "ID Mobile",
         "amount": 10,
         "due_date": "2025-12-07",
         "day": "7",
-        "status": "Future",
-        "from_pot": "Direct Debit"
+        "status": "",
+        "from_pot": "Direct Debit",
+        "paid": "FALSE"
       },
       {
         "payee": "Postcode Lottery #1",
         "amount": 12.25,
         "due_date": "2025-12-07",
         "day": "7",
-        "status": "Future",
-        "from_pot": "Direct Debit"
+        "status": "",
+        "from_pot": "Direct Debit",
+        "paid": "FALSE"
       },
       {
         "payee": "Postcode Lottery #2",
         "amount": 12.25,
         "due_date": "2025-12-07",
         "day": "7",
-        "status": "Future",
-        "from_pot": "Direct Debit"
+        "status": "",
+        "from_pot": "Direct Debit",
+        "paid": "FALSE"
       },
       {
         "payee": "Postcode Lottery #3",
         "amount": 12.25,
         "due_date": "2025-12-07",
         "day": "7",
-        "status": "Future",
-        "from_pot": "Direct Debit"
+        "status": "",
+        "from_pot": "Direct Debit",
+        "paid": "FALSE"
       },
       {
         "payee": "Driver & Vehicle Licencing Agency ",
         "amount": 23.18,
         "due_date": "2025-12-03",
         "day": "3",
-        "status": "Upcoming",
-        "from_pot": "Direct Debit"
+        "status": "",
+        "from_pot": "Direct Debit",
+        "paid": "FALSE"
       },
       {
         "payee": "Octopus Energy",
         "amount": 94.9,
         "due_date": "2025-12-03",
         "day": "3",
-        "status": "Upcoming",
-        "from_pot": "Direct Debit"
+        "status": "",
+        "from_pot": "Direct Debit",
+        "paid": "FALSE"
       },
       {
         "payee": "Sports Direct",
         "amount": 20,
         "due_date": "2025-12-04",
         "day": "4",
-        "status": "Upcoming",
-        "from_pot": "Direct Debit"
+        "status": "",
+        "from_pot": "Direct Debit",
+        "paid": "FALSE"
       },
       {
         "payee": "Rugby B.C",
         "amount": 139,
         "due_date": "2025-12-03",
         "day": "3",
-        "status": "Upcoming",
-        "from_pot": "Direct Debit"
+        "status": "",
+        "from_pot": "Direct Debit",
+        "paid": "FALSE"
       },
       {
         "payee": "Legal & General",
         "amount": 17.92,
         "due_date": "2025-12-03",
         "day": "3",
-        "status": "Upcoming",
-        "from_pot": "Direct Debit"
+        "status": "",
+        "from_pot": "Direct Debit",
+        "paid": "FALSE"
       },
       {
-        "payee": "Severn Trent",
-        "amount": 43.86,
-        "due_date": "2025-12-03",
-        "day": "3",
-        "status": "Upcoming",
-        "from_pot": "Direct Debit"
+        "payee": "Payee",
+        "amount": null,
+        "due_date": "Due Date",
+        "day": "Day",
+        "status": "Status",
+        "from_pot": "FromPot",
+        "paid": "Paid?"
       },
       {
-        "payee": "Monzo Plus",
-        "amount": 5,
-        "due_date": "2025-12-08",
-        "day": "8",
-        "status": "Future",
-        "from_pot": "Direct Debit"
+        "amount": 0
       },
       {
-        "payee": "Apple One",
-        "amount": 18.95,
-        "due_date": "2025-11-13",
-        "day": "13",
-        "status": "Paid",
-        "from_pot": "Direct Debits",
-        "paid": "✅"
+        "payee": "Barclays Partner Finance",
+        "amount": 62.49371795,
+        "due_date": "2025-11-17",
+        "day": "-3.339160839",
+        "status": "",
+        "from_pot": "Direct Debit",
+        "paid": "FALSE"
       },
       {
-        "payee": "ChatGPT",
-        "amount": 19.99,
-        "due_date": "2025-11-23",
-        "day": "23",
-        "status": "Upcoming",
-        "from_pot": "Main Account"
+        "payee": "Vodafone",
+        "amount": 65.68910256,
+        "due_date": "2025-11-30",
+        "day": "-4.951048951",
+        "status": "",
+        "from_pot": "Direct Debit",
+        "paid": "FALSE"
       },
       {
-        "payee": "Amazon Prime",
-        "amount": 8.99,
-        "due_date": "2025-12-23",
-        "day": "7",
-        "status": "Future",
-        "from_pot": "Main Account"
+        "payee": "Payee",
+        "amount": null,
+        "due_date": "Due Date",
+        "day": "Day",
+        "status": "Status",
+        "from_pot": "FromPot",
+        "paid": "Paid?"
       },
       {
-        "payee": "Monzo Contents Insurance",
-        "amount": 7.73,
-        "due_date": "2025-11-29",
-        "day": "29",
-        "status": "Upcoming",
-        "from_pot": "Main Account"
+        "amount": 0
+      },
+      {
+        "payee": "Barclays Partner Finance",
+        "amount": 62.49371795,
+        "due_date": "2025-11-17",
+        "day": "-3.339160839",
+        "status": "",
+        "from_pot": "Direct Debit",
+        "paid": "FALSE"
+      },
+      {
+        "payee": "Vodafone",
+        "amount": 65.68910256,
+        "due_date": "2025-11-30",
+        "day": "-4.951048951",
+        "status": "",
+        "from_pot": "Direct Debit",
+        "paid": "FALSE"
+      },
+      {
+        "payee": "ID Mobile",
+        "amount": 68.88448718,
+        "due_date": "2025-12-07",
+        "day": "-6.562937063",
+        "status": "",
+        "from_pot": "Direct Debit",
+        "paid": "FALSE"
+      },
+      {
+        "payee": "Postcode Lottery #4",
+        "amount": 72.07987179,
+        "due_date": "2025-12-07",
+        "day": "-8.174825175",
+        "status": "",
+        "from_pot": "Direct Debit",
+        "paid": "FALSE"
       }
     ],
     "subscriptions_from_main": [],
