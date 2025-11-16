@@ -23,190 +23,80 @@
     },
     "direct_debits": [
       {
-        "payee": "Virgin Media",
-        "amount": 46.39,
-        "due_date": "2025-11-14",
-        "day": "14",
-        "status": "#REF!",
-        "from_pot": "Direct Debit",
-        "paid": "FALSE"
+        "amount": 0,
+        "status": "Paid"
       },
       {
-        "payee": "Barclays Partner Finance",
-        "amount": 50.92,
-        "due_date": "2025-11-17",
-        "day": "17",
-        "status": "",
-        "from_pot": "Direct Debit",
-        "paid": "FALSE"
+        "amount": 0,
+        "status": "Upcoming"
       },
       {
-        "payee": "Vodafone",
-        "amount": 23.28,
-        "due_date": "2025-11-30",
-        "day": "30",
-        "status": "",
-        "from_pot": "Direct Debit",
-        "paid": "FALSE"
+        "amount": 0,
+        "status": "Upcoming"
       },
       {
-        "payee": "ID Mobile",
-        "amount": 10,
-        "due_date": "2025-12-07",
-        "day": "7",
-        "status": "",
-        "from_pot": "Direct Debit",
-        "paid": "FALSE"
+        "amount": 0,
+        "status": "Future"
       },
       {
-        "payee": "Postcode Lottery #1",
-        "amount": 12.25,
-        "due_date": "2025-12-07",
-        "day": "7",
-        "status": "",
-        "from_pot": "Direct Debit",
-        "paid": "FALSE"
+        "amount": 0,
+        "status": "Future"
       },
       {
-        "payee": "Postcode Lottery #2",
-        "amount": 12.25,
-        "due_date": "2025-12-07",
-        "day": "7",
-        "status": "",
-        "from_pot": "Direct Debit",
-        "paid": "FALSE"
+        "amount": 0,
+        "status": "Future"
       },
       {
-        "payee": "Postcode Lottery #3",
-        "amount": 12.25,
-        "due_date": "2025-12-07",
-        "day": "7",
-        "status": "",
-        "from_pot": "Direct Debit",
-        "paid": "FALSE"
+        "amount": 0,
+        "status": "Future"
       },
       {
-        "payee": "Driver & Vehicle Licencing Agency ",
-        "amount": 23.18,
-        "due_date": "2025-12-03",
-        "day": "3",
-        "status": "",
-        "from_pot": "Direct Debit",
-        "paid": "FALSE"
+        "amount": 0,
+        "status": "Upcoming"
       },
       {
-        "payee": "Octopus Energy",
-        "amount": 94.9,
-        "due_date": "2025-12-03",
-        "day": "3",
-        "status": "",
-        "from_pot": "Direct Debit",
-        "paid": "FALSE"
+        "amount": 0,
+        "status": "Upcoming"
       },
       {
-        "payee": "Sports Direct",
-        "amount": 20,
-        "due_date": "2025-12-04",
-        "day": "4",
-        "status": "",
-        "from_pot": "Direct Debit",
-        "paid": "FALSE"
+        "amount": 0,
+        "status": "Upcoming"
       },
       {
-        "payee": "Rugby B.C",
-        "amount": 139,
-        "due_date": "2025-12-03",
-        "day": "3",
-        "status": "",
-        "from_pot": "Direct Debit",
-        "paid": "FALSE"
+        "amount": 0,
+        "status": "Upcoming"
       },
       {
-        "payee": "Legal & General",
-        "amount": 17.92,
-        "due_date": "2025-12-03",
-        "day": "3",
-        "status": "",
-        "from_pot": "Direct Debit",
-        "paid": "FALSE"
+        "amount": 0,
+        "status": "Upcoming"
       },
       {
-        "payee": "Payee",
-        "amount": null,
-        "due_date": "Due Date",
-        "day": "Day",
-        "status": "Status",
-        "from_pot": "FromPot",
-        "paid": "Paid?"
+        "amount": 0,
+        "status": "Upcoming"
       },
       {
-        "amount": 0
+        "amount": 0,
+        "status": "Upcoming"
       },
       {
-        "payee": "Barclays Partner Finance",
-        "amount": 62.49371795,
-        "due_date": "2025-11-17",
-        "day": "-3.339160839",
-        "status": "",
-        "from_pot": "Direct Debit",
-        "paid": "FALSE"
+        "amount": 0,
+        "status": "Future"
       },
       {
-        "payee": "Vodafone",
-        "amount": 65.68910256,
-        "due_date": "2025-11-30",
-        "day": "-4.951048951",
-        "status": "",
-        "from_pot": "Direct Debit",
-        "paid": "FALSE"
+        "amount": 0,
+        "status": "Paid"
       },
       {
-        "payee": "Payee",
-        "amount": null,
-        "due_date": "Due Date",
-        "day": "Day",
-        "status": "Status",
-        "from_pot": "FromPot",
-        "paid": "Paid?"
+        "amount": 0,
+        "status": "Upcoming"
       },
       {
-        "amount": 0
+        "amount": 0,
+        "status": "Upcoming"
       },
       {
-        "payee": "Barclays Partner Finance",
-        "amount": 62.49371795,
-        "due_date": "2025-11-17",
-        "day": "-3.339160839",
-        "status": "",
-        "from_pot": "Direct Debit",
-        "paid": "FALSE"
-      },
-      {
-        "payee": "Vodafone",
-        "amount": 65.68910256,
-        "due_date": "2025-11-30",
-        "day": "-4.951048951",
-        "status": "",
-        "from_pot": "Direct Debit",
-        "paid": "FALSE"
-      },
-      {
-        "payee": "ID Mobile",
-        "amount": 68.88448718,
-        "due_date": "2025-12-07",
-        "day": "-6.562937063",
-        "status": "",
-        "from_pot": "Direct Debit",
-        "paid": "FALSE"
-      },
-      {
-        "payee": "Postcode Lottery #4",
-        "amount": 72.07987179,
-        "due_date": "2025-12-07",
-        "day": "-8.174825175",
-        "status": "",
-        "from_pot": "Direct Debit",
-        "paid": "FALSE"
+        "amount": 0,
+        "status": "Upcoming"
       }
     ],
     "subscriptions_from_main": [],
@@ -955,7 +845,7 @@
         "to_pot": "Main Account",
         "amount": 170,
         "note": "Car Service and Door Fixed ",
-        "processed": "✅",
+        "processed": "TRUE",
         "type": "Transfer",
         "uid": "45971-Car Maintenance-Main Account-170"
       },
@@ -965,7 +855,7 @@
         "to_pot": "Dentist",
         "amount": 200,
         "note": "",
-        "processed": "✅",
+        "processed": "TRUE",
         "type": "Transfer",
         "uid": "45972-Holding Pot-Dentist-200"
       },
@@ -975,7 +865,7 @@
         "to_pot": "Main Account",
         "amount": 160,
         "note": "",
-        "processed": "✅",
+        "processed": "TRUE",
         "type": "Transfer",
         "uid": "45972-Dentist-Main Account-160"
       },
@@ -985,7 +875,7 @@
         "to_pot": "Dentist",
         "amount": 300,
         "note": "",
-        "processed": "✅",
+        "processed": "TRUE",
         "type": "Transfer",
         "uid": "45972-Holding Pot-Dentist-300"
       },
@@ -995,7 +885,7 @@
         "to_pot": "Main Account",
         "amount": 10.4,
         "note": "Work Spending",
-        "processed": "✅",
+        "processed": "TRUE",
         "type": "Transfer",
         "uid": "45975-Work Buffer-Main Account-10.4"
       },
@@ -1005,7 +895,7 @@
         "to_pot": "Main Account",
         "amount": 3.95,
         "note": "Work Spending",
-        "processed": "",
+        "processed": "TRUE",
         "type": "Transfer",
         "uid": "45975-Work Buffer-Main Account-3.95"
       },
@@ -1015,7 +905,7 @@
         "to_pot": "IG Trading",
         "amount": 3.75,
         "note": "Roundup from Work Canteen ",
-        "processed": "",
+        "processed": "TRUE",
         "type": "Transfer",
         "uid": "45975-Main Account-IG Trading-3.75"
       },
@@ -1025,7 +915,7 @@
         "to_pot": "IG Trading",
         "amount": 3.25,
         "note": "Roundup from Work Canteen ",
-        "processed": "",
+        "processed": "TRUE",
         "type": "Transfer",
         "uid": "45974-Main Account-IG Trading-3.25"
       },
@@ -1034,8 +924,8 @@
         "from_pot": "Main Account",
         "to_pot": "IG Trading",
         "amount": 0.75,
-        "note": "",
-        "processed": "",
+        "note": "Roundup from Work Canteen ",
+        "processed": "TRUE",
         "type": "Transfer",
         "uid": "45975-Main Account-IG Trading-0.75"
       }
