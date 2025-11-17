@@ -1,1 +1,158 @@
-[{"Payee":"Virgin Media","Amount (£)":"46.39","Due Date":"2025-11-14","Day":"14","Status":"Upcoming","FromPot":"Direct Debit"},{"Payee":"Barclays Partner Finance","Amount (£)":"50.92","Due Date":"2025-11-17","Day":"17","Status":"Upcoming","FromPot":"Direct Debit"},{"Payee":"Vodafone","Amount (£)":"23.28","Due Date":"2025-11-30","Day":"30","Status":"Upcoming","FromPot":"Direct Debit"},{"Payee":"ID Mobile","Amount (£)":"10","Due Date":"2025-12-07","Day":"7","Status":"Future","FromPot":"Direct Debit"},{"Payee":"Postcode Lottery #1","Amount (£)":"12.25","Due Date":"2025-12-07","Day":"7","Status":"Future","FromPot":"Direct Debit"},{"Payee":"Postcode Lottery #2","Amount (£)":"12.25","Due Date":"2025-12-07","Day":"7","Status":"Future","FromPot":"Direct Debit"},{"Payee":"Postcode Lottery #3","Amount (£)":"12.25","Due Date":"2025-12-07","Day":"7","Status":"Future","FromPot":"Direct Debit"},{"Payee":"Driver & Vehicle Licencing Agency ","Amount (£)":"23.18","Due Date":"2025-12-03","Day":"3","Status":"Upcoming","FromPot":"Direct Debit"},{"Payee":"Octopus Energy","Amount (£)":"94.9","Due Date":"2025-12-03","Day":"3","Status":"Upcoming","FromPot":"Direct Debit"},{"Payee":"Sports Direct","Amount (£)":"20","Due Date":"2025-12-04","Day":"4","Status":"Upcoming","FromPot":"Direct Debit"},{"Payee":"Rugby B.C","Amount (£)":"139","Due Date":"2025-12-03","Day":"3","Status":"Upcoming","FromPot":"Direct Debit"},{"Payee":"Legal & General","Amount (£)":"17.92","Due Date":"2025-12-03","Day":"3","Status":"Upcoming","FromPot":"Direct Debit"},{"Payee":"Severn Trent","Amount (£)":"43.86","Due Date":"2025-12-03","Day":"3","Status":"Upcoming","FromPot":"Direct Debit"},{"Payee":"Monzo Plus","Amount (£)":"5","Due Date":"2025-12-08","Day":"8","Status":"Future","FromPot":"Direct Debit"},{"Payee":"Apple One","Amount (£)":"18.95","Due Date":"2025-12-13","Day":"13","Status":"Future","FromPot":"Main Account"},{"Payee":"ChatGPT","Amount (£)":"19.99","Due Date":"2025-11-23","Day":"23","Status":"Upcoming","FromPot":"Main Account"},{"Payee":"Amazon Prime","Amount (£)":"8.99","Due Date":"2025-12-23","Day":"7","Status":"Future","FromPot":"Main Account"},{"Payee":"Monzo Contents Insurance","Amount (£)":"7.73","Due Date":"2025-11-29","Day":"29","Status":"Upcoming","FromPot":"Main Account"}]
+[
+  {
+    "DATE": "2025-11-13",
+    "NAME": "Apple One",
+    "AMOUNT": "18.95",
+    "POT": "Direct Debit",
+    "STATUS": "Paid",
+    "PAID": "TRUE",
+    "": "",
+    "TOTAL": "524.57",
+    "Pay Date": "2025-12-05",
+    "Paid": true
+  },
+  {
+    "DATE": "2025-11-14",
+    "NAME": "Virgin Media",
+    "AMOUNT": "46.39",
+    "POT": "Direct Debit",
+    "STATUS": "Paid",
+    "PAID": "TRUE",
+    "Paid": true
+  },
+  {
+    "DATE": "2025-11-17",
+    "NAME": "Barclays Partner Finance",
+    "AMOUNT": "50.92",
+    "POT": "Direct Debit",
+    "STATUS": "Upcoming",
+    "PAID": "FALSE",
+    "Paid": true
+  },
+  {
+    "DATE": "2025-11-23",
+    "NAME": "Chat GPT",
+    "AMOUNT": "19.99",
+    "POT": "Main Account",
+    "STATUS": "Upcoming",
+    "PAID": "FALSE",
+    "Paid": true
+  },
+  {
+    "DATE": "2025-11-28",
+    "NAME": "Domestic & General ",
+    "AMOUNT": "5.56",
+    "POT": "Chase Account",
+    "STATUS": "Upcoming",
+    "PAID": "FALSE",
+    "Paid": true
+  },
+  {
+    "DATE": "2025-11-29",
+    "NAME": "Monzo Contents",
+    "AMOUNT": "7.73",
+    "POT": "Main Account",
+    "STATUS": "Upcoming",
+    "PAID": "FALSE",
+    "Paid": true
+  },
+  {
+    "DATE": "2025-11-30",
+    "NAME": "Vodafone",
+    "AMOUNT": "23.28",
+    "POT": "Direct Debit",
+    "STATUS": "Upcoming",
+    "PAID": "FALSE",
+    "Paid": true
+  },
+  {
+    "DATE": "2025-12-03",
+    "NAME": "Driver & Vehicle Licencing Agency ",
+    "AMOUNT": "23.18",
+    "POT": "Direct Debit",
+    "STATUS": "Upcoming",
+    "PAID": "FALSE",
+    "Paid": true
+  },
+  {
+    "DATE": "2025-12-03",
+    "NAME": "Octopus Energy",
+    "AMOUNT": "94.9",
+    "POT": "Direct Debit",
+    "STATUS": "Upcoming",
+    "PAID": "FALSE",
+    "Paid": true
+  },
+  {
+    "DATE": "2025-12-03",
+    "NAME": "Rugby B.C",
+    "AMOUNT": "139",
+    "POT": "Direct Debit",
+    "STATUS": "Upcoming",
+    "PAID": "FALSE",
+    "Paid": true
+  },
+  {
+    "DATE": "2025-12-03",
+    "NAME": "Legal & General",
+    "AMOUNT": "17.92",
+    "POT": "Direct Debit",
+    "STATUS": "Upcoming",
+    "PAID": "FALSE",
+    "Paid": true
+  },
+  {
+    "DATE": "2025-12-04",
+    "NAME": "Sports Direct",
+    "AMOUNT": "20",
+    "POT": "Direct Debit",
+    "STATUS": "Upcoming",
+    "PAID": "FALSE",
+    "Paid": true
+  },
+  {
+    "DATE": "2025-12-07",
+    "NAME": "ID Mobile",
+    "AMOUNT": "10",
+    "POT": "Direct Debit",
+    "STATUS": "Future",
+    "PAID": "FALSE",
+    "Paid": true
+  },
+  {
+    "DATE": "2025-12-07",
+    "NAME": "Postcode Lottery #1",
+    "AMOUNT": "12.25",
+    "POT": "Direct Debit",
+    "STATUS": "Future",
+    "PAID": "FALSE",
+    "Paid": true
+  },
+  {
+    "DATE": "2025-12-07",
+    "NAME": "Postcode Lottery #2",
+    "AMOUNT": "12.25",
+    "POT": "Direct Debit",
+    "STATUS": "Future",
+    "PAID": "FALSE",
+    "Paid": true
+  },
+  {
+    "DATE": "2025-12-07",
+    "NAME": "Postcode Lottery #3",
+    "AMOUNT": "12.25",
+    "POT": "Direct Debit",
+    "STATUS": "Future",
+    "PAID": "FALSE",
+    "Paid": true
+  },
+  {
+    "DATE": "2025-12-07",
+    "NAME": "ID Mobile",
+    "AMOUNT": "10",
+    "POT": "Direct Debit",
+    "STATUS": "Future",
+    "PAID": "FALSE",
+    "Paid": true
+  }
+]
