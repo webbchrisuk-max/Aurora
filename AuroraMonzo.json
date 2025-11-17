@@ -1,13 +1,13 @@
 {
   "monzo": {
     "account_core": {
-      "main_balance": 721.07,
+      "main_balance": 655.07,
       "payday_last": "2025-11-07",
       "payday_next": "2025-12-05",
       "payday_cycle": "four_week",
       "pay_period_days": 28,
       "pots": {
-        "Main Account": 721.07,
+        "Main Account": 655.07,
         "Flex Repayment": 609.44,
         "Direct Debits": 398.11,
         "Holiday Pot": 174.45,
@@ -72,14 +72,6 @@
       },
       {
         "amount": 0,
-        "status": "Upcoming"
-      },
-      {
-        "amount": 0,
-        "status": "Upcoming"
-      },
-      {
-        "amount": 0,
         "status": "Future"
       },
       {
@@ -97,6 +89,14 @@
       {
         "amount": 0,
         "status": "Future"
+      },
+      {
+        "amount": 0,
+        "status": ""
+      },
+      {
+        "amount": 0,
+        "status": ""
       }
     ],
     "subscriptions_from_main": [],
@@ -835,6 +835,16 @@
           "Processed": "✅",
           "Exclude From Spend": "",
           "Gmail ID": "19a88de774c8f525"
+        },
+        {
+          "Date": "16/11/2025",
+          "Time": "",
+          "Merchant": "Transfer To Rugby Worker Club",
+          "Amount (£)": 0,
+          "Type": "Transfer",
+          "Source": "Monzo",
+          "Email Subject": "Tickets For Ipswitch Away",
+          "Category": "Coventry City Ipswich Away"
         }
       ]
     },
