@@ -23,80 +23,132 @@
     },
     "direct_debits": [
       {
-        "amount": 0,
-        "status": "Paid"
+        "date": "2025-11-13",
+        "name": "Apple One",
+        "amount": 18.95,
+        "pot": "Direct Debit",
+        "status": "Paid",
+        "paid": true
       },
       {
-        "amount": 0,
-        "status": "Paid"
+        "date": "2025-11-14",
+        "name": "Virgin Media",
+        "amount": 56.39,
+        "pot": "Direct Debit",
+        "status": "Paid",
+        "paid": true
       },
       {
-        "amount": 0,
-        "status": "Upcoming"
+        "date": "2025-11-17",
+        "name": "Barclays Partner Finance",
+        "amount": 50.92,
+        "pot": "Direct Debit",
+        "status": "Upcoming",
+        "paid": false
       },
       {
-        "amount": 0,
-        "status": "Upcoming"
+        "date": "2025-11-23",
+        "name": "Chat GPT",
+        "amount": 19.99,
+        "pot": "Direct Debit",
+        "status": "Upcoming",
+        "paid": true
       },
       {
-        "amount": 0,
-        "status": "Upcoming"
+        "date": "2025-11-28",
+        "name": "Domestic & General",
+        "amount": 5.56,
+        "pot": "Chase Account",
+        "status": "Upcoming",
+        "paid": false
       },
       {
-        "amount": 0,
-        "status": "Upcoming"
+        "date": "2025-11-29",
+        "name": "Monzo Contents",
+        "amount": 7.73,
+        "pot": "Main Account",
+        "status": "Upcoming",
+        "paid": false
       },
       {
-        "amount": 0,
-        "status": "Upcoming"
+        "date": "2025-11-30",
+        "name": "Vodafone",
+        "amount": 23.28,
+        "pot": "Direct Debit",
+        "status": "Upcoming",
+        "paid": false
       },
       {
-        "amount": 0,
-        "status": "Upcoming"
+        "date": "2025-12-03",
+        "name": "Driver & Vehicle Licencing Agency",
+        "amount": 23.18,
+        "pot": "Direct Debit",
+        "status": "Upcoming",
+        "paid": false
       },
       {
-        "amount": 0,
-        "status": "Upcoming"
+        "date": "2025-12-03",
+        "name": "Octopus Energy",
+        "amount": 94.9,
+        "pot": "Direct Debit",
+        "status": "Upcoming",
+        "paid": false
       },
       {
-        "amount": 0,
-        "status": "Upcoming"
+        "date": "2025-12-03",
+        "name": "Rugby B.C",
+        "amount": 139.0,
+        "pot": "Direct Debit",
+        "status": "Upcoming",
+        "paid": false
       },
       {
-        "amount": 0,
-        "status": "Upcoming"
+        "date": "2025-12-03",
+        "name": "Legal & General",
+        "amount": 17.92,
+        "pot": "Direct Debit",
+        "status": "Upcoming",
+        "paid": false
       },
       {
-        "amount": 0,
-        "status": "Upcoming"
+        "date": "2025-12-04",
+        "name": "Sports Direct",
+        "amount": 20,
+        "pot": "Direct Debit",
+        "status": "Upcoming",
+        "paid": false
       },
       {
-        "amount": 0,
-        "status": "Future"
+        "date": "2025-12-07",
+        "name": "ID Mobile",
+        "amount": 10,
+        "pot": "Direct Debit",
+        "status": "Future",
+        "paid": false
       },
       {
-        "amount": 0,
-        "status": "Future"
+        "date": "2025-12-07",
+        "name": "Postcode Lottery #1",
+        "amount": 12.25,
+        "pot": "Direct Debit",
+        "status": "Future",
+        "paid": false
       },
       {
-        "amount": 0,
-        "status": "Future"
+        "date": "2025-12-07",
+        "name": "Postcode Lottery #2",
+        "amount": 12.25,
+        "pot": "Direct Debit",
+        "status": "Future",
+        "paid": false
       },
       {
-        "amount": 0,
-        "status": "Future"
-      },
-      {
-        "amount": 0,
-        "status": "Future"
-      },
-      {
-        "amount": 0,
-        "status": ""
-      },
-      {
-        "amount": 0,
-        "status": ""
+        "date": "2025-12-07",
+        "name": "Postcode Lottery #3",
+        "amount": 12.25,
+        "pot": "Direct Debit",
+        "status": "Future",
+        "paid": false
       }
     ],
     "subscriptions_from_main": [],
@@ -908,462 +960,6 @@
           "Category": "Transfer",
           "Processed": "FALSE",
           "Exclude From Spend": "TRUE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
-        },
-        {
-          "Date": "",
-          "Time": "",
-          "Merchant": "",
-          "Amount (£)": 0,
-          "Type": "",
-          "Source": "",
-          "Email Subject": "",
-          "Category": "",
-          "Processed": "FALSE",
-          "Exclude From Spend": "FALSE"
         },
         {
           "Date": "",
