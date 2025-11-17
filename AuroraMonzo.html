@@ -468,38 +468,45 @@ if (now.getDay() === 5 && now.getHours() >= 8) {
 const ddBody = document.querySelector("#ddTable tbody");
 ddBody.innerHTML = "";
 
-const start = new Date(core.payday_last);
+// Use NEXT PAYDAY window
+const start = new Date();
 start.setHours(0, 0, 0, 0);
-const end = new Date(start);
-end.setDate(start.getDate() + 28);
+
+const end = new Date(core.payday_next);
 end.setHours(23, 59, 59, 999);
 
+// Convert DD dates + filter by window
 const ddInWindow = dd
-  .map((e) => ({ ...e, dateObj: new Date(e.due_date) }))
-  .filter((e) => e.dateObj >= start && e.dateObj <= end)
+  .map(e => ({
+    ...e,
+    dateObj: new Date(e.due_date)
+  }))
+  .filter(e => e.dateObj >= start && e.dateObj <= end)
   .sort((a, b) => a.dateObj - b.dateObj);
 
 let totalDue = 0;
+
 if (ddInWindow.length === 0) {
-  const row = document.createElement("tr");
-  row.innerHTML =
-    '<td colspan="3" style="text-align:center;color:#888;">No direct debits left before payday</td>';
-  ddBody.appendChild(row);
+  ddBody.innerHTML =
+    '<tr><td colspan="3" style="text-align:center;color:#888;">No direct debits left before payday</td></tr>';
 } else {
-  ddInWindow.forEach((item) => {
+  ddInWindow.forEach(item => {
     totalDue += item.amount;
+
     const row = document.createElement("tr");
-    row.innerHTML = `<td>${item.payee}</td><td>${item.amount.toFixed(
-      2
-    )}</td><td>${item.due_date}</td>`;
+    row.innerHTML = `
+      <td>${item.payee}</td>
+      <td>${item.amount.toFixed(2)}</td>
+      <td>${item.due_date}</td>
+    `;
     ddBody.appendChild(row);
   });
 
   const totalRow = document.createElement("tr");
-  totalRow.innerHTML = `<td><strong>Total Due Before Payday</strong></td><td colspan="2"><strong>£${totalDue.toFixed(
-    2
-  )}</strong></td>`;
-  totalRow.style.borderTop = "1px solid rgba(255,255,255,0.1)";
+  totalRow.innerHTML = `
+    <td><strong>Total Due Before Payday</strong></td>
+    <td colspan="2"><strong>£${totalDue.toFixed(2)}</strong></td>
+  `;
   totalRow.style.color = "var(--glow-cyan)";
   ddBody.appendChild(totalRow);
 }
