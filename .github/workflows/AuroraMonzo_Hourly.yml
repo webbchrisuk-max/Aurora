@@ -32,7 +32,7 @@ jobs:
           curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transactions" -o transactions.json
 
       # =====================================================
-      # STEP 3 – Fetch DirectDebits sheet
+      # STEP 3 – Fetch Direct Debits sheet
       # =====================================================
       - name: 🟢 Fetch Direct Debits sheet
         run: |
@@ -59,7 +59,7 @@ jobs:
           const transfers = JSON.parse(fs.readFileSync('transfers.json', 'utf8'));
           const applied = JSON.parse(fs.readFileSync('.aurora/monzo_transfers_applied.json', 'utf8'));
 
-          const newTransfers = transfers.filter(t => !applied.includes(t.UID));
+          const newTransfers = transfers.filter(t => t.UID && !applied.includes(t.UID));
 
           if (newTransfers.length > 0) {
             newTransfers.forEach(t => applied.push(t.UID));
@@ -84,9 +84,9 @@ jobs:
           let updated = false;
 
           ddSheet.forEach(dd => {
-            const ddName = (dd["Name"] || "").toLowerCase().trim();
-            const ddDate = new Date(dd["Date"]);
-            const ddPaid = dd["Paid"] === true;
+            const ddName = (dd["Name"] || dd["NAME"] || "").toLowerCase().trim();
+            const ddDate = new Date(dd["Date"] || dd["DATE"]);
+            const ddPaid = dd["Paid"] === true || dd["PAID"] === "TRUE";
 
             ddDate.setHours(0,0,0,0);
 
@@ -94,9 +94,10 @@ jobs:
             if (ddDate > today) return;
 
             const match = transactions.find(tx => {
-              const desc = (tx.description || "").toLowerCase();
-              const merch = (tx.merchant || "").toLowerCase();
-              return desc.includes(ddName) || merch.includes(ddName);
+              const text =
+                (tx.description || tx.Merchant || tx.Name || "")
+                  .toLowerCase();
+              return text.includes(ddName);
             });
 
             if (match) {
@@ -111,24 +112,26 @@ jobs:
           EOF
 
       # =====================================================
-      # STEP 7 – UPDATE AuroraMonzo.json
+      # STEP 7 – SAFE PATCH UPDATE of AuroraMonzo.json
       # =====================================================
-      - name: 🧿 Update AuroraMonzo.json with latest data
+      - name: 🧿 Update AuroraMonzo.json with latest data (SAFE PATCH)
         run: |
           node <<'EOF'
           const fs = require('fs');
 
+          // Load existing file without overwriting structure
           let core = {};
           if (fs.existsSync('AuroraMonzo.json')) {
             core = JSON.parse(fs.readFileSync('AuroraMonzo.json', 'utf8'));
           }
 
-          core["monzo"] = {
-            transactions: JSON.parse(fs.readFileSync('transactions.json', 'utf8')),
-            direct_debits: JSON.parse(fs.readFileSync('directdebits.json', 'utf8')),
-            transfers: JSON.parse(fs.readFileSync('transfers.json', 'utf8')),
-            state: JSON.parse(fs.readFileSync('.aurora/monzo_transfers_applied.json', 'utf8'))
-          };
+          if (!core.monzo) core.monzo = {};
+
+          // PATCH ONLY THESE — never overwrite account_core or pots
+          core.monzo.transactions = JSON.parse(fs.readFileSync('transactions.json', 'utf8'));
+          core.monzo.direct_debits = JSON.parse(fs.readFileSync('directdebits.json', 'utf8'));
+          core.monzo.transfers = JSON.parse(fs.readFileSync('transfers.json', 'utf8'));
+          core.monzo.state = JSON.parse(fs.readFileSync('.aurora/monzo_transfers_applied.json', 'utf8'));
 
           fs.writeFileSync('AuroraMonzo.json', JSON.stringify(core, null, 2));
           EOF
@@ -142,5 +145,5 @@ jobs:
           git config user.email "actions@github.com"
 
           git add .
-          git commit -m "Aurora Monzo: Hourly Sync (Transactions, Direct Debits, Transfers, Auto-Tick, JSON Update)" || echo "No changes to commit"
+          git commit -m "Aurora Monzo: Hourly Sync (Transactions, DDs, Transfers, Patch Update)" || echo "No changes to commit"
           git push || echo "No changes to push"
