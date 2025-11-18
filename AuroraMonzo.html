@@ -424,22 +424,42 @@ async function loadAuroraMonzo() {
     }
 
     /* ===================== PAYDAY SUMMARY ===================== */
-/* Remaining DD = total unpaid direct debits before next payday */
+
+/* 1 — Calculate remaining Direct Debits (Upcoming + Future BEFORE next payday) */
+let ddTotal = 0;
+
+directDebits.forEach(dd => {
+  const due = parseDateFlexible(dd.DATE);
+  if (!due) return;
+
+  // Only count if unpaid
+  if (dd.PAID === "FALSE" || dd.Paid === false) {
+    // Only count payments before next payday
+    if (due <= nextPayday) {
+      ddTotal += parseFloat(dd.AMOUNT) || 0;
+    }
+  }
+});
+
+/* Show remaining DD total */
 document.getElementById("remainingDD").textContent = ddTotal.toFixed(2);
 
-/* Planned extra commitments:
-   - 22nd: £20 match + £40 meal = £60
-   - 29th: £20 match + £100 night out = £120
-   Total = £180
+
+/* 2 — Planned commitments until payday:
+     - 22nd: £20 match + £40 meal = £60
+     - 29th: £20 match + £100 night out = £120
+     Total = £180
 */
 const plannedCommitments = 180;
 
-/* Remaining spending money = main account minus planned commitments
-   (DDs are covered from the Direct Debits pot, not this balance)
+/* 3 — Remaining spending money:
+      Direct Debits come from the Direct Debit pot,
+      so only subtract planned commitments from main balance.
 */
 const remainingSpendMoney =
   (core.main_balance || 0) - plannedCommitments;
 
+/* Show remaining spending money */
 document.getElementById("remainingSpending").textContent =
   remainingSpendMoney.toFixed(2);
 
