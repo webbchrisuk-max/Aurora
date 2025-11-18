@@ -2,7 +2,7 @@
   {
     "Date": "17/11/2025",
     "Time": "17:27:08",
-    "Merchant": "Home Bargains Shopping November 17, 2025 at 05:27PM",
+    "Merchant": "Home Bargains",
     "Amount (£)": "30.20",
     "Type": "Debit",
     "Source": "Monzo",
@@ -15,7 +15,7 @@
   {
     "Date": "17/11/2025",
     "Time": "17:05:28",
-    "Merchant": "Asda Petrol Fuel November 17, 2025 at 05:05PM",
+    "Merchant": "Asda Fuel ",
     "Amount (£)": "40.00",
     "Type": "Debit",
     "Source": "Monzo",
@@ -52,7 +52,7 @@
   {
     "Date": "15/11/2025",
     "Time": "12:13:56",
-    "Merchant": "Kings Barber Personal care November 15, 2025 at 12:13PM",
+    "Merchant": "Kings Barbers",
     "Amount (£)": "21.00",
     "Type": "Debit",
     "Source": "Monzo",
@@ -65,7 +65,7 @@
   {
     "Date": "15/11/2025",
     "Time": "13:59:58",
-    "Merchant": "Asda Groceries November 15, 2025 at 01:59PM",
+    "Merchant": "Asda Groceries",
     "Amount (£)": "23.08",
     "Type": "Debit",
     "Source": "Monzo",
@@ -78,7 +78,7 @@
   {
     "Date": "15/11/2025",
     "Time": "18:54:32",
-    "Merchant": "Ubsidi Fin Indian Que General November 15, 2025 at 06:54PM",
+    "Merchant": "Ubsidi Fin Indian Queen",
     "Amount (£)": "20.43",
     "Type": "Debit",
     "Source": "Monzo",
@@ -91,7 +91,7 @@
   {
     "Date": "14/11/2025",
     "Time": "15:32:16",
-    "Merchant": "Nic Services Group Work Canteen November 14, 2025 at 03:32PM",
+    "Merchant": "Nic Services Group",
     "Amount (£)": "0.70",
     "Type": "Debit",
     "Source": "Monzo",
@@ -104,7 +104,7 @@
   {
     "Date": "14/11/2025",
     "Time": "17:44:12",
-    "Merchant": "400 Work Canteen November 14, 2025 at 05:44PM",
+    "Merchant": "400 Work Canteen",
     "Amount (£)": "3.25",
     "Type": "Debit",
     "Source": "Monzo",
@@ -117,7 +117,7 @@
   {
     "Date": "14/11/2025",
     "Time": "21:31:10",
-    "Merchant": "ShopTo Shopping November 14, 2025 at 09:31PM",
+    "Merchant": "ShopTo ",
     "Amount (£)": "87.85",
     "Type": "Debit",
     "Source": "Monzo",
