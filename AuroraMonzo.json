@@ -1,23 +1,11 @@
 {
   "monzo": {
     "account_core": {
-      "main_balance": 496.34,
-      "payday_last": "2025-11-07",
-      "payday_next": "2025-12-05",
-      "pots": {
-        "Flex Repayment": 809.44,
-        "Direct Debits": 347.19,
-        "Holiday": 274.45,
-        "Coventry City FC": 167.86,
-        "IGTrading": 12.55,
-        "Car Maintenance": 124.49,
-        "Work Buffer": 33.59,
-        "Savings": 0,
-        "Dentist": 448.34,
-        "Holding Pot": 0,
-        "Christmas": 300
-      },
-      "income_received": 2078.78
+      "main_balance": 0,
+      "payday_last": "",
+      "payday_next": "",
+      "income_received": 0,
+      "pots": {}
     },
     "transactions": [
       {
@@ -891,6 +879,32 @@
         "Processed": "TRUE",
         "Exclude From Spend": "",
         "Gmail ID": "19a983f646b94df6"
+      },
+      {
+        "Date": "18/11/2025",
+        "Time": "18:50:43",
+        "Merchant": "Rp Hospitality Entertainment",
+        "Amount (£)": "8.30",
+        "Type": "Debit",
+        "Source": "General",
+        "Email Subject": "I just spent £ 8.30 at Rp Hospitality Entertainment November 18, 2025 at 06:50PM",
+        "Category": "",
+        "Processed": "TRUE",
+        "Exclude From Spend": "",
+        "Gmail ID": "19a984e0ca9afec6"
+      },
+      {
+        "Date": "18/11/2025",
+        "Time": "18:46:16",
+        "Merchant": "Uber Transport",
+        "Amount (£)": "0.01",
+        "Type": "Debit",
+        "Source": "Travel",
+        "Email Subject": "I just spent £ 0.01 at Uber Transport November 18, 2025 at 06:46PM",
+        "Category": "",
+        "Processed": "TRUE",
+        "Exclude From Spend": "",
+        "Gmail ID": "19a9849fd102b005"
       }
     ],
     "direct_debits": [
