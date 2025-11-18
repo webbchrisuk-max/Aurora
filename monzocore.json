@@ -1,7 +1,7 @@
 [
   {
     "Label": "Main Account",
-    "Value (£)": "#N/A",
+    "Value (£)": "496.74",
     "Target": "516.27",
     "Total Due": "",
     "Remaining After Payments": "",
@@ -85,5 +85,12 @@
     "Target": "500",
     "Total Due": "500",
     "Remaining After Payments": "🤑 £500.00 left to save"
+  },
+  {
+    "Label": "",
+    "Value (£)": "-2,015.52",
+    "Target": "",
+    "Total Due": "2,015.52",
+    "Remaining After Payments": "🤑 £2015.52 left to save"
   }
 ]
