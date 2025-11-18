@@ -18,28 +18,35 @@ jobs:
         uses: actions/checkout@v4
 
       # =====================================================
-      # STEP 1 – Fetch Transfers sheet
+      # STEP 1 – Fetch MonzoCore sheet (MAIN ACCOUNT + POTS)
+      # =====================================================
+      - name: 🟢 Fetch MonzoCore sheet
+        run: |
+          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/MonzoCore" -o monzocore.json
+
+      # =====================================================
+      # STEP 2 – Fetch Transfers sheet
       # =====================================================
       - name: 🟢 Fetch Transfers sheet
         run: |
           curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transfers" -o transfers.json
 
       # =====================================================
-      # STEP 2 – Fetch Transactions sheet
+      # STEP 3 – Fetch Transactions sheet
       # =====================================================
       - name: 🟢 Fetch Transactions sheet
         run: |
           curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transactions" -o transactions.json
 
       # =====================================================
-      # STEP 3 – Fetch DirectDebits sheet
+      # STEP 4 – Fetch DirectDebits sheet
       # =====================================================
       - name: 🟢 Fetch Direct Debits sheet
         run: |
           curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/DirectDebits" -o directdebits.json
 
       # =====================================================
-      # STEP 4 – Ensure state folder
+      # STEP 5 – Ensure state folder
       # =====================================================
       - name: 📦 Ensure state folder
         run: |
@@ -49,7 +56,7 @@ jobs:
           fi
 
       # =====================================================
-      # STEP 5 – Apply NEW Transfers (UID filtering)
+      # STEP 6 – Apply NEW Transfers (UID filtering)
       # =====================================================
       - name: 🔄 Apply NEW Transfers
         run: |
@@ -68,7 +75,7 @@ jobs:
           EOF
 
       # =====================================================
-      # STEP 6 – Auto-tick Paid Direct Debits
+      # STEP 7 – Auto-tick Paid Direct Debits
       # =====================================================
       - name: 🔘 Auto-mark Paid Direct Debits
         run: |
@@ -110,38 +117,43 @@ jobs:
           EOF
 
       # =====================================================
-      # STEP 7 – UPDATE AuroraMonzo.json (Fully Structured Output)
+      # STEP 8 – UPDATE AuroraMonzo.json (Structured Output)
       # =====================================================
       - name: 🧿 Update AuroraMonzo.json with latest data
         run: |
           node <<'EOF'
           const fs = require('fs');
 
-          // Load existing OR create empty
+          // Load existing OR create empty object
           let core = {};
           if (fs.existsSync('AuroraMonzo.json')) {
             core = JSON.parse(fs.readFileSync('AuroraMonzo.json', 'utf8'));
           }
 
-          // Load source files (pretty-format later)
+          // Load the fetched files
+          const monzoCoreRaw = JSON.parse(fs.readFileSync('monzocore.json', 'utf8'));
           const transactions = JSON.parse(fs.readFileSync('transactions.json', 'utf8'));
           const direct = JSON.parse(fs.readFileSync('directdebits.json', 'utf8'));
           const transfers = JSON.parse(fs.readFileSync('transfers.json', 'utf8'));
           const applied = JSON.parse(fs.readFileSync('.aurora/monzo_transfers_applied.json', 'utf8'));
 
-          // Preserve account_core EXACTLY as user has it
-          const accountCore =
-            core.monzo && core.monzo.account_core
-              ? core.monzo.account_core
-              : {
-                  main_balance: 0,
-                  payday_last: "",
-                  payday_next: "",
-                  income_received: 0,
-                  pots: {}
-                };
+          // Convert MonzoCore sheet into structured object
+          const accountCore = {
+            main_balance: parseFloat(monzoCoreRaw[0]["Main Balance"] || 0),
+            payday_last: monzoCoreRaw[0]["Payday Last"] || "",
+            payday_next: monzoCoreRaw[0]["Payday Next"] || "",
+            income_received: parseFloat(monzoCoreRaw[0]["Income Received"] || 0),
+            pots: {}
+          };
 
-          // Write final Monzo structure
+          // Build pots dictionary
+          monzoCoreRaw.forEach(row => {
+            if (row["Pot Name"] && row["Pot Balance"]) {
+              accountCore.pots[row["Pot Name"]] = parseFloat(row["Pot Balance"]);
+            }
+          });
+
+          // Write into final JSON
           core["monzo"] = {
             account_core: accountCore,
             transactions: transactions,
@@ -150,18 +162,19 @@ jobs:
             state: applied
           };
 
-          // Pretty print ALL json files
+          // Pretty print each file
+          fs.writeFileSync('monzocore.json', JSON.stringify(monzoCoreRaw, null, 2));
           fs.writeFileSync('transactions.json', JSON.stringify(transactions, null, 2));
           fs.writeFileSync('directdebits.json', JSON.stringify(direct, null, 2));
           fs.writeFileSync('transfers.json', JSON.stringify(transfers, null, 2));
           fs.writeFileSync('.aurora/monzo_transfers_applied.json', JSON.stringify(applied, null, 2));
 
-          // Final master file
+          // Write master file
           fs.writeFileSync('AuroraMonzo.json', JSON.stringify(core, null, 2));
           EOF
 
       # =====================================================
-      # STEP 8 – COMMIT & PUSH
+      # STEP 9 – COMMIT & PUSH
       # =====================================================
       - name: 📤 Commit and Push
         run: |
@@ -169,5 +182,5 @@ jobs:
           git config user.email "actions@github.com"
 
           git add .
-          git commit -m "Aurora Monzo: Hourly Sync (Updated JSON Format + Structures)" || echo "No changes to commit"
+          git commit -m "Aurora Monzo: Hourly Sync (MonzoCore + Pots + Balance Update)" || echo "No changes to commit"
           git push || echo "No changes to push"
