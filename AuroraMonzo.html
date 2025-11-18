@@ -60,16 +60,41 @@ header{text-align:center;padding:25px 10px;
 .progress-container{background:rgba(255,255,255,0.08);border-radius:10px;height:14px;overflow:hidden;margin-top:6px;}
 .progress-bar{height:100%;background:linear-gradient(90deg,var(--glow-cyan),var(--glow-coral));border-radius:10px;width:0;transition:width .8s ease-in-out;}
 
-/* === POTS CAROUSEL === */
+/* === POTS CAROUSEL (Fixed – Individual Cards + Centre on Mobile) === */
 .pot-carousel {
   display: flex;
+  flex-direction: row;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
   gap: 80px;
-  padding: 45px 0 30px 15px; /* shifted right */
-  scroll-padding-left: 35px;
+  padding: 45px 0 30px 20px; /* shifted right but keeps spacing */
+  scroll-padding-left: 40px;
   -webkit-overflow-scrolling: touch;
+}
+
+.pot-carousel::after {
+  content: "";
+  flex: 0 0 20px; /* keeps last card centred */
+}
+
+/* === INDIVIDUAL POT CARDS (Restored) === */
+.pot-card {
+  flex: 0 0 80%;     /* << THIS ensures they behave as individual cards */
+  scroll-snap-align: start;
+  background: rgba(255,255,255,0.05);
+  border-radius: 14px;
+  padding: 18px;
+  text-align: center;
+  margin-top: 10px;
+  box-shadow: 0 0 15px var(--glow-cyan);
+  animation: potPulse 2s infinite alternate;
+  transition: transform 0.3s ease;
+  display: block;    /* << Restores card block layout */
+}
+
+.pot-card:hover {
+  transform: scale(1.03);
 }
 
 /* === RESPONSIVE === */
