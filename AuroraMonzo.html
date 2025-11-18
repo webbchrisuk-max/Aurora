@@ -424,13 +424,24 @@ async function loadAuroraMonzo() {
     }
 
     /* ===================== PAYDAY SUMMARY ===================== */
-    document.getElementById("remainingDD").textContent = ddTotal.toFixed(2);
+/* Remaining DD = total unpaid direct debits before next payday */
+document.getElementById("remainingDD").textContent = ddTotal.toFixed(2);
 
-    const remainingSpendMoney =
-      (core.main_balance || 0) - todaySpend - ddTotal;
+/* Planned extra commitments:
+   - 22nd: £20 match + £40 meal = £60
+   - 29th: £20 match + £100 night out = £120
+   Total = £180
+*/
+const plannedCommitments = 180;
 
-    document.getElementById("remainingSpending").textContent =
-      remainingSpendMoney.toFixed(2);
+/* Remaining spending money = main account minus planned commitments
+   (DDs are covered from the Direct Debits pot, not this balance)
+*/
+const remainingSpendMoney =
+  (core.main_balance || 0) - plannedCommitments;
+
+document.getElementById("remainingSpending").textContent =
+  remainingSpendMoney.toFixed(2);
 
     /* ===================== POTS OVERVIEW ===================== */
     const goals = {
