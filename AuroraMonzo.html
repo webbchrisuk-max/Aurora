@@ -456,18 +456,27 @@ async function loadAuroraMonzo() {
     /* ===================== RECENT TRANSACTIONS ===================== */
 
     const txnBody = document.querySelector("#txnTable tbody");
-    txnBody.innerHTML = "";
+txnBody.innerHTML = "";
 
-    txns.slice(-5).forEach(tx => {
-      const amt = parseFloat(tx["Amount (£)"]) || 0;
+// Convert to proper date objects and sort newest → oldest
+const sortedTxns = txns
+  .map(tx => ({
+    ...tx,
+    _dateObj: parseDateFlexible(tx.Date)
+  }))
+  .filter(tx => tx._dateObj)               // only valid dates
+  .sort((a, b) => b._dateObj - a._dateObj); // newest first
 
-      txnBody.innerHTML += `
-        <tr>
-          <td>${tx.Date}</td>
-          <td>${tx.Merchant}</td>
-          <td>${amt.toFixed(2)}</td>
-        </tr>`;
-    });
+// Take the top 5 most recent
+sortedTxns.slice(0, 5).forEach(tx => {
+  const amt = parseFloat(tx["Amount (£)"]) || 0;
+
+  txnBody.innerHTML += `
+    <tr>
+      <td>${tx.Date}</td>
+      <td>${tx.Merchant}</td>
+      <td>${amt.toFixed(2)}</td>
+    </tr>`;
 
 
     /* ===================== POTS OVERVIEW ===================== */
