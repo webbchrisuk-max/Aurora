@@ -109,33 +109,46 @@ jobs:
           if (updated) {
             fs.writeFileSync('directdebits.json', JSON.stringify(ddSheet, null, 2));
           }
-          EOF
 
-      # =====================================================
-      # STEP 7 – SAFE PATCH UPDATE of AuroraMonzo.json
-      # =====================================================
-      - name: 🧿 Update AuroraMonzo.json with latest data (SAFE PATCH)
-        run: |
-          node <<'EOF'
-          const fs = require('fs');
+# =====================================================
+# STEP 7 – UPDATE AuroraMonzo.json (Pretty Printed)
+# ====================================================
+- name: 🧿 Update AuroraMonzo.json with latest data
+  run: |
+    node <<'EOF'
+    const fs = require('fs');
 
-          // Load existing file without overwriting structure
-          let core = {};
-          if (fs.existsSync('AuroraMonzo.json')) {
-            core = JSON.parse(fs.readFileSync('AuroraMonzo.json', 'utf8'));
-          }
+    // Load existing OR create structure
+    let core = {};
+    if (fs.existsSync('AuroraMonzo.json')) {
+      core = JSON.parse(fs.readFileSync('AuroraMonzo.json', 'utf8'));
+    }
 
-          if (!core.monzo) core.monzo = {};
+    // ALWAYS pretty print inputs
+    const transactions = JSON.parse(fs.readFileSync('transactions.json', 'utf8'));
+    const direct = JSON.parse(fs.readFileSync('directdebits.json', 'utf8'));
+    const transfers = JSON.parse(fs.readFileSync('transfers.json', 'utf8'));
+    const applied = JSON.parse(fs.readFileSync('.aurora/monzo_transfers_applied.json', 'utf8'));
 
-          // PATCH ONLY THESE — never overwrite account_core or pots
-          core.monzo.transactions = JSON.parse(fs.readFileSync('transactions.json', 'utf8'));
-          core.monzo.direct_debits = JSON.parse(fs.readFileSync('directdebits.json', 'utf8'));
-          core.monzo.transfers = JSON.parse(fs.readFileSync('transfers.json', 'utf8'));
-          core.monzo.state = JSON.parse(fs.readFileSync('.aurora/monzo_transfers_applied.json', 'utf8'));
+    // Rebuild proper structure
+    core["monzo"] = {
+      account_core: core.monzo?.account_core || {},
+      transactions: transactions,
+      direct_debits: direct,
+      transfers: transfers,
+      state: applied
+    };
 
-          fs.writeFileSync('AuroraMonzo.json', JSON.stringify(core, null, 2));
-          EOF
+    // WRITE ALL PRETTY
+    fs.writeFileSync('transactions.json', JSON.stringify(transactions, null, 2));
+    fs.writeFileSync('directdebits.json', JSON.stringify(direct, null, 2));
+    fs.writeFileSync('transfers.json', JSON.stringify(transfers, null, 2));
+    fs.writeFileSync('.aurora/monzo_transfers_applied.json', JSON.stringify(applied, null, 2));
 
+    fs.writeFileSync('AuroraMonzo.json', JSON.stringify(core, null, 2));
+    EOF
+        
+          
       # =====================================================
       # STEP 8 – COMMIT & PUSH
       # =====================================================
