@@ -357,18 +357,27 @@ tr:hover td {
 async function loadAuroraMonzo() {
   const status = document.getElementById("syncStatus");
   const monzoJSON =
-  "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraMonzo.json";
+    "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraMonzo.json";
   try {
     const res = await fetch(monzoJSON + "?nocache=" + Date.now());
     if (!res.ok) throw new Error("HTTP " + res.status);
     const data = await res.json();
 
-    /* --- Core account objects --- */
-    const core = data.monzo.account_core;
+    /* --- Core account objects (patched to be safe) --- */
+    const monzo = data.monzo || {};
+
+    const core = monzo.account_core || {
+      main_balance: 0,
+      payday_last: "—",
+      payday_next: "",
+      income_received: 0,
+      pots: {}
+    };
+
     const pots = core.pots || {};
-    const dd = data.monzo.direct_debits || [];
-    const subs = data.monzo.subscriptions_from_main || [];
-    const txns = data.monzo.transactions_feed?.recent || [];
+    const dd = monzo.direct_debits || [];
+    const subs = monzo.subscriptions_from_main || [];
+    const txns = monzo.transactions_feed?.recent || monzo.transactions || [];
 
     /* --- Update account and flex cards --- */
     document.getElementById("mainBalance").textContent =
@@ -392,198 +401,295 @@ async function loadAuroraMonzo() {
 
     const weeklyLimit = core.main_balance / 4; // dynamic weekly limit
     const dailyAllowance = weeklyLimit / 7;
+
     /* ===================== PART 3-2 START (Daily & Weekly Tracker + UK-Date Parser) ===================== */
 
-/* ---------- Sum of today's and this week's spend (UK-format safe) ---------- */
-let todaySpend = 0,
-  weekSpend = 0;
+    /* ---------- Sum of today's and this week's spend (UK-format safe) ---------- */
+    let todaySpend = 0,
+      weekSpend = 0;
 
-function parseUKDate(str) {
-  if (!str) return null;
-  // expect "dd/mm/yyyy" or "dd/mm/yyyy hh:mm:ss"
-  const parts = str.split(/[ /:]/); // ["08","11","2025","09","33","04"]
-  if (parts.length < 3) return null;
-  const [d, m, y] = parts;
-  const hh = parts[3] || 0,
-    mm = parts[4] || 0,
-    ss = parts[5] || 0;
-  return new Date(y, m - 1, d, hh, mm, ss);
-}
+    function parseUKDate(str) {
+      if (!str) return null;
+      // expect "dd/mm/yyyy" or "dd/mm/yyyy hh:mm:ss"
+      const parts = str.split(/[ /:]/); // ["08","11","2025","09","33","04"]
+      if (parts.length < 3) return null;
+      const [d, m, y] = parts;
+      const hh = parts[3] || 0,
+        mm = parts[4] || 0,
+        ss = parts[5] || 0;
+      return new Date(y, m - 1, d, hh, mm, ss);
+    }
 
-txns.forEach((tx) => {
-  const raw = tx.Date || tx.date;
-  const txDate = parseUKDate(raw);
-  const amt = parseFloat(tx["Amount (£)"] || tx.amount || 0);
-  if (!txDate || !amt) return;
+    txns.forEach((tx) => {
+      const raw = tx.Date || tx.date;
+      const txDate = parseUKDate(raw);
+      const amt = parseFloat(tx["Amount (£)"] || tx.amount || 0);
+      if (!txDate || !amt) return;
 
-  if (txDate.toDateString() === today.toDateString()) todaySpend += amt;
-  if (txDate >= lastFriday && txDate < nextFriday) weekSpend += amt;
-});
+      if (txDate.toDateString() === today.toDateString()) todaySpend += amt;
+      if (txDate >= lastFriday && txDate < nextFriday) weekSpend += amt;
+    });
 
-const remainingToday = Math.max(dailyAllowance - todaySpend, 0);
-const pctUsed = Math.min((todaySpend / dailyAllowance) * 100, 100);
+    const remainingToday = Math.max(dailyAllowance - todaySpend, 0);
+    const pctUsed = Math.min((todaySpend / dailyAllowance) * 100, 100);
 
-document.getElementById("todaySpend").textContent = todaySpend.toFixed(2);
-document.getElementById(
-  "remainingText"
-).textContent = `Remaining: £${remainingToday.toFixed(2)}`;
-document.getElementById(
-  "weeklyOverview"
-).textContent = `Week total: £${weekSpend.toFixed(2)} / £${weeklyLimit.toFixed(
-  2
-)}`;
-document.getElementById("dailyBar").style.width = 100 - pctUsed + "%";
+    document.getElementById("todaySpend").textContent = todaySpend.toFixed(2);
+    document.getElementById(
+      "remainingText"
+    ).textContent = `Remaining: £${remainingToday.toFixed(2)}`;
+    document.getElementById(
+      "weeklyOverview"
+    ).textContent = `Week total: £${weekSpend.toFixed(
+      2
+    )} / £${weeklyLimit.toFixed(2)}`;
+    document.getElementById("dailyBar").style.width = 100 - pctUsed + "%";
 
-/* ===================== PART 3-2 END / PART 3-3 START ===================== */
-/* ===================== PART 3-3 START (Work + DD + Pots + Footer) ===================== */
-
-/* ---------- Work Spending Tracker ---------- */
-let workSpend = 0;
-txns.forEach((tx) => {
-  const cat = (tx.Category || tx.category || "").toLowerCase();
-  const date = parseUKDate(tx.Date || tx.date);
-  const amt = parseFloat(tx["Amount (£)"] || tx.amount || 0);
-  if (cat === "work" && date >= lastFriday && date < nextFriday) workSpend += amt;
-});
-document.getElementById("workSpend").textContent = workSpend.toFixed(2);
-
-const now = new Date();
-const nextTransfer = new Date(lastFriday);
-nextTransfer.setDate(lastFriday.getDate() + 7);
-nextTransfer.setHours(8, 0, 0, 0);
-
-const statusEl = document.getElementById("workTransferStatus");
-if (now.getDay() === 5 && now.getHours() >= 8) {
-  statusEl.innerHTML = "✅ Transfer completed";
-  statusEl.style.color = "var(--glow-cyan)";
-} else if (nextTransfer - now < 24 * 60 * 60 * 1000) {
-  statusEl.innerHTML = "⚠️ Transfer due soon (Fri 08:00)";
-  statusEl.style.color = "var(--glow-coral)";
-} else {
-  statusEl.innerHTML = "Auto-transfer scheduled: Friday 08:00";
-  statusEl.style.color = "";
-}
-
-/* ---------- Direct Debits (filtered + total) ---------- */
-const ddBody = document.querySelector("#ddTable tbody");
-ddBody.innerHTML = "";
-
-// Use NEXT PAYDAY window
-const start = new Date();
-start.setHours(0, 0, 0, 0);
-
-const end = new Date(core.payday_next);
-end.setHours(23, 59, 59, 999);
-
-// Convert DD dates + filter by window
-const ddInWindow = dd
-  .map(e => ({
-    ...e,
-    dateObj: new Date(e.due_date)
-  }))
-  .filter(e => e.dateObj >= start && e.dateObj <= end)
-  .sort((a, b) => a.dateObj - b.dateObj);
-
-let totalDue = 0;
-
-if (ddInWindow.length === 0) {
-  ddBody.innerHTML =
-    '<tr><td colspan="3" style="text-align:center;color:#888;">No direct debits left before payday</td></tr>';
-} else {
-  ddInWindow.forEach(item => {
-    totalDue += item.amount;
-
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${item.payee}</td>
-      <td>${item.amount.toFixed(2)}</td>
-      <td>${item.due_date}</td>
-    `;
-    ddBody.appendChild(row);
-  });
-
-  const totalRow = document.createElement("tr");
-  totalRow.innerHTML = `
-    <td><strong>Total Due Before Payday</strong></td>
-    <td colspan="2"><strong>£${totalDue.toFixed(2)}</strong></td>
-  `;
-  totalRow.style.color = "var(--glow-cyan)";
-  ddBody.appendChild(totalRow);
-}
-
-/* ---------- Subscriptions ---------- */
-const subBody = document.querySelector("#subTable tbody");
-subBody.innerHTML = "";
-subs.forEach((item) => {
-  const row = document.createElement("tr");
-  row.innerHTML = `<td>${item.service}</td><td>${item.amount.toFixed(
-    2
-  )}</td><td>${item.renewal_date}</td>`;
-  subBody.appendChild(row);
-});
-
-/* ---------- Recent Transactions ---------- */
-const txnBody = document.querySelector("#txnTable tbody");
-txnBody.innerHTML = "";
-
-// Get the LAST 5 (newest)
-txns.slice(-5).forEach((tx) => {
-  const date = tx.Date || tx.date || "—";
-  const name = tx.Merchant || tx.Name || tx.merchant || tx.name || "Unknown";
-  const amt = parseFloat(tx["Amount (£)"] || tx.amount || 0);
-  const r = document.createElement("tr");
-  r.innerHTML = `<td>${date}</td><td>${name}</td><td>${amt.toFixed(2)}</td>`;
-  txnBody.appendChild(r);
-});
-
-/* ---------- Render Pots Carousel ---------- */
-renderPotCarousel(pots);
-
-/* ---------- Pots Carousel ---------- */
-function renderPotCarousel(pots) {
-  const carousel = document.getElementById("potCarousel");
-  carousel.innerHTML = "";
-  const goals = {
-    "Flex Repayment": 810.77,
-    "Direct Debits": 459.45,
-    "Holiday": 297.79,
-    "Coventry City FC": 500,
-    "IGTrading": 400,
-    "Car Maintenance": 400,
-    "Work Buffer": 65,
-    "Savings": 1000,
-    "Dentist": 1800,
-  };
-  Object.entries(pots).forEach(([name, balance]) => {
-    if (name === "Flex Repayment") return;
-    const goal = goals[name] || 500;
-    const pct = Math.min((balance / goal) * 100, 100).toFixed(1);
-    const card = document.createElement("div");
-    card.className = "pot-card";
-    card.innerHTML = `
-      <h3>${name}</h3>
-      <p>£${balance.toFixed(2)} / £${goal}</p>
-      <div class="progress-container">
-        <div class="progress-bar" style="width:${pct}%"></div>
-      </div>`;
-    carousel.appendChild(card);
-  });
-}
-
-/* ---------- Sync Indicator ---------- */
-status.innerHTML = "🟢 Connected – Live Sync Active";
-status.style.animationPlayState = "running";
-} catch (err) {
-  console.error("❌ Aurora Monzo load error:", err);
+    /* ===================== PART 3-2 END / PART 3-3 START ===================== */
+    /* ===================== PART 3-3 START (Work + DD + Pots + Footer) ===================== */
+<script>
+async function loadAuroraMonzo() {
   const status = document.getElementById("syncStatus");
-  status.innerHTML = "🔴 Disconnected – Retrying…";
-  status.style.color = "#ff6666";
-  status.style.textShadow = "0 0 8px #ff4444";
-  status.style.animationPlayState = "paused";
-}
+  const monzoJSON =
+    "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraMonzo.json";
+  try {
+    const res = await fetch(monzoJSON + "?nocache=" + Date.now());
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+
+    /* --- Core account objects (patched to be safe) --- */
+    const monzo = data.monzo || {};
+
+    const core = monzo.account_core || {
+      main_balance: 0,
+      payday_last: "—",
+      payday_next: "",
+      income_received: 0,
+      pots: {}
+    };
+
+    const pots = core.pots || {};
+    const dd = monzo.direct_debits || [];
+    const subs = monzo.subscriptions_from_main || [];
+    const txns = monzo.transactions_feed?.recent || monzo.transactions || [];
+
+    /* --- Update account and flex cards --- */
+    document.getElementById("mainBalance").textContent =
+      core.main_balance.toFixed(2);
+    document.getElementById("payday").textContent = core.payday_last || "—";
+    document.getElementById("payReceived").textContent =
+      core.income_received?.toFixed(2) || "0.00";
+    document.getElementById("flexBalance").textContent = (
+      pots["Flex Repayment"] || 0
+    ).toFixed(2);
+
+    /* --- Determine current week window (Friday → Thursday) --- */
+    const today = new Date();
+    const weekday = today.getDay(); // 0=Sun … 6=Sat
+    let lastFriday = new Date(today);
+    const offset = weekday >= 5 ? weekday - 5 : 7 - (5 - weekday);
+    lastFriday.setDate(today.getDate() - offset);
+    if (weekday === 5) lastFriday = new Date(today);
+    const nextFriday = new Date(lastFriday);
+    nextFriday.setDate(lastFriday.getDate() + 7);
+
+    const weeklyLimit = core.main_balance / 4; // dynamic weekly limit
+    const dailyAllowance = weeklyLimit / 7;
+
+    /* ===================== PART 3-2 START (Daily & Weekly Tracker + UK-Date Parser) ===================== */
+
+    /* ---------- Sum of today's and this week's spend (UK-format safe) ---------- */
+    let todaySpend = 0,
+      weekSpend = 0;
+
+    function parseUKDate(str) {
+      if (!str) return null;
+      // expect "dd/mm/yyyy" or "dd/mm/yyyy hh:mm:ss"
+      const parts = str.split(/[ /:]/); // ["08","11","2025","09","33","04"]
+      if (parts.length < 3) return null;
+      const [d, m, y] = parts;
+      const hh = parts[3] || 0,
+        mm = parts[4] || 0,
+        ss = parts[5] || 0;
+      return new Date(y, m - 1, d, hh, mm, ss);
+    }
+
+    txns.forEach((tx) => {
+      const raw = tx.Date || tx.date;
+      const txDate = parseUKDate(raw);
+      const amt = parseFloat(tx["Amount (£)"] || tx.amount || 0);
+      if (!txDate || !amt) return;
+
+      if (txDate.toDateString() === today.toDateString()) todaySpend += amt;
+      if (txDate >= lastFriday && txDate < nextFriday) weekSpend += amt;
+    });
+
+    const remainingToday = Math.max(dailyAllowance - todaySpend, 0);
+    const pctUsed = Math.min((todaySpend / dailyAllowance) * 100, 100);
+
+    document.getElementById("todaySpend").textContent = todaySpend.toFixed(2);
+    document.getElementById(
+      "remainingText"
+    ).textContent = `Remaining: £${remainingToday.toFixed(2)}`;
+    document.getElementById(
+      "weeklyOverview"
+    ).textContent = `Week total: £${weekSpend.toFixed(
+      2
+    )} / £${weeklyLimit.toFixed(2)}`;
+    document.getElementById("dailyBar").style.width = 100 - pctUsed + "%";
+
+    /* ===================== PART 3-2 END / PART 3-3 START ===================== */
+    /* ===================== PART 3-3 START (Work + DD + Pots + Footer) ===================== */
+
+    /* ---------- Work Spending Tracker ---------- */
+    let workSpend = 0;
+    txns.forEach((tx) => {
+      const cat = (tx.Category || tx.category || "").toLowerCase();
+      const date = parseUKDate(tx.Date || tx.date);
+      const amt = parseFloat(tx["Amount (£)"] || tx.amount || 0);
+      if (cat === "work" && date >= lastFriday && date < nextFriday)
+        workSpend += amt;
+    });
+    document.getElementById("workSpend").textContent = workSpend.toFixed(2);
+
+    const now = new Date();
+    const nextTransfer = new Date(lastFriday);
+    nextTransfer.setDate(lastFriday.getDate() + 7);
+    nextTransfer.setHours(8, 0, 0, 0);
+
+    const statusEl = document.getElementById("workTransferStatus");
+    if (now.getDay() === 5 && now.getHours() >= 8) {
+      statusEl.innerHTML = "✅ Transfer completed";
+      statusEl.style.color = "var(--glow-cyan)";
+    } else if (nextTransfer - now < 24 * 60 * 60 * 1000) {
+      statusEl.innerHTML = "⚠️ Transfer due soon (Fri 08:00)";
+      statusEl.style.color = "var(--glow-coral)";
+    } else {
+      statusEl.innerHTML = "Auto-transfer scheduled: Friday 08:00";
+      statusEl.style.color = "";
+    }
+
+    /* ---------- Direct Debits (filtered + total) ---------- */
+    const ddBody = document.querySelector("#ddTable tbody");
+    ddBody.innerHTML = "";
+
+    // Use NEXT PAYDAY window
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+
+    const end = new Date(core.payday_next || start);
+    end.setHours(23, 59, 59, 999);
+
+    // Convert DD dates + filter by window
+    const ddInWindow = dd
+      .map((e) => ({
+        ...e,
+        dateObj: new Date(e.due_date),
+      }))
+      .filter((e) => e.dateObj >= start && e.dateObj <= end)
+      .sort((a, b) => a.dateObj - b.dateObj);
+
+    let totalDue = 0;
+
+    if (ddInWindow.length === 0) {
+      ddBody.innerHTML =
+        '<tr><td colspan="3" style="text-align:center;color:#888;">No direct debits left before payday</td></tr>';
+    } else {
+      ddInWindow.forEach((item) => {
+        totalDue += item.amount;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${item.payee}</td>
+          <td>${item.amount.toFixed(2)}</td>
+          <td>${item.due_date}</td>
+        `;
+        ddBody.appendChild(row);
+      });
+
+      const totalRow = document.createElement("tr");
+      totalRow.innerHTML = `
+        <td><strong>Total Due Before Payday</strong></td>
+        <td colspan="2"><strong>£${totalDue.toFixed(2)}</strong></td>
+      `;
+      totalRow.style.color = "var(--glow-cyan)";
+      ddBody.appendChild(totalRow);
+    }
+
+    /* ---------- Subscriptions ---------- */
+    const subBody = document.querySelector("#subTable tbody");
+    subBody.innerHTML = "";
+    subs.forEach((item) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${item.service}</td><td>${item.amount.toFixed(
+        2
+      )}</td><td>${item.renewal_date}</td>`;
+      subBody.appendChild(row);
+    });
+
+    /* ---------- Recent Transactions ---------- */
+    const txnBody = document.querySelector("#txnTable tbody");
+    txnBody.innerHTML = "";
+
+    // Get the LAST 5 (newest)
+    txns.slice(-5).forEach((tx) => {
+      const date = tx.Date || tx.date || "—";
+      const name =
+        tx.Merchant || tx.Name || tx.merchant || tx.name || "Unknown";
+      const amt = parseFloat(tx["Amount (£)"] || tx.amount || 0);
+      const r = document.createElement("tr");
+      r.innerHTML = `<td>${date}</td><td>${name}</td><td>${amt.toFixed(
+        2
+      )}</td>`;
+      txnBody.appendChild(r);
+    });
+
+    /* ---------- Render Pots Carousel ---------- */
+    renderPotCarousel(pots);
+
+    /* ---------- Pots Carousel ---------- */
+    function renderPotCarousel(pots) {
+      const carousel = document.getElementById("potCarousel");
+      carousel.innerHTML = "";
+      const goals = {
+        "Flex Repayment": 810.77,
+        "Direct Debits": 459.45,
+        Holiday: 297.79,
+        "Coventry City FC": 500,
+        IGTrading: 400,
+        "Car Maintenance": 400,
+        "Work Buffer": 65,
+        Savings: 1000,
+        Dentist: 1800,
+      };
+      Object.entries(pots).forEach(([name, balance]) => {
+        if (name === "Flex Repayment") return;
+        const goal = goals[name] || 500;
+        const pct = Math.min((balance / goal) * 100, 100).toFixed(1);
+        const card = document.createElement("div");
+        card.className = "pot-card";
+        card.innerHTML = `
+          <h3>${name}</h3>
+          <p>£${balance.toFixed(2)} / £${goal}</p>
+          <div class="progress-container">
+            <div class="progress-bar" style="width:${pct}%"></div>
+          </div>`;
+        carousel.appendChild(card);
+      });
+    }
+
+    /* ---------- Sync Indicator ---------- */
+    status.innerHTML = "🟢 Connected – Live Sync Active";
+    status.style.animationPlayState = "running";
+  } catch (err) {
+    console.error("❌ Aurora Monzo load error:", err);
+    const status = document.getElementById("syncStatus");
+    status.innerHTML = "🔴 Disconnected – Retrying…";
+    status.style.color = "#ff6666";
+    status.style.textShadow = "0 0 8px #ff4444";
+    status.style.animationPlayState = "paused";
+  }
 }
 
-/* ---------- Initialise ---------- */
 document.addEventListener("DOMContentLoaded", loadAuroraMonzo);
 </script>
 <!-- ===================== PART 3-3 END / PART 4 START ===================== -->
