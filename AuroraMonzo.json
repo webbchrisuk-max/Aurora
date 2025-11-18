@@ -882,7 +882,7 @@
         "AMOUNT": "50.92",
         "POT": "Direct Debit",
         "STATUS": "Paid",
-        "PAID": "FALSE",
+        "PAID": "TRUE",
         "Paid": true
       },
       {
@@ -1009,6 +1009,35 @@
         "POT": "Direct Debit",
         "STATUS": "Future",
         "PAID": "FALSE",
+        "Paid": true
+      },
+      {
+        "Paid": true
+      },
+      {
+        "Paid": true
+      },
+      {
+        "Paid": true
+      },
+      {
+        "Paid": true
+      },
+      {
+        "Paid": true
+      },
+      {
+        "Paid": true
+      },
+      {
+        "Paid": true
+      },
+      {
+        "DATE": "TRUE",
+        "NAME": "",
+        "AMOUNT": "",
+        "POT": "",
+        "STATUS": "Future",
         "Paid": true
       }
     ],
@@ -1158,9 +1187,9 @@
         "From Pot": "Holding Pot",
         "To Pot": "Dentist",
         "Amount": "108.34",
-        "Note": "",
+        "Note": "Pot Move",
         "Processed": "FALSE",
-        "Type": "",
+        "Type": "Transfer",
         "UID": "45979-Holding Pot-Dentist-108.34"
       },
       {

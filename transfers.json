@@ -144,9 +144,9 @@
     "From Pot": "Holding Pot",
     "To Pot": "Dentist",
     "Amount": "108.34",
-    "Note": "",
+    "Note": "Pot Move",
     "Processed": "FALSE",
-    "Type": "",
+    "Type": "Transfer",
     "UID": "45979-Holding Pot-Dentist-108.34"
   },
   {
