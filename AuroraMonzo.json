@@ -21,6 +21,32 @@
     },
     "transactions": [
       {
+        "Date": "18/11/2025",
+        "Time": "17:26:00",
+        "Merchant": "One Stop",
+        "Amount (£)": "3.60",
+        "Type": "Debit",
+        "Source": "Monzo",
+        "Email Subject": "I just spent £ 3.60 at One Stop Groceries November 18, 2025 at 05:26PM",
+        "Category": "Groceries",
+        "Processed": "✅",
+        "Exclude From Spend": "",
+        "Gmail ID": "19a98013e16e12cc"
+      },
+      {
+        "Date": "18/11/2025",
+        "Time": "17:24:38",
+        "Merchant": "ATM Cash Withdrawal",
+        "Amount (£)": "10.00",
+        "Type": "Debit",
+        "Source": "Monzo",
+        "Email Subject": "I just spent £ 10 at ATM Cash Withdrawal November 18, 2025 at 05:24PM",
+        "Category": "ATM Cash",
+        "Processed": "✅",
+        "Exclude From Spend": "",
+        "Gmail ID": "19a97ff3f6a1271a"
+      },
+      {
         "Date": "17/11/2025",
         "Time": "17:27:08",
         "Merchant": "Home Bargains",
@@ -852,6 +878,19 @@
         "Category": "Work",
         "Processed": "✅",
         "Exclude From Spend": "FALSE"
+      },
+      {
+        "Date": "18/11/2025",
+        "Time": "18:34:42",
+        "Merchant": "Uber Transport",
+        "Amount (£)": "7.97",
+        "Type": "Debit",
+        "Source": "Travel",
+        "Email Subject": "I just spent £ 7.97 at Uber Transport November 18, 2025 at 06:34PM",
+        "Category": "",
+        "Processed": "TRUE",
+        "Exclude From Spend": "",
+        "Gmail ID": "19a983f646b94df6"
       }
     ],
     "direct_debits": [
