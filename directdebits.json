@@ -154,34 +154,5 @@
     "STATUS": "Future",
     "PAID": "FALSE",
     "Paid": true
-  },
-  {
-    "Paid": true
-  },
-  {
-    "Paid": true
-  },
-  {
-    "Paid": true
-  },
-  {
-    "Paid": true
-  },
-  {
-    "Paid": true
-  },
-  {
-    "Paid": true
-  },
-  {
-    "Paid": true
-  },
-  {
-    "DATE": "TRUE",
-    "NAME": "",
-    "AMOUNT": "",
-    "POT": "",
-    "STATUS": "Future",
-    "Paid": true
   }
 ]
