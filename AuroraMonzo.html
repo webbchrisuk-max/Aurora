@@ -1,10 +1,10 @@
-<!-- ===================== AURORA MONZO DASHBOARD v1.8 (Option B – Category Filters + Scroll Panel) ===================== -->
+<!-- ===================== AURORA MONZO DASHBOARD (CLEAN FIXED EDITION) ===================== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>Aurora Monzo Dashboard v1.8 – Neon Blue + Coral Glow</title>
+<title>Aurora Monzo Dashboard – Neon Blue + Coral Glow</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@500&display=swap" rel="stylesheet" />
 
 <style>
@@ -237,7 +237,7 @@ header{
     </table>
   </section>
 
-  <!-- 🧾 TRANSACTIONS (NEW PANEL WITH FILTER BAR) -->
+  <!-- 🧾 TRANSACTIONS -->
   <section class="card">
     <h2>🧾 Transactions</h2>
 
@@ -253,15 +253,14 @@ header{
       <div class="filter-btn" data-filter="subscription">Subs</div>
     </div>
 
-    <!-- SCROLLABLE TRANSACTION PANEL -->
+    <!-- SCROLLABLE PANEL -->
     <div id="txnPanel" class="txn-panel"></div>
   </section>
 
 </div>
 
 <footer><span id="syncStatus">🟢 Connected – Live Sync Active</span></footer>
-
-<!-- ===================== JAVASCRIPT (Part 2 next) ===================== -->
+<!-- ===================== JAVASCRIPT – PART 2 ===================== -->
 <script>
 async function loadAuroraMonzo() {
 
@@ -284,23 +283,25 @@ async function loadAuroraMonzo() {
     document.getElementById("mainBalance").textContent =
       (core.main_balance || 0).toFixed(2);
 
-    document.getElementById("payday").textContent = core.payday_last || "—";
+    document.getElementById("payday").textContent =
+      core.payday_last || "—";
+
     document.getElementById("payReceived").textContent =
       (core.income_received || 0).toFixed(2);
 
     document.getElementById("flexBalance").textContent =
       (pots["Flex Repayment"] || 0).toFixed(2);
 
-    /* ===================== DATE HELPERS ===================== */
+    /* ===================== DATE PARSER ===================== */
     function parseDateFlexible(input) {
       if (!input) return null;
 
-      // Already a Date
+      // Already Date object
       if (Object.prototype.toString.call(input) === "[object Date]") {
         return isNaN(input.getTime()) ? null : input;
       }
 
-      // ISO
+      // ISO YYYY-MM-DD
       if (/^\d{4}-\d{2}-\d{2}/.test(input)) {
         const d = new Date(input);
         return isNaN(d.getTime()) ? null : d;
@@ -317,16 +318,17 @@ async function loadAuroraMonzo() {
       return isNaN(fallback.getTime()) ? null : fallback;
     }
 
-    /* ===================== WEEK / DAY SPENDING ===================== */
+    /* ===================== DAILY + WEEKLY SPENDING ===================== */
     const today = new Date();
     const weekday = today.getDay();
 
-    // Last Friday:
+    // Last Friday
     let lastFriday = new Date(today);
     const offset = weekday >= 5 ? weekday - 5 : 7 - (5 - weekday);
     lastFriday.setDate(today.getDate() - offset);
     lastFriday.setHours(0,0,0,0);
 
+    // Next Friday
     let nextFriday = new Date(lastFriday);
     nextFriday.setDate(lastFriday.getDate() + 7);
     nextFriday.setHours(23,59,59,999);
@@ -344,36 +346,33 @@ async function loadAuroraMonzo() {
       if (date && date.toDateString() === today.toDateString()) {
         todaySpend += amt;
       }
+
       if (date && date >= lastFriday && date <= nextFriday) {
         weekSpend += amt;
       }
     });
 
-    // Weekly + daily limit
     const weeklyLimit = (core.main_balance || 0) / 4;
     const dailyAllowance = weeklyLimit / 7;
-
     const remainingToday = Math.max(dailyAllowance - todaySpend, 0);
     const pctUsed = Math.min((todaySpend / dailyAllowance) * 100, 100);
 
     document.getElementById("todaySpend").textContent = todaySpend.toFixed(2);
     document.getElementById("remainingText").textContent =
       "Remaining: £" + remainingToday.toFixed(2);
-    document.getElementById("weeklyOverview").textContent =
-      `Week total: £${weekSpend.toFixed(2)} / £${weeklyLimit.toFixed(2)}`;
+    document.getElementById("weeklyOverview")
+      .textContent = `Week total: £${weekSpend.toFixed(2)} / £${weeklyLimit.toFixed(2)}`;
 
     document.getElementById("dailyBar").style.width = (100 - pctUsed) + "%";
 
-    /* ===================== WORK SPENDING ===================== */
+    /* ===================== WORK SPEND ===================== */
     let workSpend = 0;
-
     txns.forEach(tx => {
-      const cat = (tx.Category || "").toLowerCase();
       const amt = parseFloat(tx["Amount (£)"]) || 0;
       const date = parseDateFlexible(tx.Date);
+      const cat = (tx.Category || "").toLowerCase();
 
       if (tx["Exclude From Spend"] === "TRUE") return;
-
       if (cat.includes("work") && date >= lastFriday && date <= nextFriday) {
         workSpend += amt;
       }
@@ -393,15 +392,15 @@ async function loadAuroraMonzo() {
         ...item,
         dateObj: parseDateFlexible(item.DATE),
         amountNum: parseFloat(item.AMOUNT) || 0,
-        paid: item.PAID === "TRUE"
+        paid: (item.PAID === "TRUE")
       }))
       .filter(item => item.dateObj && item.dateObj <= payNext)
-      .sort((a, b) => a.dateObj - b.dateObj);
+      .sort((a,b) => a.dateObj - b.dateObj);
 
-    let ddTotal = 0;
+    let ddRemainingTotal = 0;
 
     ddFiltered.forEach(item => {
-      if (!item.paid) ddTotal += item.amountNum;
+      if (!item.paid) ddRemainingTotal += item.amountNum;
 
       ddBody.innerHTML += `
         <tr>
@@ -411,57 +410,26 @@ async function loadAuroraMonzo() {
         </tr>`;
     });
 
-    // Show total due
-    if (ddFiltered.length > 0) {
-      ddBody.innerHTML += `
-        <tr style="color:var(--glow-cyan)">
-          <td><strong>Total Remaining</strong></td>
-          <td colspan="2"><strong>£${ddTotal.toFixed(2)}</strong></td>
-        </tr>`;
-    } else {
-      ddBody.innerHTML = `
-        <tr><td colspan="3" style="text-align:center;color:#777">No direct debits before next payday</td></tr>`;
+    // If no DDs
+    if (ddFiltered.length === 0) {
+      ddBody.innerHTML =
+        `<tr><td colspan="3" style="text-align:center;opacity:0.6;">No direct debits before payday</td></tr>`;
     }
 
-    /* ===================== PAYDAY SUMMARY ===================== */
+    /* ===================== PAYDAY SUMMARY (FIXED) ===================== */
 
-/* 1 — Calculate remaining Direct Debits (Upcoming + Future BEFORE next payday) */
-let ddTotal = 0;
+    // Show Remaining DD amount
+    document.getElementById("remainingDD").textContent =
+      ddRemainingTotal.toFixed(2);
 
-directDebits.forEach(dd => {
-  const due = parseDateFlexible(dd.DATE);
-  if (!due) return;
+    // Football + meals commitments
+    const plannedCommitments = 180;
 
-  // Only count if unpaid
-  if (dd.PAID === "FALSE" || dd.Paid === false) {
-    // Only count payments before next payday
-    if (due <= nextPayday) {
-      ddTotal += parseFloat(dd.AMOUNT) || 0;
-    }
-  }
-});
+    const remainingSpendMoney =
+      (core.main_balance || 0) - plannedCommitments;
 
-/* Show remaining DD total */
-document.getElementById("remainingDD").textContent = ddTotal.toFixed(2);
-
-
-/* 2 — Planned commitments until payday:
-     - 22nd: £20 match + £40 meal = £60
-     - 29th: £20 match + £100 night out = £120
-     Total = £180
-*/
-const plannedCommitments = 180;
-
-/* 3 — Remaining spending money:
-      Direct Debits come from the Direct Debit pot,
-      so only subtract planned commitments from main balance.
-*/
-const remainingSpendMoney =
-  (core.main_balance || 0) - plannedCommitments;
-
-/* Show remaining spending money */
-document.getElementById("remainingSpending").textContent =
-  remainingSpendMoney.toFixed(2);
+    document.getElementById("remainingSpending").textContent =
+      remainingSpendMoney.toFixed(2);
 
     /* ===================== POTS OVERVIEW ===================== */
     const goals = {
@@ -496,14 +464,15 @@ document.getElementById("remainingSpending").textContent =
         </div>`;
     });
 
-    /* ===================== PREPARE TRANSACTIONS FOR PART 3 ===================== */
+    /* ===================== PREP TRANSACTIONS FOR PART 3 ===================== */
     window.AllTransactions = txns
       .map(tx => ({
         ...tx,
         dateObj: parseDateFlexible(tx.Date),
         amountNum: parseFloat(tx["Amount (£)"]) || 0,
         category: (tx.Category || "").toLowerCase(),
-        merchant: (tx.Merchant || "")
+        merchant: (tx.Merchant || ""),
+        type: (tx.Type || "").toLowerCase()
       }))
       .filter(tx => tx.dateObj)
       .sort((a, b) => b.dateObj - a.dateObj);
@@ -519,6 +488,7 @@ document.getElementById("remainingSpending").textContent =
 
 document.addEventListener("DOMContentLoaded", loadAuroraMonzo);
 </script>
+<!-- ===================== JAVASCRIPT – PART 3 (Transactions + Filters) ===================== -->
 <script>
 /* ===================== ICON MAPPING ===================== */
 function getTxnIcon(tx) {
@@ -527,74 +497,71 @@ function getTxnIcon(tx) {
 
   if (c.includes("work")) return "💼";
   if (c.includes("fuel") || m.includes("petrol")) return "⛽";
-  if (c.includes("grocer") || m.includes("asda") || m.includes("tesco") || m.includes("one stop"))
+  if (c.includes("groc") || m.includes("asda") || m.includes("tesco") || m.includes("one stop"))
     return "🛒";
-  if (c.includes("food") || c.includes("takeaway") || m.includes("just eat"))
+  if (c.includes("takeaway") || c.includes("food") || m.includes("just eat"))
     return "🍔";
   if (c.includes("drink") || m.includes("pub")) return "🍻";
   if (c.includes("transfer")) return "🔁";
   if (c.includes("gaming")) return "🎮";
-  if (c.includes("bills") || c.includes("finance")) return "🧾";
-  if (c.includes("subscription")) return "🔔";
+  if (c.includes("bills") || c.includes("finance") || m.includes("car"))
+    return "🧾";
+  if (c.includes("subscription") || m.includes("apple") || m.includes("spotify"))
+    return "🔔";
 
   return "💸";
 }
 
-/* ===================== COLOR LOGIC ===================== */
+/* ===================== AMOUNT COLOUR LOGIC ===================== */
 function getAmountStyle(tx) {
-  let style = "";
+  const isOutgoing = true; // All Monzo "debits" = spending
 
-  // Treat all payments (spend) as outgoing unless category marks them excluded
-  const outgoing =
-    tx.type === "Debit" ||
-    (!tx.category.includes("salary") && !tx.category.includes("refund"));
-
-  if (outgoing) {
-    style = "color:#ff6f61; font-weight:bold; text-shadow:0 0 6px rgba(255,111,97,0.8);";
+  if (isOutgoing) {
+    return "color:#ff6f61; font-weight:bold; text-shadow:0 0 6px rgba(255,111,97,0.9);";
   } else {
-    // Incoming
-    style = "color:#00fff7; font-weight:bold; text-shadow:0 0 8px rgba(0,255,247,0.8);";
+    return "color:#00fff7; font-weight:bold; text-shadow:0 0 8px rgba(0,255,247,0.9);";
   }
-
-  return style;
 }
 
-/* ===================== FILTER LOGIC ===================== */
+/* ===================== FILTER MATCHING ===================== */
 function passesFilter(tx, filter) {
   if (filter === "all") return true;
 
-  if (filter === "work") return tx.category.includes("work");
-  if (filter === "groceries") return tx.category.includes("groc");
-  if (filter === "fuel") return tx.category.includes("fuel");
+  const cat = tx.category;
+  const m = tx.merchant.toLowerCase();
+
+  if (filter === "work") return cat.includes("work");
+  if (filter === "groceries") return cat.includes("groc");
+  if (filter === "fuel") return cat.includes("fuel");
   if (filter === "food")
     return (
-      tx.category.includes("food") ||
-      tx.category.includes("takeaway") ||
-      tx.category.includes("drink")
+      cat.includes("food") ||
+      cat.includes("takeaway") ||
+      cat.includes("drink")
     );
-  if (filter === "transfer") return tx.category.includes("transfer");
+  if (filter === "transfer") return cat.includes("transfer");
   if (filter === "bills")
     return (
-      tx.category.includes("bill") ||
-      tx.category.includes("finance") ||
-      tx.category.includes("car maintenance")
+      cat.includes("bill") ||
+      cat.includes("finance") ||
+      cat.includes("car maintenance")
     );
   if (filter === "subscription")
     return (
-      tx.category.includes("subscription") ||
-      tx.merchant.toLowerCase().includes("apple") ||
-      tx.merchant.toLowerCase().includes("spotify")
+      cat.includes("subscription") ||
+      m.includes("apple") ||
+      m.includes("spotify")
     );
 
   return true;
 }
 
-/* ===================== RENDER PANEL ===================== */
+/* ===================== RENDER TRANSACTIONS PANEL ===================== */
 function renderTransactions(filter = "all") {
   const panel = document.getElementById("txnPanel");
-  panel.innerHTML = "";
-
   const txns = window.AllTransactions || [];
+
+  panel.innerHTML = "";
 
   txns.forEach(tx => {
     if (!passesFilter(tx, filter)) return;
@@ -615,7 +582,7 @@ function renderTransactions(filter = "all") {
   }
 }
 
-/* ===================== FILTER BUTTON HANDLING ===================== */
+/* ===================== FILTER BUTTON HANDLERS ===================== */
 document.addEventListener("DOMContentLoaded", () => {
   const filterButtons = document.querySelectorAll(".filter-btn");
 
@@ -624,12 +591,12 @@ document.addEventListener("DOMContentLoaded", () => {
       filterButtons.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
 
-      const filter = btn.getAttribute("data-filter");
+      const filter = btn.dataset.filter;
       renderTransactions(filter);
     });
   });
 
-  // Render initial "All"
+  // Render "All" initially
   setTimeout(() => renderTransactions("all"), 300);
 });
 </script>
