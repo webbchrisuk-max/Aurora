@@ -1,10 +1,10 @@
-<!-- ===================== AURORA MONZO DASHBOARD v2.0 – Option E Engine ===================== -->
+<!-- ===================== AURORA MONZO DASHBOARD v1.9 (Fixed + Final Summary) ===================== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>Aurora Monzo Dashboard – Option E Edition</title>
+<title>Aurora Monzo Dashboard – Neon Blue + Coral Glow</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@500&display=swap" rel="stylesheet" />
 
 <style>
@@ -50,7 +50,7 @@ header{
   50%{text-shadow:0 0 25px var(--glow-coral),0 0 35px var(--glow-cyan);}
 }
 
-/* === CARD === */
+/* === CARD DESIGN === */
 .card{
   background:var(--card-bg);
   border-radius:16px;
@@ -58,6 +58,15 @@ header{
   margin:25px 0;
   box-shadow:0 0 20px rgba(0,255,247,0.12);
   backdrop-filter:blur(6px);
+  transition:transform .25s ease, box-shadow .25s ease;
+}
+.card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 0 25px rgba(255,111,97,0.3);
+}
+
+/* === GLOW LOOP === */
+.card{
   animation:cardGlow 2s ease-in-out infinite alternate;
 }
 @keyframes cardGlow{
@@ -66,7 +75,40 @@ header{
   100%{box-shadow:0 0 8px rgba(0,255,247,0.15),0 0 20px rgba(255,111,97,0.08);}
 }
 
-/* === PROGRESS BARS === */
+/* ===================== POTS CAROUSEL ===================== */
+.pot-carousel {
+  display:flex;
+  flex-direction:row;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;
+  gap:80px;
+  padding:45px 0 30px 20px;
+  scroll-padding-left:40px;
+  -webkit-overflow-scrolling:touch;
+}
+.pot-carousel::after {
+  content:"";
+  flex:0 0 20px;
+}
+
+.pot-card {
+  flex:0 0 80%;
+  scroll-snap-align:start;
+  background:rgba(255,255,255,0.05);
+  border-radius:14px;
+  padding:18px;
+  text-align:center;
+  margin-top:10px;
+  box-shadow:0 0 15px var(--glow-cyan);
+  animation:potPulse 2s infinite alternate;
+  transition:transform .3s ease;
+}
+.pot-card:hover{
+  transform:scale(1.03);
+}
+
+/* === PROGRESS BAR === */
 .progress-container{
   background:rgba(255,255,255,0.08);
   border-radius:10px;
@@ -82,33 +124,15 @@ header{
   transition:width .8s ease-in-out;
 }
 
-/* ===================== POT CAROUSEL ===================== */
-.pot-carousel {
-  display:flex;
-  flex-direction:row;
-  overflow-x:auto;
-  scroll-snap-type:x mandatory;
-  gap:80px;
-  padding:45px 0 30px 20px;
-}
-.pot-card {
-  flex:0 0 80%;
-  scroll-snap-align:start;
-  background:rgba(255,255,255,0.05);
-  border-radius:14px;
-  padding:18px;
-  text-align:center;
-  box-shadow:0 0 15px var(--glow-cyan);
-  animation:potPulse 2s infinite alternate;
-}
-
-/* ===================== TRANSACTION FILTER BAR ===================== */
+/* ===================== FILTER BAR ===================== */
 .filter-bar {
   display:flex;
   flex-wrap:wrap;
   gap:10px;
   margin-bottom:15px;
+  margin-top:10px;
 }
+
 .filter-btn {
   padding:8px 14px;
   border-radius:20px;
@@ -116,12 +140,17 @@ header{
   color:var(--glow-cyan);
   cursor:pointer;
   background:rgba(255,255,255,0.05);
+  font-size:14px;
+  transition:all .25s ease;
 }
 .filter-btn.active {
   background:var(--glow-cyan);
   color:#000;
   font-weight:bold;
   box-shadow:0 0 10px var(--glow-cyan);
+}
+.filter-btn:hover {
+  background:rgba(0,255,247,0.2);
 }
 
 /* ===================== TRANSACTION PANEL ===================== */
@@ -130,14 +159,17 @@ header{
   overflow-y:auto;
   padding-right:6px;
 }
+
 .txn-entry {
   padding:10px 0;
   border-bottom:1px solid rgba(255,255,255,0.08);
+  font-size:14px;
 }
 .txn-entry:last-child {
   border-bottom:none;
 }
 
+/* ===================== RESPONSIVE ===================== */
 @media(max-width:600px){
   .container{padding:10px;}
   .card{padding:18px 16px;margin:22px 0;}
@@ -148,7 +180,7 @@ header{
 <body>
 <header>
   <h1>Aurora Monzo Dashboard</h1>
-  <h3>Live Data Sync – Option E Payday Engine</h3>
+  <h3>Live Data Sync – Neon Blue + Coral Glow Edition</h3>
 </header>
 
 <div class="container">
@@ -172,10 +204,23 @@ header{
   <!-- 📅 PAYDAY SUMMARY -->
   <section class="card">
     <h2>📅 Payday Summary</h2>
+
     <p><strong>Remaining Direct Debits:</strong> £<span id="remainingDD">0.00</span></p>
     <p><strong>Remaining Spending Money:</strong> £<span id="remainingSpending">0.00</span></p>
-    <hr style="opacity:0.3;">
-    <p id="finalSummary" style="color:var(--glow-cyan);font-size:15px;line-height:1.45;"></p>
+
+    <hr style="margin:12px 0; opacity:0.25;">
+
+    <h3 style="margin-bottom:6px;">⭐ Final Summary</h3>
+
+    <p>💰 You have: <strong>£<span id="sum_mainBalance">0.00</span></strong> until payday</p>
+    <p>🧾 Events total: <strong>£180</strong></p>
+    <p>🎯 Left after events: <strong>£<span id="sum_leftAfter">0.00</span></strong></p>
+    <p>📆 Days to payday: <strong><span id="sum_days">0</span></strong></p>
+    <p>💵 Daily allowance: <strong>£<span id="sum_daily">0.00</span></strong>/day</p>
+
+    <p style="margin-top:10px; color:var(--glow-cyan); font-weight:bold;">
+      🟢 Status: You are still safe.
+    </p>
   </section>
 
   <!-- 💳 FLEX -->
@@ -211,7 +256,6 @@ header{
   <section class="card">
     <h2>🧾 Transactions</h2>
 
-    <!-- FILTER BAR -->
     <div class="filter-bar">
       <div class="filter-btn active" data-filter="all">All</div>
       <div class="filter-btn" data-filter="work">Work</div>
@@ -223,16 +267,13 @@ header{
       <div class="filter-btn" data-filter="subscription">Subs</div>
     </div>
 
-    <!-- SCROLLABLE TRANSACTION PANEL -->
     <div id="txnPanel" class="txn-panel"></div>
   </section>
 
 </div>
 
 <footer><span id="syncStatus">🟢 Connected – Live Sync Active</span></footer>
-
-<!-- ===================== JAVASCRIPT PART 2 BELOW ===================== -->
-  <script>
+<script>
 async function loadAuroraMonzo() {
 
   const status = document.getElementById("syncStatus");
@@ -247,7 +288,7 @@ async function loadAuroraMonzo() {
     const monzo = data.monzo || {};
     const core = monzo.account_core || {};
     const pots = core.pots || {};
-    const dd = monzo.direct_debits || [];
+    const directDebits = monzo.direct_debits || [];
     const txns = monzo.transactions || [];
 
     /* ===================== ACCOUNT CORE ===================== */
@@ -261,7 +302,7 @@ async function loadAuroraMonzo() {
     document.getElementById("flexBalance").textContent =
       (pots["Flex Repayment"] || 0).toFixed(2);
 
-    /* ===================== DATE HELPERS ===================== */
+    /* ===================== DATE PARSER ===================== */
     function parseDateFlexible(input) {
       if (!input) return null;
 
@@ -270,7 +311,7 @@ async function loadAuroraMonzo() {
         return isNaN(input.getTime()) ? null : input;
       }
 
-      // ISO
+      // ISO YYYY-MM-DD
       if (/^\d{4}-\d{2}-\d{2}/.test(input)) {
         const d = new Date(input);
         return isNaN(d.getTime()) ? null : d;
@@ -283,15 +324,16 @@ async function loadAuroraMonzo() {
         return isNaN(d.getTime()) ? null : d;
       }
 
+      // Fallback
       const fallback = new Date(input);
       return isNaN(fallback.getTime()) ? null : fallback;
     }
 
-    /* ===================== WEEK / DAY SPENDING ===================== */
+    /* ===================== DAILY + WEEKLY SPEND ===================== */
     const today = new Date();
     const weekday = today.getDay();
 
-    // Last Friday:
+    // Last Friday
     let lastFriday = new Date(today);
     const offset = weekday >= 5 ? weekday - 5 : 7 - (5 - weekday);
     lastFriday.setDate(today.getDate() - offset);
@@ -308,7 +350,6 @@ async function loadAuroraMonzo() {
       const date = parseDateFlexible(tx.Date);
       const amt = parseFloat(tx["Amount (£)"]) || 0;
 
-      // Skip excluded
       if (tx["Exclude From Spend"] === "TRUE") return;
 
       if (date && date.toDateString() === today.toDateString()) {
@@ -319,8 +360,10 @@ async function loadAuroraMonzo() {
       }
     });
 
+    // Weekly + daily limits
     const weeklyLimit = (core.main_balance || 0) / 4;
     const dailyAllowance = weeklyLimit / 7;
+
     const remainingToday = Math.max(dailyAllowance - todaySpend, 0);
     const pctUsed = Math.min((todaySpend / dailyAllowance) * 100, 100);
 
@@ -332,7 +375,7 @@ async function loadAuroraMonzo() {
 
     document.getElementById("dailyBar").style.width = (100 - pctUsed) + "%";
 
-    /* ===================== WORK SPENDING ===================== */
+    /* ===================== WORK WEEK SPEND ===================== */
     let workSpend = 0;
 
     txns.forEach(tx => {
@@ -349,100 +392,56 @@ async function loadAuroraMonzo() {
 
     document.getElementById("workSpend").textContent = workSpend.toFixed(2);
 
-    /* ===================== DIRECT DEBITS TABLE ===================== */
+    /* ===================== DIRECT DEBITS ===================== */
     const ddBody = document.querySelector("#ddTable tbody");
     ddBody.innerHTML = "";
 
-    const nextPay = parseDateFlexible(core.payday_next);
+    const nextPayday = parseDateFlexible(core.payday_next);
 
-    const ddFiltered = dd
-      .filter(item => item.DATE && item.AMOUNT)
-      .map(item => ({
-        ...item,
-        dateObj: parseDateFlexible(item.DATE),
-        amountNum: parseFloat(item.AMOUNT) || 0,
-        paid: item.PAID === "TRUE"
+    let ddTotalRemaining = 0;
+
+    // Filter DDs before next payday
+    const ddFiltered = directDebits
+      .map(dd => ({
+        ...dd,
+        dateObj: parseDateFlexible(dd.date || dd.DATE),
+        amountNum: parseFloat(dd.amount || dd.AMOUNT) || 0,
+        name: dd.payee || dd.NAME,
+        paid: dd.paid === true || dd.PAID === "TRUE"
       }))
-      .filter(item => item.dateObj && item.dateObj <= nextPay)
+      .filter(dd => dd.dateObj && dd.dateObj <= nextPayday)
       .sort((a, b) => a.dateObj - b.dateObj);
 
-    let ddTotal = 0;
-
     ddFiltered.forEach(item => {
-      if (!item.paid) ddTotal += item.amountNum;
+      if (!item.paid) ddTotalRemaining += item.amountNum;
 
       ddBody.innerHTML += `
         <tr>
-          <td>${item.NAME}</td>
+          <td>${item.name}</td>
           <td>£${item.amountNum.toFixed(2)}</td>
-          <td>${item.DATE}</td>
+          <td>${item.dateObj.toISOString().split("T")[0]}</td>
         </tr>`;
     });
 
-    if (ddFiltered.length > 0) {
+    if (ddFiltered.length === 0) {
+      ddBody.innerHTML = `
+        <tr><td colspan="3" style="text-align:center; opacity:0.6;">No direct debits before next payday</td></tr>`;
+    } else {
       ddBody.innerHTML += `
         <tr style="color:var(--glow-cyan)">
           <td><strong>Total Remaining</strong></td>
-          <td colspan="2"><strong>£${ddTotal.toFixed(2)}</strong></td>
+          <td colspan="2"><strong>£${ddTotalRemaining.toFixed(2)}</strong></td>
         </tr>`;
-    } else {
-      ddBody.innerHTML = `
-        <tr><td colspan="3" style="text-align:center;color:#777">No direct debits before next payday</td></tr>`;
     }
 
-    document.getElementById("remainingDD").textContent = ddTotal.toFixed(2);
+    /* ===================== PAYDAY SUMMARY ===================== */
 
-    /* ===================== OPTION E — AUTO POT TARGET ENGINE ===================== */
+    // Show remaining DDs
+    document.getElementById("remainingDD").textContent =
+      ddTotalRemaining.toFixed(2);
 
-    const potTargets = [
-      { name:"Flex Repayment",       target:896.71,      deadline:"2026-01-01",  type:"fixed" },
-      { name:"Coventry City FC",     target:500,         deadline:"2026-05-31",  type:"fixed" },
-      { name:"Christmas",            target:300,         deadline:"2025-12-05",  type:"fixed" },
-
-      // Rolling pots
-      { name:"Dentist",              perPayday:50,       type:"rolling" },
-      { name:"Car Maintenance",      perPayday:0,        monthly:0, type:"rolling" },
-      { name:"Work Buffer",          perPayday:60,       type:"rolling" }
-    ];
-
-    function getPaydaysUntil(deadline) {
-      const next = parseDateFlexible(core.payday_next);
-      const end  = parseDateFlexible(deadline);
-      if (!next || !end) return 1;
-
-      let count = 0;
-      let t = new Date(next);
-
-      while (t <= end) {
-        count++;
-        t.setDate(t.getDate() + 28);
-      }
-      return Math.max(count,1);
-    }
-
-    let autoCommitments = 0;
-
-    potTargets.forEach(pt => {
-      const bal = pots[pt.name] || 0;
-
-      if (pt.type === "fixed") {
-        const need = Math.max(pt.target - bal, 0);
-        const paydays = getPaydaysUntil(pt.deadline);
-        autoCommitments += need / paydays;
-      }
-
-      if (pt.type === "rolling" && pt.perPayday) {
-        autoCommitments += pt.perPayday;
-      }
-    });
-
-    /* Mandatory silent items */
-    const petrol    = 60;
-    const personal  = 21;
-    const essentials = 750;
-
-    const plannedCommitments =
-      autoCommitments + petrol + personal + essentials;
+    // Planned commitments
+    const plannedCommitments = 180;
 
     const remainingSpendMoney =
       (core.main_balance || 0) - plannedCommitments;
@@ -452,30 +451,35 @@ async function loadAuroraMonzo() {
 
     /* ===================== FINAL SUMMARY ===================== */
 
-    const nextPayday = parseDateFlexible(core.payday_next);
+    // Days to payday
     const today2 = new Date();
-    const daysLeft = Math.ceil((nextPayday - today2) / (1000*60*60*24));
+    const diffDays = Math.ceil((nextPayday - today2) / (1000 * 60 * 60 * 24));
 
-    const daily = remainingSpendMoney / Math.max(daysLeft,1);
+    document.getElementById("sum_mainBalance").textContent =
+      (core.main_balance || 0).toFixed(2);
 
-    let statusColor = "var(--glow-cyan)";
-    if (daily < 5) statusColor = "var(--glow-coral)";
-    if (daily < 2) statusColor = "red";
+    const leftAfter = (core.main_balance || 0) - plannedCommitments;
+    document.getElementById("sum_leftAfter").textContent =
+      leftAfter.toFixed(2);
 
-    document.getElementById("finalSummary").style.color = statusColor;
+    document.getElementById("sum_days").textContent = diffDays;
 
-    document.getElementById("finalSummary").innerHTML = `
-      💰 You have: £${(core.main_balance || 0).toFixed(2)} until payday<br>
-      🧾 Events total: £${plannedCommitments.toFixed(2)}<br>
-      🎯 Left after events: £${remainingSpendMoney.toFixed(2)}<br>
-      📆 Days to payday: ${daysLeft}<br>
-      💵 Daily allowance: £${daily.toFixed(2)} / day<br>
-      ${daily >= 5 ? "🟢 You're still safe" : daily >= 3 ? "🟠 Warning" : "🔴 Critical"}
-    `;
+    const dailyAllow = leftAfter / diffDays;
+    document.getElementById("sum_daily").textContent =
+      dailyAllow.toFixed(2);
 
-    /* ===================== POT CAROUSEL ===================== */
-    const goals = {};
-    potTargets.forEach(pt => goals[pt.name] = pt.target || pt.perPayday * 10 || 500);
+    /* ===================== POTS OVERVIEW ===================== */
+    const goals = {
+      "Direct Debits": 459.45,
+      "Holiday": 297.79,
+      "Coventry City FC": 500,
+      "IGTrading": 400,
+      "Car Maintenance": 400,
+      "Work Buffer": 65,
+      "Savings": 1000,
+      "Dentist": 1800,
+      "Christmas": 300
+    };
 
     const carousel = document.getElementById("potCarousel");
     carousel.innerHTML = "";
@@ -496,7 +500,7 @@ async function loadAuroraMonzo() {
         </div>`;
     });
 
-    /* ===================== PREP TRANSACTIONS FOR PART 3 ===================== */
+    /* ===================== PREPARE TRANSACTIONS FOR PART 3 ===================== */
     window.AllTransactions = txns
       .map(tx => ({
         ...tx,
@@ -535,17 +539,17 @@ function getTxnIcon(tx) {
   if (c.includes("transfer")) return "🔁";
   if (c.includes("gaming")) return "🎮";
   if (c.includes("bills") || c.includes("finance")) return "🧾";
-  if (c.includes("subscription")) return "🔔";
+  if (c.includes("subscription") || m.includes("apple") || m.includes("spotify"))
+    return "🔔";
 
   return "💸";
 }
 
-/* ===================== COLOUR LOGIC ===================== */
+/* ===================== AMOUNT COLOURING ===================== */
 function getAmountStyle(tx) {
   let style = "";
-
   const outgoing =
-    tx.type === "Debit" ||
+    tx.Type === "Debit" ||
     (!tx.category.includes("salary") && !tx.category.includes("refund"));
 
   if (outgoing) {
@@ -553,7 +557,6 @@ function getAmountStyle(tx) {
   } else {
     style = "color:#00fff7; font-weight:bold; text-shadow:0 0 8px rgba(0,255,247,0.8);";
   }
-
   return style;
 }
 
@@ -564,19 +567,24 @@ function passesFilter(tx, filter) {
   if (filter === "work") return tx.category.includes("work");
   if (filter === "groceries") return tx.category.includes("groc");
   if (filter === "fuel") return tx.category.includes("fuel");
-  if (filter === "food")
+
+  if (filter === "food") {
     return (
       tx.category.includes("food") ||
       tx.category.includes("takeaway") ||
       tx.category.includes("drink")
     );
+  }
+
   if (filter === "transfer") return tx.category.includes("transfer");
+
   if (filter === "bills")
     return (
       tx.category.includes("bill") ||
       tx.category.includes("finance") ||
       tx.category.includes("car maintenance")
     );
+
   if (filter === "subscription")
     return (
       tx.category.includes("subscription") ||
@@ -587,7 +595,7 @@ function passesFilter(tx, filter) {
   return true;
 }
 
-/* ===================== RENDER TRANSACTIONS PANEL ===================== */
+/* ===================== RENDER TRANSACTIONS ===================== */
 function renderTransactions(filter = "all") {
   const panel = document.getElementById("txnPanel");
   panel.innerHTML = "";
@@ -613,7 +621,7 @@ function renderTransactions(filter = "all") {
   }
 }
 
-/* ===================== FILTER BUTTON HANDLING ===================== */
+/* ===================== FILTER BUTTONS ===================== */
 document.addEventListener("DOMContentLoaded", () => {
   const filterButtons = document.querySelectorAll(".filter-btn");
 
@@ -627,8 +635,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Render initial view
-  setTimeout(() => renderTransactions("all"), 300);
+  // Render initial "All"
+  setTimeout(() => renderTransactions("all"), 400);
 });
 </script>
 
