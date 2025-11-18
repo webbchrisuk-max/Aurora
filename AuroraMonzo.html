@@ -452,31 +452,54 @@ async function loadAuroraMonzo() {
         </tr>`;
     });
 
-/* ===================== RECENT TRANSACTIONS ===================== */
-
-    const txnBody = document.querySelector("#txnTable tbody");
+    /* ===================== RECENT TRANSACTIONS (UPGRADED) ===================== */
+   
+const txnBody = document.querySelector("#txnTable tbody");
 txnBody.innerHTML = "";
 
-// Convert to proper date objects and sort newest → oldest
+// ICON MAPPING based on Merchant / Category words
+function getTxnIcon(tx) {
+  const m = (tx.Merchant || "").toLowerCase();
+  const c = (tx.Category || "").toLowerCase();
+
+  if (c.includes("work")) return "💼";
+  if (c.includes("bills")) return "🧾";
+  if (c.includes("food") || m.includes("eat")) return "🍽️";
+  if (c.includes("shopping") || m.includes("shop")) return "🛍️";
+  if (c.includes("travel")) return "🚆";
+  if (m.includes("monzo")) return "🏦";
+  if (c.includes("transfer")) return "🔁";
+  if (c.includes("salary")) return "💰";
+
+  return "💸"; // default
+}
+
+// Convert & sort newest → oldest
 const sortedTxns = txns
   .map(tx => ({
     ...tx,
     _dateObj: parseDateFlexible(tx.Date)
   }))
-  .filter(tx => tx._dateObj)               // only valid dates
-  .sort((a, b) => b._dateObj - a._dateObj); // newest first
+  .filter(tx => tx._dateObj)
+  .sort((a, b) => b._dateObj - a._dateObj);
 
-// Take the top 5 most recent
+// Take most recent 5
 sortedTxns.slice(0, 5).forEach(tx => {
   const amt = parseFloat(tx["Amount (£)"]) || 0;
+  const icon = getTxnIcon(tx);
+
+  // Colour & glow for money IN/OUT
+  const amtColor = amt < 0 ? "style='color:#ff6f61; font-weight:bold;'" 
+                           : "style='color:#00fff7; font-weight:bold;'";
+
+  const glow = Math.abs(amt) >= 50 ? "text-shadow:0 0 8px var(--glow-coral);" : "";
 
   txnBody.innerHTML += `
     <tr>
       <td>${tx.Date}</td>
-      <td>${tx.Merchant}</td>
-      <td>${amt.toFixed(2)}</td>
+      <td>${icon} ${tx.Merchant}</td>
+      <td ${amtColor} style="${glow}">${amt.toFixed(2)}</td>
     </tr>`;
-    
 });
     
 
