@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Aurora ISA Tracker – Cinematic Edition</title>
 
+<!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
 
 <style>
@@ -16,6 +17,9 @@
   --bg1:#060018;
   --bg2:#120035;
   --bg3:#001a33;
+
+  --card-bg: rgba(255,255,255,0.06);
+  --card-border: rgba(255,255,255,0.15);
 }
 
 body{
@@ -40,7 +44,7 @@ body{
 }
 
 .section-title{
-  font-size:23px;
+  font-size:22px;
   font-weight:700;
   color:var(--cyan);
   margin-top:35px;
@@ -48,23 +52,38 @@ body{
   text-shadow:0 0 10px var(--cyan);
 }
 
-.card{
-  background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.15);
-  border-radius:16px;
-  padding:20px;
-  margin-bottom:25px;
-  backdrop-filter:blur(8px);
-  box-shadow:0 0 15px rgba(0,255,255,0.2);
+/* ===================== CAROUSEL ===================== */
+.carousel{
+  display:flex;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  gap:20px;
+  padding:20px 10px;
+  -webkit-overflow-scrolling:touch;
 }
-/* ----- TABLE ----- */
+
+.carousel-card{
+  flex:0 0 85%;
+  scroll-snap-align:center;
+  background:var(--card-bg);
+  border:1px solid var(--card-border);
+  border-radius:16px;
+  padding:18px;
+  backdrop-filter:blur(8px);
+  box-shadow:0 0 15px rgba(0,255,255,0.25);
+  text-align:center;
+  transition:0.3s;
+}
+.carousel-card:hover{
+  transform:scale(1.03);
+}
+
 .table{
   width:100%;
   border-collapse:collapse;
-  margin-top:15px;
 }
 .table th{
-  padding:10px;
+  padding:8px;
   background:rgba(0,200,255,0.3);
   border-bottom:1px solid var(--cyan);
 }
@@ -73,65 +92,45 @@ body{
   border-bottom:1px solid rgba(255,255,255,0.1);
 }
 
-/* ----- DIVIDEND ITEMS ----- */
+.card{
+  background:var(--card-bg);
+  border:1px solid var(--card-border);
+  border-radius:16px;
+  padding:18px;
+  margin-bottom:20px;
+  backdrop-filter:blur(8px);
+  box-shadow:0 0 15px rgba(0,255,255,0.25);
+}
+
 .dividend-item{
   padding:10px 12px;
   background:rgba(255,255,255,0.07);
   border:1px solid rgba(255,255,255,0.15);
   border-radius:12px;
-  display:flex;
-  justify-content:space-between;
   margin-bottom:10px;
   font-size:14px;
 }
 
-/* ----- CAROUSEL ----- */
-.carousel{
-  display:flex;
-  flex-direction:row;
-  overflow-x:auto;
-  scroll-snap-type:x mandatory;
-  scroll-behavior:smooth;
-  gap:40px;
-  padding:25px 0 10px 10px;
-  scroll-padding-left:20px;
-  -webkit-overflow-scrolling:touch;
-}
-.carousel::after{
-  content:"";
-  flex:0 0 20px;
-}
-
-.carousel-card{
-  flex:0 0 80%;
-  scroll-snap-align:start;
-  background:rgba(255,255,255,0.05);
-  border-radius:14px;
-  padding:18px;
-  box-shadow:0 0 12px var(--cyan);
-  transition:transform .3s ease;
-}
-.carousel-card:hover{
-  transform:scale(1.04);
-}
 </style>
+
 <script>
-const AURORA_SYNC="https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json";
+const AURORA_SYNC =
+  "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json";
 
 async function loadJSON(url){
-  const r=await fetch(url+"?nocache="+Date.now());
+  const r = await fetch(url+"?nocache="+Date.now());
   return await r.json();
 }
 
 async function initAurora(){
-  const sync=await loadJSON(AURORA_SYNC);
+  const sync = await loadJSON(AURORA_SYNC);
 
   renderPortfolio(sync);
   renderWatchlist(sync);
   renderIG(sync);
   renderT212(sync);
   renderTesco(sync);
-  renderREITs(sync);
+  renderReits(sync);
   renderFinancials(sync);
   renderNextFive(sync);
   renderUpcoming(sync);
@@ -142,202 +141,290 @@ async function initAurora(){
 </head>
 
 <body onload="initAurora()">
+
 <div class="container">
 
 <h1 class="section-title">🌌 Aurora ISA Tracker – Cinematic Edition</h1>
-<!-- PORTFOLIO SUMMARY -->
+
+<!-- ===================== PORTFOLIO SUMMARY ===================== -->
 <div class="card">
   <h2 class="section-title">Portfolio Summary</h2>
   <div id="portfolio-summary"></div>
 </div>
 
-<!-- WATCHLIST SUMMARY -->
+<!-- ===================== WATCHLIST ===================== -->
 <div class="card">
   <h2 class="section-title">Watchlist Summary</h2>
   <div id="watchlist-summary"></div>
 </div>
-<!-- IG ISA -->
+
+<!-- ===================== IG CAROUSEL ===================== -->
 <div class="card">
   <h2 class="section-title">IG ISA Holdings</h2>
   <div class="carousel" id="ig-carousel"></div>
 </div>
 
-<!-- T212 ISA -->
+<!-- ===================== T212 CAROUSEL ===================== -->
 <div class="card">
   <h2 class="section-title">Trade212 ISA Holdings</h2>
   <div class="carousel" id="t212-carousel"></div>
 </div>
-<!-- TESCO SIP & SAYE -->
+
+<!-- ===================== TESCO SIP + SAYE ===================== -->
 <div class="card">
   <h2 class="section-title">Tesco Share Plan</h2>
-  <div id="tesco-plan"></div>
+  <div id="tesco-cards"></div>
 </div>
 
-<!-- REITS OUTLOOK -->
+<!-- ===================== REITS OUTLOOK ===================== -->
 <div class="card">
   <h2 class="section-title">REITs Outlook</h2>
   <div id="reits-out"></div>
 </div>
 
-<!-- FINANCIALS OUTLOOK -->
+<!-- ===================== FINANCIALS OUTLOOK ===================== -->
 <div class="card">
   <h2 class="section-title">Financials Outlook</h2>
   <div id="fin-out"></div>
 </div>
-<!-- NEXT 5 -->
+
+<!-- ===================== NEXT FIVE ===================== -->
 <div class="card">
   <h2 class="section-title">Next 5 Dividends</h2>
   <div id="next5"></div>
 </div>
 
-<!-- UPCOMING -->
+<!-- ===================== UPCOMING ===================== -->
 <div class="card">
-  <h2 class="section-title">Upcoming Ex-Dividend Dates</h2>
+  <h2 class="section-title">Upcoming Dividends</h2>
   <div id="upcoming"></div>
 </div>
 
-<!-- CHART -->
+<!-- ===================== CHART ===================== -->
 <div class="card">
   <h2 class="section-title">12-Month Dividend Forecast</h2>
   <canvas id="divChart"></canvas>
 </div>
 
-<!-- YTD -->
+<!-- ===================== YTD ===================== -->
 <div class="card">
   <h2 class="section-title">Year-To-Date Income</h2>
   <div id="ytd"></div>
 </div>
+
+</div>
+
 <script>
 
+/* ===== PORTFOLIO ===== */
 function renderPortfolio(sync){
-  const p=sync.isa.portfolio_summary;
-  document.getElementById("portfolio-summary").innerHTML=`
-    <p><strong>Total Value:</strong> £${p.total_value.toFixed(2)}</p>
-    <p><strong>Projected Annual Income:</strong> £${p.annual_income_gbp.toFixed(2)}</p>
+  const ig = sync?.isa?.ig_isa?.balance || 0;
+  const t = sync?.isa?.trade212_isa?.balance || 0;
+  const total = sync?.isa?.portfolio_summary?.total_value || 0;
+  const income = sync?.isa?.portfolio_summary?.annual_income_gbp || 0;
+
+  document.getElementById("portfolio-summary").innerHTML = `
+    <p><strong>IG ISA:</strong> £${ig.toFixed(2)}</p>
+    <p><strong>Trade212 ISA:</strong> £${t.toFixed(2)}</p>
+    <p><strong>Total Portfolio:</strong> £${total.toFixed(2)}</p>
+    <p><strong>Annual Income:</strong> £${income.toFixed(2)}</p>
   `;
 }
 
+/* ===== WATCHLIST ===== */
 function renderWatchlist(sync){
-  document.getElementById("watchlist-summary").innerHTML=`
-    <p>Top discounts, fair values & buy signals coming soon.</p>
-  `;
+  const w = sync?.watchlist || [];
+  if(!w.length){
+    document.getElementById("watchlist-summary").innerHTML="<p>No watchlist data.</p>";
+    return;
+  }
+
+  const top = [...w]
+    .sort((a,b)=>b.discount_percentage - a.discount_percentage)
+    .slice(0,5);
+
+  let html=``;
+  top.forEach(s=>{
+    html+=`
+      <div class="dividend-item">
+        <strong>${s.ticker}</strong> – ${s.company}<br>
+        Discount: ${s.discount_percentage}%<br>
+        Status: ${s.status}
+      </div>
+    `;
+  });
+
+  document.getElementById("watchlist-summary").innerHTML=html;
 }
 
+/* ===== IG CAROUSEL ===== */
 function renderIG(sync){
-  const ig=sync.isa.holdings.ig_isa;
-  const box=document.getElementById("ig-carousel");
-  box.innerHTML="";
+  const ig = sync?.isa?.holdings?.ig_isa || [];
+  const box = document.getElementById("ig-carousel");
+
   ig.forEach(h=>{
-    const g=Number(h.gain_value||0);
-    box.innerHTML+=`
+    box.innerHTML += `
       <div class="carousel-card">
         <h3>${h.ticker}</h3>
         <p>${h.name}</p>
-        <p><strong>£${h.value.toFixed(2)}</strong></p>
         <p>Shares: ${h.shares}</p>
-        <p>Gain: <span style="color:${g>=0?'lime':'red'}">£${g.toFixed(2)}</span></p>
+        <p>Value: £${h.value.toFixed(2)}</p>
+        <p>Gain: <span style="color:${h.gain_value>=0?"lime":"red"}">
+          £${h.gain_value.toFixed(2)}</span>
+        </p>
       </div>
     `;
   });
 }
 
+/* ===== T212 CAROUSEL ===== */
 function renderT212(sync){
-  const t=sync.isa.holdings.trade212_isa;
-  const box=document.getElementById("t212-carousel");
-  box.innerHTML="";
+  const t = sync?.isa?.holdings?.trade212_isa || [];
+  const box = document.getElementById("t212-carousel");
+
   t.forEach(h=>{
-    const g=Number(h.gain_value||0);
-    box.innerHTML+=`
+    box.innerHTML += `
       <div class="carousel-card">
         <h3>${h.ticker}</h3>
         <p>${h.name}</p>
-        <p><strong>£${h.value.toFixed(2)}</strong></p>
         <p>Shares: ${h.shares}</p>
-        <p>Gain: <span style="color:${g>=0?'lime':'red'}">£${g.toFixed(2)}</span></p>
+        <p>Value: £${h.value.toFixed(2)}</p>
+        <p>Gain: <span style="color:${h.gain_value>=0?"lime":"red"}">
+          £${h.gain_value.toFixed(2)}</span>
+        </p>
       </div>
     `;
   });
 }
 
+/* ===== TESCO ===== */
 function renderTesco(sync){
-  const t=sync.tesco;
-  document.getElementById("tesco-plan").innerHTML=`
-    <p><strong>Total Shares:</strong> ${t.sip.total_shares}</p>
-    <p><strong>Current Price:</strong> ${t.current_price_pence}p</p>
-    <p><strong>Indicative Value:</strong> £${t.indicative_value_gbp.toFixed(2)}</p>
-    <p><strong>SAYE Options:</strong> ${t.saye.total_options}</p>
-    <p><strong>SAYE Value:</strong> £${t.saye.indicative_scheme_value_gbp.toFixed(2)}</p>
+  const t = sync?.tesco?.summary;
+  if(!t){
+    document.getElementById("tesco-cards").innerHTML="<p>No Tesco data found.</p>";
+    return;
+  }
+
+  document.getElementById("tesco-cards").innerHTML = `
+    <div class="carousel-card">
+      <h3>📦 SIP Plan</h3>
+      <p>Total Shares: ${t.sip_total_shares}</p>
+      <p>Value: £${t.sip_value_gbp.toFixed(2)}</p>
+      <p>Gain: £${t.sip_gain_gbp.toFixed(2)}</p>
+    </div>
+
+    <div class="carousel-card">
+      <h3>💼 SAYE Plan</h3>
+      <p>Total Options: ${t.saye_total_options}</p>
+      <p>Option Price: £${t.saye_option_price}</p>
+      <p>Value: £${t.saye_current_value_gbp.toFixed(2)}</p>
+      <p>Gain: £${t.saye_potential_gain_gbp.toFixed(2)}</p>
+    </div>
   `;
 }
 
-function renderREITs(sync){
-  const r=sync.reits_outlook;
-  let html="";
-  Object.entries(r).forEach(([k,v])=>{
-    html+=`<p><strong>${k}</strong>: ${v.status} — ${v.notes}</p>`;
+/* ===== REITS ===== */
+function renderReits(sync){
+  const r = sync?.reits_outlook || {};
+  let html=``;
+  Object.entries(r).forEach(([ticker,obj])=>{
+    html+=`
+      <div class="dividend-item">
+        <strong>${ticker}</strong><br>
+        Status: ${obj.status}<br>
+        ${obj.notes}
+      </div>
+    `;
   });
   document.getElementById("reits-out").innerHTML=html;
 }
 
+/* ===== FINANCIALS ===== */
 function renderFinancials(sync){
-  const f=sync.financials_outlook;
-  let html="";
-  Object.entries(f).forEach(([k,v])=>{
-    html+=`<p><strong>${k}</strong>: ${v.status} — ${v.notes}</p>`;
+  const f = sync?.financials_outlook || {};
+  let html=``;
+  Object.entries(f).forEach(([ticker,obj])=>{
+    html+=`
+      <div class="dividend-item">
+        <strong>${ticker}</strong><br>
+        Status: ${obj.status}<br>
+        ${obj.notes}
+      </div>
+    `;
   });
   document.getElementById("fin-out").innerHTML=html;
 }
 
+/* ===== NEXT FIVE ===== */
 function renderNextFive(sync){
-  const next=sync.isa.dividends.next_five;
+  const list = sync?.isa?.dividends?.next_five || [];
   let html="";
-  next.forEach(d=>{
+  list.forEach(d=>{
     html+=`
       <div class="dividend-item">
-        <div><strong>${d.ticker}</strong><br>Ex: ${d.ex_div_date}<br>Pay: ${d.pay_date}</div>
-        <div>£${d.total_dividend.toFixed(2)}</div>
+        <strong>${d.ticker}</strong><br>
+        Ex: ${d.ex_div_date}<br>
+        Pay: ${d.pay_date}<br>
+        £${d.total_dividend.toFixed(2)}
       </div>
     `;
   });
   document.getElementById("next5").innerHTML=html;
 }
 
+/* ===== UPCOMING ===== */
 function renderUpcoming(sync){
-  const all=sync.isa.dividends.upcoming;
+  const all = sync?.isa?.dividends?.upcoming || [];
+  const today = new Date();
+
+  const fut = all.filter(d=>new Date(d.ex_div_date)>=today)
+                 .sort((a,b)=>new Date(a.ex_div_date)-new Date(b.ex_div_date))
+                 .slice(0,5);
+
   let html="";
-  all.slice(0,5).forEach(d=>{
+  fut.forEach(d=>{
     html+=`
       <div class="dividend-item">
-        <div><strong>${d.ticker}</strong><br>${d.name}<br>Ex: ${d.ex_div_date}</div>
-        <div>£${d.total_dividend.toFixed(2)}</div>
+        <strong>${d.ticker}</strong> – ${d.name}<br>
+        Ex: ${d.ex_div_date}<br>
+        Pay: ${d.pay_date}<br>
+        Status: ${d.status}<br>
+        £${d.total_dividend.toFixed(2)}
       </div>
     `;
   });
   document.getElementById("upcoming").innerHTML=html;
 }
 
+/* ===== YTD ===== */
 function renderYTD(sync){
-  const totals=sync.isa.dividends.monthly_totals;
-  let y=0;
-  Object.values(totals).forEach(v=>y+=v);
-  document.getElementById("ytd").innerHTML=`<h3>£${y.toFixed(2)}</h3>`;
+  const totals = sync?.isa?.dividends?.monthly_totals || {};
+  const year = new Date().getFullYear();
+  let sum=0;
+  Object.entries(totals).forEach(([m,val])=>{
+    if(m.startsWith(year)) sum+=val;
+  });
+  document.getElementById("ytd").innerHTML=`<h2>£${sum.toFixed(2)}</h2>`;
 }
 
+/* ===== CHART ===== */
 function renderChart(sync){
-  const totals=sync.isa.dividends.monthly_totals;
-  const labels=Object.keys(totals);
-  const values=Object.values(totals);
-  const ctx=document.getElementById("divChart").getContext("2d");
+  const totals = sync?.isa?.dividends?.monthly_totals;
+  if(!totals) return;
 
+  const labels = Object.keys(totals);
+  const values = labels.map(k=>totals[k]);
+
+  const ctx=document.getElementById("divChart").getContext("2d");
   new Chart(ctx,{
     type:"bar",
-    data:{labels:labels, datasets:[{data:values}]},
+    data:{labels,datasets:[{data:values,borderWidth:1}]},
     options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
   });
 }
+
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</div>
 </body>
 </html>
