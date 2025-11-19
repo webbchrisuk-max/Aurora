@@ -2,7 +2,7 @@ name: Aurora Monzo – Hourly Pot + Transaction Sync
 
 on:
   schedule:
-    - cron: "0 * * * *"   # every hour UTC
+    - cron: "0 * * * *"
   workflow_dispatch:
 
 concurrency:
@@ -18,28 +18,19 @@ jobs:
         uses: actions/checkout@v4
 
       # =====================================================
-      # STEP 1 – Fetch Transfers sheet
+      # STEP 1 – Fetch all sheets (raw data only)
       # =====================================================
       - name: 🟢 Fetch Transfers sheet
-        run: |
-          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transfers" -o transfers.json
+        run: curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transfers" -o transfers.json
 
-      # =====================================================
-      # STEP 2 – Fetch Transactions sheet
-      # =====================================================
       - name: 🟢 Fetch Transactions sheet
-        run: |
-          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transactions" -o transactions.json
+        run: curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transactions" -o transactions.json
 
-      # =====================================================
-      # STEP 3 – Fetch DirectDebits sheet
-      # =====================================================
       - name: 🟢 Fetch Direct Debits sheet
-        run: |
-          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/DirectDebits" -o directdebits.json
+        run: curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/DirectDebits" -o directdebits.json
 
       # =====================================================
-      # STEP 4 – Ensure state folder
+      # STEP 2 – Ensure state folder
       # =====================================================
       - name: 📦 Ensure state folder
         run: |
@@ -49,7 +40,7 @@ jobs:
           fi
 
       # =====================================================
-      # STEP 5 – Apply NEW Transfers (UID filtering)
+      # STEP 3 – Apply NEW Transfers safely
       # =====================================================
       - name: 🔄 Apply NEW Transfers
         run: |
@@ -68,111 +59,73 @@ jobs:
           EOF
 
       # =====================================================
-      # STEP 6 – Auto-tick Paid Direct Debits
+      # STEP 4 – Auto-Tick Paid Direct Debits (safe)
       # =====================================================
-      - name: 🔘 Auto-mark Paid Direct Debits
+      - name: 🔘 Auto-mark Paid DDs
         run: |
           node <<'EOF'
           const fs = require('fs');
 
-          const ddSheet = JSON.parse(fs.readFileSync('directdebits.json', 'utf8'));
-          const transactions = JSON.parse(fs.readFileSync('transactions.json', 'utf8'));
-
-          const today = new Date();
-          today.setHours(0,0,0,0);
+          const dd = JSON.parse(fs.readFileSync('directdebits.json', 'utf8'));
+          const tx = JSON.parse(fs.readFileSync('transactions.json', 'utf8'));
 
           let updated = false;
 
-          ddSheet.forEach(dd => {
-            const ddName = (dd["Name"] || dd["Payee"] || "").toLowerCase().trim();
-            const ddDate = new Date(dd["Date"] || dd["date"]);
-            const ddPaid = dd["Paid"] === true || dd["paid"] === true;
+          dd.forEach(item => {
+            if (item.paid === true) return;
+            const name = (item.payee || "").toLowerCase();
 
-            ddDate.setHours(0,0,0,0);
-
-            if (ddPaid) return;
-            if (ddDate > today) return;
-
-            const match = transactions.find(tx => {
-              const merged = ((tx.Merchant || "") + " " + (tx.Description || "")).toLowerCase();
-              return merged.includes(ddName);
-            });
+            const match = tx.find(t =>
+              ((t.Merchant || "") + " " + (t.Description || "")).toLowerCase().includes(name)
+            );
 
             if (match) {
-              dd["Paid"] = true;
-              dd["paid"] = true;
+              item.paid = true;
               updated = true;
             }
           });
 
           if (updated) {
-            fs.writeFileSync('directdebits.json', JSON.stringify(ddSheet, null, 2));
+            fs.writeFileSync('directdebits.json', JSON.stringify(dd, null, 2));
           }
           EOF
 
       # =====================================================
-      # STEP 7 – UPDATE AuroraMonzo.json (SAFE-LOCKED)
+      # STEP 5 – SAFE UPDATE of AuroraMonzo.json
+      # Does NOT overwrite account_core or pots
       # =====================================================
-      - name: 🧿 Update AuroraMonzo.json
+      - name: 🧿 Write final padded JSON safely
         run: |
           node <<'EOF'
           const fs = require('fs');
 
-          // Load existing file FIRST
+          // Load existing JSON exactly as-is
           let core = {};
           if (fs.existsSync('AuroraMonzo.json')) {
-            try {
-              core = JSON.parse(fs.readFileSync('AuroraMonzo.json', 'utf8'));
-            } catch (e) {
-              console.log("⚠️ Existing JSON corrupt — keeping last known data");
-            }
+            core = JSON.parse(fs.readFileSync('AuroraMonzo.json', 'utf8'));
           }
 
-          // Load live sheets
-          const transactions = JSON.parse(fs.readFileSync('transactions.json', 'utf8'));
-          const direct = JSON.parse(fs.readFileSync('directdebits.json', 'utf8'));
-          const transfers = JSON.parse(fs.readFileSync('transfers.json', 'utf8'));
-          const applied = JSON.parse(fs.readFileSync('.aurora/monzo_transfers_applied.json', 'utf8'));
+          // Ensure structure exists
+          if (!core.monzo) core.monzo = {};
+          if (!core.monzo.account_core) core.monzo.account_core = { main_balance:0, pots:{} };
 
-          // SAFE-LOCK: NEVER overwrite account_core
-          const previousCore = core.monzo?.account_core || {};
+          // SAFE MERGE: only replace sheets
+          core.monzo.transactions = JSON.parse(fs.readFileSync('transactions.json', 'utf8'));
+          core.monzo.direct_debits = JSON.parse(fs.readFileSync('directdebits.json', 'utf8'));
+          core.monzo.transfers = JSON.parse(fs.readFileSync('transfers.json', 'utf8'));
+          core.monzo.state = JSON.parse(fs.readFileSync('.aurora/monzo_transfers_applied.json', 'utf8'));
 
-          // Always preserve user pots, balances & payday cycle
-          const accountCore = {
-            main_balance: previousCore.main_balance ?? 0,
-            payday_last: previousCore.payday_last ?? "",
-            payday_next: previousCore.payday_next ?? "",
-            income_received: previousCore.income_received ?? 0,
-            pots: previousCore.pots ?? {}
-          };
-
-          // Save final structure
-          core["monzo"] = {
-            account_core: accountCore,
-            subscriptions_from_main: core.monzo?.subscriptions_from_main || [],
-            subscriptions_from_alt: core.monzo?.subscriptions_from_alt || [],
-            transactions: transactions,
-            direct_debits: direct,
-            transfers: transfers,
-            state: applied
-          };
-
-          // Pretty print all files
-          fs.writeFileSync('transactions.json', JSON.stringify(transactions, null, 2));
-          fs.writeFileSync('directdebits.json', JSON.stringify(direct, null, 2));
-          fs.writeFileSync('transfers.json', JSON.stringify(transfers, null, 2));
-          fs.writeFileSync('.aurora/monzo_transfers_applied.json', JSON.stringify(applied, null, 2));
+          // NEVER modify account_core or pots
           fs.writeFileSync('AuroraMonzo.json', JSON.stringify(core, null, 2));
           EOF
 
       # =====================================================
-      # STEP 8 – COMMIT & PUSH
+      # STEP 6 – COMMIT & PUSH
       # =====================================================
       - name: 📤 Commit and Push
         run: |
           git config user.name "Aurora Automation"
           git config user.email "actions@github.com"
-
           git add .
-          git commit -m "Aurora Monzo: Safe-Locked Sync (No Reset, No Wipe, Fully Structured JSON)" || echo "No changes to commit"
+          git commit -m "SAFE Aurora Monzo Sync – Preserved Structure, Updated Sheets Only" || echo "No changes to commit"
           git push || echo "No changes to push"
