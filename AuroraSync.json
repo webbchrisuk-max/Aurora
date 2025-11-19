@@ -1191,18 +1191,18 @@
       "annual_total": null
     },
     "portfolio_summary": {
-      "total_value": 0,
+      "total_value": 58416.163,
       "annual_income_gbp": 4265.04,
       "dividend_yield": null
     },
     "ig_isa": {
-      "balance": 0,
+      "balance": 55774.840000000004,
       "unrealised_gain": -54946.16,
       "gain_percent": -100,
       "annual_income": 4014.16
     },
     "trade212_isa": {
-      "balance": 0,
+      "balance": 2641.323,
       "unrealised_gain": -2751.74,
       "gain_percent": -100,
       "annual_income": 250.88
