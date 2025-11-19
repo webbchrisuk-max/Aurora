@@ -2,8 +2,8 @@ name: Aurora ISA – 5-Minute Live Shares + Dividends Sync
 
 on:
   schedule:
-    - cron: "*/5 8-16 * * 1-5"
-    - cron: "30 16 * * 1-5"
+    - cron: "*/5 8-16 * * 1-5"   # every 5 mins during market hours
+    - cron: "30 16 * * 1-5"      # safety run after close
   workflow_dispatch:
 
 concurrency:
@@ -24,20 +24,22 @@ jobs:
           fetch-depth: 0
 
       # =====================================================
-      # STEP 2 — Fetch Holdings sheet
+      # STEP 2 — Fetch Holdings sheet (TAB NAME: Holdings)
       # =====================================================
       - name: 🟢 Fetch Holdings sheet
-        run: curl -s \
-          "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Holdings" \
-          -o holdings.json
+        run: |
+          curl -s \
+            "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Holdings" \
+            -o holdings.json
 
       # =====================================================
-      # STEP 3 — Fetch Dividends sheet
+      # STEP 3 — Fetch Dividends sheet (TAB NAME: Dividends)
       # =====================================================
       - name: 🟣 Fetch Dividends sheet
-        run: curl -s \
-          "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Dividends" \
-          -o dividends.json
+        run: |
+          curl -s \
+            "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Dividends" \
+            -o dividends.json
 
       # =====================================================
       # STEP 4 — Install Node.js
@@ -48,107 +50,225 @@ jobs:
           node-version: 20
 
       # =====================================================
-      # STEP 5 — SAFE UPDATE of only the ISA section
+      # STEP 5 — SAFE UPDATE of ISA section (prices via API)
       # =====================================================
-      - name: 🔄 Update ISA Data Safely
+      - name: 🔄 Update ISA Data Safely (API prices)
         run: |
           node << 'EOF'
           const fs = require("fs");
           const auroraPath = "AuroraSync.json";
 
-          // Load existing JSON fully
-          const aurora = JSON.parse(fs.readFileSync(auroraPath, "utf8"));
+          // ---------- Helpers ----------
+          const round = (v, dp = 2) => Number(v.toFixed(dp));
 
-          // Load sheets
-          const holdings = JSON.parse(fs.readFileSync("holdings.json", "utf8"));
-          const dividendsSheet = JSON.parse(fs.readFileSync("dividends.json", "utf8"));
+          const toYahooSymbol = (tickerRaw) => {
+            if (!tickerRaw) return null;
+            let t = String(tickerRaw).trim();
 
-          const now = new Date().toISOString().replace("T"," ").substring(0,19);
+            // Strip "LON:" etc.
+            if (t.includes(":")) t = t.split(":").pop();
 
-          // ====================================================
-          // CREATE ISA STRUCTURE WITHOUT TOUCHING OTHER SECTIONS
-          // ====================================================
-          if (!aurora.isa) aurora.isa = {};
-          aurora.isa.holdings = { ig_isa: [], trade212_isa: [] };
-          aurora.isa.dividends = {};
+            // If already has suffix (.L, .LN etc) keep it
+            if (/\.[A-Za-z]+$/.test(t)) return t;
 
-          // ====================================================
-          // Process Holdings
-          // ====================================================
-          holdings.forEach(row => {
-            const item = {
-              ticker: row["ticker"],
-              name: row["name"],
-              shares: Number(row["shares"]),
-              book_cost: Number(row["book_cost"]),
-              live_price: Number(row["live_price"]),
-              value: Number(row["value"]),
-              gain_value: Number(row["gain_value"]),
-              gain_percentage: Number(row["gain_percentage"]),
-              annual_dividend_per_share: Number(row["annual_dividend_per_share"]),
-              annual_div_yield: Number(row["annual_div_yield"]),
-              annual_income: Number(row["annual_income"]),
-              sector: row["sector"],
-              last_updated: row["last_updated"]
-            };
-
-            if (row["account"] === "IG ISA") {
-              aurora.isa.holdings.ig_isa.push(item);
-            }
-            if (row["account"] === "TRADE212") {
-              aurora.isa.holdings.trade212_isa.push(item);
-            }
-          });
-
-          // ====================================================
-          // Process Dividends
-          // ====================================================
-          const today = new Date().toISOString().split("T")[0];
-          const monthlyTotals = {};
-          const upcoming = [];
-          const nextFive = [];
-          let annualTotal = 0;
-
-          dividendsSheet.forEach(d => {
-            const pay = d["pay_date"];
-            const total = Number(d["total_dividend"] || 0);
-
-            if (pay) {
-              const month = pay.substring(0,7);
-              monthlyTotals[month] = (monthlyTotals[month] || 0) + total;
-            }
-
-            annualTotal += total;
-
-            if (pay && pay >= today) {
-              upcoming.push({
-                ticker: d["ticker"],
-                name: d["name"],
-                ex_div_date: d["ex_div_date"],
-                pay_date: d["pay_date"],
-                dividend_per_share: d["dividend_per_share"],
-                shares_at_exdiv: d["shares_at_exdiv"],
-                total_dividend: total,
-                frequency: d["frequency"],
-                status: d["status"]
-              });
-            }
-          });
-
-          // Sort & slice next 5
-          upcoming.sort((a,b)=>a.pay_date.localeCompare(b.pay_date));
-          nextFive.push(...upcoming.slice(0,5));
-
-          aurora.isa.dividends = {
-            last_updated: now,
-            upcoming,
-            next_five: nextFive,
-            monthly_totals: monthlyTotals,
-            annual_total: annualTotal
+            // Default: LSE
+            return t + ".L";
           };
 
-          // SAVE BACK
-          fs.writeFileSync(auroraPath, JSON.stringify(aurora, null, 2));
+          async function fetchYahooPrices(symbols) {
+            const unique = [...new Set(symbols)].filter(Boolean);
+            const priceMap = {};
+
+            // Yahoo is happy with quite a few symbols, but we’ll batch at 40
+            const chunkSize = 40;
+            for (let i = 0; i < unique.length; i += chunkSize) {
+              const batch = unique.slice(i, i + chunkSize);
+              const url = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=" +
+                          encodeURIComponent(batch.join(","));
+              const res = await fetch(url);
+              if (!res.ok) continue;
+              const json = await res.json();
+              const results = json?.quoteResponse?.result || [];
+              results.forEach(q => {
+                if (q.symbol && typeof q.regularMarketPrice === "number") {
+                  priceMap[q.symbol] = q.regularMarketPrice;
+                }
+              });
+            }
+            return priceMap;
+          }
+
+          (async () => {
+            // ---------- Load existing AuroraSync ----------
+            const aurora = JSON.parse(fs.readFileSync(auroraPath, "utf8"));
+
+            // ---------- Load latest sheets ----------
+            const holdings = JSON.parse(fs.readFileSync("holdings.json", "utf8"));
+            const dividendsSheet = JSON.parse(fs.readFileSync("dividends.json", "utf8"));
+
+            const now = new Date().toISOString().replace("T"," ").substring(0,19);
+
+            // ---------- Collect tickers for live prices ----------
+            const yahooSymbolsNeeded = [];
+            holdings.forEach(row => {
+              const ticker = row["ticker"] || row["Ticker"] || "";
+              const ySym = toYahooSymbol(ticker);
+              if (ySym) yahooSymbolsNeeded.push(ySym);
+            });
+
+            const priceMap = await fetchYahooPrices(yahooSymbolsNeeded);
+
+            // ---------- Prepare ISA structure (only this section) ----------
+            if (!aurora.isa) aurora.isa = {};
+            aurora.isa.holdings = { ig_isa: [], trade212_isa: [] };
+
+            // ---------- Build holdings with live prices ----------
+            holdings.forEach(row => {
+              const ticker = (row["ticker"] || row["Ticker"] || "").trim();
+              const name   = row["name"]   || row["Name"]   || "";
+              const account = row["account"] || row["Account"] || "";
+              const sector  = row["sector"]  || row["Sector"]  || "";
+
+              const shares    = Number(row["shares"]    || row["Shares"]    || 0);
+              const book_cost = Number(row["book_cost"] || row["Book Cost"] || 0);
+
+              const ySym = toYahooSymbol(ticker);
+              const live_price = priceMap[ySym] || 0;
+
+              const value       = shares * live_price;
+              const gain_value  = value - book_cost;
+              const gain_pct    = book_cost ? (gain_value / book_cost) * 100 : 0;
+
+              const dps = Number(
+                row["annual_dividend_per_share"] ||
+                row["Annual DPS"] ||
+                row["annual_dps"] ||
+                0
+              );
+              const annual_income = dps * shares;
+              const annual_yield  = live_price ? (dps / live_price) * 100 : 0;
+
+              const item = {
+                ticker,
+                name,
+                shares,
+                book_cost: round(book_cost, 2),
+                live_price: round(live_price, 4),
+                value: round(value, 3),
+                gain_value: round(gain_value, 3),
+                gain_percentage: round(gain_pct, 2),
+                annual_dividend_per_share: round(dps, 4),
+                annual_div_yield: round(annual_yield, 2),
+                annual_income: round(annual_income, 2),
+                sector,
+                last_updated: now
+              };
+
+              if (account === "IG ISA") {
+                aurora.isa.holdings.ig_isa.push(item);
+              } else if (account === "TRADE212") {
+                aurora.isa.holdings.trade212_isa.push(item);
+              }
+            });
+
+            // ---------- ISA summary blocks ----------
+            const igHoldings   = aurora.isa.holdings.ig_isa;
+            const t212Holdings = aurora.isa.holdings.trade212_isa;
+
+            const sumField = (arr, field) => arr.reduce((s,h)=>s + (Number(h[field]) || 0), 0);
+
+            const igValue   = sumField(igHoldings, "value");
+            const igBook    = sumField(igHoldings, "book_cost");
+            const igGain    = igValue - igBook;
+            const igInc     = sumField(igHoldings, "annual_income");
+            const igGainPct = igBook ? (igGain / igBook) * 100 : 0;
+
+            const tValue    = sumField(t212Holdings, "value");
+            const tBook     = sumField(t212Holdings, "book_cost");
+            const tGain     = tValue - tBook;
+            const tInc      = sumField(t212Holdings, "annual_income");
+            const tGainPct  = tBook ? (tGain / tBook) * 100 : 0;
+
+            const allValue  = igValue + tValue;
+            const allIncome = igInc + tInc;
+            const divYield  = allValue ? (allIncome / allValue) * 100 : 0;
+
+            aurora.isa.ig_isa = {
+              balance: round(igValue, 4),
+              unrealised_gain: round(igGain, 4),
+              gain_percent: round(igGainPct, 6),
+              annual_income: round(igInc, 4)
+            };
+
+            aurora.isa.trade212_isa = {
+              balance: round(tValue, 4),
+              unrealised_gain: round(tGain, 4),
+              gain_percent: round(tGainPct, 6),
+              annual_income: round(tInc, 4)
+            };
+
+            aurora.isa.portfolio_summary = {
+              total_value: round(allValue, 4),
+              annual_income_gbp: round(allIncome, 3),
+              dividend_yield: round(divYield, 6)
+            };
+
+            // ---------- Dividends (from Dividends sheet) ----------
+            const today = new Date().toISOString().split("T")[0];
+            const monthlyTotals = {};
+            const upcoming = [];
+            const nextFive = [];
+            let annualTotal = 0;
+
+            dividendsSheet.forEach(d => {
+              const pay = d["pay_date"];
+              const total = Number(d["total_dividend"] || 0);
+
+              if (pay) {
+                const month = pay.substring(0,7); // YYYY-MM
+                monthlyTotals[month] = (monthlyTotals[month] || 0) + total;
+              }
+
+              annualTotal += total;
+
+              if (pay && pay >= today) {
+                upcoming.push({
+                  ticker: d["ticker"],
+                  name: d["name"],
+                  ex_div_date: d["ex_div_date"],
+                  pay_date: d["pay_date"],
+                  dividend_per_share: d["dividend_per_share"],
+                  shares_at_exdiv: d["shares_at_exdiv"],
+                  total_dividend: total,
+                  frequency: d["frequency"],
+                  status: d["status"]
+                });
+              }
+            });
+
+            upcoming.sort((a,b)=>a.pay_date.localeCompare(b.pay_date));
+            nextFive.push(...upcoming.slice(0,5));
+
+            aurora.isa.dividends = {
+              last_updated: now,
+              upcoming,
+              next_five: nextFive,
+              monthly_totals: monthlyTotals,
+              annual_total: annualTotal
+            };
+
+            // ---------- Meta ----------
+            if (!aurora.meta) aurora.meta = {};
+            aurora.meta.last_updated = now;
+            aurora.meta.source = "Aurora ISA – API Live Prices + Dividends";
+
+            // ---------- Save back ----------
+            fs.writeFileSync(auroraPath, JSON.stringify(aurora, null, 2));
+            console.log("✅ AuroraSync.json ISA section updated with API prices.");
+          })().catch(err => {
+            console.error("ISA sync failed:", err);
+            process.exit(1);
+          });
           EOF
 
       # =====================================================
@@ -166,5 +286,5 @@ jobs:
       - name: 📤 Commit and push
         run: |
           git add AuroraSync.json
-          git commit -m "🔄 Safe ISA Sync – Holdings + Dividends Updated" || true
+          git commit -m "🔄 ISA API Sync – Holdings + Dividends Updated" || true
           git push origin main || true
