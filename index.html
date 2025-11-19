@@ -76,6 +76,24 @@ body{
   border-bottom:1px solid rgba(255,255,255,0.1);
 }
 
+/* MOBILE OPTIMISED: TABLE STACKING */
+@media(max-width:700px){
+  .table, .table thead, .table tbody, .table th, .table td, .table tr{
+    display:block;
+  }
+  .table tr{
+    margin-bottom:15px;
+    border:1px solid rgba(255,255,255,0.2);
+    border-radius:10px;
+    padding:10px;
+  }
+  .table td{
+    border:none;
+    display:flex;
+    justify-content:space-between;
+  }
+}
+
 .dividend-item{
   padding:10px 12px;
   background:rgba(255,255,255,0.07);
@@ -89,6 +107,7 @@ body{
 </style>
 
 <script>
+// Correct JSON path
 const AURORA_SYNC =
   "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json";
 
@@ -105,7 +124,7 @@ async function initAurora(){
   renderIG(sync);
   renderT212(sync);
   renderTesco(sync);
-  renderReits(sync);
+  renderREITs(sync);
   renderFinancials(sync);
   renderNextFive(sync);
   renderUpcoming(sync);
@@ -116,82 +135,80 @@ async function initAurora(){
 </head>
 
 <body onload="initAurora()">
-
 <div class="container">
 
-  <h1 class="section-title">🌌 Aurora ISA Tracker – Cinematic Edition</h1>
+<h1 class="section-title">🌌 Aurora ISA Tracker – Cinematic Edition</h1>
 
-  <!-- ====================== PORTFOLIO SUMMARY ====================== -->
-  <div class="card">
-    <h2 class="section-title">Portfolio Summary</h2>
-    <div id="portfolio-summary"></div>
-  </div>
+<!-- PORTFOLIO SUMMARY -->
+<div class="card">
+  <h2 class="section-title">Portfolio Summary</h2>
+  <div id="portfolio-summary"></div>
+</div>
 
-  <!-- ====================== WATCHLIST SUMMARY ====================== -->
-  <div class="card">
-    <h2 class="section-title">Watchlist Summary</h2>
-    <div id="watchlist-summary"></div>
-  </div>
+<!-- WATCHLIST SUMMARY -->
+<div class="card">
+  <h2 class="section-title">Watchlist Summary</h2>
+  <div id="watchlist-summary"></div>
+</div>
 
-  <!-- ====================== IG ISA ====================== -->
-  <div class="card">
-    <h2 class="section-title">IG ISA Holdings</h2>
-    <div id="ig-table"></div>
-  </div>
+<!-- IG ISA -->
+<div class="card">
+  <h2 class="section-title">IG ISA Holdings</h2>
+  <div id="ig-table"></div>
+</div>
 
-  <!-- ====================== TRADE212 ISA ====================== -->
-  <div class="card">
-    <h2 class="section-title">Trade212 ISA Holdings</h2>
-    <div id="t212-table"></div>
-  </div>
+<!-- T212 ISA -->
+<div class="card">
+  <h2 class="section-title">Trade212 ISA Holdings</h2>
+  <div id="t212-table"></div>
+</div>
 
-  <!-- ====================== TESCO SHARE PLAN ====================== -->
-  <div class="card">
-    <h2 class="section-title">Tesco Share Plan</h2>
-    <div id="tesco-block"></div>
-  </div>
+<!-- TESCO SHARE PLAN -->
+<div class="card">
+  <h2 class="section-title">Tesco Share Plan</h2>
+  <div id="tesco-plan"></div>
+</div>
 
-  <!-- ====================== REITS OUTLOOK ====================== -->
-  <div class="card">
-    <h2 class="section-title">REITs Outlook</h2>
-    <div id="reits-outlook"></div>
-  </div>
+<!-- REITS OUTLOOK -->
+<div class="card">
+  <h2 class="section-title">REITs Outlook</h2>
+  <div id="reits-outlook"></div>
+</div>
 
-  <!-- ====================== FINANCIALS OUTLOOK ====================== -->
-  <div class="card">
-    <h2 class="section-title">Financials Outlook</h2>
-    <div id="financials-outlook"></div>
-  </div>
+<!-- FINANCIALS OUTLOOK -->
+<div class="card">
+  <h2 class="section-title">Financials Outlook</h2>
+  <div id="financials-outlook"></div>
+</div>
 
-  <!-- ====================== NEXT 5 DIVIDENDS ====================== -->
-  <div class="card">
-    <h2 class="section-title">Next 5 Dividends</h2>
-    <div id="next5"></div>
-  </div>
+<!-- NEXT 5 -->
+<div class="card">
+  <h2 class="section-title">Next 5 Dividends</h2>
+  <div id="next5"></div>
+</div>
 
-  <!-- ====================== UPCOMING DIVIDENDS ====================== -->
-  <div class="card">
-    <h2 class="section-title">Upcoming Dividends</h2>
-    <div id="upcoming"></div>
-  </div>
+<!-- UPCOMING -->
+<div class="card">
+  <h2 class="section-title">Upcoming Dividends</h2>
+  <div id="upcoming"></div>
+</div>
 
-  <!-- ====================== 12-MONTH FORECAST ====================== -->
-  <div class="card chart-box">
-    <h2 class="section-title">12-Month Dividend Forecast</h2>
-    <canvas id="divChart"></canvas>
-  </div>
+<!-- CHART -->
+<div class="card chart-box">
+  <h2 class="section-title">12-Month Dividend Forecast</h2>
+  <canvas id="divChart"></canvas>
+</div>
 
-  <!-- ====================== YEAR-TO-DATE ====================== -->
-  <div class="card">
-    <h2 class="section-title">Year-To-Date Income</h2>
-    <div id="ytd"></div>
-  </div>
+<!-- YTD -->
+<div class="card">
+  <h2 class="section-title">Year-To-Date Income</h2>
+  <div id="ytd"></div>
+</div>
 
 </div>
 
 <script>
-
-/* ---------------- PORTFOLIO SUMMARY ---------------- */
+/* =============== PORTFOLIO SUMMARY =============== */
 function renderPortfolio(sync){
   const ig = sync?.isa?.ig_isa?.balance || 0;
   const t212 = sync?.isa?.trade212_isa?.balance || 0;
@@ -199,31 +216,39 @@ function renderPortfolio(sync){
   const total = sync?.isa?.portfolio_summary?.total_value || 0;
 
   document.getElementById("portfolio-summary").innerHTML = `
-    <p><strong>IG ISA Value:</strong> £${ig.toFixed(2)}</p>
-    <p><strong>Trade212 ISA Value:</strong> £${t212.toFixed(2)}</p>
-    <p><strong>Total Portfolio Value:</strong> £${total.toFixed(2)}</p>
-    <p><strong>Projected Annual Income:</strong> £${annual.toFixed(2)}</p>
+    <p><strong>IG ISA:</strong> £${ig.toFixed(2)}</p>
+    <p><strong>Trade212 ISA:</strong> £${t212.toFixed(2)}</p>
+    <p><strong>Total Value:</strong> £${total.toFixed(2)}</p>
+    <p><strong>Annual Income:</strong> £${annual.toFixed(2)}</p>
   `;
 }
 
-/* ---------------- WATCHLIST SUMMARY ---------------- */
+/* =============== WATCHLIST SUMMARY =============== */
 function renderWatchlist(sync){
-  const w = sync?.watchlist_summary;
-  if(!w){
-    document.getElementById("watchlist-summary").innerHTML = "<p>No watchlist data.</p>";
+  const wl = sync?.watchlist_summary;
+  if(!wl){
+    document.getElementById("watchlist-summary").innerHTML = "<p>No Watchlist Summary.</p>";
     return;
   }
 
-  let html = "<ul>";
-  w.top_discounted.forEach(x=>{
-    html += `<li>${x.ticker} – ${x.discount}% discount</li>`;
+  let html = "";
+  wl.forEach(item=>{
+    html += `
+      <div class="dividend-item">
+        <div>
+          <strong>${item.ticker}</strong> – ${item.company}<br>
+          Status: ${item.status}<br>
+          Discount: ${item.discount}%
+        </div>
+        <div>${item.buy_strength}</div>
+      </div>
+    `;
   });
-  html += "</ul>";
 
   document.getElementById("watchlist-summary").innerHTML = html;
 }
 
-/* ---------------- IG ---------------- */
+/* =============== IG ISA =============== */
 function renderIG(sync){
   const ig = sync?.isa?.holdings?.ig_isa;
   if(!ig){
@@ -233,30 +258,29 @@ function renderIG(sync){
 
   let html = `
   <table class="table">
-    <tr>
-      <th>Ticker</th><th>Name</th><th>Shares</th><th>Value</th><th>Book</th><th>Gain</th>
-    </tr>
+  <tr>
+    <th>Ticker</th><th>Name</th><th>Shares</th><th>Value</th><th>Book</th><th>Gain</th>
+  </tr>
   `;
 
   ig.forEach(h=>{
     const gain = Number(h.gain_value || 0);
     html += `
-      <tr>
-        <td>${h.ticker}</td>
-        <td>${h.name}</td>
-        <td>${h.shares}</td>
-        <td>£${Number(h.value).toFixed(2)}</td>
-        <td>£${Number(h.book_cost).toFixed(2)}</td>
-        <td style="color:${gain>=0?"lime":"red"}">£${gain.toFixed(2)}</td>
-      </tr>
-    `;
+    <tr>
+      <td>${h.ticker}</td>
+      <td>${h.name}</td>
+      <td>${h.shares}</td>
+      <td>£${Number(h.value).toFixed(2)}</td>
+      <td>£${Number(h.book_cost).toFixed(2)}</td>
+      <td style="color:${gain>=0?"lime":"red"}">£${gain.toFixed(2)}</td>
+    </tr>`;
   });
 
   html += `</table>`;
   document.getElementById("ig-table").innerHTML = html;
 }
 
-/* ---------------- T212 ---------------- */
+/* =============== T212 ISA =============== */
 function renderT212(sync){
   const t = sync?.isa?.holdings?.trade212_isa;
   if(!t){
@@ -266,70 +290,86 @@ function renderT212(sync){
 
   let html = `
   <table class="table">
-    <tr>
-      <th>Ticker</th><th>Name</th><th>Shares</th><th>Value</th><th>Book</th><th>Gain</th>
-    </tr>
+  <tr>
+    <th>Ticker</th><th>Name</th><th>Shares</th><th>Value</th><th>Book</th><th>Gain</th>
+  </tr>
   `;
 
   t.forEach(h=>{
     const gain = Number(h.gain_value || 0);
     html += `
-      <tr>
-        <td>${h.ticker}</td>
-        <td>${h.name}</td>
-        <td>${h.shares}</td>
-        <td>£${Number(h.value).toFixed(2)}</td>
-        <td>£${Number(h.book_cost).toFixed(2)}</td>
-        <td style="color:${gain>=0?"lime":"red"}">£${gain.toFixed(2)}</td>
-      </tr>
-    `;
+    <tr>
+      <td>${h.ticker}</td>
+      <td>${h.name}</td>
+      <td>${h.shares}</td>
+      <td>£${Number(h.value).toFixed(2)}</td>
+      <td>£${Number(h.book_cost).toFixed(2)}</td>
+      <td style="color:${gain>=0?"lime":"red"}">£${gain.toFixed(2)}</td>
+    </tr>`;
   });
 
   html += `</table>`;
   document.getElementById("t212-table").innerHTML = html;
 }
 
-/* ---------------- TESCO BLOCK ---------------- */
+/* =============== TESCO PLAN =============== */
 function renderTesco(sync){
-  const t = sync?.tesco_share_plan;
+  const t = sync?.tesco_plan;
   if(!t){
-    document.getElementById("tesco-block").innerHTML = "<p>No Tesco data.</p>";
+    document.getElementById("tesco-plan").innerHTML = "<p>No Tesco data.</p>";
     return;
   }
 
-  document.getElementById("tesco-block").innerHTML = `
+  document.getElementById("tesco-plan").innerHTML = `
     <p><strong>Total Shares:</strong> ${t.total_shares}</p>
-    <p><strong>BAYE Shares:</strong> ${t.baye_shares}</p>
+    <p><strong>BAYE:</strong> ${t.baye_shares}</p>
     <p><strong>Dividend Shares:</strong> ${t.dividend_shares}</p>
-    <p><strong>Current Price:</strong> £${t.current_price_pence / 100}</p>
-    <p><strong>Indicative Value:</strong> £${t.indicative_value_gbp.toFixed(2)}</p>
-    <p><strong>Potential Gain:</strong> £${t.potential_gain_gbp.toFixed(2)}</p>
+    <p><strong>Value:</strong> £${t.indicative_value_gbp.toFixed(2)}</p>
+    <p><strong>Invested:</strong> £${t.amount_invested_gbp.toFixed(2)}</p>
   `;
 }
 
-/* ---------------- REITS OUTLOOK ---------------- */
-function renderReits(sync){
-  const r = sync?.reits_outlook;
-  let html = "<ul>";
-  for(const key in r){
-    html += `<li><strong>${key}</strong> – ${r[key].status}<br>${r[key].notes}</li>`;
+/* =============== REITS OUTLOOK =============== */
+function renderREITs(sync){
+  const reits = sync?.reits_outlook;
+  if(!reits){
+    document.getElementById("reits-outlook").innerHTML = "<p>No REIT data.</p>";
+    return;
   }
-  html += "</ul>";
+
+  let html = "";
+  Object.keys(reits).forEach(k=>{
+    html += `
+      <div class="dividend-item">
+        <div><strong>${k}</strong><br>${reits[k].status}</div>
+        <div>${reits[k].notes}</div>
+      </div>`;
+  });
+
   document.getElementById("reits-outlook").innerHTML = html;
 }
 
-/* ---------------- FINANCIALS OUTLOOK ---------------- */
+/* =============== FINANCIALS OUTLOOK =============== */
 function renderFinancials(sync){
-  const f = sync?.financials_outlook;
-  let html = "<ul>";
-  for(const key in f){
-    html += `<li><strong>${key}</strong> – ${f[key].status}<br>${f[key].notes}</li>`;
+  const fin = sync?.financials_outlook;
+  if(!fin){
+    document.getElementById("financials-outlook").innerHTML = "<p>No financials data.</p>";
+    return;
   }
-  html += "</ul>";
+
+  let html = "";
+  Object.keys(fin).forEach(k=>{
+    html += `
+      <div class="dividend-item">
+        <div><strong>${k}</strong><br>${fin[k].status}</div>
+        <div>${fin[k].notes}</div>
+      </div>`;
+  });
+
   document.getElementById("financials-outlook").innerHTML = html;
 }
 
-/* ---------------- NEXT FIVE ---------------- */
+/* =============== NEXT 5 DIVIDENDS =============== */
 function renderNextFive(sync){
   const next = sync?.isa?.dividends?.next_five || [];
   if(next.length === 0){
@@ -343,60 +383,51 @@ function renderNextFive(sync){
       <div class="dividend-item">
         <div><strong>${d.ticker}</strong><br>Ex: ${d.ex_div_date}<br>Pay: ${d.pay_date}</div>
         <div>£${Number(d.total_dividend).toFixed(2)}</div>
-      </div>
-    `;
+      </div>`;
   });
 
   document.getElementById("next5").innerHTML = html;
 }
 
-/* ---------------- UPCOMING ---------------- */
+/* =============== UPCOMING =============== */
 function renderUpcoming(sync){
   const all = sync?.isa?.dividends?.upcoming || [];
-  if (!all.length){
-    document.getElementById("upcoming").innerHTML = "<p>No upcoming ex-dividend dates.</p>";
+  if(!all.length){
+    document.getElementById("upcoming").innerHTML="<p>No upcoming dividends.</p>";
     return;
   }
 
   const today = new Date();
-
-  const futureEx = all.filter(d => new Date(d.ex_div_date) >= today);
-  futureEx.sort((a,b)=>new Date(a.ex_div_date)-new Date(b.ex_div_date));
-
-  const next5 = futureEx.slice(0,5);
+  const list = all.filter(d => new Date(d.ex_div_date) >= today).slice(0,5);
 
   let html = "";
-  next5.forEach(d => {
+  list.forEach(d=>{
     html += `
-      <div class="dividend-item">
-        <div>
-          <strong>${d.ticker}</strong><br>
-          Ex: ${d.ex_div_date}<br>
-          Pay: ${d.pay_date}<br>
-          Status: ${d.status}
-        </div>
-        <div>£${Number(d.total_dividend).toFixed(2)}</div>
-      </div>
-    `;
+    <div class="dividend-item">
+      <div><strong>${d.ticker}</strong><br>${d.name}<br>Ex: ${d.ex_div_date}<br>Pay: ${d.pay_date}</div>
+      <div>£${Number(d.total_dividend).toFixed(2)}</div>
+    </div>`;
   });
 
   document.getElementById("upcoming").innerHTML = html;
 }
 
-/* ---------------- YTD ---------------- */
+/* =============== YTD =============== */
 function renderYTD(sync){
   const totals = sync?.isa?.dividends?.monthly_totals || {};
   let ytd = 0;
   const year = new Date().getFullYear();
 
   Object.keys(totals).forEach(m=>{
-    if(m.startsWith(year.toString())) ytd += totals[m];
+    if(m.startsWith(year.toString())){
+      ytd += totals[m];
+    }
   });
 
   document.getElementById("ytd").innerHTML = `<h3>£${ytd.toFixed(2)}</h3>`;
 }
 
-/* ---------------- CHART ---------------- */
+/* =============== CHART =============== */
 function renderChart(sync){
   const totals = sync?.isa?.dividends?.monthly_totals;
   if(!totals) return;
