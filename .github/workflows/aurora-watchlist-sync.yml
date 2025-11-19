@@ -19,14 +19,14 @@ jobs:
             "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Watchlist" \
             -o watchlist_raw.json
 
-      - name: 🔧 Convert to Proper JSON
+      - name: 🔧 Convert + Clean JSON
         run: |
           node << 'EOF'
           const fs = require("fs");
 
-          const raw = JSON.parse(fs.readFileSync("watchlist_raw.json", "utf8"));
+          const raw = JSON.parse(fs.readFileSync("watchlist_raw.json","utf8"));
 
-          // Clean up keys + remove emojis breaking JSON parsing
+          // Clean up keys (remove emojis, symbols, etc)
           const clean = raw.map(r => {
             const cleaned = {};
             for (const k of Object.keys(r)) {
@@ -38,10 +38,14 @@ jobs:
           fs.writeFileSync("watchlist.json", JSON.stringify(clean, null, 2));
           EOF
 
-      - name: 📤 Commit and Push
+      - name: 📤 Commit and Push Safely
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "Aurora Automation"
+
           git add watchlist.json
-          git commit -m "🔄 Updated Watchlist JSON (Live Prices)"
-          git push
+          git add watchlist_raw.json
+
+          # prevent exit code 1 on "nothing to commit"
+          git commit -m "🔄 Updated Watchlist JSON (Live Prices)" || true
+          git push || true
