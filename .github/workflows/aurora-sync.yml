@@ -2,8 +2,8 @@ name: Aurora ISA – 5-Minute Live Shares + Dividends Sync
 
 on:
   schedule:
-    - cron: "*/5 8-16 * * 1-5"     # Every 5 mins during LSE market hours
-    - cron: "30 16 * * 1-5"        # Safety run after close
+    - cron: "*/5 8-16 * * 1-5"
+    - cron: "30 16 * * 1-5"
   workflow_dispatch:
 
 concurrency:
@@ -16,7 +16,7 @@ jobs:
 
     steps:
       # =====================================================
-      # STEP 1 — Checkout repo
+      # STEP 1 — Checkout Repo
       # =====================================================
       - name: 🧩 Checkout repository
         uses: actions/checkout@v4
@@ -24,7 +24,7 @@ jobs:
           fetch-depth: 0
 
       # =====================================================
-      # STEP 2 — Fetch Holdings sheet
+      # STEP 2 — Fetch Holdings sheet (TAB: Holdings)
       # =====================================================
       - name: 🟢 Fetch Holdings sheet
         run: |
@@ -33,7 +33,7 @@ jobs:
             -o holdings.json
 
       # =====================================================
-      # STEP 3 — Fetch Dividends sheet
+      # STEP 3 — Fetch Dividends sheet (TAB: Dividends)
       # =====================================================
       - name: 🟣 Fetch Dividends sheet
         run: |
@@ -42,7 +42,16 @@ jobs:
             -o dividends.json
 
       # =====================================================
-      # STEP 4 — Install Node.js
+      # STEP 4 — Fetch Watchlist sheet (LIVE PRICES)
+      # =====================================================
+      - name: 🔵 Fetch Watchlist sheet
+        run: |
+          curl -s \
+            "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Watchlist" \
+            -o watchlist.json
+
+      # =====================================================
+      # STEP 5 — Install Node
       # =====================================================
       - name: 🔧 Install Node.js
         uses: actions/setup-node@v4
@@ -50,183 +59,153 @@ jobs:
           node-version: 20
 
       # =====================================================
-      # STEP 5 — FIX: Install node-fetch for Yahoo requests
+      # STEP 6 — Build ISA JSON using Watchlist live prices
       # =====================================================
-      - name: 📦 Install node-fetch
-        run: npm install node-fetch@2
-
-      # =====================================================
-      # STEP 6 — SAFE UPDATE of ISA section using API prices
-      # =====================================================
-      - name: 🔄 Update ISA Data Safely (API prices)
+      - name: 🔄 Build ISA Data (Watchlist Prices)
         run: |
           node << 'EOF'
           const fs = require("fs");
-          const fetch = require("node-fetch");   // ⭐ REQUIRED FIX ⭐
 
-          const auroraPath = "AuroraSync.json";
-          const round = (v, dp = 2) => Number(v.toFixed(dp));
+          const aurora = JSON.parse(fs.readFileSync("AuroraSync.json", "utf8"));
+          const holdings = JSON.parse(fs.readFileSync("holdings.json", "utf8"));
+          const dividends = JSON.parse(fs.readFileSync("dividends.json", "utf8"));
+          const watchlist = JSON.parse(fs.readFileSync("watchlist.json", "utf8"));
 
-          // Convert ticker to Yahoo format
-          const toYahoo = (t) => {
-            if (!t) return null;
-            t = String(t).trim();
-            if (t.includes(":")) t = t.split(":").pop();
-            if (/\.[A-Za-z]+$/.test(t)) return t;
-            return t + ".L";
+          const now = new Date().toISOString().replace("T", " ").substring(0, 19);
+
+          // Build lookup of tickers → live_price
+          const priceLookup = {};
+          watchlist.forEach(w => {
+            const t = String(w["ticker"] || "").trim();
+            const p = Number(w["live_price"] || 0);
+            if (t) priceLookup[t] = p;
+          });
+
+          if (!aurora.isa) aurora.isa = {};
+          aurora.isa.holdings = { ig_isa: [], trade212_isa: [] };
+
+          function round(v, dp=2) { return Number(v.toFixed(dp)); }
+
+          // ===============================
+          // Build holdings from sheet + watchlist prices
+          // ===============================
+          holdings.forEach(row => {
+            const ticker = String(row["ticker"]).trim();
+            const shares = Number(row["shares"]);
+            const book = Number(row["book_cost"]);
+            const dps = Number(row["annual_dividend_per_share"]);
+
+            const live = priceLookup[ticker] || 0;
+            const value = shares * live;
+            const gain = value - book;
+            const pct = book ? (gain / book) * 100 : 0;
+            const income = shares * dps;
+            const yieldP = live ? (dps / live) * 100 : 0;
+
+            const item = {
+              ticker,
+              name: row["name"],
+              shares,
+              book_cost: round(book),
+              live_price: round(live, 6),
+              value: round(value, 3),
+              gain_value: round(gain, 3),
+              gain_percentage: round(pct, 2),
+              annual_dividend_per_share: round(dps, 4),
+              annual_div_yield: round(yieldP, 2),
+              annual_income: round(income, 2),
+              sector: row["sector"],
+              last_updated: now
+            };
+
+            if (row["account"] === "IG ISA") aurora.isa.holdings.ig_isa.push(item);
+            if (row["account"] === "TRADE212") aurora.isa.holdings.trade212_isa.push(item);
+          });
+
+          // ===============================
+          // Calculate Summary
+          // ===============================
+          function sum(a, f) { return a.reduce((s,x)=>s + Number(x[f] || 0), 0); }
+
+          const ig = aurora.isa.holdings.ig_isa;
+          const t2 = aurora.isa.holdings.trade212_isa;
+
+          const igVal = sum(ig, "value");
+          const igBook = sum(ig, "book_cost");
+          const igGain = igVal - igBook;
+
+          const t2Val = sum(t2, "value");
+          const t2Book = sum(t2, "book_cost");
+          const t2Gain = t2Val - t2Book;
+
+          const totalValue = igVal + t2Val;
+          const totalIncome = sum(ig, "annual_income") + sum(t2, "annual_income");
+          const divYield = totalValue ? (totalIncome / totalValue) * 100 : 0;
+
+          aurora.isa.ig_isa = {
+            balance: round(igVal, 4),
+            unrealised_gain: round(igGain, 3),
+            gain_percent: round((igGain / igBook) * 100 || 0, 6),
+            annual_income: round(sum(ig, "annual_income"), 3)
           };
 
-          async function getPrices(symbols) {
-            const uniq = [...new Set(symbols)].filter(Boolean);
-            const priceMap = {};
-            const chunk = 40;
+          aurora.isa.trade212_isa = {
+            balance: round(t2Val, 4),
+            unrealised_gain: round(t2Gain, 3),
+            gain_percent: round((t2Gain / t2Book) * 100 || 0, 6),
+            annual_income: round(sum(t2, "annual_income"), 3)
+          };
 
-            for (let i = 0; i < uniq.length; i += chunk) {
-              const slice = uniq.slice(i, i + chunk);
-              const url = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=" +
-                          encodeURIComponent(slice.join(","));
-              const res = await fetch(url).catch(() => null);
-              if (!res) continue;
-              const json = await res.json().catch(() => null);
-              const rows = json?.quoteResponse?.result || [];
-              rows.forEach(r => {
-                if (r.symbol && typeof r.regularMarketPrice === "number") {
-                  priceMap[r.symbol] = r.regularMarketPrice;
-                }
-              });
+          aurora.isa.portfolio_summary = {
+            total_value: round(totalValue, 4),
+            annual_income_gbp: round(totalIncome, 3),
+            dividend_yield: round(divYield, 6)
+          };
+
+          // =======================
+          // Dividends (unchanged)
+          // =======================
+          const today = new Date().toISOString().split("T")[0];
+          const monthlyTotals = {};
+          const upcoming = [];
+          const nextFive = [];
+          let annualTotal = 0;
+
+          dividends.forEach(d => {
+            const pay = d["pay_date"];
+            const total = Number(d["total_dividend"] || 0);
+            if (pay) {
+              const month = pay.substring(0, 7);
+              monthlyTotals[month] = (monthlyTotals[month] || 0) + total;
             }
+            annualTotal += total;
+            if (pay && pay >= today) upcoming.push(d);
+          });
 
-            return priceMap;
-          }
+          upcoming.sort((a,b)=>a.pay_date.localeCompare(b.pay_date));
+          nextFive.push(...upcoming.slice(0,5));
 
-          (async () => {
-            const aurora = JSON.parse(fs.readFileSync(auroraPath, "utf8"));
-            const holdings = JSON.parse(fs.readFileSync("holdings.json", "utf8"));
-            const dividendsSheet = JSON.parse(fs.readFileSync("dividends.json", "utf8"));
-            const now = new Date().toISOString().replace("T"," ").substring(0,19);
+          aurora.isa.dividends = {
+            last_updated: now,
+            upcoming,
+            next_five: nextFive,
+            monthly_totals: monthlyTotals,
+            annual_total: annualTotal
+          };
 
-            const symbols = holdings.map(r => toYahoo(r["ticker"]));
-            const priceMap = await getPrices(symbols);
+          aurora.meta.last_updated = now;
+          aurora.meta.source = "Aurora ISA – Watchlist Price Sync";
 
-            if (!aurora.isa) aurora.isa = {};
-            aurora.isa.holdings = { ig_isa: [], trade212_isa: [] };
-
-            holdings.forEach(row => {
-              const ticker = row["ticker"];
-              const y = toYahoo(ticker);
-              const price = priceMap[y] || 0;
-
-              const shares = Number(row["shares"]);
-              const cost   = Number(row["book_cost"]);
-
-              const dps    = Number(row["annual_dividend_per_share"] || 0);
-              const value  = shares * price;
-              const gain   = value - cost;
-
-              const item = {
-                ticker,
-                name: row["name"],
-                shares,
-                book_cost: round(cost,2),
-                live_price: round(price,4),
-                value: round(value,3),
-                gain_value: round(gain,3),
-                gain_percentage: cost ? round((gain/cost)*100,2) : 0,
-                annual_dividend_per_share: round(dps,4),
-                annual_div_yield: price ? round((dps/price)*100,2) : 0,
-                annual_income: round(dps * shares,2),
-                sector: row["sector"],
-                last_updated: now
-              };
-
-              if (row["account"] === "IG ISA") aurora.isa.holdings.ig_isa.push(item);
-              if (row["account"] === "TRADE212") aurora.isa.holdings.trade212_isa.push(item);
-            });
-
-            // ----- Portfolio summaries -----
-            const ig = aurora.isa.holdings.ig_isa;
-            const t2 = aurora.isa.holdings.trade212_isa;
-
-            const sum = (arr,f) => arr.reduce((s,h)=>s + (h[f]||0), 0);
-
-            const igValue = sum(ig,"value");
-            const igCost  = sum(ig,"book_cost");
-            const igGain  = igValue - igCost;
-            const igInc   = sum(ig,"annual_income");
-
-            const tValue = sum(t2,"value");
-            const tCost  = sum(t2,"book_cost");
-            const tGain  = tValue - tCost;
-            const tInc   = sum(t2,"annual_income");
-
-            aurora.isa.ig_isa = {
-              balance: round(igValue,4),
-              unrealised_gain: round(igGain,4),
-              gain_percent: igCost ? round((igGain/igCost)*100,6) : 0,
-              annual_income: round(igInc,4)
-            };
-
-            aurora.isa.trade212_isa = {
-              balance: round(tValue,4),
-              unrealised_gain: round(tGain,4),
-              gain_percent: tCost ? round((tGain/tCost)*100,6) : 0,
-              annual_income: round(tInc,4)
-            };
-
-            aurora.isa.portfolio_summary = {
-              total_value: round(igValue + tValue,4),
-              annual_income_gbp: round(igInc + tInc,3),
-              dividend_yield: (igValue+tValue) ?
-                round(((igInc+tInc)/(igValue+tValue))*100,6) : 0
-            };
-
-            // ----- Dividends -----
-            const today = new Date().toISOString().split("T")[0];
-            const monthly = {};
-            const upcoming = [];
-
-            dividendsSheet.forEach(d => {
-              const pay = d["pay_date"];
-              const total = Number(d["total_dividend"] || 0);
-              if (pay) {
-                const m = pay.substring(0,7);
-                monthly[m] = (monthly[m]||0) + total;
-              }
-              if (pay >= today) upcoming.push(d);
-            });
-
-            upcoming.sort((a,b)=>a.pay_date.localeCompare(b.pay_date));
-
-            aurora.isa.dividends = {
-              last_updated: now,
-              upcoming,
-              next_five: upcoming.slice(0,5),
-              monthly_totals: monthly,
-              annual_total: monthly
-            };
-
-            if (!aurora.meta) aurora.meta = {};
-            aurora.meta.last_updated = now;
-            aurora.meta.source = "Aurora ISA – API Live Prices + Dividends";
-
-            fs.writeFileSync(auroraPath, JSON.stringify(aurora, null, 2));
-          })();
+          fs.writeFileSync("AuroraSync.json", JSON.stringify(aurora, null, 2));
           EOF
 
       # =====================================================
-      # STEP 7 — Pull latest to avoid conflicts
+      # STEP 7 — Commit
       # =====================================================
-      - name: 📥 Pull latest
-        run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "Aurora Automation"
-          git pull --rebase origin main || true
-
-      # =====================================================
-      # STEP 8 — Commit & Push
-      # =====================================================
-      - name: 📤 Commit and push
+      - name: 📤 Commit & Push
         run: |
           git add AuroraSync.json
-          git commit -m "🔄 ISA API Sync – FIXED Yahoo fetch + updated values" || true
+          git config --global user.email "actions@github.com"
+          git config --global user.name "Aurora Automation"
+          git commit -m "🔄 ISA Sync – Watchlist Live Prices" || true
           git push origin main || true
