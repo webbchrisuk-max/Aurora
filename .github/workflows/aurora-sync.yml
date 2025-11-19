@@ -1,159 +1,83 @@
-name: Aurora ISA – 5-Minute Live Shares Sync (Watchlist Prices)
+name: Aurora – ISA Sync
 
 on:
   schedule:
-    - cron: "*/5 8-16 * * 1-5"
-    - cron: "30 16 * * 1-5"
+    - cron: "*/15 * * * *"
   workflow_dispatch:
 
-concurrency:
-  group: aurora-isa-sync
-  cancel-in-progress: false
-
 jobs:
-  isa_sync:
+  sync:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🧩 Checkout repository
+      - name: 🔹 Checkout repo
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      # =====================================================
-      # FETCH HOLDINGS + WATCHLIST
-      # =====================================================
-      - name: 🟢 Fetch Holdings sheet
+      - name: 🔹 Fetch Holdings sheet
         run: |
           curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Holdings" -o holdings.json
 
-      - name: 🟣 Fetch Watchlist sheet
+      - name: 🔹 Fetch Watchlist sheet
         run: |
           curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Watchlist" -o watchlist.json
 
-      # =====================================================
-      # PROCESS USING NODE
-      # =====================================================
-      - name: 🔧 Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: 🔄 Update ISA with Watchlist Prices
+      - name: 🔹 Load & Merge Watchlist into AuroraSync
         run: |
           node << 'EOF'
           const fs = require("fs");
 
-          const auroraPath = "AuroraSync.json";
+          const aurora = JSON.parse(fs.readFileSync("AuroraSync.json", "utf8"));
           const holdings = JSON.parse(fs.readFileSync("holdings.json", "utf8"));
-          const watchlist = JSON.parse(fs.readFileSync("watchlist.json", "utf8"));
-          const aurora = JSON.parse(fs.readFileSync(auroraPath, "utf8"));
+          const watch = JSON.parse(fs.readFileSync("watchlist.json", "utf8"));
 
-          const round = (v, d=2) => Number(Number(v).toFixed(d));
-
-          // --------------------------------------------------
-          // Build watchlist price lookup (ticker → price)
-          // Converts LON:MNG → MNG.L for lookup
-          // --------------------------------------------------
-          const priceMap = {};
-          watchlist.forEach(row => {
-            let t = row["ticker"] || "";
-
-            if (!t) return;
-
-            // Remove smart chip label junk (OpenSheet already cleans most)
-            t = String(t).trim();
-
-            // Convert Google tickers to Yahoo-style
-            if (t.startsWith("LON:")) {
-              t = t.replace("LON:", "") + ".L";
-            }
-
-            // Astrid (6XS) stays raw
-            if (t === "6XS") {
-              // price_map defined later
-            }
-
-            priceMap[t] = Number(row["live_price"] || 0);
-          });
-
-          // --------------------------------------------------
-          // EXTRA FIX: Astrid (6XS) price support
-          // --------------------------------------------------
-          if (priceMap["6XS"] === 0 && priceMap["6XS"] !== undefined) {
-            // If Google returns 0 because it's too small, keep as 0
-            priceMap["6XS"] = 0;
+          function cleanTicker(t){
+            return String(t || "")
+              .replace("LON:", "")
+              .replace("£", "")
+              .trim();
           }
 
-          // --------------------------------------------------
-          // Reset ISA section
-          // --------------------------------------------------
-          aurora.isa = aurora.isa || {};
-          aurora.isa.holdings = { ig_isa: [], trade212_isa: [] };
-
-          // --------------------------------------------------
-          // Build holdings with real live prices
-          // --------------------------------------------------
-          holdings.forEach(row => {
-            let ticker = (row["ticker"] || "").trim();
-
-            // Convert holdings tickers too (if still using LON:MNG)
-            if (ticker.startsWith("LON:"))
-              ticker = ticker.replace("LON:", "") + ".L";
-
-            const shares = Number(row["shares"] || 0);
-            const book = Number(row["book_cost"] || 0);
-            const dps = Number(row["annual_dividend_per_share"] || 0);
-            const sector = row["sector"] || "";
-
-            const live = priceMap[ticker] || 0;
-            const value = shares * live;
-            const gain = value - book;
-            const gainPct = book ? (gain / book) * 100 : 0;
-            const income = shares * dps;
-            const yieldPct = live ? (dps / live) * 100 : 0;
-
-            const item = {
-              ticker,
-              name: row["name"],
-              shares,
-              book_cost: round(book, 2),
-              live_price: round(live, 4),
-              value: round(value, 3),
-              gain_value: round(gain, 3),
-              gain_percentage: round(gainPct, 2),
-              annual_dividend_per_share: round(dps, 4),
-              annual_div_yield: round(yieldPct, 2),
-              annual_income: round(income, 2),
-              sector,
-              last_updated: new Date().toISOString().replace("T"," ").substring(0,19)
+          // Build watchlist lookup for fast matching
+          const watchMap = {};
+          watch.forEach(row => {
+            const t = cleanTicker(row.ticker);
+            watchMap[t] = {
+              live_price: Number(row.live_price || 0)
             };
-
-            if (row["account"] === "IG ISA")
-              aurora.isa.holdings.ig_isa.push(item);
-
-            if (row["account"] === "TRADE212")
-              aurora.isa.holdings.trade212_isa.push(item);
           });
 
-          // --------------------------------------------------
-          // Save JSON
-          // --------------------------------------------------
-          fs.writeFileSync(auroraPath, JSON.stringify(aurora, null, 2));
-          console.log("✅ ISA updated using WATCHLIST prices.");
+          function updateSection(arr){
+            arr.forEach(h => {
+              const t = cleanTicker(h.ticker);
+              if(watchMap[t]){
+                const live = watchMap[t].live_price;
+                h.live_price = live;
+                h.value = Number(h.shares) * live;
+                h.gain_value = h.value - Number(h.book_cost);
+                h.gain_percentage = h.book_cost > 0 ? (h.gain_value / h.book_cost) * 100 : 0;
+              }
+            });
+          }
+
+          updateSection(aurora.isa.holdings.ig_isa);
+          updateSection(aurora.isa.holdings.trade212_isa);
+
+          // update summary
+          const igValue = aurora.isa.holdings.ig_isa.reduce((s,h)=>s + (h.value||0),0);
+          const t212Value = aurora.isa.holdings.trade212_isa.reduce((s,h)=>s + (h.value||0),0);
+
+          aurora.isa.portfolio_summary.total_value = igValue + t212Value;
+          aurora.isa.ig_isa.balance = igValue;
+          aurora.isa.trade212_isa.balance = t212Value;
+
+          fs.writeFileSync("AuroraSync.json", JSON.stringify(aurora, null, 2));
           EOF
 
-      # =====================================================
-      # GIT SAVE
-      # =====================================================
-      - name: 📥 Pull latest
+      - name: 🔹 Commit changes
+        continue-on-error: true
         run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "Aurora Automation"
-          git pull --rebase origin main || true
-
-      - name: 📤 Commit & Push
-        run: |
-          git add AuroraSync.json
-          git commit -m "🔄 ISA updated using Watchlist prices" || true
-          git push origin main || true
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Aurora Bot"
+          git add AuroraSync.json watchlist.json holdings.json
+          git commit -m "Auto-update: Live prices synced from Watchlist" || true
+          git push
