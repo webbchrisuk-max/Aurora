@@ -15,7 +15,7 @@
           "annual_div_yield": 0,
           "annual_income": 783.2,
           "sector": "Financials",
-          "last_updated": "2025-11-19 15:37:44"
+          "last_updated": "2025-11-19 15:50:33"
         },
         {
           "ticker": "VOD.L",
@@ -30,7 +30,7 @@
           "annual_div_yield": 0,
           "annual_income": 382.9,
           "sector": "Communications",
-          "last_updated": "2025-11-19 15:37:44"
+          "last_updated": "2025-11-19 15:50:33"
         },
         {
           "ticker": "BP.L",
@@ -45,7 +45,7 @@
           "annual_div_yield": 0,
           "annual_income": 190.89,
           "sector": "Energy",
-          "last_updated": "2025-11-19 15:37:44"
+          "last_updated": "2025-11-19 15:50:33"
         },
         {
           "ticker": "NG.L",
@@ -60,7 +60,7 @@
           "annual_div_yield": 0,
           "annual_income": 105.6,
           "sector": "Utilities",
-          "last_updated": "2025-11-19 15:37:44"
+          "last_updated": "2025-11-19 15:50:33"
         },
         {
           "ticker": "SVT.L",
@@ -75,7 +75,7 @@
           "annual_div_yield": 0,
           "annual_income": 86.58,
           "sector": "Utilities",
-          "last_updated": "2025-11-19 15:37:44"
+          "last_updated": "2025-11-19 15:50:33"
         },
         {
           "ticker": "IUKD.L",
@@ -90,7 +90,7 @@
           "annual_div_yield": 0,
           "annual_income": 133.77,
           "sector": "ETF/Financials",
-          "last_updated": "2025-11-19 15:37:44"
+          "last_updated": "2025-11-19 15:50:33"
         },
         {
           "ticker": "LAND.L",
@@ -105,7 +105,7 @@
           "annual_div_yield": 0,
           "annual_income": 120.46,
           "sector": "Real Estate",
-          "last_updated": "2025-11-19 15:37:44"
+          "last_updated": "2025-11-19 15:50:33"
         },
         {
           "ticker": "PHNX.L",
@@ -120,7 +120,7 @@
           "annual_div_yield": 0,
           "annual_income": 762.84,
           "sector": "Fianacials",
-          "last_updated": "2025-11-19 15:37:44"
+          "last_updated": "2025-11-19 15:50:33"
         },
         {
           "ticker": "LGEN.L",
@@ -135,7 +135,7 @@
           "annual_div_yield": 0,
           "annual_income": 689,
           "sector": "Financials",
-          "last_updated": "2025-11-19 15:37:44"
+          "last_updated": "2025-11-19 15:50:33"
         },
         {
           "ticker": "LLOY.L",
@@ -150,7 +150,7 @@
           "annual_div_yield": 0,
           "annual_income": 12.12,
           "sector": "Financial",
-          "last_updated": "2025-11-19 15:37:44"
+          "last_updated": "2025-11-19 15:50:33"
         },
         {
           "ticker": "ASHM.L",
@@ -165,7 +165,7 @@
           "annual_div_yield": 0,
           "annual_income": 74.4,
           "sector": "Financials",
-          "last_updated": "2025-11-19 15:37:44"
+          "last_updated": "2025-11-19 15:50:33"
         },
         {
           "ticker": "SUPR.L",
@@ -180,7 +180,7 @@
           "annual_div_yield": 0,
           "annual_income": 644.4,
           "sector": "Real Estate REIT",
-          "last_updated": "2025-11-19 15:37:44"
+          "last_updated": "2025-11-19 15:50:33"
         },
         {
           "ticker": "BBOX.L",
@@ -195,7 +195,7 @@
           "annual_div_yield": 0,
           "annual_income": 28,
           "sector": "Real Estate REIT",
-          "last_updated": "2025-11-19 15:37:44"
+          "last_updated": "2025-11-19 15:50:33"
         },
         {
           "ticker": "6XS",
@@ -210,7 +210,7 @@
           "annual_div_yield": 0,
           "annual_income": 0,
           "sector": "Ai",
-          "last_updated": "2025-11-19 15:37:44"
+          "last_updated": "2025-11-19 15:50:33"
         }
       ],
       "trade212_isa": [
@@ -227,7 +227,7 @@
           "annual_div_yield": 0,
           "annual_income": 17.94,
           "sector": "Real Estate/Healthcare REIT",
-          "last_updated": "2025-11-19 15:37:44"
+          "last_updated": "2025-11-19 15:50:33"
         },
         {
           "ticker": "SEQI.L",
@@ -242,7 +242,7 @@
           "annual_div_yield": 0,
           "annual_income": 18,
           "sector": "Infrastructure REIT",
-          "last_updated": "2025-11-19 15:37:44"
+          "last_updated": "2025-11-19 15:50:33"
         },
         {
           "ticker": "RGL.L",
@@ -257,7 +257,7 @@
           "annual_div_yield": 0,
           "annual_income": 30.62,
           "sector": "Real Estate REIT",
-          "last_updated": "2025-11-19 15:37:44"
+          "last_updated": "2025-11-19 15:50:33"
         },
         {
           "ticker": "GCP.L",
@@ -272,7 +272,7 @@
           "annual_div_yield": 0,
           "annual_income": 70,
           "sector": "Infrastructure REIT",
-          "last_updated": "2025-11-19 15:37:44"
+          "last_updated": "2025-11-19 15:50:33"
         },
         {
           "ticker": "FSFL.L",
@@ -287,608 +287,878 @@
           "annual_div_yield": 0,
           "annual_income": 114.32,
           "sector": "Utilities/Renewable Energy",
-          "last_updated": "2025-11-19 15:37:44"
+          "last_updated": "2025-11-19 15:50:33"
         }
       ]
     },
     "dividends": {
-      "last_updated": "2025-11-19 15:37:44",
+      "last_updated": "2025-11-19 15:50:33",
       "upcoming": [
         {
+          "Account": "TRADE212",
           "ticker": "PHP.L",
           "name": "Primary Health Properties ",
           "ex_div_date": "2025-10-09",
           "pay_date": "2025-11-21",
           "dividend_per_share": "0.02",
+          "shares": "299",
           "shares_at_exdiv": "299.00",
-          "total_dividend": 5.98,
+          "total_dividend": "5.98",
+          "dividend_received": "",
+          "status": "Confirmed",
           "frequency": "Quarterly ",
-          "status": "Confirmed"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "TRADE212",
           "ticker": "SEQI.L",
           "name": "Sequoia Economic Infrastructure",
           "ex_div_date": "2025-10-23",
           "pay_date": "2025-11-21",
           "dividend_per_share": "0.02",
+          "shares": "300",
           "shares_at_exdiv": "300.00",
-          "total_dividend": 6,
+          "total_dividend": "6.00",
+          "dividend_received": "",
+          "status": "Confirmed",
           "frequency": "Quarterly ",
-          "status": "Confirmed"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "SUPR.L",
           "name": "Supermarket Income REIT PLC",
           "ex_div_date": "2025-10-23",
           "pay_date": "2025-11-21",
           "dividend_per_share": "0.02",
+          "shares": "8055",
           "shares_at_exdiv": "8,055.00",
-          "total_dividend": 124.05,
+          "total_dividend": "124.05",
+          "dividend_received": "",
+          "status": "Confirmed",
           "frequency": "Quarterly ",
-          "status": "Confirmed"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "TRADE212",
           "ticker": "FSFL.L",
           "name": "Foresight Solar Fund",
           "ex_div_date": "2025-10-30",
           "pay_date": "2025-11-24",
           "dividend_per_share": "0.02",
+          "shares": "1633.219858",
           "shares_at_exdiv": "1633.219858",
-          "total_dividend": 32.66,
+          "total_dividend": "32.66",
+          "dividend_received": "",
+          "status": "Confirmed",
           "frequency": "Quarterly ",
-          "status": "Confirmed"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "BBOX.L",
           "name": "Tritax Big Box REIT PLC",
           "ex_div_date": "2025-11-06",
           "pay_date": "2025-11-27",
           "dividend_per_share": "0.02",
+          "shares": "350",
           "shares_at_exdiv": "350.00",
-          "total_dividend": 6.7,
+          "total_dividend": "6.70",
+          "dividend_received": "",
+          "status": "Confirmed",
           "frequency": "Quarterly ",
-          "status": "Confirmed"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "BBOX.L",
           "name": "Tritax Big Box REIT PLC",
           "ex_div_date": "2026-03-13",
           "pay_date": "2025-11-27",
           "dividend_per_share": "",
+          "shares": "350",
           "shares_at_exdiv": "350.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly ",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "ASHM.L",
           "name": "Ashmore Group PLC",
           "ex_div_date": "2025-11-07",
           "pay_date": "2025-12-08",
           "dividend_per_share": "0.12",
+          "shares": "620",
           "shares_at_exdiv": "620.00",
-          "total_dividend": 74.4,
+          "total_dividend": "74.40",
+          "dividend_received": "",
+          "status": "Confirmed",
           "frequency": "Semi-Annual",
-          "status": "Confirmed"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "TRADE212",
           "ticker": "GCP.L",
           "name": "GCP Infrastructure ",
           "ex_div_date": "2025-11-13",
           "pay_date": "2025-12-09",
           "dividend_per_share": "0.02",
+          "shares": "1000",
           "shares_at_exdiv": "1,000.00",
-          "total_dividend": 20,
+          "total_dividend": "20.00",
+          "dividend_received": "",
+          "status": "Confirmed",
           "frequency": "Quarterly ",
-          "status": "Confirmed"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "BP.L",
           "name": "BP PLC",
           "ex_div_date": "2025-11-13",
           "pay_date": "2025-12-19",
           "dividend_per_share": "0.06",
+          "shares": "707",
           "shares_at_exdiv": "707.00",
-          "total_dividend": 44.73,
+          "total_dividend": "44.73",
+          "dividend_received": "",
+          "status": "Confirmed",
           "frequency": "Quarterly",
-          "status": "Confirmed"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "IUKD.L",
           "name": "iShares Uk Dividend UCITS ETF",
           "ex_div_date": "2025-12-12",
           "pay_date": "2025-12-26",
           "dividend_per_share": "0.09",
+          "shares": "343",
           "shares_at_exdiv": "343.00",
-          "total_dividend": 30.87,
+          "total_dividend": "30.87",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly ",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "TRADE212",
           "ticker": "RGL.L",
           "name": "Regional REIT",
           "ex_div_date": "2025-11-20",
           "pay_date": "2026-01-09",
           "dividend_per_share": "0.03",
+          "shares": "255.1512287",
           "shares_at_exdiv": "255.15",
-          "total_dividend": 7.65,
+          "total_dividend": "7.65",
+          "dividend_received": "",
+          "status": "Confirmed",
           "frequency": "Quarterly",
-          "status": "Confirmed"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "LAND.L",
           "name": "Land Securities",
           "ex_div_date": "2025-11-27",
           "pay_date": "2026-01-09",
           "dividend_per_share": "0.19",
+          "shares": "317",
           "shares_at_exdiv": "317.00",
-          "total_dividend": 60.23,
+          "total_dividend": "60.23",
+          "dividend_received": "",
+          "status": "Confirmed",
           "frequency": "Quarterly",
-          "status": "Confirmed"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "SVT.L",
           "name": "Severn Trent Plc",
           "ex_div_date": "2025-12-01",
           "pay_date": "2026-01-09",
           "dividend_per_share": "0.47",
+          "shares": "78",
           "shares_at_exdiv": "78.00",
-          "total_dividend": 36.66,
+          "total_dividend": "36.66",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Semi-Annual",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "NG.L",
           "name": "National Grid",
           "ex_div_date": "2025-11-20",
           "pay_date": "2026-01-13",
           "dividend_per_share": "0.16",
+          "shares": "192",
           "shares_at_exdiv": "192.00",
-          "total_dividend": 30.72,
+          "total_dividend": "30.72",
+          "dividend_received": "",
+          "status": "Confirmed",
           "frequency": "Quarterly ",
-          "status": "Confirmed"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "VOD.L",
           "name": "Vodafone Group PLC",
           "ex_div_date": "2025-11-20",
           "pay_date": "2026-02-05",
           "dividend_per_share": "0.02",
+          "shares": "7658",
           "shares_at_exdiv": "7,658.00",
-          "total_dividend": 152.32,
+          "total_dividend": "152.32",
+          "dividend_received": "",
+          "status": "Confirmed",
           "frequency": "Semi-Annual",
-          "status": "Confirmed"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "TRADE212",
           "ticker": "PHP.L",
           "name": "Primary Health Properties ",
           "ex_div_date": "2026-01-09",
           "pay_date": "2026-02-20",
           "dividend_per_share": "",
+          "shares": "1467",
           "shares_at_exdiv": "1,457.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly ",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "TRADE212",
           "ticker": "FSFL.L",
           "name": "Foresight Solar Fund",
           "ex_div_date": "2026-01-23",
           "pay_date": "2026-02-20",
           "dividend_per_share": "0.02",
+          "shares": "1633.219858",
           "shares_at_exdiv": "1633.219858",
-          "total_dividend": 32.66,
+          "total_dividend": "32.66",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly ",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "TRADE212",
           "ticker": "PHP.L",
           "name": "Primary Health Properties ",
           "ex_div_date": "2026-03-27",
           "pay_date": "2026-02-20",
           "dividend_per_share": "",
+          "shares": "1467",
           "shares_at_exdiv": "1,457.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly ",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "TRADE212",
           "ticker": "SEQI.L",
           "name": "Sequoia Economic Infrastructure",
           "ex_div_date": "2026-01-30",
           "pay_date": "2026-02-27",
           "dividend_per_share": "",
+          "shares": "300",
           "shares_at_exdiv": "300.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly ",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "TRADE212",
           "ticker": "GCP.L",
           "name": "GCP Infrastructure ",
           "ex_div_date": "2026-02-06",
           "pay_date": "2026-03-11",
           "dividend_per_share": "",
+          "shares": "1000",
           "shares_at_exdiv": "1,000.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly ",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "IUKD.L",
           "name": "iShares Uk Dividend UCITS ETF",
           "ex_div_date": "2026-03-13",
           "pay_date": "2026-03-26",
           "dividend_per_share": "",
+          "shares": "343",
           "shares_at_exdiv": "343.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly ",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "SUPR.L",
           "name": "Supermarket Income REIT PLC",
           "ex_div_date": "2026-01-30",
           "pay_date": "2026-03-27",
           "dividend_per_share": "",
+          "shares": "8055",
           "shares_at_exdiv": "8,055.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly ",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "BP.L",
           "name": "BP PLC",
           "ex_div_date": "2026-02-20",
           "pay_date": "2026-03-27",
           "dividend_per_share": "",
+          "shares": "707",
           "shares_at_exdiv": "707.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "LAND.L",
           "name": "Land Securities",
           "ex_div_date": "2026-02-20",
           "pay_date": "2026-04-10",
           "dividend_per_share": "",
+          "shares": "317",
           "shares_at_exdiv": "317.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "MNG.L",
           "name": "M&G PLC",
           "ex_div_date": "2026-03-27",
           "pay_date": "2026-05-11",
           "dividend_per_share": "",
+          "shares": "3916",
           "shares_at_exdiv": "3,916.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Semi-Annual",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "LLOY.L",
           "name": "Lloyds Banking Group PLC",
           "ex_div_date": "2026-04-10",
           "pay_date": "2026-05-20",
           "dividend_per_share": "",
+          "shares": "606",
           "shares_at_exdiv": "606.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Semi-Annual",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "PHNX.L",
           "name": "Phoenix Group Holdings",
           "ex_div_date": "2026-04-03",
           "pay_date": "2026-05-21",
           "dividend_per_share": "",
+          "shares": "1467",
           "shares_at_exdiv": "1,467.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Semi-Annual",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "TRADE212",
           "ticker": "FSFL.L",
           "name": "Foresight Solar Fund",
           "ex_div_date": "2026-04-24",
           "pay_date": "2026-05-22",
           "dividend_per_share": "0.02",
+          "shares": "1633.219858",
           "shares_at_exdiv": "1633.219858",
-          "total_dividend": 32.66,
+          "total_dividend": "32.66",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly ",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "SUPR.L",
           "name": "Supermarket Income REIT PLC",
           "ex_div_date": "2026-04-24",
           "pay_date": "2026-05-22",
           "dividend_per_share": "",
+          "shares": "8055",
           "shares_at_exdiv": "8,055.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly ",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "TRADE212",
           "ticker": "SEQI.L",
           "name": "Sequoia Economic Infrastructure",
           "ex_div_date": "2026-05-01",
           "pay_date": "2026-05-29",
           "dividend_per_share": "",
+          "shares": "300",
           "shares_at_exdiv": "300.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly ",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "TRADE212",
           "ticker": "GCP.L",
           "name": "GCP Infrastructure ",
           "ex_div_date": "2026-05-08",
           "pay_date": "2026-06-04",
           "dividend_per_share": "",
+          "shares": "1000",
           "shares_at_exdiv": "1,000.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly ",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "LGEN.L",
           "name": "Legal & General Group",
           "ex_div_date": "2026-04-24",
           "pay_date": "2026-06-05",
           "dividend_per_share": "",
+          "shares": "3445",
           "shares_at_exdiv": "3,445.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Semi-Annual",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "BBOX.L",
           "name": "Tritax Big Box REIT PLC",
           "ex_div_date": "2026-05-22",
           "pay_date": "2026-06-12",
           "dividend_per_share": "",
+          "shares": "350",
           "shares_at_exdiv": "350.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly ",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "IUKD.L",
           "name": "iShares Uk Dividend UCITS ETF",
           "ex_div_date": "2026-06-11",
           "pay_date": "2026-06-25",
           "dividend_per_share": "",
+          "shares": "343",
           "shares_at_exdiv": "343.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly ",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "BP.L",
           "name": "BP PLC",
           "ex_div_date": "2026-05-15",
           "pay_date": "2026-06-26",
           "dividend_per_share": "",
+          "shares": "707",
           "shares_at_exdiv": "707.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "SVT.L",
           "name": "Severn Trent Plc",
           "ex_div_date": "2026-05-29",
           "pay_date": "2026-07-15",
           "dividend_per_share": "",
+          "shares": "78",
           "shares_at_exdiv": "78.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Semi-Annual",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "NG.L",
           "name": "National Grid",
           "ex_div_date": "2026-05-29",
           "pay_date": "2026-07-17",
           "dividend_per_share": "",
+          "shares": "192",
           "shares_at_exdiv": "192.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly ",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "LAND.L",
           "name": "Land Securities",
           "ex_div_date": "2026-06-12",
           "pay_date": "2026-07-24",
           "dividend_per_share": "",
+          "shares": "317",
           "shares_at_exdiv": "317.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "TRADE212",
           "ticker": "PHP.L",
           "name": "Primary Health Properties ",
           "ex_div_date": "2026-07-03",
           "pay_date": "2026-08-14",
           "dividend_per_share": "",
+          "shares": "1467",
           "shares_at_exdiv": "1,457.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly ",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "TRADE212",
           "ticker": "SEQI.L",
           "name": "Sequoia Economic Infrastructure",
           "ex_div_date": "2026-07-24",
           "pay_date": "2026-08-21",
           "dividend_per_share": "",
+          "shares": "300",
           "shares_at_exdiv": "300.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly ",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "TRADE212",
           "ticker": "FSFL.L",
           "name": "Foresight Solar Fund",
           "ex_div_date": "2026-07-24",
           "pay_date": "2026-08-21",
           "dividend_per_share": "",
+          "shares": "924",
           "shares_at_exdiv": "924.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly ",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "TRADE212",
           "ticker": "GCP.L",
           "name": "GCP Infrastructure ",
           "ex_div_date": "2026-08-07",
           "pay_date": "2026-09-03",
           "dividend_per_share": "",
+          "shares": "1000",
           "shares_at_exdiv": "1,000.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly ",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "BBOX.L",
           "name": "Tritax Big Box REIT PLC",
           "ex_div_date": "2026-08-14",
           "pay_date": "2026-09-07",
           "dividend_per_share": "",
+          "shares": "350",
           "shares_at_exdiv": "350.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly ",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "LLOY.L",
           "name": "Lloyds Banking Group PLC",
           "ex_div_date": "2026-07-31",
           "pay_date": "2026-09-09",
           "dividend_per_share": "",
+          "shares": "606",
           "shares_at_exdiv": "606.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Semi-Annual",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "BP.L",
           "name": "BP PLC",
           "ex_div_date": "2026-08-14",
           "pay_date": "2026-09-18",
           "dividend_per_share": "",
+          "shares": "707",
           "shares_at_exdiv": "707.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "IUKD.L",
           "name": "iShares Uk Dividend UCITS ETF",
           "ex_div_date": "2026-09-11",
           "pay_date": "2026-09-24",
           "dividend_per_share": "",
+          "shares": "343",
           "shares_at_exdiv": "343.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly ",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "LAND.L",
           "name": "Land Securities",
           "ex_div_date": "2026-08-21",
           "pay_date": "2026-10-05",
           "dividend_per_share": "",
+          "shares": "317",
           "shares_at_exdiv": "317.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "SUPR.L",
           "name": "Supermarket Income REIT PLC",
           "ex_div_date": "2026-10-25",
           "pay_date": "2026-11-19",
           "dividend_per_share": "",
+          "shares": "8055",
           "shares_at_exdiv": "8,055.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Quarterly ",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "ASHM.L",
           "name": "Ashmore Group PLC",
           "ex_div_date": "2026-03-27",
           "pay_date": "2026-12-08",
           "dividend_per_share": "",
+          "shares": "620",
           "shares_at_exdiv": "620.00",
-          "total_dividend": 0,
+          "total_dividend": "0.00",
+          "dividend_received": "",
+          "status": "Estimated",
           "frequency": "Semi-Annual",
-          "status": "Estimated"
+          "notes": "",
+          "logged_to_json": "FALSE"
         }
       ],
       "next_five": [
         {
+          "Account": "TRADE212",
           "ticker": "PHP.L",
           "name": "Primary Health Properties ",
           "ex_div_date": "2025-10-09",
           "pay_date": "2025-11-21",
           "dividend_per_share": "0.02",
+          "shares": "299",
           "shares_at_exdiv": "299.00",
-          "total_dividend": 5.98,
+          "total_dividend": "5.98",
+          "dividend_received": "",
+          "status": "Confirmed",
           "frequency": "Quarterly ",
-          "status": "Confirmed"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "TRADE212",
           "ticker": "SEQI.L",
           "name": "Sequoia Economic Infrastructure",
           "ex_div_date": "2025-10-23",
           "pay_date": "2025-11-21",
           "dividend_per_share": "0.02",
+          "shares": "300",
           "shares_at_exdiv": "300.00",
-          "total_dividend": 6,
+          "total_dividend": "6.00",
+          "dividend_received": "",
+          "status": "Confirmed",
           "frequency": "Quarterly ",
-          "status": "Confirmed"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "SUPR.L",
           "name": "Supermarket Income REIT PLC",
           "ex_div_date": "2025-10-23",
           "pay_date": "2025-11-21",
           "dividend_per_share": "0.02",
+          "shares": "8055",
           "shares_at_exdiv": "8,055.00",
-          "total_dividend": 124.05,
+          "total_dividend": "124.05",
+          "dividend_received": "",
+          "status": "Confirmed",
           "frequency": "Quarterly ",
-          "status": "Confirmed"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "TRADE212",
           "ticker": "FSFL.L",
           "name": "Foresight Solar Fund",
           "ex_div_date": "2025-10-30",
           "pay_date": "2025-11-24",
           "dividend_per_share": "0.02",
+          "shares": "1633.219858",
           "shares_at_exdiv": "1633.219858",
-          "total_dividend": 32.66,
+          "total_dividend": "32.66",
+          "dividend_received": "",
+          "status": "Confirmed",
           "frequency": "Quarterly ",
-          "status": "Confirmed"
+          "notes": "",
+          "logged_to_json": "FALSE"
         },
         {
+          "Account": "IG ISA",
           "ticker": "BBOX.L",
           "name": "Tritax Big Box REIT PLC",
           "ex_div_date": "2025-11-06",
           "pay_date": "2025-11-27",
           "dividend_per_share": "0.02",
+          "shares": "350",
           "shares_at_exdiv": "350.00",
-          "total_dividend": 6.7,
+          "total_dividend": "6.70",
+          "dividend_received": "",
+          "status": "Confirmed",
           "frequency": "Quarterly ",
-          "status": "Confirmed"
+          "notes": "",
+          "logged_to_json": "FALSE"
         }
       ],
       "monthly_totals": {
@@ -918,7 +1188,33 @@
         "2026-10": 0,
         "2026-11": 0
       },
-      "annual_total": null
+      "annual_total": {
+        "2021-02": 2.04,
+        "2021-01": 3.4,
+        "2021-03": 20.22,
+        "2021-04": 23.880000000000003,
+        "2021-05": 7.14,
+        "2021-07": 497.28,
+        "2021-11": 267.45,
+        "2022-03": 8.620000000000001,
+        "2022-04": 0.8899999999999999,
+        "2025-09": 65.28999999999999,
+        "2025-10": 401.22,
+        "2025-11": 175.39,
+        "2025-12": 170,
+        "2026-01": 135.26,
+        "2026-02": 184.98,
+        "2026-03": 0,
+        "2026-04": 0,
+        "2026-12": 0,
+        "2026-05": 32.66,
+        "2026-06": 0,
+        "2026-07": 0,
+        "2026-08": 0,
+        "2026-09": 0,
+        "2026-10": 0,
+        "2026-11": 0
+      }
     },
     "portfolio_summary": {
       "total_value": 0,
@@ -1016,7 +1312,7 @@
     "received_ytd": 576.51
   },
   "meta": {
-    "last_updated": "2025-11-19 15:37:44",
+    "last_updated": "2025-11-19 15:50:33",
     "source": "Aurora ISA – API Live Prices + Dividends"
   }
 }
