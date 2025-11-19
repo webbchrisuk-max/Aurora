@@ -143,6 +143,8 @@ async function initAurora(){
   const sync = await loadJSON(AURORA_SYNC);
 
   renderPortfolio(sync);
+  renderTesco(sync);
+  renderTescoMigration(sync);
   renderIG(sync);
   renderT212(sync);
   renderNextFive(sync);
