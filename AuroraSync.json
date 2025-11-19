@@ -288,43 +288,19 @@
         }
       ]
     },
+
     "dividends": {
       "last_updated": "2025-11-19 09:51:34",
-      "upcoming": [], 
+      "upcoming": [],
       "next_five": [],
       "monthly_totals": {},
       "annual_total": 0
     },
+
     "portfolio_summary": {
       "total_value": 59357.4216,
       "annual_income_gbp": 4109.797,
       "dividend_yield": 6.92381321361169
-    },
-
-    "tesco": {
-      "summary": {
-        "sip_total_shares": 1619,
-        "sip_value_gbp": 7186.74,
-        "sip_average_cost": 2.69,
-        "sip_gain_gbp": 2833.06,
-
-        "saye_total_options": 14363,
-        "saye_option_price": 2.20,
-        "saye_current_value_gbp": 63757.35,
-        "saye_potential_gain_gbp": 32158.75,
-
-        "combined_value_gbp": 70944.09,
-        "combined_gain_gbp": 34991.81
-      },
-      "isa_migration_plan": {
-        "maturity_date": "2029-03-01",
-        "tax_years": {
-          "2028_2029": "NO ISA contributions allowed (SAYE exercise year).",
-          "2029_2030": "£20,000 transferred into ISA.",
-          "2030_2031": "£20,000 transferred into ISA.",
-          "2031_2032": "Remaining ~£23,000 transferred."
-        }
-      }
     },
 
     "ig_isa": {
@@ -333,11 +309,38 @@
       "gain_percent": 4.63796942315896,
       "annual_income": 3934.4049999999997
     },
+
     "trade212_isa": {
       "balance": 1862.8755,
       "unrealised_gain": -118.9145,
       "gain_percent": -6.000358261975285,
       "annual_income": 175.392
+    }
+  },
+
+  "tesco": {
+    "summary": {
+      "sip_total_shares": 1619,
+      "sip_value_gbp": 7186.74,
+      "sip_average_cost": 2.69,
+      "sip_gain_gbp": 2833.06,
+
+      "saye_total_options": 14363,
+      "saye_option_price": 2.20,
+      "saye_current_value_gbp": 63757.35,
+      "saye_potential_gain_gbp": 32158.75,
+
+      "combined_value_gbp": 70944.09,
+      "combined_gain_gbp": 34991.81
+    },
+    "isa_migration_plan": {
+      "maturity_date": "2029-03-01",
+      "tax_years": {
+        "2028_2029": "NO ISA contributions allowed (SAYE exercise year).",
+        "2029_2030": "£20,000 transferred into ISA.",
+        "2030_2031": "£20,000 transferred into ISA.",
+        "2031_2032": "Remaining ~£23,000 transferred."
+      }
     }
   },
 
@@ -400,6 +403,6 @@
 
   "meta": {
     "last_updated": "2025-11-19T23:00:00Z",
-    "source": "Aurora Full Sync – Clean Build"
+    "source": "Aurora Full Sync – Clean Build (Tesco root-level fix)"
   }
 }
