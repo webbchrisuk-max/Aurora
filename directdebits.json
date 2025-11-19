@@ -9,7 +9,7 @@
     "": "",
     "TOTAL": "524.57",
     "Pay Date": "2025-12-05",
-    "Paid": true
+    "paid": true
   },
   {
     "DATE": "2025-11-14",
@@ -18,7 +18,7 @@
     "POT": "Direct Debit",
     "STATUS": "Paid",
     "PAID": "TRUE",
-    "Paid": true
+    "paid": true
   },
   {
     "DATE": "2025-11-17",
@@ -27,7 +27,7 @@
     "POT": "Direct Debit",
     "STATUS": "Paid",
     "PAID": "TRUE",
-    "Paid": true
+    "paid": true
   },
   {
     "DATE": "2025-11-23",
@@ -36,7 +36,7 @@
     "POT": "Main Account",
     "STATUS": "Upcoming",
     "PAID": "FALSE",
-    "Paid": true
+    "paid": true
   },
   {
     "DATE": "2025-11-28",
@@ -45,7 +45,7 @@
     "POT": "Chase Account",
     "STATUS": "Upcoming",
     "PAID": "FALSE",
-    "Paid": true
+    "paid": true
   },
   {
     "DATE": "2025-11-29",
@@ -54,7 +54,7 @@
     "POT": "Main Account",
     "STATUS": "Upcoming",
     "PAID": "FALSE",
-    "Paid": true
+    "paid": true
   },
   {
     "DATE": "2025-11-30",
@@ -63,7 +63,7 @@
     "POT": "Direct Debit",
     "STATUS": "Upcoming",
     "PAID": "FALSE",
-    "Paid": true
+    "paid": true
   },
   {
     "DATE": "2025-12-03",
@@ -72,7 +72,7 @@
     "POT": "Direct Debit",
     "STATUS": "Upcoming",
     "PAID": "FALSE",
-    "Paid": true
+    "paid": true
   },
   {
     "DATE": "2025-12-03",
@@ -81,7 +81,7 @@
     "POT": "Direct Debit",
     "STATUS": "Upcoming",
     "PAID": "FALSE",
-    "Paid": true
+    "paid": true
   },
   {
     "DATE": "2025-12-03",
@@ -90,7 +90,7 @@
     "POT": "Direct Debit",
     "STATUS": "Upcoming",
     "PAID": "FALSE",
-    "Paid": true
+    "paid": true
   },
   {
     "DATE": "2025-12-03",
@@ -99,7 +99,7 @@
     "POT": "Direct Debit",
     "STATUS": "Upcoming",
     "PAID": "FALSE",
-    "Paid": true
+    "paid": true
   },
   {
     "DATE": "2025-12-04",
@@ -108,7 +108,7 @@
     "POT": "Direct Debit",
     "STATUS": "Upcoming",
     "PAID": "FALSE",
-    "Paid": true
+    "paid": true
   },
   {
     "DATE": "2025-12-07",
@@ -117,7 +117,7 @@
     "POT": "Direct Debit",
     "STATUS": "Future",
     "PAID": "FALSE",
-    "Paid": true
+    "paid": true
   },
   {
     "DATE": "2025-12-07",
@@ -126,7 +126,7 @@
     "POT": "Direct Debit",
     "STATUS": "Future",
     "PAID": "FALSE",
-    "Paid": true
+    "paid": true
   },
   {
     "DATE": "2025-12-07",
@@ -135,7 +135,7 @@
     "POT": "Direct Debit",
     "STATUS": "Future",
     "PAID": "FALSE",
-    "Paid": true
+    "paid": true
   },
   {
     "DATE": "2025-12-07",
@@ -144,7 +144,7 @@
     "POT": "Direct Debit",
     "STATUS": "Future",
     "PAID": "FALSE",
-    "Paid": true
+    "paid": true
   },
   {
     "DATE": "2025-12-07",
@@ -153,6 +153,6 @@
     "POT": "Direct Debit",
     "STATUS": "Future",
     "PAID": "FALSE",
-    "Paid": true
+    "paid": true
   }
 ]
