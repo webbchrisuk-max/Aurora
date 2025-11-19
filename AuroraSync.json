@@ -3,7 +3,7 @@
     "holdings": {
       "ig_isa": [
         {
-          "ticker": "LON:MNG",
+          "ticker": "MNG.L",
           "name": "M&G PLC",
           "shares": 3916,
           "book_cost": 8026.66,
@@ -15,10 +15,10 @@
           "annual_div_yield": 0,
           "annual_income": 783.2,
           "sector": "Financials",
-          "last_updated": "2025-11-19 14:58:04"
+          "last_updated": "2025-11-19 15:37:44"
         },
         {
-          "ticker": "LON:VOD",
+          "ticker": "VOD.L",
           "name": "Vodafone Group PLC",
           "shares": 7658,
           "book_cost": 6500.31,
@@ -30,10 +30,10 @@
           "annual_div_yield": 0,
           "annual_income": 382.9,
           "sector": "Communications",
-          "last_updated": "2025-11-19 14:58:04"
+          "last_updated": "2025-11-19 15:37:44"
         },
         {
-          "ticker": "LON:BP",
+          "ticker": "BP.L",
           "name": "BP PLC",
           "shares": 707,
           "book_cost": 2890.99,
@@ -45,10 +45,10 @@
           "annual_div_yield": 0,
           "annual_income": 190.89,
           "sector": "Energy",
-          "last_updated": "2025-11-19 14:58:04"
+          "last_updated": "2025-11-19 15:37:44"
         },
         {
-          "ticker": "LON:NG",
+          "ticker": "NG.L",
           "name": "National Grid",
           "shares": 192,
           "book_cost": 1983.01,
@@ -60,10 +60,10 @@
           "annual_div_yield": 0,
           "annual_income": 105.6,
           "sector": "Utilities",
-          "last_updated": "2025-11-19 14:58:04"
+          "last_updated": "2025-11-19 15:37:44"
         },
         {
-          "ticker": "LON:SVT",
+          "ticker": "SVT.L",
           "name": "Severn Trent Plc",
           "shares": 78,
           "book_cost": 1895.42,
@@ -75,10 +75,10 @@
           "annual_div_yield": 0,
           "annual_income": 86.58,
           "sector": "Utilities",
-          "last_updated": "2025-11-19 14:58:04"
+          "last_updated": "2025-11-19 15:37:44"
         },
         {
-          "ticker": "LON:IUKD",
+          "ticker": "IUKD.L",
           "name": "iShares Uk Dividend UCITS ETF",
           "shares": 343,
           "book_cost": 2881.53,
@@ -90,10 +90,10 @@
           "annual_div_yield": 0,
           "annual_income": 133.77,
           "sector": "ETF/Financials",
-          "last_updated": "2025-11-19 14:58:04"
+          "last_updated": "2025-11-19 15:37:44"
         },
         {
-          "ticker": "LON:LAND",
+          "ticker": "LAND.L",
           "name": "Land Securities",
           "shares": 317,
           "book_cost": 1763.47,
@@ -105,10 +105,10 @@
           "annual_div_yield": 0,
           "annual_income": 120.46,
           "sector": "Real Estate",
-          "last_updated": "2025-11-19 14:58:04"
+          "last_updated": "2025-11-19 15:37:44"
         },
         {
-          "ticker": "LON:PHNX",
+          "ticker": "PHNX.L",
           "name": "Phoenix Group Holdings",
           "shares": 1467,
           "book_cost": 9604.35,
@@ -120,10 +120,10 @@
           "annual_div_yield": 0,
           "annual_income": 762.84,
           "sector": "Fianacials",
-          "last_updated": "2025-11-19 14:58:04"
+          "last_updated": "2025-11-19 15:37:44"
         },
         {
-          "ticker": "LON:LGEN",
+          "ticker": "LGEN.L",
           "name": "Legal & General Group",
           "shares": 3445,
           "book_cost": 8076.92,
@@ -135,10 +135,10 @@
           "annual_div_yield": 0,
           "annual_income": 689,
           "sector": "Financials",
-          "last_updated": "2025-11-19 14:58:04"
+          "last_updated": "2025-11-19 15:37:44"
         },
         {
-          "ticker": "LON:LLOY",
+          "ticker": "LLOY.L",
           "name": "Lloyds Banking Group PLC",
           "shares": 606,
           "book_cost": 496.92,
@@ -150,10 +150,10 @@
           "annual_div_yield": 0,
           "annual_income": 12.12,
           "sector": "Financial",
-          "last_updated": "2025-11-19 14:58:04"
+          "last_updated": "2025-11-19 15:37:44"
         },
         {
-          "ticker": "LON:ASHM",
+          "ticker": "ASHM.L",
           "name": "Ashmore Group PLC",
           "shares": 620,
           "book_cost": 994.5,
@@ -165,10 +165,10 @@
           "annual_div_yield": 0,
           "annual_income": 74.4,
           "sector": "Financials",
-          "last_updated": "2025-11-19 14:58:04"
+          "last_updated": "2025-11-19 15:37:44"
         },
         {
-          "ticker": "LON:SUPR",
+          "ticker": "SUPR.L",
           "name": "Supermarket Income REIT PLC",
           "shares": 8055,
           "book_cost": 6345.89,
@@ -180,10 +180,10 @@
           "annual_div_yield": 0,
           "annual_income": 644.4,
           "sector": "Real Estate REIT",
-          "last_updated": "2025-11-19 14:58:04"
+          "last_updated": "2025-11-19 15:37:44"
         },
         {
-          "ticker": "LON:BBOX",
+          "ticker": "BBOX.L",
           "name": "Tritax Big Box REIT PLC",
           "shares": 350,
           "book_cost": 496.27,
@@ -195,11 +195,11 @@
           "annual_div_yield": 0,
           "annual_income": 28,
           "sector": "Real Estate REIT",
-          "last_updated": "2025-11-19 14:58:04"
+          "last_updated": "2025-11-19 15:37:44"
         },
         {
           "ticker": "6XS",
-          "name": "Astrid Intelligence ",
+          "name": "Astrid Intelligence",
           "shares": 617065,
           "book_cost": 2989.92,
           "live_price": 0,
@@ -210,13 +210,13 @@
           "annual_div_yield": 0,
           "annual_income": 0,
           "sector": "Ai",
-          "last_updated": "2025-11-19 14:58:04"
+          "last_updated": "2025-11-19 15:37:44"
         }
       ],
       "trade212_isa": [
         {
-          "ticker": "LON:PHP",
-          "name": "Primary Health Properties ",
+          "ticker": "PHP.L",
+          "name": "Primary Health Properties",
           "shares": 299,
           "book_cost": 276.46,
           "live_price": 0,
@@ -227,10 +227,10 @@
           "annual_div_yield": 0,
           "annual_income": 17.94,
           "sector": "Real Estate/Healthcare REIT",
-          "last_updated": "2025-11-19 14:58:04"
+          "last_updated": "2025-11-19 15:37:44"
         },
         {
-          "ticker": "LON:SEQI",
+          "ticker": "SEQI.L",
           "name": "Sequoia Economic Infrastructure",
           "shares": 300,
           "book_cost": 232.8,
@@ -242,10 +242,10 @@
           "annual_div_yield": 0,
           "annual_income": 18,
           "sector": "Infrastructure REIT",
-          "last_updated": "2025-11-19 14:58:04"
+          "last_updated": "2025-11-19 15:37:44"
         },
         {
-          "ticker": "LON:RGL",
+          "ticker": "RGL.L",
           "name": "Regional REIT",
           "shares": 255.1512287,
           "book_cost": 269.95,
@@ -257,10 +257,10 @@
           "annual_div_yield": 0,
           "annual_income": 30.62,
           "sector": "Real Estate REIT",
-          "last_updated": "2025-11-19 14:58:04"
+          "last_updated": "2025-11-19 15:37:44"
         },
         {
-          "ticker": "LON:GCP",
+          "ticker": "GCP.L",
           "name": "GCP Infrastructure Investments",
           "shares": 1000,
           "book_cost": 749,
@@ -272,10 +272,10 @@
           "annual_div_yield": 0,
           "annual_income": 70,
           "sector": "Infrastructure REIT",
-          "last_updated": "2025-11-19 14:58:04"
+          "last_updated": "2025-11-19 15:37:44"
         },
         {
-          "ticker": "LON:FSFL",
+          "ticker": "FSFL.L",
           "name": "Foresight Solar Fund",
           "shares": 1633.210858,
           "book_cost": 1223.53,
@@ -287,15 +287,15 @@
           "annual_div_yield": 0,
           "annual_income": 114.32,
           "sector": "Utilities/Renewable Energy",
-          "last_updated": "2025-11-19 14:58:04"
+          "last_updated": "2025-11-19 15:37:44"
         }
       ]
     },
     "dividends": {
-      "last_updated": "2025-11-19 14:58:04",
+      "last_updated": "2025-11-19 15:37:44",
       "upcoming": [
         {
-          "ticker": "PHP",
+          "ticker": "PHP.L",
           "name": "Primary Health Properties ",
           "ex_div_date": "2025-10-09",
           "pay_date": "2025-11-21",
@@ -306,7 +306,7 @@
           "status": "Confirmed"
         },
         {
-          "ticker": "SEQI",
+          "ticker": "SEQI.L",
           "name": "Sequoia Economic Infrastructure",
           "ex_div_date": "2025-10-23",
           "pay_date": "2025-11-21",
@@ -317,7 +317,7 @@
           "status": "Confirmed"
         },
         {
-          "ticker": "SUPR",
+          "ticker": "SUPR.L",
           "name": "Supermarket Income REIT PLC",
           "ex_div_date": "2025-10-23",
           "pay_date": "2025-11-21",
@@ -328,7 +328,7 @@
           "status": "Confirmed"
         },
         {
-          "ticker": "FSFL",
+          "ticker": "FSFL.L",
           "name": "Foresight Solar Fund",
           "ex_div_date": "2025-10-30",
           "pay_date": "2025-11-24",
@@ -339,7 +339,7 @@
           "status": "Confirmed"
         },
         {
-          "ticker": "BBOX",
+          "ticker": "BBOX.L",
           "name": "Tritax Big Box REIT PLC",
           "ex_div_date": "2025-11-06",
           "pay_date": "2025-11-27",
@@ -350,7 +350,7 @@
           "status": "Confirmed"
         },
         {
-          "ticker": "BBOX",
+          "ticker": "BBOX.L",
           "name": "Tritax Big Box REIT PLC",
           "ex_div_date": "2026-03-13",
           "pay_date": "2025-11-27",
@@ -361,7 +361,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "ASHM",
+          "ticker": "ASHM.L",
           "name": "Ashmore Group PLC",
           "ex_div_date": "2025-11-07",
           "pay_date": "2025-12-08",
@@ -372,7 +372,7 @@
           "status": "Confirmed"
         },
         {
-          "ticker": "GCP",
+          "ticker": "GCP.L",
           "name": "GCP Infrastructure ",
           "ex_div_date": "2025-11-13",
           "pay_date": "2025-12-09",
@@ -383,7 +383,7 @@
           "status": "Confirmed"
         },
         {
-          "ticker": "BP",
+          "ticker": "BP.L",
           "name": "BP PLC",
           "ex_div_date": "2025-11-13",
           "pay_date": "2025-12-19",
@@ -394,7 +394,7 @@
           "status": "Confirmed"
         },
         {
-          "ticker": "IUKD",
+          "ticker": "IUKD.L",
           "name": "iShares Uk Dividend UCITS ETF",
           "ex_div_date": "2025-12-12",
           "pay_date": "2025-12-26",
@@ -405,7 +405,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "RGL",
+          "ticker": "RGL.L",
           "name": "Regional REIT",
           "ex_div_date": "2025-11-20",
           "pay_date": "2026-01-09",
@@ -416,7 +416,7 @@
           "status": "Confirmed"
         },
         {
-          "ticker": "LAND",
+          "ticker": "LAND.L",
           "name": "Land Securities",
           "ex_div_date": "2025-11-27",
           "pay_date": "2026-01-09",
@@ -427,7 +427,7 @@
           "status": "Confirmed"
         },
         {
-          "ticker": "SVT",
+          "ticker": "SVT.L",
           "name": "Severn Trent Plc",
           "ex_div_date": "2025-12-01",
           "pay_date": "2026-01-09",
@@ -438,7 +438,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "NG",
+          "ticker": "NG.L",
           "name": "National Grid",
           "ex_div_date": "2025-11-20",
           "pay_date": "2026-01-13",
@@ -449,7 +449,7 @@
           "status": "Confirmed"
         },
         {
-          "ticker": "VOD",
+          "ticker": "VOD.L",
           "name": "Vodafone Group PLC",
           "ex_div_date": "2025-11-20",
           "pay_date": "2026-02-05",
@@ -460,7 +460,7 @@
           "status": "Confirmed"
         },
         {
-          "ticker": "PHP",
+          "ticker": "PHP.L",
           "name": "Primary Health Properties ",
           "ex_div_date": "2026-01-09",
           "pay_date": "2026-02-20",
@@ -471,7 +471,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "FSFL",
+          "ticker": "FSFL.L",
           "name": "Foresight Solar Fund",
           "ex_div_date": "2026-01-23",
           "pay_date": "2026-02-20",
@@ -482,7 +482,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "PHP",
+          "ticker": "PHP.L",
           "name": "Primary Health Properties ",
           "ex_div_date": "2026-03-27",
           "pay_date": "2026-02-20",
@@ -493,7 +493,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "SEQI",
+          "ticker": "SEQI.L",
           "name": "Sequoia Economic Infrastructure",
           "ex_div_date": "2026-01-30",
           "pay_date": "2026-02-27",
@@ -504,7 +504,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "GCP",
+          "ticker": "GCP.L",
           "name": "GCP Infrastructure ",
           "ex_div_date": "2026-02-06",
           "pay_date": "2026-03-11",
@@ -515,7 +515,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "IUKD",
+          "ticker": "IUKD.L",
           "name": "iShares Uk Dividend UCITS ETF",
           "ex_div_date": "2026-03-13",
           "pay_date": "2026-03-26",
@@ -526,7 +526,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "SUPR",
+          "ticker": "SUPR.L",
           "name": "Supermarket Income REIT PLC",
           "ex_div_date": "2026-01-30",
           "pay_date": "2026-03-27",
@@ -537,7 +537,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "BP",
+          "ticker": "BP.L",
           "name": "BP PLC",
           "ex_div_date": "2026-02-20",
           "pay_date": "2026-03-27",
@@ -548,7 +548,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "LAND",
+          "ticker": "LAND.L",
           "name": "Land Securities",
           "ex_div_date": "2026-02-20",
           "pay_date": "2026-04-10",
@@ -559,7 +559,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "MNG",
+          "ticker": "MNG.L",
           "name": "M&G PLC",
           "ex_div_date": "2026-03-27",
           "pay_date": "2026-05-11",
@@ -570,7 +570,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "LLOY",
+          "ticker": "LLOY.L",
           "name": "Lloyds Banking Group PLC",
           "ex_div_date": "2026-04-10",
           "pay_date": "2026-05-20",
@@ -581,7 +581,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "PHNX",
+          "ticker": "PHNX.L",
           "name": "Phoenix Group Holdings",
           "ex_div_date": "2026-04-03",
           "pay_date": "2026-05-21",
@@ -592,7 +592,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "FSFL",
+          "ticker": "FSFL.L",
           "name": "Foresight Solar Fund",
           "ex_div_date": "2026-04-24",
           "pay_date": "2026-05-22",
@@ -603,7 +603,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "SUPR",
+          "ticker": "SUPR.L",
           "name": "Supermarket Income REIT PLC",
           "ex_div_date": "2026-04-24",
           "pay_date": "2026-05-22",
@@ -614,7 +614,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "SEQI",
+          "ticker": "SEQI.L",
           "name": "Sequoia Economic Infrastructure",
           "ex_div_date": "2026-05-01",
           "pay_date": "2026-05-29",
@@ -625,7 +625,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "GCP",
+          "ticker": "GCP.L",
           "name": "GCP Infrastructure ",
           "ex_div_date": "2026-05-08",
           "pay_date": "2026-06-04",
@@ -636,7 +636,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "LGEN",
+          "ticker": "LGEN.L",
           "name": "Legal & General Group",
           "ex_div_date": "2026-04-24",
           "pay_date": "2026-06-05",
@@ -647,7 +647,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "BBOX",
+          "ticker": "BBOX.L",
           "name": "Tritax Big Box REIT PLC",
           "ex_div_date": "2026-05-22",
           "pay_date": "2026-06-12",
@@ -658,7 +658,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "IUKD",
+          "ticker": "IUKD.L",
           "name": "iShares Uk Dividend UCITS ETF",
           "ex_div_date": "2026-06-11",
           "pay_date": "2026-06-25",
@@ -669,7 +669,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "BP",
+          "ticker": "BP.L",
           "name": "BP PLC",
           "ex_div_date": "2026-05-15",
           "pay_date": "2026-06-26",
@@ -680,7 +680,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "SVT",
+          "ticker": "SVT.L",
           "name": "Severn Trent Plc",
           "ex_div_date": "2026-05-29",
           "pay_date": "2026-07-15",
@@ -691,7 +691,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "NG",
+          "ticker": "NG.L",
           "name": "National Grid",
           "ex_div_date": "2026-05-29",
           "pay_date": "2026-07-17",
@@ -702,7 +702,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "LAND",
+          "ticker": "LAND.L",
           "name": "Land Securities",
           "ex_div_date": "2026-06-12",
           "pay_date": "2026-07-24",
@@ -713,7 +713,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "PHP",
+          "ticker": "PHP.L",
           "name": "Primary Health Properties ",
           "ex_div_date": "2026-07-03",
           "pay_date": "2026-08-14",
@@ -724,7 +724,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "SEQI",
+          "ticker": "SEQI.L",
           "name": "Sequoia Economic Infrastructure",
           "ex_div_date": "2026-07-24",
           "pay_date": "2026-08-21",
@@ -735,7 +735,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "FSFL",
+          "ticker": "FSFL.L",
           "name": "Foresight Solar Fund",
           "ex_div_date": "2026-07-24",
           "pay_date": "2026-08-21",
@@ -746,7 +746,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "GCP",
+          "ticker": "GCP.L",
           "name": "GCP Infrastructure ",
           "ex_div_date": "2026-08-07",
           "pay_date": "2026-09-03",
@@ -757,7 +757,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "BBOX",
+          "ticker": "BBOX.L",
           "name": "Tritax Big Box REIT PLC",
           "ex_div_date": "2026-08-14",
           "pay_date": "2026-09-07",
@@ -768,7 +768,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "LLOY",
+          "ticker": "LLOY.L",
           "name": "Lloyds Banking Group PLC",
           "ex_div_date": "2026-07-31",
           "pay_date": "2026-09-09",
@@ -779,7 +779,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "BP",
+          "ticker": "BP.L",
           "name": "BP PLC",
           "ex_div_date": "2026-08-14",
           "pay_date": "2026-09-18",
@@ -790,7 +790,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "IUKD",
+          "ticker": "IUKD.L",
           "name": "iShares Uk Dividend UCITS ETF",
           "ex_div_date": "2026-09-11",
           "pay_date": "2026-09-24",
@@ -801,7 +801,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "LAND",
+          "ticker": "LAND.L",
           "name": "Land Securities",
           "ex_div_date": "2026-08-21",
           "pay_date": "2026-10-05",
@@ -812,7 +812,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "SUPR",
+          "ticker": "SUPR.L",
           "name": "Supermarket Income REIT PLC",
           "ex_div_date": "2026-10-25",
           "pay_date": "2026-11-19",
@@ -823,7 +823,7 @@
           "status": "Estimated"
         },
         {
-          "ticker": "ASHM",
+          "ticker": "ASHM.L",
           "name": "Ashmore Group PLC",
           "ex_div_date": "2026-03-27",
           "pay_date": "2026-12-08",
@@ -836,7 +836,7 @@
       ],
       "next_five": [
         {
-          "ticker": "PHP",
+          "ticker": "PHP.L",
           "name": "Primary Health Properties ",
           "ex_div_date": "2025-10-09",
           "pay_date": "2025-11-21",
@@ -847,7 +847,7 @@
           "status": "Confirmed"
         },
         {
-          "ticker": "SEQI",
+          "ticker": "SEQI.L",
           "name": "Sequoia Economic Infrastructure",
           "ex_div_date": "2025-10-23",
           "pay_date": "2025-11-21",
@@ -858,7 +858,7 @@
           "status": "Confirmed"
         },
         {
-          "ticker": "SUPR",
+          "ticker": "SUPR.L",
           "name": "Supermarket Income REIT PLC",
           "ex_div_date": "2025-10-23",
           "pay_date": "2025-11-21",
@@ -869,7 +869,7 @@
           "status": "Confirmed"
         },
         {
-          "ticker": "FSFL",
+          "ticker": "FSFL.L",
           "name": "Foresight Solar Fund",
           "ex_div_date": "2025-10-30",
           "pay_date": "2025-11-24",
@@ -880,7 +880,7 @@
           "status": "Confirmed"
         },
         {
-          "ticker": "BBOX",
+          "ticker": "BBOX.L",
           "name": "Tritax Big Box REIT PLC",
           "ex_div_date": "2025-11-06",
           "pay_date": "2025-11-27",
@@ -1016,7 +1016,7 @@
     "received_ytd": 576.51
   },
   "meta": {
-    "last_updated": "2025-11-19 14:58:04",
+    "last_updated": "2025-11-19 15:37:44",
     "source": "Aurora ISA – API Live Prices + Dividends"
   }
 }
