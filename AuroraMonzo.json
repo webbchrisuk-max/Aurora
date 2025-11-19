@@ -1,11 +1,22 @@
 {
   "monzo": {
     "account_core": {
-      "main_balance": 0,
-      "payday_last": "",
-      "payday_next": "",
-      "income_received": 0,
-      "pots": {}
+      "main_balance": 496.34,
+      "payday_last": "2025-11-07",
+      "payday_next": "2025-12-05",
+      "income_received": 2078.78,
+      "pots": {
+        "Flex Repayment": 809.44,
+        "Direct Debits": 347.19,
+        "Holiday Pot": 274.45,
+        "Coventry City F.C": 167.86,
+        "IGTrading": 12.50,
+        "Car Maintenance": 124.49,
+        "Work Buffer": 33.59,
+        "Savings": 0,
+        "Christmas": 300,
+        "Dentist": 448.34,
+        "Holding Pot": 0
     },
     "transactions": [
       {
