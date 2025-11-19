@@ -1107,7 +1107,7 @@
         "Date": "",
         "Time": "",
         "Merchant": "",
-        "Amount (£)": "14261657.5"
+        "Amount (£)": "17477012.5"
       },
       {
         "Date": "",
@@ -1304,14 +1304,13 @@
         "UID": "45979-Main Account-Flex Repayment -200"
       },
       {
-        "Date": "2025-11-18",
-        "From Pot": "Work Buffer",
-        "To Pot": "Holding Pot",
-        "Amount": "33.59",
-        "Note": "Pot Move",
-        "Processed": "TRUE",
-        "Type": "Transfer",
-        "UID": "45979-Work Buffer-Holding Pot-33.59"
+        "Date": "",
+        "From Pot": "",
+        "To Pot": "",
+        "Amount": "",
+        "Note": "",
+        "Processed": "",
+        "Type": "Transfer"
       }
     ],
     "state": [
