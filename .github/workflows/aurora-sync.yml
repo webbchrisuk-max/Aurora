@@ -1,4 +1,4 @@
-name: Aurora ISA – 5-Minute Live Shares + Dividends Sync
+name: Aurora ISA – 5-Minute Live Shares + Dividends Sync (Protected)
 
 on:
   schedule:
@@ -15,58 +15,53 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # =====================================================
-      # STEP 1 — Checkout repo (important: fetch-depth must be 0)
-      # =====================================================
       - name: 🧩 Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # Required so pull --rebase works
+          fetch-depth: 0
 
       # =====================================================
-      # STEP 2 — Fetch Holdings sheet
+      # FETCH SHEETS
       # =====================================================
       - name: 🟢 Fetch Holdings sheet
-        run: |
-          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Holdings" -o holdings.json
+        run: curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Holdings" -o holdings.json
 
-      # =====================================================
-      # STEP 3 — Fetch Dividends sheet
-      # =====================================================
       - name: 🟣 Fetch Dividends sheet
-        run: |
-          curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Dividends" -o dividends.json
+        run: curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Dividends" -o dividends.json
 
-      # =====================================================
-      # STEP 4 — Install Node
-      # =====================================================
       - name: 🔧 Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
       # =====================================================
-      # STEP 5 — Update ISA Holdings + Dividends
+      # SAFE UPDATE ONLY (isa.holdings + isa.dividends)
       # =====================================================
-      - name: 🔄 Update ISA prices + dividends + summaries
+      - name: 🔒 Protected ISA merge
         run: |
           node << 'EOF'
           const fs = require("fs");
+
           const holdings = JSON.parse(fs.readFileSync("holdings.json","utf8"));
           const dividendsSheet = JSON.parse(fs.readFileSync("dividends.json","utf8"));
           const auroraPath = "AuroraSync.json";
 
+          // Load FULL existing JSON (untouched)
           const aurora = JSON.parse(fs.readFileSync(auroraPath,"utf8"));
-          const now = new Date().toISOString().replace("T"," ").substring(0,19);
 
-          // RESET clean structure
-          aurora.isa = aurora.isa || {};
-          aurora.isa.holdings = { ig_isa: [], trade212_isa: [] };
-          aurora.isa.dividends = {};
+          // Make sure ISA structure exists
+          if (!aurora.isa) aurora.isa = {};
+          if (!aurora.isa.holdings) aurora.isa.holdings = {};
+          if (!aurora.isa.holdings.ig_isa) aurora.isa.holdings.ig_isa = [];
+          if (!aurora.isa.holdings.trade212_isa) aurora.isa.holdings.trade212_isa = [];
+          if (!aurora.isa.dividends) aurora.isa.dividends = {};
 
-          // ---------------------------
-          // Process Holdings
-          // ---------------------------
+          //----------------------------------------------------------------
+          // UPDATE HOLDINGS — ONLY THIS PART, nothing else
+          //----------------------------------------------------------------
+          aurora.isa.holdings.ig_isa = [];
+          aurora.isa.holdings.trade212_isa = [];
+
           holdings.forEach(row=>{
             const obj = {
               ticker: row["ticker"],
@@ -91,10 +86,12 @@ jobs:
             }
           });
 
-          // ---------------------------
-          // Process Dividends
-          // ---------------------------
+          //----------------------------------------------------------------
+          // UPDATE DIVIDENDS — Only this section
+          //----------------------------------------------------------------
           const today = new Date().toISOString().split("T")[0];
+          const now = new Date().toISOString().replace("T"," ").substring(0,19);
+
           const upcoming = [];
           const nextFive = [];
           const monthlyTotals = {};
@@ -103,11 +100,8 @@ jobs:
           dividendsSheet.forEach(d=>{
             const pay = d["pay_date"];
             const total = Number(d["total_dividend"] || 0);
-            const ex = d["ex_div_date"];
-            const ticker = d["ticker"];
-            const name = d["name"];
 
-            // Build month
+            // Month totals
             if (pay) {
               const m = pay.substring(0,7);
               monthlyTotals[m] = (monthlyTotals[m] || 0) + total;
@@ -115,12 +109,11 @@ jobs:
 
             annualTotal += total;
 
-            // Upcoming
             if (pay && pay >= today) {
               upcoming.push({
-                ticker,
-                name,
-                ex_div_date: ex,
+                ticker: d["ticker"],
+                name: d["name"],
+                ex_div_date: d["ex_div_date"],
                 pay_date: pay,
                 dividend_per_share: d["dividend_per_share"],
                 shares_at_exdiv: d["shares_at_exdiv"],
@@ -131,8 +124,8 @@ jobs:
             }
           });
 
-          // Sort
           upcoming.sort((a,b)=>a.pay_date.localeCompare(b.pay_date));
+
           nextFive.push(...upcoming.slice(0,5));
 
           aurora.isa.dividends = {
@@ -143,23 +136,18 @@ jobs:
             annual_total: annualTotal
           };
 
+          //----------------------------------------------------------------
+          // NEVER TOUCH ANY OTHER PART OF THE JSON ❗
+          //----------------------------------------------------------------
+
           fs.writeFileSync(auroraPath, JSON.stringify(aurora,null,2));
           EOF
 
-      # =====================================================
-      # STEP 6 — FIX PUSH (Pull first)
-      # =====================================================
-      - name: 📥 Pull latest to avoid non-fast-forward
-        run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
-          git pull --rebase origin main || true
+      - name: 📥 Pull latest
+        run: git pull --rebase origin main || true
 
-      # =====================================================
-      # STEP 7 — Commit + Push
-      # =====================================================
-      - name: 📤 Commit changes
+      - name: 📤 Commit & Push
         run: |
           git add AuroraSync.json
-          git commit -m "🔄 Auto ISA update (5min sync)" || true
+          git commit -m "Protected ISA Update – Holdings + Dividends Only" || true
           git push origin main || true
