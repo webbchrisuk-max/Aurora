@@ -104,6 +104,25 @@ jobs:
           fi
 
       # =====================================================
+      # NEW STEP – Ensure pay_period.json exists (Fixes ENOENT)
+      # =====================================================
+      - name: 🟦 Ensure pay_period.json exists
+        run: |
+          mkdir -p .aurora
+          if [ ! -f .aurora/pay_period.json ]; then
+            echo "🆕 Creating default pay_period.json"
+            cat <<EOF > .aurora/pay_period.json
+{
+  "current_period_start": "2025-11-01",
+  "next_payday": "2025-12-01",
+  "period_length_days": 28
+}
+EOF
+          else
+            echo "✔ pay_period.json already exists"
+          fi
+
+      # =====================================================
       # STEP 3 – Apply NEW Transfers (unchanged)
       # =====================================================
       - name: 🔄 Apply NEW Transfers
@@ -121,7 +140,7 @@ jobs:
           EOF
 
       # =====================================================
-      # STEP 3.5 – Merge RAW transactions into pay-period list
+      # STEP 3.5 – Merge RAW into pay-period transactions
       # =====================================================
       - name: 🔍 Merge RAW into pay-period transactions
         run: |
@@ -140,7 +159,6 @@ jobs:
             return d >= start;
           });
 
-          // Remove duplicates by Gmail ID OR by exact fields
           const seen = new Set();
           const merged = [];
 
