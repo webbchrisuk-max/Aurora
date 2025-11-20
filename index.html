@@ -20,7 +20,8 @@ async function initAurora(){
   renderYTD(sync);
 }
 <script>
-/* ================= PORTFOLIO SUMMARY ================= */
+
+  /* ================= PORTFOLIO SUMMARY ================= */
 function renderPortfolio(sync){
   const igHoldings = sync?.isa?.holdings?.ig_isa || [];
   const t212Holdings = sync?.isa?.holdings?.trade212_isa || [];
