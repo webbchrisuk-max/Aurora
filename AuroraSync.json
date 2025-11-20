@@ -15,7 +15,7 @@
           "annual_div_yield": 7.633587786259542,
           "annual_income": 783.2,
           "sector": "Financials",
-          "last_updated": "2025-11-20 10:43:33"
+          "last_updated": "2025-11-20 10:57:18"
         },
         {
           "ticker": "LON:VOD",
@@ -30,7 +30,7 @@
           "annual_div_yield": 5.434782608695652,
           "annual_income": 382.90000000000003,
           "sector": "Communications",
-          "last_updated": "2025-11-20 10:43:33"
+          "last_updated": "2025-11-20 10:57:18"
         },
         {
           "ticker": "LON:BP",
@@ -45,7 +45,7 @@
           "annual_div_yield": 5.8695652173913055,
           "annual_income": 190.89000000000001,
           "sector": "Energy",
-          "last_updated": "2025-11-20 10:43:33"
+          "last_updated": "2025-11-20 10:57:18"
         },
         {
           "ticker": "LON:NG",
@@ -60,7 +60,7 @@
           "annual_div_yield": 4.712939160239932,
           "annual_income": 105.60000000000001,
           "sector": "Utilities",
-          "last_updated": "2025-11-20 10:43:33"
+          "last_updated": "2025-11-20 10:57:18"
         },
         {
           "ticker": "LON:SVT",
@@ -75,7 +75,7 @@
           "annual_div_yield": 4.134078212290502,
           "annual_income": 86.58000000000001,
           "sector": "Utilities",
-          "last_updated": "2025-11-20 10:43:33"
+          "last_updated": "2025-11-20 10:57:18"
         },
         {
           "ticker": "LON:IUKD",
@@ -90,7 +90,7 @@
           "annual_div_yield": 4.421768707482993,
           "annual_income": 133.77,
           "sector": "ETF/Financials",
-          "last_updated": "2025-11-20 10:43:33"
+          "last_updated": "2025-11-20 10:57:18"
         },
         {
           "ticker": "LON:LAND",
@@ -105,7 +105,7 @@
           "annual_div_yield": 6.365159128978225,
           "annual_income": 120.46000000000001,
           "sector": "Real Estate",
-          "last_updated": "2025-11-20 10:43:33"
+          "last_updated": "2025-11-20 10:57:18"
         },
         {
           "ticker": "LON:PHNX",
@@ -120,7 +120,7 @@
           "annual_div_yield": 7.926829268292683,
           "annual_income": 762.84,
           "sector": "Fianacials",
-          "last_updated": "2025-11-20 10:43:33"
+          "last_updated": "2025-11-20 10:57:18"
         },
         {
           "ticker": "LON:LGEN",
@@ -135,7 +135,7 @@
           "annual_div_yield": 8.51063829787234,
           "annual_income": 689,
           "sector": "Financials",
-          "last_updated": "2025-11-20 10:43:33"
+          "last_updated": "2025-11-20 10:57:18"
         },
         {
           "ticker": "LON:LLOY",
@@ -150,7 +150,7 @@
           "annual_div_yield": 2.272727272727273,
           "annual_income": 12.120000000000001,
           "sector": "Financial",
-          "last_updated": "2025-11-20 10:43:33"
+          "last_updated": "2025-11-20 10:57:18"
         },
         {
           "ticker": "LON:ASHM",
@@ -165,7 +165,7 @@
           "annual_div_yield": 7.643312101910828,
           "annual_income": 74.39999999999999,
           "sector": "Financials",
-          "last_updated": "2025-11-20 10:43:33"
+          "last_updated": "2025-11-20 10:57:18"
         },
         {
           "ticker": "LON:SUPR",
@@ -180,7 +180,7 @@
           "annual_div_yield": 10.256410256410255,
           "annual_income": 644.4,
           "sector": "Real Estate REIT",
-          "last_updated": "2025-11-20 10:43:33"
+          "last_updated": "2025-11-20 10:57:18"
         },
         {
           "ticker": "LON:BBOX",
@@ -195,7 +195,7 @@
           "annual_div_yield": 5.4421768707483,
           "annual_income": 28,
           "sector": "Real Estate REIT",
-          "last_updated": "2025-11-20 10:43:33"
+          "last_updated": "2025-11-20 10:57:18"
         },
         {
           "ticker": "6XS",
@@ -210,7 +210,7 @@
           "annual_div_yield": 0,
           "annual_income": 0,
           "sector": "Ai",
-          "last_updated": "2025-11-20 10:43:33"
+          "last_updated": "2025-11-20 10:57:18"
         }
       ],
       "trade212_isa": [
@@ -227,7 +227,7 @@
           "annual_div_yield": 6.25,
           "annual_income": 17.939999999999998,
           "sector": "Real Estate/Healthcare REIT",
-          "last_updated": "2025-11-20 10:43:33"
+          "last_updated": "2025-11-20 10:57:18"
         },
         {
           "ticker": "LON:SEQI",
@@ -242,7 +242,7 @@
           "annual_div_yield": 7.594936708860758,
           "annual_income": 18,
           "sector": "Infrastructure REIT",
-          "last_updated": "2025-11-20 10:43:33"
+          "last_updated": "2025-11-20 10:57:18"
         },
         {
           "ticker": "LON:RGL",
@@ -257,7 +257,7 @@
           "annual_div_yield": 11.76470588235294,
           "annual_income": 30.618147443999998,
           "sector": "Real Estate REIT",
-          "last_updated": "2025-11-20 10:43:33"
+          "last_updated": "2025-11-20 10:57:18"
         },
         {
           "ticker": "LON:GCP",
@@ -272,7 +272,7 @@
           "annual_div_yield": 10.000000000000002,
           "annual_income": 70,
           "sector": "Infrastructure REIT",
-          "last_updated": "2025-11-20 10:43:33"
+          "last_updated": "2025-11-20 10:57:18"
         },
         {
           "ticker": "FSFL.L",
@@ -287,7 +287,7 @@
           "annual_div_yield": 0,
           "annual_income": 114.32476006,
           "sector": "Utilities/Renewable Energy",
-          "last_updated": "2025-11-20 10:43:33"
+          "last_updated": "2025-11-20 10:57:18"
         }
       ]
     },
