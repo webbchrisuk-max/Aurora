@@ -197,9 +197,11 @@ body{
 </style>
 
 <script>
-// NEW unified data source
+/* ============================================================
+   NEW — Unified Data Source
+   ============================================================ */
 const AURORA_MASTER =
-"https://raw.githubusercontent.com/webbchrisuk-max/Aurora/main/watchlist_master.json";
+  "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/main/watchlist_master.json";
 
 async function loadJSON(url){
   const r = await fetch(url + "?nocache=" + Date.now());
@@ -209,7 +211,6 @@ async function loadJSON(url){
 async function initAurora(){
   const unified = await loadJSON(AURORA_MASTER);
 
-  // everything now comes from the merged master JSON
   renderPortfolio(unified);
   renderTesco(unified);
   renderTescoMigration(unified);
@@ -226,6 +227,7 @@ async function initAurora(){
 
 <div class="container">
 <h1 class="section-title">🌌 Aurora ISA Tracker – Cinematic Edition</h1>
+
 <!-- =================== PORTFOLIO SUMMARY =================== -->
 <div class="card">
   <h2 class="section-title">📊 Portfolio Summary</h2>
@@ -288,8 +290,11 @@ function renderPortfolio(data){
   holdings.forEach(h => {
     const value = h.liveprice * Number(h.holdings.shares || 0);
 
-    // IG vs T212 split by ticker list
-    if(["LON:ASHM","LON:BP","LON:LAND","LON:SVT","LON:NG","LON:PHP","LON:SUPR","LON:LLOY","LON:MNG","LON:GCP","LON:VOD","LON:BBOX","LON:IUKD","LON:SEQI"].includes(h.ticker)) {
+    if([
+      "LON:ASHM","LON:BP","LON:LAND","LON:SVT","LON:NG","LON:PHP",
+      "LON:SUPR","LON:LLOY","LON:MNG","LON:GCP","LON:VOD",
+      "LON:BBOX","LON:IUKD","LON:SEQI"
+    ].includes(h.ticker)) {
       igValue += value;
     } else {
       t212Value += value;
@@ -298,8 +303,8 @@ function renderPortfolio(data){
 
   const totalValue = igValue + t212Value;
 
-  const igPercent = totalValue ? (igValue / totalValue * 100).toFixed(1) : 0;
-  const t212Percent = totalValue ? (t212Value / totalValue * 100).toFixed(1) : 0;
+  const igPercent = totalValue ? (igValue/totalValue*100).toFixed(1) : 0;
+  const t212Percent = totalValue ? (t212Value/totalValue*100).toFixed(1) : 0;
 
   document.getElementById("portfolio-summary").innerHTML = `
     <p><strong>IG ISA Value:</strong> £${igValue.toFixed(2)}</p>
@@ -319,16 +324,16 @@ function renderPortfolio(data){
 }
 
 /* ============================================================
-   IG HOLDINGS CAROUSEL
+   IG HOLDINGS
    ============================================================ */
 function renderIG(data){
-  const igTickers = [
+  const list = [
     "LON:ASHM","LON:BP","LON:LAND","LON:SVT","LON:NG","LON:PHP",
     "LON:SUPR","LON:LLOY","LON:MNG","LON:GCP","LON:VOD",
     "LON:BBOX","LON:IUKD","LON:SEQI"
   ];
 
-  const ig = data.filter(x => igTickers.includes(x.ticker) && x.holdings);
+  const ig = data.filter(x => list.includes(x.ticker) && x.holdings);
 
   const el = document.getElementById("ig-carousel");
   el.innerHTML = "";
@@ -342,21 +347,21 @@ function renderIG(data){
         <h3>${h.ticker} — ${h.company}</h3>
         <p><strong>Shares:</strong> ${h.holdings.shares}</p>
         <p><strong>Value:</strong> £${val.toFixed(2)}</p>
-        <p><strong>Gain:</strong> <span style="color:${gain >= 0 ? 'lime' : 'red'}">£${gain.toFixed(2)}</span></p>
+        <p><strong>Gain:</strong> 
+          <span style="color:${gain>=0?'lime':'red'}">£${gain.toFixed(2)}</span>
+        </p>
       </div>
     `;
   });
 }
 
 /* ============================================================
-   T212 HOLDINGS CAROUSEL
+   TRADE212 HOLDINGS
    ============================================================ */
 function renderT212(data){
-  const t212Tickers = [
-    "LON:FSFL","LON:UKW","LON:AEWU","LON:TSCO","6XS"
-  ];
+  const list = ["LON:FSFL","LON:UKW","LON:AEWU","LON:TSCO","6XS"];
 
-  const t = data.filter(x => t212Tickers.includes(x.ticker) && x.holdings);
+  const t = data.filter(x => list.includes(x.ticker) && x.holdings);
 
   const el = document.getElementById("t212-carousel");
   el.innerHTML = "";
@@ -370,38 +375,35 @@ function renderT212(data){
         <h3>${h.ticker} — ${h.company}</h3>
         <p><strong>Shares:</strong> ${h.holdings.shares}</p>
         <p><strong>Value:</strong> £${val.toFixed(2)}</p>
-        <p><strong>Gain:</strong> <span style="color:${gain >= 0 ? 'lime' : 'red'}">£${gain.toFixed(2)}</span></p>
+        <p><strong>Gain:</strong> 
+          <span style="color:${gain>=0?'lime':'red'}">£${gain.toFixed(2)}</span>
+        </p>
       </div>
     `;
   });
 }
 
 /* ============================================================
-   NEXT 5 DIVIDENDS (from unified dataset)
+   NEXT 5 DIVIDENDS
    ============================================================ */
 function renderNextFive(data){
-  const upcoming = data.filter(x => Number(x.holdings?.annual_dps) > 0);
-
-  const enriched = upcoming.map(h => {
-    const income = h.holdings.annual_dps * h.holdings.shares;
-    return {
-      ticker: h.ticker,
-      name: h.company,
-      annual_income: income
-    };
-  }).sort((a,b)=>b.annual_income - a.annual_income)
+  const divs = data
+    .filter(x => x.holdings?.annual_dps)
+    .map(x => ({
+      ticker: x.ticker,
+      name: x.company,
+      income: x.holdings.annual_dps * x.holdings.shares
+    }))
+    .sort((a,b)=>b.income-a.income)
     .slice(0,5);
 
   let html = "";
-  enriched.forEach(d=>{
+  divs.forEach(d=>{
     html += `
       <div class="dividend-item">
-        <div>
-          <strong>${d.ticker}</strong><br>
-          ${d.name}
-        </div>
-        <div style="font-size:18px; color:var(--cyan);">
-          £${d.annual_income.toFixed(2)}
+        <div><strong>${d.ticker}</strong><br>${d.name}</div>
+        <div style="font-size:18px;color:var(--cyan);">
+          £${d.income.toFixed(2)}
         </div>
       </div>`;
   });
@@ -415,20 +417,18 @@ function renderNextFive(data){
 function renderUpcoming(data){
   let html = "";
 
-  const filtered = data.filter(x => x.holdings?.annual_dps);
+  data.forEach(x=>{
+    if(!x.holdings?.annual_dps) return;
 
-  filtered.forEach(d=>{
-    const income = d.holdings.annual_dps * d.holdings.shares;
+    const inc = x.holdings.annual_dps * x.holdings.shares;
 
     html += `
       <div class="dividend-item">
         <div>
-          <strong>${d.ticker}</strong> — ${d.company}<br>
-          Sector: ${d.holdings.sector}
+          <strong>${x.ticker}</strong> — ${x.company}<br>
+          Sector: ${x.holdings.sector}
         </div>
-        <div style="font-size:18px; color:var(--teal);">
-          £${income.toFixed(2)}
-        </div>
+        <div style="font-size:18px;color:var(--teal);">£${inc.toFixed(2)}</div>
       </div>
     `;
   });
@@ -440,24 +440,25 @@ function renderUpcoming(data){
    YEAR TO DATE
    ============================================================ */
 function renderYTD(data){
-  const y = new Date().getFullYear();
-
   let total = 0;
-  data.forEach(h=>{
-    if(h.holdings?.annual_dps){
-      total += h.holdings.annual_dps * h.holdings.shares;
+
+  data.forEach(x=>{
+    if(x.holdings?.annual_dps){
+      total += x.holdings.annual_dps * x.holdings.shares;
     }
   });
 
   document.getElementById("ytd").innerHTML =
-    `<h3 style="text-align:center; font-size:26px; text-shadow:0 0 12px var(--cyan);">£${total.toFixed(2)}</h3>`;
+    `<h3 style="text-align:center;font-size:26px;text-shadow:0 0 12px var(--cyan);">
+      £${total.toFixed(2)}
+    </h3>`;
 }
 
 /* ============================================================
-   TESCO BLOCKS — REMOVE OR KEEP AS IS FOR NOW
+   TEMPORARY TESCO PLACEHOLDERS
    ============================================================ */
-function renderTesco(){ document.getElementById("tesco-sip").innerHTML = "<p>Tesco moved to unified JSON. (Placeholder)</p>"; }
-function renderTescoMigration(){ document.getElementById("tesco-migration").innerHTML = "<p>Tesco migration is now integrated. (Placeholder)</p>"; }
+function renderTesco(){ document.getElementById("tesco-sip").innerHTML = "<p>Tesco data moved into unified JSON.</p>"; }
+function renderTescoMigration(){ document.getElementById("tesco-migration").innerHTML = "<p>Tesco migration integrated.</p>"; }
 
 </script>
 
