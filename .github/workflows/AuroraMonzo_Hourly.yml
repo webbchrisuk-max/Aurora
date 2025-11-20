@@ -21,6 +21,21 @@ jobs:
         uses: actions/checkout@v4
 
       # =====================================================
+      # STEP 0.1 – Ensure .aurora folder + create default pay_period.json
+      # =====================================================
+      - name: 🛠 Ensure .aurora + default pay period file
+        run: |
+          mkdir -p .aurora
+          if [ ! -f .aurora/pay_period.json ]; then
+            echo "{
+              \"current_period_start\": \"2025-11-01\",
+              \"next_payday\": \"2025-12-05\",
+              \"period_length_days\": 28
+            }" > .aurora/pay_period.json
+            echo "Created missing .aurora/pay_period.json"
+          fi
+
+      # =====================================================
       # STEP 0.5 – Payday Rollover BEFORE anything else
       # =====================================================
       - name: 📆 Rollover pay-period transactions if needed
@@ -33,25 +48,35 @@ jobs:
           const txPath = 'transactions.json';
           const archivePath = 'transactions_archive.json';
 
-          function readJson(p, fallback) {
-            try { return JSON.parse(fs.readFileSync(p, 'utf8')); }
-            catch { return fallback; }
+          // Safe reader
+          let state;
+          try { state = JSON.parse(fs.readFileSync(statePath, 'utf8')); }
+          catch {
+            console.log("⚠ No pay_period.json found. Creating minimal default.");
+            state = {
+              current_period_start: "2025-11-01",
+              next_payday: "2025-12-05",
+              period_length_days: 28
+            };
+            fs.writeFileSync(statePath, JSON.stringify(state, null, 2));
           }
-
-          const state = readJson(statePath, null);
-          if (!state) process.exit(0);
 
           const today = new Date();
           const todayYMD = today.toISOString().slice(0, 10);
           const nextPayday = new Date(state.next_payday + "T00:00:00Z");
           const nextPaydayYMD = nextPayday.toISOString().slice(0, 10);
 
-          if (todayYMD < nextPaydayYMD) process.exit(0);
+          if (todayYMD < nextPaydayYMD) {
+            console.log("No payday rollover needed.");
+            process.exit(0);
+          }
 
           console.log("🔄 Payday reached — rolling over.");
 
-          const oldTx = readJson(txPath, []);
-          const archive = readJson(archivePath, []);
+          let oldTx = [];
+          try { oldTx = JSON.parse(fs.readFileSync(txPath, 'utf8')); } catch {}
+          let archive = [];
+          try { archive = JSON.parse(fs.readFileSync(archivePath, 'utf8')); } catch {}
 
           if (oldTx.length > 0) {
             const merged = archive.concat(oldTx);
@@ -73,28 +98,19 @@ jobs:
           EOF
 
       # =====================================================
-      # PROTECT AuroraSync.json at all times
-      # =====================================================
-      - name: 🔒 Hard-lock AuroraSync.json
-        run: |
-          if [ -f "AuroraSync.json" ]; then
-            chmod 444 AuroraSync.json
-          fi
-
-      # =====================================================
       # STEP 1 – Fetch Google Sheets
       # =====================================================
       - name: 🟢 Fetch Transfers
         run: curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transfers" -o transfers.json
 
-      - name: 🟢 Fetch Transactions (RAW FULL SHEET)
+      - name: 🟢 Fetch Transactions (raw)
         run: curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transactions" -o transactions_raw.json
 
       - name: 🟢 Fetch Direct Debits
         run: curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/DirectDebits" -o directdebits.json
 
       # =====================================================
-      # STEP 2 – Ensure State Folder
+      # STEP 2 – Ensure state folder
       # =====================================================
       - name: 📦 Ensure state folder
         run: |
@@ -104,26 +120,7 @@ jobs:
           fi
 
       # =====================================================
-      # NEW STEP – Ensure pay_period.json exists (Fixes ENOENT)
-      # =====================================================
-      - name: 🟦 Ensure pay_period.json exists
-        run: |
-          mkdir -p .aurora
-          if [ ! -f .aurora/pay_period.json ]; then
-            echo "🆕 Creating default pay_period.json"
-            cat <<EOF > .aurora/pay_period.json
-{
-  "current_period_start": "2025-11-01",
-  "next_payday": "2025-12-01",
-  "period_length_days": 28
-}
-EOF
-          else
-            echo "✔ pay_period.json already exists"
-          fi
-
-      # =====================================================
-      # STEP 3 – Apply NEW Transfers (unchanged)
+      # STEP 3 – Apply NEW Transfers
       # =====================================================
       - name: 🔄 Apply NEW Transfers
         run: |
@@ -133,14 +130,14 @@ EOF
           const applied = JSON.parse(fs.readFileSync('.aurora/monzo_transfers_applied.json', 'utf8'));
 
           const newOnes = transfers.filter(t => t.UID && !applied.includes(t.UID));
-
           newOnes.forEach(t => applied.push(t.UID));
 
           fs.writeFileSync('.aurora/monzo_transfers_applied.json', JSON.stringify(applied, null, 2));
+          console.log(`Applied ${newOnes.length} new transfers.`);
           EOF
 
       # =====================================================
-      # STEP 3.5 – Merge RAW into pay-period transactions
+      # STEP 3.5 – Merge RAW into pay-period transactions (SAFE)
       # =====================================================
       - name: 🔍 Merge RAW into pay-period transactions
         run: |
@@ -149,19 +146,27 @@ EOF
 
           const raw = JSON.parse(fs.readFileSync('transactions_raw.json', 'utf8'));
           const current = JSON.parse(fs.readFileSync('transactions.json', 'utf8'));
-          const state = JSON.parse(fs.readFileSync('.aurora/pay_period.json', 'utf8'));
+
+          let state;
+          try { state = JSON.parse(fs.readFileSync('.aurora/pay_period.json', 'utf8')); }
+          catch {
+            state = {
+              current_period_start: "2025-11-01",
+              next_payday: "2025-12-05",
+              period_length_days: 28
+            };
+          }
 
           const start = new Date(state.current_period_start + "T00:00:00Z");
 
           const filtered = raw.filter(t => {
-            const dateParts = t.Date.split('/');
-            const d = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}T00:00:00Z`);
+            const p = t.Date.split('/');
+            const d = new Date(`${p[2]}-${p[1]}-${p[0]}T00:00:00Z`);
             return d >= start;
           });
 
           const seen = new Set();
           const merged = [];
-
           [...current, ...filtered].forEach(t => {
             const key = t["Gmail ID"] || JSON.stringify(t);
             if (!seen.has(key)) {
@@ -197,7 +202,7 @@ EOF
           EOF
 
       # =====================================================
-      # STEP 5 – Update AuroraMonzo.json (SAFE)
+      # STEP 5 – Update AuroraMonzo.json
       # =====================================================
       - name: 🧿 Safe merge for AuroraMonzo.json
         run: |
