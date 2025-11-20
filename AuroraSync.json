@@ -1285,7 +1285,13 @@
         "2029_2030": "£20,000 transferred into ISA.",
         "2030_2031": "£20,000 transferred into ISA.",
         "2031_2032": "Remaining ~£23,000 transferred."
-      }
+        }
+    },
+    "saye_progress": {
+    "savings_to_date": 11500,
+    "funds_pending": 1000,
+    "total_option_cost": 31598.60,
+    "end_date": "2029-03-01"
     }
   },
   "reits_outlook": {
