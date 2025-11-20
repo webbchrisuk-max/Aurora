@@ -47,14 +47,14 @@ body {
   backdrop-filter:blur(6px);
 }
 
-/* Hover & Tap Glow – WORKS ON iPhone + iPad */
+/* Hover + Tap Glow */
 .card:hover,
 .card:active {
   box-shadow:0 0 20px var(--cyan), 0 0 30px var(--cyan);
   transform:translateY(-3px);
 }
 
-/* iPad — WIDE SCREEN CARD LAYOUT IMPROVED */
+/* iPad wide layout fix */
 @media (min-width: 768px) {
   .card {
     max-width:650px;
@@ -63,13 +63,12 @@ body {
   }
 }
 
-/* ===================== GLOW VALUES ===================== */
+/* ===================== GLOW ===================== */
 .positive {
   color:var(--green);
   text-shadow:0 0 10px var(--green);
 }
 
-/* ===================== SECTIONS ===================== */
 .section-title {
   font-size:1.4rem;
   margin:25px 16px 5px 16px;
@@ -84,7 +83,7 @@ body {
   margin-top:10px;
 }
 
-/* ===================== iPad ONLY extra info in cards ===================== */
+/* ===================== iPad extra details ===================== */
 @media (min-width: 820px) {
   .ipad-extra {
     display:block;
@@ -93,18 +92,18 @@ body {
     opacity:0.85;
   }
 }
-
 @media (max-width: 819px) {
   .ipad-extra { display:none; }
 }
 </style>
 </head>
+
 <body>
 
 <h2 class="section-title">Portfolio Summary</h2>
 <div class="card">
   <p>Total Value: <span id="totalValue">£0</span></p>
-  <p>Total Gain: <span id="totalGain" class="positive">+£0</span></p>
+  <p>Total Gain: <span id="totalGain">£0</span></p>
 </div>
 
 <h2 class="section-title">ISA Maturity Countdown</h2>
@@ -120,132 +119,141 @@ body {
 
 <h2 class="section-title">Tesco SIP & SAYE</h2>
 <div class="card">
-  <p>SIP Value: <span class="positive">+£0</span></p>
-  <p>SAYE: <span class="positive">+£0</span></p>
+  <p>SIP Value: <span id="sipValue" class="positive">£0</span></p>
+  <p>SAYE Value: <span id="sayeValue" class="positive">£0</span></p>
+  <p>Potential Gain: <span id="sayeGain" class="positive">£0</span></p>
 </div>
 
-<h2 class="section-title">Holdings</h2>
-<div id="holdingsContainer"></div>
+<h2 class="section-title">IG ISA Holdings</h2>
+<div id="igHoldingsContainer"></div>
+
+<h2 class="section-title">Trade212 ISA Holdings</h2>
+<div id="t212HoldingsContainer"></div>
 <script>
 // ========================================================
-// FETCH LIVE JSON (AuroraSync.json)
+// LOAD AURORASYNC.JSON
 // ========================================================
 async function loadData() {
-  const url = "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json";
+  const url = "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/main/AuroraSync.json";
   const res = await fetch(url + "?nocache=" + Date.now());
-  const data = await res.json();
-  return data;
+  return await res.json();
 }
 
 // ========================================================
-// BUILD NEXT 5 DIVIDENDS
+// NEXT 5 DIVIDENDS
 // ========================================================
-function buildUpcoming(divs) {
+function buildNextFive(divs) {
   const container = document.getElementById("nextDivsContainer");
   container.innerHTML = "";
 
-  const sorted = divs
-    .filter(x => x.upcoming_date)
-    .sort((a,b)=> new Date(a.upcoming_date) - new Date(b.upcoming_date))
-    .slice(0,5);
-
-  sorted.forEach(d => {
+  divs.slice(0, 5).forEach(d => {
     container.innerHTML += `
       <div class="card">
         <p><strong>${d.ticker}</strong></p>
-        <p>Upcoming Dividend: £${d.amount}</p>
-        <p>Date: ${d.upcoming_date}</p>
-      </div>
-    `;
+        <p>Dividend: £${d.total_dividend}</p>
+        <p>Pay Date: ${d.pay_date}</p>
+      </div>`;
   });
 }
 
 // ========================================================
-// BUILD NEXT EX-DIV DATES
+// NEXT EX-DIV DATES (sorted from upcoming)
 // ========================================================
 function buildExDiv(divs) {
   const container = document.getElementById("nextExDivsContainer");
   container.innerHTML = "";
 
   const sorted = divs
-    .filter(x => x.ex_div)
-    .sort((a,b)=> new Date(a.ex_div) - new Date(b.ex_div))
-    .slice(0,5);
+    .filter(x => x.ex_div_date)
+    .sort((a, b) => new Date(a.ex_div_date) - new Date(b.ex_div_date))
+    .slice(0, 5);
 
-  sorted.forEach(d => {
+  sorted.forEach(x => {
     container.innerHTML += `
       <div class="card">
-        <p><strong>${d.ticker}</strong></p>
-        <p>Ex-Dividend: ${d.ex_div}</p>
-      </div>
-    `;
+        <p><strong>${x.ticker}</strong></p>
+        <p>Ex-Div Date: ${x.ex_div_date}</p>
+      </div>`;
   });
 }
 
 // ========================================================
-// HOLDINGS CARDS (iPad gets extra detail)
+// HOLDINGS SECTIONS
 // ========================================================
-function buildHoldings(holdings) {
-  const container = document.getElementById("holdingsContainer");
+function buildHoldings(list, target) {
+  const container = document.getElementById(target);
   container.innerHTML = "";
 
-  holdings.forEach(h => {
+  list.forEach(h => {
     container.innerHTML += `
       <div class="card">
-        <p><strong>${h.ticker}</strong></p>
+        <p><strong>${h.ticker}</strong> — ${h.name}</p>
         <p>Shares: ${h.shares}</p>
-        <p>Value: £${h.value}</p>
-        <p class="positive">Gain: £${h.gain}</p>
+        <p>Value: £${h.value.toFixed(2)}</p>
+        <p class="positive">Gain: £${h.gain_value.toFixed(2)}</p>
 
-        <!-- Only visible on iPad -->
         <div class="ipad-extra">
-          <p>Annual Dividend: £${h.annual_dividend}</p>
-          <p>Yield: ${h.yield}%</p>
-          <p>Next Dividend: £${h.next_div}</p>
-          <p>Live Price: £${h.price}</p>
+          <p>Annual Dividend: £${h.annual_income.toFixed(2)}</p>
+          <p>Yield: ${h.annual_div_yield.toFixed(2)}%</p>
+          <p>Live Price: £${h.live_price}</p>
         </div>
-      </div>
-    `;
+      </div>`;
   });
 }
 
 // ========================================================
-// COUNTDOWN TO ISA MATURITY
+// COUNTDOWN TO ISA MATURITY (2029)
 // ========================================================
-function startCountdown(targetDate) {
+function startCountdown(date) {
   const el = document.getElementById("isa-countdown");
 
-  function update() {
+  function tick() {
     const now = new Date();
-    const diff = new Date(targetDate) - now;
+    const diff = new Date(date) - now;
 
     if (diff <= 0) {
-      el.innerHTML = "ISA Fully Matured!";
+      el.innerHTML = "ISA Migration Year Started 🔥";
       return;
     }
 
-    const days = Math.floor(diff / (1000*60*60*24));
-    const hours = Math.floor((diff / (1000*60*60)) % 24);
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
 
     el.innerHTML = `${days} days ${hours} hours remaining`;
   }
 
-  update();
-  setInterval(update, 60000);
+  tick();
+  setInterval(tick, 60000);
 }
 
 // ========================================================
-// MAIN LOAD
+// MAIN EXECUTION
 // ========================================================
 loadData().then(data => {
-  buildUpcoming(data.dividend_planner.upcoming);
-  buildExDiv(data.dividend_planner.schedule_by_holding);
-  buildHoldings(data.isa.ig.holdings);
 
-  document.getElementById("totalValue").innerText = "£" + data.isa.ig.balance;
-  document.getElementById("totalGain").innerText = "£" + data.isa.ig.total_gain;
+  // ===== Portfolio Summary =====
+  const totalValue = data.isa.ig_isa.balance + data.isa.trade212_isa.balance;
+  const totalGain = data.isa.ig_isa.unrealised_gain + data.isa.trade212_isa.unrealised_gain;
 
-  startCountdown("2026-04-06T00:00:00");
+  document.getElementById("totalValue").innerText = "£" + totalValue.toFixed(2);
+  document.getElementById("totalGain").innerText = "£" + totalGain.toFixed(2);
+
+  // ===== Tesco =====
+  document.getElementById("sipValue").innerText = "£" + data.tesco.summary.sip_value_gbp.toFixed(2);
+  document.getElementById("sayeValue").innerText = "£" + data.tesco.summary.saye_current_value_gbp.toFixed(2);
+  document.getElementById("sayeGain").innerText = "£" + data.tesco.summary.saye_potential_gain_gbp.toFixed(2);
+
+  // ===== Dividends =====
+  buildNextFive(data.isa.dividends.next_five);
+  buildExDiv(data.isa.dividends.upcoming);
+
+  // ===== Holdings =====
+  buildHoldings(data.isa.holdings.ig_isa, "igHoldingsContainer");
+  buildHoldings(data.isa.holdings.trade212_isa, "t212HoldingsContainer");
+
+  // ===== Countdown =====
+  startCountdown(data.tesco.isa_migration_plan.maturity_date);
+
 });
 </script>
 
