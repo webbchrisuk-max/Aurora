@@ -70,13 +70,11 @@ body{
   transition:0.35s ease;
 }
 
-/* Neon hover */
 .card:hover{
   box-shadow:0 0 22px rgba(0,255,255,0.55);
   transform:translateY(-3px);
 }
 
-/* Soft glowing border light */
 .card::before{
   content:"";
   position:absolute;
@@ -94,6 +92,52 @@ body{
   z-index:-1;
 }
 
+/* ===================== EXPANSION PANEL (NEW) ===================== */
+.expander-toggle {
+  cursor: pointer;
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: var(--cyan);
+  text-align: right;
+  user-select: none;
+}
+
+.expander-toggle:hover {
+  opacity: 0.8;
+}
+
+.expander-content {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.35s ease-in-out;
+  padding: 0 4px;
+}
+
+.expander-content-inner {
+  margin-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  padding-top: 10px;
+  font-size: 0.80rem;
+  line-height: 1.35rem;
+}
+
+.expander-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.expander-label {
+  color: var(--teal);
+}
+
+.expander-value {
+  color: var(--amber);
+  font-weight: 700;
+}
+
+/* ============ TABLES, CAROUSELS, EVERYTHING ELSE (unchanged) ============ */
+
 .table{
   width:100%;
   border-collapse:collapse;
@@ -109,7 +153,6 @@ body{
   border-bottom:1px solid rgba(255,255,255,0.1);
 }
 
-/* Dividend item */
 .dividend-item{
   padding:12px 14px;
   background:rgba(255,255,255,0.08);
@@ -127,7 +170,6 @@ body{
   transform:scale(1.02);
 }
 
-/* ===================== CAROUSELS ===================== */
 .carousel{
   display:flex;
   overflow-x:auto;
@@ -155,7 +197,6 @@ body{
   box-shadow:0 0 25px rgba(0,255,255,0.58);
 }
 
-/* Tesco cards */
 .tesco-card{
   background:rgba(255,255,255,0.08);
   border:1px solid rgba(0,255,255,0.30);
@@ -165,7 +206,6 @@ body{
   box-shadow:0 0 15px rgba(0,255,200,0.25);
 }
 
-/* ===================== PROGRESS BARS ===================== */
 .progress-wrap{
   margin:12px 0;
 }
@@ -193,7 +233,6 @@ body{
 }
 
 </style>
-
 <script>
 const AURORA_SYNC =
 "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json";
@@ -216,62 +255,8 @@ async function initAurora(){
   renderYTD(sync);
 }
 </script>
-</head>
 
 <body onload="initAurora()">
-
-<div class="container">
-
-<h1 class="section-title">🌌 Aurora ISA Tracker – Cinematic Edition</h1>
-
-<!-- =================== PORTFOLIO SUMMARY =================== -->
-<div class="card">
-  <h2 class="section-title">📊 Portfolio Summary</h2>
-  <div id="portfolio-summary"></div>
-</div>
-
-<!-- =================== TESCO BLOCK =================== -->
-<div class="card">
-  <h2 class="section-title">🛒 Tesco SIP & SAYE</h2>
-
-  <div id="tesco-sip"></div>
-  <div id="tesco-saye"></div>
-
-  <h3 class="section-title" style="margin-top:25px;">📤 ISA Migration Plan</h3>
-  <div id="tesco-migration"></div>
-</div>
-<!-- =================== IG ISA CAROUSEL =================== -->
-<div class="card">
-  <h2 class="section-title">📈 IG ISA Holdings</h2>
-  <div class="carousel" id="ig-carousel"></div>
-</div>
-
-<!-- =================== T212 ISA CAROUSEL =================== -->
-<div class="card">
-  <h2 class="section-title">📉 Trade212 ISA Holdings</h2>
-  <div class="carousel" id="t212-carousel"></div>
-</div>
-
-<!-- =================== NEXT 5 DIVIDENDS =================== -->
-<div class="card">
-  <h2 class="section-title">⏭️ Next 5 Dividends</h2>
-  <div id="next5"></div>
-</div>
-
-<!-- =================== UPCOMING DIVIDENDS =================== -->
-<div class="card">
-  <h2 class="section-title">📅 Upcoming Dividends</h2>
-  <div id="upcoming"></div>
-</div>
-
-<!-- =================== YEAR-TO-DATE =================== -->
-<div class="card">
-  <h2 class="section-title">💷 Year-To-Date Income</h2>
-  <div id="ytd"></div>
-</div>
-
-</div> <!-- end container -->
-
 
 <script>
 /* ================= PORTFOLIO SUMMARY ================= */
@@ -285,7 +270,6 @@ function renderPortfolio(sync){
 
   const annual = sync?.isa?.portfolio_summary?.annual_income_gbp || 0;
 
-  // Progress bar animations
   const igPercent = totalValue ? (igValue / totalValue * 100).toFixed(1) : 0;
   const t212Percent = totalValue ? (t212Value / totalValue * 100).toFixed(1) : 0;
 
@@ -308,7 +292,7 @@ function renderPortfolio(sync){
   `;
 }
 
-/* ================= IG CAROUSEL ================= */
+/* ================= IG CAROUSEL (UPDATED WITH EXPANSION PANEL) ================= */
 function renderIG(sync){
   const ig = sync?.isa?.holdings?.ig_isa || [];
   const el = document.getElementById("ig-carousel");
@@ -325,12 +309,60 @@ function renderIG(sync){
             £${h.gain_value.toFixed(2)}
           </span>
         </p>
+
+        <!-- ================= EXPANSION PANEL ================= -->
+        <div class="expander-toggle">▼ More</div>
+        <div class="expander-content">
+          <div class="expander-content-inner">
+
+            <div class="expander-row">
+              <div class="expander-label">Live Price</div>
+              <div class="expander-value">${h.live_price || "—"}</div>
+            </div>
+
+            <div class="expander-row">
+              <div class="expander-label">Annual Income</div>
+              <div class="expander-value">£${h.annual_income || "0.00"}</div>
+            </div>
+
+            <div class="expander-row">
+              <div class="expander-label">Dividend Yield</div>
+              <div class="expander-value">${h.dividend_yield || "—"}%</div>
+            </div>
+
+            <div class="expander-row">
+              <div class="expander-label">Gain %</div>
+              <div class="expander-value">${h.gain_percent || "0"}%</div>
+            </div>
+
+            <div class="expander-row">
+              <div class="expander-label">Fair Value</div>
+              <div class="expander-value">£${h.fair_value || "—"}</div>
+            </div>
+
+            <div class="expander-row">
+              <div class="expander-label">Discount %</div>
+              <div class="expander-value">${h.discount_percent || "—"}%</div>
+            </div>
+
+            <div class="expander-row">
+              <div class="expander-label">Status</div>
+              <div class="expander-value">${h.status || "—"}</div>
+            </div>
+
+            <div class="expander-row">
+              <div class="expander-label">Buy Strength</div>
+              <div class="expander-value">${h.buy_strength || "—"}</div>
+            </div>
+
+          </div>
+        </div>
       </div>
     `;
   });
 }
 
-/* ================= T212 CAROUSEL ================= */
+/* ================= T212 CAROUSEL (UPDATED WITH EXPANSION PANEL) ================= */
 function renderT212(sync){
   const t = sync?.isa?.holdings?.trade212_isa || [];
   const el = document.getElementById("t212-carousel");
@@ -347,6 +379,54 @@ function renderT212(sync){
             £${h.gain_value.toFixed(2)}
           </span>
         </p>
+
+        <!-- ================= EXPANSION PANEL ================= -->
+        <div class="expander-toggle">▼ More</div>
+        <div class="expander-content">
+          <div class="expander-content-inner">
+
+            <div class="expander-row">
+              <div class="expander-label">Live Price</div>
+              <div class="expander-value">${h.live_price || "—"}</div>
+            </div>
+
+            <div class="expander-row">
+              <div class="expander-label">Annual Income</div>
+              <div class="expander-value">£${h.annual_income || "0.00"}</div>
+            </div>
+
+            <div class="expander-row">
+              <div class="expander-label">Dividend Yield</div>
+              <div class="expander-value">${h.dividend_yield || "—"}%</div>
+            </div>
+
+            <div class="expander-row">
+              <div class="expander-label">Gain %</div>
+              <div class="expander-value">${h.gain_percent || "0"}%</div>
+            </div>
+
+            <div class="expander-row">
+              <div class="expander-label">Fair Value</div>
+              <div class="expander-value">£${h.fair_value || "—"}</div>
+            </div>
+
+            <div class="expander-row">
+              <div class="expander-label">Discount %</div>
+              <div class="expander-value">${h.discount_percent || "—"}%</div>
+            </div>
+
+            <div class="expander-row">
+              <div class="expander-label">Status</div>
+              <div class="expander-value">${h.status || "—"}</div>
+            </div>
+
+            <div class="expander-row">
+              <div class="expander-label">Buy Strength</div>
+              <div class="expander-value">${h.buy_strength || "—"}</div>
+            </div>
+
+          </div>
+        </div>
       </div>
     `;
   });
@@ -467,6 +547,24 @@ function renderTescoMigration(sync){
   html += `</ul>`;
   document.getElementById("tesco-migration").innerHTML = html;
 }
+</script>
+
+<!-- ===================== EXPANSION PANEL JAVASCRIPT ===================== -->
+<script>
+document.addEventListener("click", e => {
+  if(e.target.classList.contains("expander-toggle")){
+    const toggle = e.target;
+    const content = toggle.nextElementSibling;
+
+    if(content.style.maxHeight){
+      content.style.maxHeight = null;
+      toggle.textContent = "▼ More";
+    } else {
+      content.style.maxHeight = content.scrollHeight + "px";
+      toggle.textContent = "▲ Less";
+    }
+  }
+});
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
