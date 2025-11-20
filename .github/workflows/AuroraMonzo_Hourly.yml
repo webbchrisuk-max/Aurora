@@ -14,13 +14,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # =====================================================
+      # STEP 0 – Checkout repo
+      # =====================================================
       - name: 🧩 Checkout repository
         uses: actions/checkout@v4
 
       # =====================================================
-      # STEP 0.5 – Payday Rollover (before fetching anything)
+      # STEP 0.5 – Payday Rollover BEFORE anything else
       # =====================================================
-      - name: 📆 Rollover pay-period transactions if it's payday
+      - name: 📆 Rollover pay-period transactions if needed
         run: |
           node <<'EOF'
           const fs = require('fs');
@@ -36,77 +39,62 @@ jobs:
           }
 
           const state = readJson(statePath, null);
-          if (!state) {
-            console.log('No pay_period.json found, skipping rollover.');
-            process.exit(0);
-          }
+          if (!state) process.exit(0);
 
           const today = new Date();
           const todayYMD = today.toISOString().slice(0, 10);
-          const nextPayday = new Date(state.next_payday + 'T00:00:00Z');
+          const nextPayday = new Date(state.next_payday + "T00:00:00Z");
           const nextPaydayYMD = nextPayday.toISOString().slice(0, 10);
 
-          console.log('Today:', todayYMD, 'Next payday:', nextPaydayYMD);
+          if (todayYMD < nextPaydayYMD) process.exit(0);
 
-          if (todayYMD < nextPaydayYMD) {
-            console.log('Not payday yet, no rollover.');
-            process.exit(0);
-          }
+          console.log("🔄 Payday reached — rolling over.");
 
-          console.log('Payday reached or passed – performing rollover.');
+          const oldTx = readJson(txPath, []);
+          const archive = readJson(archivePath, []);
 
-          const currentTx = readJson(txPath, []);
-          const archiveTx = readJson(archivePath, []);
-
-          if (currentTx.length > 0) {
-            const newArchive = archiveTx.concat(currentTx);
-            fs.writeFileSync(archivePath, JSON.stringify(newArchive, null, 2));
-            console.log(`Archived ${currentTx.length} transactions.`);
-          } else {
-            console.log('No transactions to archive.');
+          if (oldTx.length > 0) {
+            const merged = archive.concat(oldTx);
+            fs.writeFileSync(archivePath, JSON.stringify(merged, null, 2));
+            console.log(`Archived ${oldTx.length} past-period transactions.`);
           }
 
           fs.writeFileSync(txPath, '[]\n');
-          console.log('transactions.json reset.');
 
-          const periodDays = state.period_length_days || 28;
-          const msPerDay = 86400000;
-
+          const ms = 86400000;
           const newStart = nextPayday;
-          const newNext = new Date(nextPayday.getTime() + periodDays * msPerDay);
+          const newNext = new Date(newStart.getTime() + (state.period_length_days || 28) * ms);
 
           state.current_period_start = newStart.toISOString().slice(0, 10);
           state.next_payday = newNext.toISOString().slice(0, 10);
 
           fs.writeFileSync(statePath, JSON.stringify(state, null, 2));
-          console.log('Updated pay_period.json:', state);
-
+          console.log("Updated pay_period.json:", state);
           EOF
 
-      # ==========================================================
-      # ABSOLUTE PROTECTION – DO NOT TOUCH AuroraSync.json
-      # ==========================================================
+      # =====================================================
+      # PROTECT AuroraSync.json at all times
+      # =====================================================
       - name: 🔒 Hard-lock AuroraSync.json
         run: |
           if [ -f "AuroraSync.json" ]; then
-            echo "🔐 AuroraSync.json detected — READ-ONLY mode enabled."
             chmod 444 AuroraSync.json
           fi
 
       # =====================================================
-      # STEP 1 – Fetch Sheets
+      # STEP 1 – Fetch Google Sheets
       # =====================================================
-      - name: 🟢 Fetch Transfers sheet
+      - name: 🟢 Fetch Transfers
         run: curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transfers" -o transfers.json
 
-      - name: 🟢 Fetch Transactions sheet
-        run: curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transactions" -o transactions.json
+      - name: 🟢 Fetch Transactions (RAW FULL SHEET)
+        run: curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transactions" -o transactions_raw.json
 
-      - name: 🟢 Fetch Direct Debits sheet
+      - name: 🟢 Fetch Direct Debits
         run: curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/DirectDebits" -o directdebits.json
 
       # =====================================================
-      # STEP 2 – State Tracking
+      # STEP 2 – Ensure State Folder
       # =====================================================
       - name: 📦 Ensure state folder
         run: |
@@ -116,82 +104,98 @@ jobs:
           fi
 
       # =====================================================
-      # STEP 3 – Apply NEW Transfers
+      # STEP 3 – Apply NEW Transfers (unchanged)
       # =====================================================
       - name: 🔄 Apply NEW Transfers
         run: |
           node <<'EOF'
           const fs = require('fs');
-
           const transfers = JSON.parse(fs.readFileSync('transfers.json', 'utf8'));
           const applied = JSON.parse(fs.readFileSync('.aurora/monzo_transfers_applied.json', 'utf8'));
 
-          const newTransfers = transfers.filter(t => t.UID && !applied.includes(t.UID));
+          const newOnes = transfers.filter(t => t.UID && !applied.includes(t.UID));
 
-          if (newTransfers.length > 0) {
-            newTransfers.forEach(t => applied.push(t.UID));
-            fs.writeFileSync('.aurora/monzo_transfers_applied.json', JSON.stringify(applied, null, 2));
-          }
+          newOnes.forEach(t => applied.push(t.UID));
+
+          fs.writeFileSync('.aurora/monzo_transfers_applied.json', JSON.stringify(applied, null, 2));
           EOF
 
       # =====================================================
-      # STEP 4 – Auto-tick Paid DDs
+      # STEP 3.5 – Merge RAW transactions into pay-period list
+      # =====================================================
+      - name: 🔍 Merge RAW into pay-period transactions
+        run: |
+          node <<'EOF'
+          const fs = require('fs');
+
+          const raw = JSON.parse(fs.readFileSync('transactions_raw.json', 'utf8'));
+          const current = JSON.parse(fs.readFileSync('transactions.json', 'utf8'));
+          const state = JSON.parse(fs.readFileSync('.aurora/pay_period.json', 'utf8'));
+
+          const start = new Date(state.current_period_start + "T00:00:00Z");
+
+          const filtered = raw.filter(t => {
+            const dateParts = t.Date.split('/');
+            const d = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}T00:00:00Z`);
+            return d >= start;
+          });
+
+          // Remove duplicates by Gmail ID OR by exact fields
+          const seen = new Set();
+          const merged = [];
+
+          [...current, ...filtered].forEach(t => {
+            const key = t["Gmail ID"] || JSON.stringify(t);
+            if (!seen.has(key)) {
+              seen.add(key);
+              merged.push(t);
+            }
+          });
+
+          fs.writeFileSync('transactions.json', JSON.stringify(merged, null, 2));
+          console.log(`Pay-period transactions now: ${merged.length}`);
+          EOF
+
+      # =====================================================
+      # STEP 4 – Auto-mark Paid DDs
       # =====================================================
       - name: 🔘 Auto-mark Paid DDs
         run: |
           node <<'EOF'
           const fs = require('fs');
-
           const dd = JSON.parse(fs.readFileSync('directdebits.json', 'utf8'));
           const tx = JSON.parse(fs.readFileSync('transactions.json', 'utf8'));
 
-          let updated = false;
-
           dd.forEach(item => {
             if (item.paid === true) return;
-
             const name = (item.payee || "").toLowerCase();
             const match = tx.find(t =>
               ((t.Merchant || "") + " " + (t.Description || "")).toLowerCase().includes(name)
             );
-
-            if (match) {
-              item.paid = true;
-              updated = true;
-            }
+            if (match) item.paid = true;
           });
 
-          if (updated) {
-            fs.writeFileSync('directdebits.json', JSON.stringify(dd, null, 2));
-          }
+          fs.writeFileSync('directdebits.json', JSON.stringify(dd, null, 2));
           EOF
 
       # =====================================================
-      # STEP 5 – SAFE UPDATE TO AuroraMonzo.json ONLY
+      # STEP 5 – Update AuroraMonzo.json (SAFE)
       # =====================================================
       - name: 🧿 Safe merge for AuroraMonzo.json
         run: |
           node <<'EOF'
           const fs = require('fs');
 
-          // Load existing AuroraMonzo.json EXACTLY as is
           let core = {};
           if (fs.existsSync('AuroraMonzo.json')) {
             core = JSON.parse(fs.readFileSync('AuroraMonzo.json', 'utf8'));
           }
 
-          // Ensure structure exists
           if (!core.monzo) core.monzo = {};
-          if (!core.monzo.account_core) core.monzo.account_core = {};
-          if (!core.monzo.account_core.pots) core.monzo.account_core.pots = {};
-
-          // Merge ONLY sheets
           core.monzo.transactions = JSON.parse(fs.readFileSync('transactions.json', 'utf8'));
           core.monzo.direct_debits = JSON.parse(fs.readFileSync('directdebits.json', 'utf8'));
           core.monzo.transfers = JSON.parse(fs.readFileSync('transfers.json', 'utf8'));
-          core.monzo.state = JSON.parse(fs.readFileSync('.aurora/monzo_transfers_applied.json', 'utf8'));
 
-          // DO NOT MODIFY ANY OTHER SECTIONS
           fs.writeFileSync('AuroraMonzo.json', JSON.stringify(core, null, 2));
           EOF
 
@@ -203,5 +207,5 @@ jobs:
           git config user.name "Aurora Automation"
           git config user.email "actions@github.com"
           git add .
-          git commit -m "SAFE Monzo Sync – Sheets updated, AuroraSync.json protected" || echo "No changes"
+          git commit -m "Aurora Monzo Sync – Pay-period merge + rollover" || echo "No changes"
           git push || echo "No changes"
