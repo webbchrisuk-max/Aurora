@@ -60,8 +60,6 @@ body{
   margin-bottom:24px;
   backdrop-filter:blur(10px);
   box-shadow:0 0 12px rgba(0,255,255,0.20);
-  position:relative;
-  overflow:hidden;
   transition:0.35s ease;
 }
 .card:hover{
@@ -70,15 +68,16 @@ body{
 }
 
 /* ===================== CAROUSEL ===================== */
+/* iPhone-optimised (default) */
 .carousel {
   display:flex;
   flex-direction:row;
   overflow-x:auto;
   scroll-snap-type:x mandatory;
   scroll-behavior:smooth;
-  gap:80px;
-  padding:45px 0 30px 20px;
-  scroll-padding-left:40px;
+  gap:78px;                     /* iPhone tiny sliver tuning */
+  padding:45px 0 30px 22px;     /* pushes first card slightly right */
+  scroll-padding-left:36px;     /* pulls snapped cards slightly left */
   -webkit-overflow-scrolling:touch;
 }
 .carousel::after {
@@ -86,9 +85,14 @@ body{
   flex:0 0 20px;
 }
 
+/* Hide scrollbar for premium look */
+.carousel::-webkit-scrollbar {
+  display:none;
+}
+
 /* ===================== HOLDING CARD ===================== */
 .holding-card {
-  flex:0 0 80%;
+  flex:0 0 80%;                /* iPhone perfect width */
   scroll-snap-align:start;
   background:rgba(255,255,255,0.07);
   border-radius:16px;
@@ -102,10 +106,10 @@ body{
   transform:scale(1.03);
 }
 
-/* ===================== EXPANSION PANEL ===================== */
+/* ===================== EXPANDER ===================== */
 .expander-toggle{
   margin-top:14px;
-  padding:8px 18px;
+  padding:10px 20px;
   display:inline-block;
   font-size:0.85rem;
   cursor:pointer;
@@ -116,8 +120,9 @@ body{
   background-size:400% 400%;
   animation:auroraDriftBtn 6s ease infinite;
 
-  box-shadow:0 0 12px rgba(0,255,255,0.6),
-             0 0 25px rgba(0,255,208,0.4);
+  box-shadow:
+    0 0 12px rgba(0,255,255,0.6),
+    0 0 25px rgba(0,255,208,0.4);
   color:#000;
   font-weight:700;
 }
@@ -147,13 +152,8 @@ body{
   margin-bottom:8px;
 }
 
-.expander-label{
-  color:var(--teal);
-}
-.expander-value{
-  color:var(--amber);
-  font-weight:700;
-}
+.expander-label{color:var(--teal);}
+.expander-value{color:var(--amber);font-weight:700;}
 
 /* ===================== DIVIDEND ITEMS ===================== */
 .dividend-item{
@@ -193,12 +193,13 @@ body{
 /* ===================== iPad Pro 12.9 FIX ===================== */
 @media (min-width: 1024px) {
   .carousel {
-    gap: 40px;
-    padding: 45px 0 30px 40px;
-    scroll-padding-left: 50px;
+    gap:100px;                   /* bigger gap → only tiny sliver remains */
+    padding:45px 0 30px 60px;    /* better first-card centering */
+    scroll-padding-left:70px;    /* centers snapped cards on iPad Pro */
   }
+
   .holding-card {
-    flex: 0 0 88%;
+    flex:0 0 86%;                /* wider card = smaller sliver */
   }
 }
 </style>
@@ -208,9 +209,10 @@ const AURORA_SYNC =
 "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json";
 
 async function loadJSON(url){
-  const res = await fetch(url + "?nocache=" + Date.now());
-  return res.json();
+  const r = await fetch(url + "?nocache=" + Date.now());
+  return r.json();
 }
+
 async function initAurora(){
   const sync = await loadJSON(AURORA_SYNC);
 
@@ -270,8 +272,8 @@ async function initAurora(){
   <div id="ytd"></div>
 </div>
 
-</div> <!-- END CONTAINER -->
-  <script>
+</div>
+<script>
 /* ================= PORTFOLIO SUMMARY ================= */
 function renderPortfolio(sync){
   const ig = sync?.isa?.holdings?.ig_isa || [];
@@ -285,13 +287,13 @@ function renderPortfolio(sync){
 
   document.getElementById("portfolio-summary").innerHTML = `
     <p><strong>IG ISA Value:</strong> £${igValue.toFixed(2)}</p>
-    <p><strong>T212 ISA Value:</strong> £${t212Value.toFixed(2)}</p>
-    <p><strong>Total Portfolio Value:</strong> £${totalValue.toFixed(2)}</p>
+    <p><strong>Trade212 ISA Value:</strong> £${t212Value.toFixed(2)}</p>
+    <p><strong>Total Portfolio:</strong> £${totalValue.toFixed(2)}</p>
     <p><strong>Projected Annual Income:</strong> £${annualIncome.toFixed(2)}</p>
   `;
 }
 
-/* ================= IG ISA CARDS ================= */
+/* ================= IG HOLDINGS ================= */
 function renderIG(sync){
   const ig = sync?.isa?.holdings?.ig_isa || [];
   const el = document.getElementById("ig-carousel");
@@ -304,7 +306,7 @@ function renderIG(sync){
         <p><strong>Shares:</strong> ${h.shares}</p>
         <p><strong>Value:</strong> £${Number(h.value).toFixed(2)}</p>
         <p><strong>Gain:</strong>
-          <span style="color:${h.gain_value >= 0 ? 'lime' : 'red'};">
+          <span style="color:${h.gain_value>=0 ? 'lime' : 'red'};">
             £${Number(h.gain_value).toFixed(2)}
           </span>
         </p>
@@ -312,22 +314,27 @@ function renderIG(sync){
         <div class="expander-toggle">Unfold Insights ▼</div>
         <div class="expander-content">
           <div class="expander-content-inner">
+
             <div class="expander-row">
               <div class="expander-label">Live Price</div>
               <div class="expander-value">£${Number(h.live_price).toFixed(2)}</div>
             </div>
+
             <div class="expander-row">
               <div class="expander-label">Annual Income</div>
               <div class="expander-value">£${Number(h.annual_income).toFixed(2)}</div>
             </div>
+
             <div class="expander-row">
               <div class="expander-label">Dividend Yield</div>
               <div class="expander-value">${Number(h.annual_div_yield).toFixed(2)}%</div>
             </div>
+
             <div class="expander-row">
               <div class="expander-label">Gain %</div>
               <div class="expander-value">${Number(h.gain_percentage).toFixed(2)}%</div>
             </div>
+
           </div>
         </div>
       </div>
@@ -335,7 +342,7 @@ function renderIG(sync){
   });
 }
 
-/* ================= T212 ISA CARDS ================= */
+/* ================= T212 HOLDINGS ================= */
 function renderT212(sync){
   const t = sync?.isa?.holdings?.trade212_isa || [];
   const el = document.getElementById("t212-carousel");
@@ -348,7 +355,7 @@ function renderT212(sync){
         <p><strong>Shares:</strong> ${h.shares}</p>
         <p><strong>Value:</strong> £${Number(h.value).toFixed(2)}</p>
         <p><strong>Gain:</strong>
-          <span style="color:${h.gain_value >= 0 ? 'lime' : 'red'};">
+          <span style="color:${h.gain_value>=0 ? 'lime' : 'red'};">
             £${Number(h.gain_value).toFixed(2)}
           </span>
         </p>
@@ -356,22 +363,27 @@ function renderT212(sync){
         <div class="expander-toggle">Unfold Insights ▼</div>
         <div class="expander-content">
           <div class="expander-content-inner">
+
             <div class="expander-row">
               <div class="expander-label">Live Price</div>
               <div class="expander-value">£${Number(h.live_price).toFixed(2)}</div>
             </div>
+
             <div class="expander-row">
               <div class="expander-label">Annual Income</div>
               <div class="expander-value">£${Number(h.annual_income).toFixed(2)}</div>
             </div>
+
             <div class="expander-row">
               <div class="expander-label">Dividend Yield</div>
               <div class="expander-value">${Number(h.annual_div_yield).toFixed(2)}%</div>
             </div>
+
             <div class="expander-row">
               <div class="expander-label">Gain %</div>
               <div class="expander-value">${Number(h.gain_percentage).toFixed(2)}%</div>
             </div>
+
           </div>
         </div>
       </div>
@@ -381,16 +393,19 @@ function renderT212(sync){
 
 /* ================= NEXT 5 DIVIDENDS ================= */
 function renderNextFive(sync){
-  const list = sync?.isa?.dividends?.next_five || [];
+  const next = sync?.isa?.dividends?.next_five || [];
+
   document.getElementById("next5").innerHTML =
-    list.map(d => `
+    next.map(d => `
       <div class="dividend-item">
         <div>
           <strong>${d.ticker}</strong><br>
           Ex: ${d.ex_div_date}<br>
           Pay: ${d.pay_date}
         </div>
-        <div style="font-size:18px;color:var(--cyan);">£${d.total_dividend.toFixed(2)}</div>
+        <div style="font-size:18px;color:var(--cyan);">
+          £${Number(d.total_dividend).toFixed(2)}
+        </div>
       </div>
     `).join("");
 }
@@ -405,7 +420,7 @@ function renderUpcoming(sync){
                     .slice(0,5);
 
   document.getElementById("upcoming").innerHTML =
-    future.map(d => `
+    future.map(d=>`
       <div class="dividend-item">
         <div>
           <strong>${d.ticker}</strong> — ${d.name}<br>
@@ -413,17 +428,19 @@ function renderUpcoming(sync){
           Pay: ${d.pay_date}<br>
           Status: ${d.status}
         </div>
-        <div style="font-size:18px;color:var(--teal);">£${d.total_dividend.toFixed(2)}</div>
+        <div style="font-size:18px;color:var(--teal);">
+          £${Number(d.total_dividend).toFixed(2)}
+        </div>
       </div>
     `).join("");
 }
 
-/* ================= YEAR TO DATE ================= */
+/* ================= YEAR-TO-DATE ================= */
 function renderYTD(sync){
   const totals = sync?.isa?.dividends?.monthly_totals || {};
   const year = new Date().getFullYear();
-
   let sum = 0;
+
   for(const [m,v] of Object.entries(totals)){
     if(m.startsWith(String(year))) sum += v;
   }
@@ -438,7 +455,7 @@ function renderYTD(sync){
 /* ================= TESCO ================= */
 function renderTesco(sync){
   const t = sync?.tesco?.summary;
-  if(!t){ document.getElementById("tesco-sip").innerHTML = "<p>No Tesco data.</p>"; return; }
+  if(!t){ document.getElementById("tesco-sip").innerHTML="<p>No Tesco data.</p>"; return; }
 
   document.getElementById("tesco-sip").innerHTML = `
     <div class="tesco-card">
@@ -448,7 +465,7 @@ function renderTesco(sync){
       <p><strong>Avg Cost:</strong> £${t.sip_average_cost.toFixed(2)}</p>
       <p><strong>Gain:</strong> £${t.sip_gain_gbp.toFixed(2)}</p>
     </div>`;
-    
+
   document.getElementById("tesco-saye").innerHTML = `
     <div class="tesco-card">
       <h3>💼 SAYE Plan</h3>
@@ -462,7 +479,7 @@ function renderTesco(sync){
 /* ================= TESCO MIGRATION ================= */
 function renderTescoMigration(sync){
   const p = sync?.tesco?.isa_migration_plan;
-  if(!p){ document.getElementById("tesco-migration").innerHTML = "<p>No data.</p>"; return; }
+  if(!p){ document.getElementById("tesco-migration").innerHTML="<p>No data.</p>"; return; }
 
   let html = `<p><strong>Maturity:</strong> ${p.maturity_date}</p><ul>`;
   for(const [yr,txt] of Object.entries(p.tax_years)){
