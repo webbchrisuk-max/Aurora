@@ -17,6 +17,72 @@ jobs:
       - name: 🧩 Checkout repository
         uses: actions/checkout@v4
 
+      # =====================================================
+      # STEP 0.5 – Payday Rollover (before fetching anything)
+      # =====================================================
+      - name: 📆 Rollover pay-period transactions if it's payday
+        run: |
+          node <<'EOF'
+          const fs = require('fs');
+          const path = require('path');
+
+          const statePath = path.join('.aurora', 'pay_period.json');
+          const txPath = 'transactions.json';
+          const archivePath = 'transactions_archive.json';
+
+          function readJson(p, fallback) {
+            try { return JSON.parse(fs.readFileSync(p, 'utf8')); }
+            catch { return fallback; }
+          }
+
+          const state = readJson(statePath, null);
+          if (!state) {
+            console.log('No pay_period.json found, skipping rollover.');
+            process.exit(0);
+          }
+
+          const today = new Date();
+          const todayYMD = today.toISOString().slice(0, 10);
+          const nextPayday = new Date(state.next_payday + 'T00:00:00Z');
+          const nextPaydayYMD = nextPayday.toISOString().slice(0, 10);
+
+          console.log('Today:', todayYMD, 'Next payday:', nextPaydayYMD);
+
+          if (todayYMD < nextPaydayYMD) {
+            console.log('Not payday yet, no rollover.');
+            process.exit(0);
+          }
+
+          console.log('Payday reached or passed – performing rollover.');
+
+          const currentTx = readJson(txPath, []);
+          const archiveTx = readJson(archivePath, []);
+
+          if (currentTx.length > 0) {
+            const newArchive = archiveTx.concat(currentTx);
+            fs.writeFileSync(archivePath, JSON.stringify(newArchive, null, 2));
+            console.log(`Archived ${currentTx.length} transactions.`);
+          } else {
+            console.log('No transactions to archive.');
+          }
+
+          fs.writeFileSync(txPath, '[]\n');
+          console.log('transactions.json reset.');
+
+          const periodDays = state.period_length_days || 28;
+          const msPerDay = 86400000;
+
+          const newStart = nextPayday;
+          const newNext = new Date(nextPayday.getTime() + periodDays * msPerDay);
+
+          state.current_period_start = newStart.toISOString().slice(0, 10);
+          state.next_payday = newNext.toISOString().slice(0, 10);
+
+          fs.writeFileSync(statePath, JSON.stringify(state, null, 2));
+          console.log('Updated pay_period.json:', state);
+
+          EOF
+
       # ==========================================================
       # ABSOLUTE PROTECTION – DO NOT TOUCH AuroraSync.json
       # ==========================================================
