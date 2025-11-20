@@ -70,28 +70,34 @@ body{
 }
 
 /* ===================== CAROUSEL FIX (NO PEEK) ===================== */
-.carousel{
+.carousel {
   display:flex;
+  flex-direction:row;
   overflow-x:auto;
   scroll-snap-type:x mandatory;
   scroll-behavior:smooth;
-  gap:18px;
-  padding:18px 10px;   /* ← important fix */
+  gap:80px;
+  padding:45px 0 30px 20px;
+  scroll-padding-left:40px;
   -webkit-overflow-scrolling:touch;
 }
-.carousel::after{ content:""; flex:0 0 5px; }
-
-.holding-card{
-  flex:0 0 88%;
-  margin-right:10px;
-  box-sizing:border-box;
+.carousel::after {
+  content:"";
+  flex:0 0 20px;
+}
+.holding-card {
+  flex:0 0 80%;
   scroll-snap-align:start;
-
   background:rgba(255,255,255,0.07);
   border-radius:16px;
   padding:18px;
+  text-align:left;
+  margin-top:10px;
   box-shadow:0 0 18px rgba(0,255,255,0.25);
-  transition:0.3s ease;
+  transition:transform .3s ease;
+}
+.holding-card:hover {
+  transform:scale(1.03);
 }
 .holding-card:hover{
   transform:scale(1.02);
