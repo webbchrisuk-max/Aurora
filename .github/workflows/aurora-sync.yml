@@ -2,7 +2,7 @@ name: Aurora ISA – Live Price Sync (Watchlist Powered)
 
 on:
   schedule:
-    - cron: "*/10 8-16 * * 1-5"   # every 10 minutes during market hours
+    - cron: "*/10 8-16 * * 1-5"
   workflow_dispatch:
 
 concurrency:
@@ -14,33 +14,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # =====================================================
-      # 1) CHECKOUT
-      # =====================================================
       - name: 🧩 Checkout repo
         uses: actions/checkout@v4
 
-      # =====================================================
-      # 2) FETCH HOLDINGS SHEET (Tickers + shares + book cost)
-      # =====================================================
+      # ==============================================
+      # 1) FETCH HOLDINGS SHEET
+      # ==============================================
       - name: 🟢 Fetch Holdings sheet
         run: |
           curl -s \
             "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Holdings" \
             -o holdings.json
 
-      # =====================================================
-      # 3) FETCH WATCHLIST.JSON (Has the live prices)
-      # =====================================================
-      - name: 🔵 Fetch Watchlist JSON
+      # ==============================================
+      # 2) FETCH WATCHLIST MASTER JSON
+      # ==============================================
+      - name: 🔵 Fetch Watchlist Master JSON
         run: |
           curl -s \
-            "https://webbchrisuk-max.github.io/watchlist.json" \
-            -o watchlist.json
+            "https://webbchrisuk-max.github.io/watchlist_master.json" \
+            -o watchlist_master.json
 
-      # =====================================================
-      # 4) UPDATE AURORASYNC.JSON WITH TICKERS + LIVE PRICES
-      # =====================================================
+      # ==============================================
+      # 3) APPLY PRICES INTO AURORASYNC.JSON
+      # ==============================================
       - name: 🔧 Apply Prices to ISA
         run: |
           node << 'EOF'
@@ -48,17 +45,16 @@ jobs:
 
           const auroraPath = "AuroraSync.json";
           const holdingsRaw = JSON.parse(fs.readFileSync("holdings.json", "utf8"));
-          const watchlist = JSON.parse(fs.readFileSync("watchlist.json", "utf8"));
+          const watchlist = JSON.parse(fs.readFileSync("watchlist_master.json", "utf8"));
           const aurora = JSON.parse(fs.readFileSync(auroraPath, "utf8"));
 
-          // Helper: find live price from watchlist
+          // FIND LIVE PRICE FROM MASTER
           function getPrice(ticker) {
             const w = watchlist.find(x => x.ticker?.toUpperCase() === ticker?.toUpperCase());
             if (!w) return 0;
-            return Number(w.live_price || 0);
+            return Number(w.liveprice || 0);   // <-- correct field
           }
 
-          // Reset ISA structure safely
           aurora.isa = aurora.isa || {};
           aurora.isa.holdings = { ig_isa: [], trade212_isa: [] };
 
@@ -91,23 +87,19 @@ jobs:
             if (row["account"] === "TRADE212") aurora.isa.holdings.trade212_isa.push(obj);
           });
 
-          // Save back
           fs.writeFileSync(auroraPath, JSON.stringify(aurora, null, 2));
           EOF
 
-      # =====================================================
-      # 5) COMMIT & PUSH
-      # =====================================================
+      # ==============================================
+      # 4) COMMIT & PUSH
+      # ==============================================
       - name: 📤 Commit and Push
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "Aurora Automation"
 
           git add .
-          git commit -m "🔄 ISA Updated with Live Prices (Watchlist Powered)" || echo "No changes to commit"
+          git commit -m "🔄 ISA Updated with Live Prices (Watchlist Master Powered)" || echo "No changes to commit"
 
-          # SAFE PULL that never errors
           git pull --rebase --autostash
-
-          # NOW push safely
           git push
