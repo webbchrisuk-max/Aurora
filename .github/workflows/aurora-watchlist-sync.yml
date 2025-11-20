@@ -1,51 +1,98 @@
-name: Aurora Watchlist – Live Prices Sync
+name: Aurora Watchlist – Unified Master Sync
 
 on:
   schedule:
-    - cron: "*/15 * * * *"      # every 15 mins
+    - cron: "*/15 * * * *"     # every 15 minutes
   workflow_dispatch:
 
 jobs:
-  sync_watchlist:
+  sync_watchlist_master:
     runs-on: ubuntu-latest
 
     steps:
+      # -------------------------------------------------------
+      # 1) Checkout Repository
+      # -------------------------------------------------------
       - name: 📦 Checkout Repo
         uses: actions/checkout@v4
 
-      - name: 🟢 Fetch Watchlist Sheet
+      # -------------------------------------------------------
+      # 2) Fetch Watchlist Sheet
+      # -------------------------------------------------------
+      - name: 🟢 Fetch WATCHLIST sheet
         run: |
           curl -s \
             "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Watchlist" \
             -o watchlist_raw.json
 
-      - name: 🔧 Convert + Clean JSON
+      # -------------------------------------------------------
+      # 3) Fetch Holdings Sheet
+      # -------------------------------------------------------
+      - name: 🟣 Fetch HOLDINGS sheet
+        run: |
+          curl -s \
+            "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Holdings" \
+            -o holdings_raw.json
+
+      # -------------------------------------------------------
+      # 4) Build Unified watchlist_master.json
+      # -------------------------------------------------------
+      - name: 🔧 Build Unified Master JSON
         run: |
           node << 'EOF'
           const fs = require("fs");
 
-          const raw = JSON.parse(fs.readFileSync("watchlist_raw.json","utf8"));
+          // Load sheets
+          const watchlist = JSON.parse(fs.readFileSync("watchlist_raw.json", "utf8"));
+          const holdings = JSON.parse(fs.readFileSync("holdings_raw.json", "utf8"));
 
-          // Clean up keys (remove emojis, symbols, etc)
-          const clean = raw.map(r => {
-            const cleaned = {};
-            for (const k of Object.keys(r)) {
-              cleaned[k.replace(/[^a-zA-Z0-9 %/]/g,"").trim()] = r[k];
+          // Clean keys (remove emojis, smart chip junk)
+          function clean(obj){
+            const out = {};
+            for(const k of Object.keys(obj)){
+              const key = k.replace(/[^a-zA-Z0-9 %/]/g,"").trim();
+              out[key] = obj[k];
             }
-            return cleaned;
+            return out;
+          }
+
+          const cleanWatchlist = watchlist.map(clean);
+
+          // Build map for fast lookup
+          const watchMap = {};
+          cleanWatchlist.forEach(w => {
+            const t = (w.ticker || w.Ticker || "").trim();
+            if(t) watchMap[t] = w;
           });
 
-          fs.writeFileSync("watchlist.json", JSON.stringify(clean, null, 2));
+          // Merge holdings → attach to the matching watchlist ticker
+          const master = cleanWatchlist.map(row => {
+            const t = (row.ticker || row.Ticker || "").trim();
+            const hold = holdings.find(h => h["ticker"] === t);
+
+            return {
+              ...row,
+              holdings: hold ? {
+                shares: hold["shares"],
+                book_cost: hold["book_cost"],
+                annual_dps: hold["annual_dividend_per_share"],
+                sector: hold["sector"]
+              } : null
+            };
+          });
+
+          // Save output
+          fs.writeFileSync("watchlist_master.json", JSON.stringify(master, null, 2));
           EOF
 
-      - name: 📤 Commit and Push Safely
+      # -------------------------------------------------------
+      # 5) Commit & Push
+      # -------------------------------------------------------
+      - name: 📤 Commit & Push
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "Aurora Automation"
 
-          git add watchlist.json
-          git add watchlist_raw.json
-
-          # prevent exit code 1 on "nothing to commit"
-          git commit -m "🔄 Updated Watchlist JSON (Live Prices)" || true
+          git add watchlist_master.json
+          git commit -m "🔄 Updated Unified Watchlist Master JSON"
           git push || true
