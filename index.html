@@ -69,7 +69,7 @@ body{
   box-shadow:0 0 22px rgba(0,255,255,0.55);
 }
 
-/* ===================== CAROUSEL FIX (NO PEEK) ===================== */
+/* ===================== CAROUSEL ===================== */
 .carousel {
   display:flex;
   flex-direction:row;
@@ -85,6 +85,8 @@ body{
   content:"";
   flex:0 0 20px;
 }
+
+/* ===================== HOLDING CARD ===================== */
 .holding-card {
   flex:0 0 80%;
   scroll-snap-align:start;
@@ -96,29 +98,8 @@ body{
   box-shadow:0 0 18px rgba(0,255,255,0.25);
   transition:transform .3s ease;
 }
-.holding-card:hover {
-  transform:scale(1.03);
-}
 .holding-card:hover{
-  transform:scale(1.02);
-  box-shadow:0 0 28px rgba(0,255,255,0.55);
-}
-
-/* ===================== DIVIDEND ITEMS ===================== */
-.dividend-item{
-  padding:12px 14px;
-  background:rgba(255,255,255,0.08);
-  border:1px solid rgba(255,255,255,0.15);
-  border-radius:14px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:10px;
-  transition:0.3s;
-}
-.dividend-item:hover{
-  transform:scale(1.02);
-  box-shadow:0 0 12px rgba(0,255,255,0.4);
+  transform:scale(1.03);
 }
 
 /* ===================== EXPANSION PANEL ===================== */
@@ -129,10 +110,8 @@ body{
   font-size:0.85rem;
   cursor:pointer;
   border-radius:30px;
-  text-align:center;
   user-select:none;
 
-  /* Aurora Drift Gradient */
   background:linear-gradient(120deg,#00eaff,#00ffd0,#00baff);
   background-size:400% 400%;
   animation:auroraDriftBtn 6s ease infinite;
@@ -176,6 +155,23 @@ body{
   font-weight:700;
 }
 
+/* ===================== DIVIDEND ITEMS ===================== */
+.dividend-item{
+  padding:12px 14px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.15);
+  border-radius:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+  transition:0.3s;
+}
+.dividend-item:hover{
+  transform:scale(1.02);
+  box-shadow:0 0 12px rgba(0,255,255,0.4);
+}
+
 /* ===================== PROGRESS BARS ===================== */
 .progress-wrap{margin:12px 0;}
 .progress-label{margin-bottom:4px;}
@@ -192,6 +188,18 @@ body{
 @keyframes fillAnim{
   from{width:0%;}
   to{width:var(--p);}
+}
+
+/* ===================== iPad Pro 12.9 FIX ===================== */
+@media (min-width: 1024px) {
+  .carousel {
+    gap: 40px;
+    padding: 45px 0 30px 40px;
+    scroll-padding-left: 50px;
+  }
+  .holding-card {
+    flex: 0 0 88%;
+  }
 }
 </style>
 
@@ -275,22 +283,9 @@ function renderPortfolio(sync){
 
   const annualIncome = sync?.isa?.portfolio_summary?.annual_income_gbp || 0;
 
-  const igPct = totalValue ? (igValue / totalValue * 100).toFixed(1) : 0;
-  const t212Pct = totalValue ? (t212Value / totalValue * 100).toFixed(1) : 0;
-
   document.getElementById("portfolio-summary").innerHTML = `
     <p><strong>IG ISA Value:</strong> £${igValue.toFixed(2)}</p>
-    <div class="progress-wrap">
-      <div class="progress-label">IG Share of Portfolio (${igPct}%)</div>
-      <div class="progress-bar"><div class="progress-fill" style="--p:${igPct}%;"></div></div>
-    </div>
-
-    <p><strong>Trade212 ISA Value:</strong> £${t212Value.toFixed(2)}</p>
-    <div class="progress-wrap">
-      <div class="progress-label">T212 Share of Portfolio (${t212Pct}%)</div>
-      <div class="progress-bar"><div class="progress-fill" style="--p:${t212Pct}%;"></div></div>
-    </div>
-
+    <p><strong>T212 ISA Value:</strong> £${t212Value.toFixed(2)}</p>
     <p><strong>Total Portfolio Value:</strong> £${totalValue.toFixed(2)}</p>
     <p><strong>Projected Annual Income:</strong> £${annualIncome.toFixed(2)}</p>
   `;
@@ -314,31 +309,25 @@ function renderIG(sync){
           </span>
         </p>
 
-        <!-- ================= EXPANSION PANEL ================= -->
         <div class="expander-toggle">Unfold Insights ▼</div>
         <div class="expander-content">
           <div class="expander-content-inner">
-
             <div class="expander-row">
               <div class="expander-label">Live Price</div>
               <div class="expander-value">£${Number(h.live_price).toFixed(2)}</div>
             </div>
-
             <div class="expander-row">
               <div class="expander-label">Annual Income</div>
               <div class="expander-value">£${Number(h.annual_income).toFixed(2)}</div>
             </div>
-
             <div class="expander-row">
               <div class="expander-label">Dividend Yield</div>
               <div class="expander-value">${Number(h.annual_div_yield).toFixed(2)}%</div>
             </div>
-
             <div class="expander-row">
               <div class="expander-label">Gain %</div>
               <div class="expander-value">${Number(h.gain_percentage).toFixed(2)}%</div>
             </div>
-
           </div>
         </div>
       </div>
@@ -346,7 +335,7 @@ function renderIG(sync){
   });
 }
 
-/* ================= T212 CARDS ================= */
+/* ================= T212 ISA CARDS ================= */
 function renderT212(sync){
   const t = sync?.isa?.holdings?.trade212_isa || [];
   const el = document.getElementById("t212-carousel");
@@ -364,31 +353,25 @@ function renderT212(sync){
           </span>
         </p>
 
-        <!-- ================= EXPANSION PANEL ================= -->
         <div class="expander-toggle">Unfold Insights ▼</div>
         <div class="expander-content">
           <div class="expander-content-inner">
-
             <div class="expander-row">
               <div class="expander-label">Live Price</div>
               <div class="expander-value">£${Number(h.live_price).toFixed(2)}</div>
             </div>
-
             <div class="expander-row">
               <div class="expander-label">Annual Income</div>
               <div class="expander-value">£${Number(h.annual_income).toFixed(2)}</div>
             </div>
-
             <div class="expander-row">
               <div class="expander-label">Dividend Yield</div>
               <div class="expander-value">${Number(h.annual_div_yield).toFixed(2)}%</div>
             </div>
-
             <div class="expander-row">
               <div class="expander-label">Gain %</div>
               <div class="expander-value">${Number(h.gain_percentage).toFixed(2)}%</div>
             </div>
-
           </div>
         </div>
       </div>
@@ -398,25 +381,18 @@ function renderT212(sync){
 
 /* ================= NEXT 5 DIVIDENDS ================= */
 function renderNextFive(sync){
-  const next = sync?.isa?.dividends?.next_five || [];
-  let html = "";
-
-  next.forEach(d=>{
-    html += `
+  const list = sync?.isa?.dividends?.next_five || [];
+  document.getElementById("next5").innerHTML =
+    list.map(d => `
       <div class="dividend-item">
         <div>
           <strong>${d.ticker}</strong><br>
           Ex: ${d.ex_div_date}<br>
           Pay: ${d.pay_date}
         </div>
-        <div style="font-size:18px;color:var(--cyan);">
-          £${Number(d.total_dividend).toFixed(2)}
-        </div>
+        <div style="font-size:18px;color:var(--cyan);">£${d.total_dividend.toFixed(2)}</div>
       </div>
-    `;
-  });
-
-  document.getElementById("next5").innerHTML = html;
+    `).join("");
 }
 
 /* ================= UPCOMING DIVIDENDS ================= */
@@ -425,13 +401,11 @@ function renderUpcoming(sync){
   const today = new Date();
 
   const future = all.filter(d => new Date(d.ex_div_date) >= today)
-                    .sort((a,b)=> new Date(a.ex_div_date)-new Date(b.ex_div_date))
+                    .sort((a,b)=>new Date(a.ex_div_date)-new Date(b.ex_div_date))
                     .slice(0,5);
 
-  let html = "";
-
-  future.forEach(d=>{
-    html += `
+  document.getElementById("upcoming").innerHTML =
+    future.map(d => `
       <div class="dividend-item">
         <div>
           <strong>${d.ticker}</strong> — ${d.name}<br>
@@ -439,25 +413,20 @@ function renderUpcoming(sync){
           Pay: ${d.pay_date}<br>
           Status: ${d.status}
         </div>
-        <div style="font-size:18px;color:var(--teal);">
-          £${Number(d.total_dividend).toFixed(2)}
-        </div>
+        <div style="font-size:18px;color:var(--teal);">£${d.total_dividend.toFixed(2)}</div>
       </div>
-    `;
-  });
-
-  document.getElementById("upcoming").innerHTML = html;
+    `).join("");
 }
 
-/* ================= YEAR-TO-DATE ================= */
+/* ================= YEAR TO DATE ================= */
 function renderYTD(sync){
   const totals = sync?.isa?.dividends?.monthly_totals || {};
   const year = new Date().getFullYear();
 
   let sum = 0;
-  Object.entries(totals).forEach(([month,val])=>{
-    if(month.startsWith(String(year))) sum += val;
-  });
+  for(const [m,v] of Object.entries(totals)){
+    if(m.startsWith(String(year))) sum += v;
+  }
 
   document.getElementById("ytd").innerHTML = `
     <h3 style="text-align:center;font-size:26px;text-shadow:0 0 12px var(--cyan);">
@@ -466,13 +435,10 @@ function renderYTD(sync){
   `;
 }
 
-/* ================= TESCO (SIP + SAYE) ================= */
+/* ================= TESCO ================= */
 function renderTesco(sync){
   const t = sync?.tesco?.summary;
-  if(!t){
-    document.getElementById("tesco-sip").innerHTML = "<p>No Tesco data.</p>";
-    return;
-  }
+  if(!t){ document.getElementById("tesco-sip").innerHTML = "<p>No Tesco data.</p>"; return; }
 
   document.getElementById("tesco-sip").innerHTML = `
     <div class="tesco-card">
@@ -481,9 +447,8 @@ function renderTesco(sync){
       <p><strong>Value:</strong> £${t.sip_value_gbp.toFixed(2)}</p>
       <p><strong>Avg Cost:</strong> £${t.sip_average_cost.toFixed(2)}</p>
       <p><strong>Gain:</strong> £${t.sip_gain_gbp.toFixed(2)}</p>
-    </div>
-  `;
-
+    </div>`;
+    
   document.getElementById("tesco-saye").innerHTML = `
     <div class="tesco-card">
       <h3>💼 SAYE Plan</h3>
@@ -491,30 +456,23 @@ function renderTesco(sync){
       <p><strong>Option Price:</strong> £${t.saye_option_price.toFixed(2)}</p>
       <p><strong>Current Value:</strong> £${t.saye_current_value_gbp.toFixed(2)}</p>
       <p><strong>Potential Gain:</strong> £${t.saye_potential_gain_gbp.toFixed(2)}</p>
-    </div>
-  `;
+    </div>`;
 }
 
-/* ================= TESCO MIGRATION PLAN ================= */
+/* ================= TESCO MIGRATION ================= */
 function renderTescoMigration(sync){
   const p = sync?.tesco?.isa_migration_plan;
-  if(!p){
-    document.getElementById("tesco-migration").innerHTML = "<p>No migration data.</p>";
-    return;
-  }
+  if(!p){ document.getElementById("tesco-migration").innerHTML = "<p>No data.</p>"; return; }
 
   let html = `<p><strong>Maturity:</strong> ${p.maturity_date}</p><ul>`;
-
-  Object.entries(p.tax_years).forEach(([yr,data])=>{
-    html += `<li><strong>${yr.replace("_","/")}:</strong> ${data}</li>`;
-  });
-
+  for(const [yr,txt] of Object.entries(p.tax_years)){
+    html += `<li><strong>${yr.replace("_","/")}:</strong> ${txt}</li>`;
+  }
   html += `</ul>`;
-
   document.getElementById("tesco-migration").innerHTML = html;
 }
 
-/* ================= EXPANSION PANEL LOGIC ================= */
+/* ================= EXPANDER LOGIC ================= */
 document.addEventListener("click", e => {
   if(!e.target.classList.contains("expander-toggle")) return;
 
