@@ -10,7 +10,6 @@
 <style>
 :root{
   --cyan:#00eaff;
-  --coral:#ff7f50;
   --teal:#00ffd0;
   --amber:#ffb347;
 
@@ -19,18 +18,19 @@
   --bg3:#001a33;
 }
 
-/* Background */
+/* ===================== GLOBAL BACKGROUND ===================== */
 body{
-  margin:0; padding:0;
+  margin:0;
+  padding:0;
   font-family:'Orbitron',sans-serif;
   background:linear-gradient(120deg,var(--bg1),var(--bg2),var(--bg3));
   background-size:600% 600%;
-  animation:auroraDrift 40s ease infinite;
+  animation:auroraBG 40s ease infinite;
   color:#fff;
   overflow-x:hidden;
 }
 
-@keyframes auroraDrift{
+@keyframes auroraBG{
   0%{background-position:0% 50%;}
   50%{background-position:100% 50%;}
   100%{background-position:0% 50%;}
@@ -49,7 +49,6 @@ body{
   text-align:center;
   margin-top:35px;
   text-shadow:0 0 15px var(--cyan);
-  letter-spacing:1px;
 }
 
 /* ===================== CARD ===================== */
@@ -60,78 +59,44 @@ body{
   padding:20px;
   margin-bottom:24px;
   backdrop-filter:blur(10px);
-  box-shadow:0 0 12px rgba(0,255,255,0.18);
+  box-shadow:0 0 12px rgba(0,255,255,0.20);
   position:relative;
   overflow:hidden;
   transition:0.35s ease;
 }
 .card:hover{
-  box-shadow:0 0 22px rgba(0,255,255,0.55);
   transform:translateY(-3px);
+  box-shadow:0 0 22px rgba(0,255,255,0.55);
 }
 
-/* ===================== EXPANSION PANELS ===================== */
-.expander-toggle {
-  cursor:pointer;
-  margin-top:10px;
-  font-size:0.85rem;
-  color:var(--cyan);
-  text-align:right;
-}
-.expander-content {
-  overflow:hidden;
-  max-height:0;
-  transition:max-height 0.35s ease-in-out;
-}
-.expander-content-inner {
-  margin-top:10px;
-  border-top:1px solid rgba(255,255,255,0.15);
-  padding-top:10px;
-  font-size:0.80rem;
-  line-height:1.35rem;
-}
-.expander-row {
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:6px;
-}
-.expander-label {
-  color:var(--teal);
-}
-.expander-value {
-  color:var(--amber);
-  font-weight:700;
-}
-
-/* ===================== CAROUSELS ===================== */
+/* ===================== CAROUSEL FIX (NO PEEK) ===================== */
 .carousel{
   display:flex;
   overflow-x:auto;
   scroll-snap-type:x mandatory;
   scroll-behavior:smooth;
-  gap:22px;
-  padding:18px 0 18px 10px;
+  padding:18px 0 18px 0;
+  gap:18px;
   -webkit-overflow-scrolling:touch;
 }
-.carousel::after{
-  content:""; flex:0 0 15px;
-}
+.carousel::after{ content:""; flex:0 0 5px; }
 
 .holding-card{
-  flex:0 0 80%;
+  flex:0 0 100%;   /* PERFECT for iPhone + iPad */
+  box-sizing:border-box;
   scroll-snap-align:start;
   background:rgba(255,255,255,0.07);
   border-radius:16px;
   padding:18px;
-  box-shadow:0 0 15px rgba(0,255,255,0.22);
+  box-shadow:0 0 18px rgba(0,255,255,0.25);
   transition:0.3s ease;
 }
 .holding-card:hover{
-  transform:scale(1.03);
-  box-shadow:0 0 25px rgba(0,255,255,0.58);
+  transform:scale(1.02);
+  box-shadow:0 0 28px rgba(0,255,255,0.55);
 }
 
-/* Dividend cards */
+/* ===================== DIVIDEND ITEMS ===================== */
 .dividend-item{
   padding:12px 14px;
   background:rgba(255,255,255,0.08);
@@ -141,7 +106,6 @@ body{
   justify-content:space-between;
   align-items:center;
   margin-bottom:10px;
-  font-size:14px;
   transition:0.3s;
 }
 .dividend-item:hover{
@@ -149,36 +113,78 @@ body{
   box-shadow:0 0 12px rgba(0,255,255,0.4);
 }
 
-/* Tesco cards */
-.tesco-card{
-  background:rgba(255,255,255,0.08);
-  border:1px solid rgba(0,255,255,0.30);
-  border-radius:16px;
-  padding:18px;
-  margin-bottom:15px;
-  box-shadow:0 0 15px rgba(0,255,200,0.25);
+/* ===================== EXPANSION PANEL ===================== */
+.expander-toggle{
+  margin-top:14px;
+  padding:8px 18px;
+  display:inline-block;
+  font-size:0.85rem;
+  cursor:pointer;
+  border-radius:30px;
+  text-align:center;
+  user-select:none;
+
+  /* Aurora Drift Gradient */
+  background:linear-gradient(120deg,#00eaff,#00ffd0,#00baff);
+  background-size:400% 400%;
+  animation:auroraDriftBtn 6s ease infinite;
+
+  box-shadow:0 0 12px rgba(0,255,255,0.6),
+             0 0 25px rgba(0,255,208,0.4);
+  color:#000;
+  font-weight:700;
 }
 
-/* Progress bars */
-.progress-wrap{margin:12px 0;}
-.progress-label{font-size:14px;margin-bottom:4px;}
-.progress-bar{
-  width:100%;height:10px;
-  background:rgba(255,255,255,0.12);
-  border-radius:10px;
+@keyframes auroraDriftBtn{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+
+.expander-content{
   overflow:hidden;
+  max-height:0;
+  transition:max-height 0.35s ease-in-out;
+}
+
+.expander-content-inner{
+  margin-top:12px;
+  border-top:1px solid rgba(255,255,255,0.15);
+  padding-top:12px;
+  font-size:0.82rem;
+}
+
+.expander-row{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:8px;
+}
+
+.expander-label{
+  color:var(--teal);
+}
+.expander-value{
+  color:var(--amber);
+  font-weight:700;
+}
+
+/* ===================== PROGRESS BARS ===================== */
+.progress-wrap{margin:12px 0;}
+.progress-label{margin-bottom:4px;}
+.progress-bar{
+  width:100%; height:10px;
+  background:rgba(255,255,255,0.12);
+  border-radius:10px; overflow:hidden;
 }
 .progress-fill{
-  height:100%;width:0%;
+  height:100%; width:0%;
   background:linear-gradient(90deg,var(--cyan),var(--teal));
-  box-shadow:0 0 10px rgba(0,255,255,0.8);
   animation:fillAnim 1.8s ease forwards;
 }
 @keyframes fillAnim{
   from{width:0%;}
   to{width:var(--p);}
 }
-
 </style>
 
 <script>
@@ -186,10 +192,9 @@ const AURORA_SYNC =
 "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/refs/heads/main/AuroraSync.json";
 
 async function loadJSON(url){
-  const r = await fetch(url + "?nocache=" + Date.now());
-  return await r.json();
+  const res = await fetch(url + "?nocache=" + Date.now());
+  return res.json();
 }
-
 async function initAurora(){
   const sync = await loadJSON(AURORA_SYNC);
 
@@ -206,7 +211,6 @@ async function initAurora(){
 </head>
 
 <body onload="initAurora()">
-
 <div class="container">
 
 <h1 class="section-title">🌌 Aurora ISA Tracker – Cinematic Edition</h1>
@@ -254,38 +258,37 @@ async function initAurora(){
   <script>
 /* ================= PORTFOLIO SUMMARY ================= */
 function renderPortfolio(sync){
-  const igHoldings = sync?.isa?.holdings?.ig_isa || [];
-  const t212Holdings = sync?.isa?.holdings?.trade212_isa || [];
+  const ig = sync?.isa?.holdings?.ig_isa || [];
+  const t212 = sync?.isa?.holdings?.trade212_isa || [];
 
-  let igValue = igHoldings.reduce((s,h)=>s+(Number(h.value)||0),0);
-  let t212Value = t212Holdings.reduce((s,h)=>s+(Number(h.value)||0),0);
+  let igValue = ig.reduce((s,h)=>s+(Number(h.value)||0),0);
+  let t212Value = t212.reduce((s,h)=>s+(Number(h.value)||0),0);
   let totalValue = igValue + t212Value;
 
-  const annual = sync?.isa?.portfolio_summary?.annual_income_gbp || 0;
+  const annualIncome = sync?.isa?.portfolio_summary?.annual_income_gbp || 0;
 
-  const igPercent = totalValue ? (igValue / totalValue * 100).toFixed(1) : 0;
-  const t212Percent = totalValue ? (t212Value / totalValue * 100).toFixed(1) : 0;
+  const igPct = totalValue ? (igValue / totalValue * 100).toFixed(1) : 0;
+  const t212Pct = totalValue ? (t212Value / totalValue * 100).toFixed(1) : 0;
 
   document.getElementById("portfolio-summary").innerHTML = `
     <p><strong>IG ISA Value:</strong> £${igValue.toFixed(2)}</p>
     <div class="progress-wrap">
-      <div class="progress-label">IG Share of Portfolio (${igPercent}%)</div>
-      <div class="progress-bar"><div class="progress-fill" style="--p:${igPercent}%;"></div></div>
+      <div class="progress-label">IG Share of Portfolio (${igPct}%)</div>
+      <div class="progress-bar"><div class="progress-fill" style="--p:${igPct}%;"></div></div>
     </div>
 
     <p><strong>Trade212 ISA Value:</strong> £${t212Value.toFixed(2)}</p>
     <div class="progress-wrap">
-      <div class="progress-label">T212 Share of Portfolio (${t212Percent}%)</div>
-      <div class="progress-bar"><div class="progress-fill" style="--p:${t212Percent}%;"></div></div>
+      <div class="progress-label">T212 Share of Portfolio (${t212Pct}%)</div>
+      <div class="progress-bar"><div class="progress-fill" style="--p:${t212Pct}%;"></div></div>
     </div>
 
     <p><strong>Total Portfolio Value:</strong> £${totalValue.toFixed(2)}</p>
-
-    <p><strong>Projected Annual Income:</strong> £${annual.toFixed(2)}</p>
+    <p><strong>Projected Annual Income:</strong> £${annualIncome.toFixed(2)}</p>
   `;
 }
 
-/* ================= IG CAROUSEL (WITH EXPANSION PANEL) ================= */
+/* ================= IG ISA CARDS ================= */
 function renderIG(sync){
   const ig = sync?.isa?.holdings?.ig_isa || [];
   const el = document.getElementById("ig-carousel");
@@ -298,54 +301,34 @@ function renderIG(sync){
         <p><strong>Shares:</strong> ${h.shares}</p>
         <p><strong>Value:</strong> £${Number(h.value).toFixed(2)}</p>
         <p><strong>Gain:</strong>
-          <span style="color:${h.gain_value>=0 ? 'lime' : 'red'};">
-            £${h.gain_value.toFixed(2)}
+          <span style="color:${h.gain_value >= 0 ? 'lime' : 'red'};">
+            £${Number(h.gain_value).toFixed(2)}
           </span>
         </p>
 
-        <!-- EXPANSION PANEL -->
-        <div class="expander-toggle">▼ More</div>
+        <!-- ================= EXPANSION PANEL ================= -->
+        <div class="expander-toggle">Unfold Insights ▼</div>
         <div class="expander-content">
           <div class="expander-content-inner">
 
             <div class="expander-row">
               <div class="expander-label">Live Price</div>
-              <div class="expander-value">${h.live_price ?? "—"}</div>
+              <div class="expander-value">£${Number(h.live_price).toFixed(2)}</div>
             </div>
 
             <div class="expander-row">
               <div class="expander-label">Annual Income</div>
-              <div class="expander-value">£${h.annual_income ?? "0.00"}</div>
+              <div class="expander-value">£${Number(h.annual_income).toFixed(2)}</div>
             </div>
 
             <div class="expander-row">
               <div class="expander-label">Dividend Yield</div>
-              <div class="expander-value">${h.dividend_yield ?? "—"}%</div>
+              <div class="expander-value">${Number(h.annual_div_yield).toFixed(2)}%</div>
             </div>
 
             <div class="expander-row">
               <div class="expander-label">Gain %</div>
-              <div class="expander-value">${h.gain_percent ?? "0"}%</div>
-            </div>
-
-            <div class="expander-row">
-              <div class="expander-label">Fair Value</div>
-              <div class="expander-value">£${h.fair_value ?? "—"}</div>
-            </div>
-
-            <div class="expander-row">
-              <div class="expander-label">Discount %</div>
-              <div class="expander-value">${h.discount_percent ?? "—"}%</div>
-            </div>
-
-            <div class="expander-row">
-              <div class="expander-label">Status</div>
-              <div class="expander-value">${h.status ?? "—"}</div>
-            </div>
-
-            <div class="expander-row">
-              <div class="expander-label">Buy Strength</div>
-              <div class="expander-value">${h.buy_strength ?? "—"}</div>
+              <div class="expander-value">${Number(h.gain_percentage).toFixed(2)}%</div>
             </div>
 
           </div>
@@ -355,7 +338,7 @@ function renderIG(sync){
   });
 }
 
-/* ================= T212 CAROUSEL (WITH EXPANSION PANEL) ================= */
+/* ================= T212 CARDS ================= */
 function renderT212(sync){
   const t = sync?.isa?.holdings?.trade212_isa || [];
   const el = document.getElementById("t212-carousel");
@@ -368,54 +351,34 @@ function renderT212(sync){
         <p><strong>Shares:</strong> ${h.shares}</p>
         <p><strong>Value:</strong> £${Number(h.value).toFixed(2)}</p>
         <p><strong>Gain:</strong>
-          <span style="color:${h.gain_value>=0 ? 'lime' : 'red'};">
-            £${h.gain_value.toFixed(2)}
+          <span style="color:${h.gain_value >= 0 ? 'lime' : 'red'};">
+            £${Number(h.gain_value).toFixed(2)}
           </span>
         </p>
 
-        <!-- EXPANSION PANEL -->
-        <div class="expander-toggle">▼ More</div>
+        <!-- ================= EXPANSION PANEL ================= -->
+        <div class="expander-toggle">Unfold Insights ▼</div>
         <div class="expander-content">
           <div class="expander-content-inner">
 
             <div class="expander-row">
               <div class="expander-label">Live Price</div>
-              <div class="expander-value">${h.live_price ?? "—"}</div>
+              <div class="expander-value">£${Number(h.live_price).toFixed(2)}</div>
             </div>
 
             <div class="expander-row">
               <div class="expander-label">Annual Income</div>
-              <div class="expander-value">£${h.annual_income ?? "0.00"}</div>
+              <div class="expander-value">£${Number(h.annual_income).toFixed(2)}</div>
             </div>
 
             <div class="expander-row">
               <div class="expander-label">Dividend Yield</div>
-              <div class="expander-value">${h.dividend_yield ?? "—"}%</div>
+              <div class="expander-value">${Number(h.annual_div_yield).toFixed(2)}%</div>
             </div>
 
             <div class="expander-row">
               <div class="expander-label">Gain %</div>
-              <div class="expander-value">${h.gain_percent ?? "0"}%</div>
-            </div>
-
-            <div class="expander-row">
-              <div class="expander-label">Fair Value</div>
-              <div class="expander-value">£${h.fair_value ?? "—"}</div>
-            </div>
-
-            <div class="expander-row">
-              <div class="expander-label">Discount %</div>
-              <div class="expander-value">${h.discount_percent ?? "—"}%</div>
-            </div>
-
-            <div class="expander-row">
-              <div class="expander-label">Status</div>
-              <div class="expander-value">${h.status ?? "—"}</div>
-            </div>
-
-            <div class="expander-row">
-              <div class="expander-label">Buy Strength</div>
-              <div class="expander-value">${h.buy_strength ?? "—"}</div>
+              <div class="expander-value">${Number(h.gain_percentage).toFixed(2)}%</div>
             </div>
 
           </div>
@@ -438,7 +401,7 @@ function renderNextFive(sync){
           Ex: ${d.ex_div_date}<br>
           Pay: ${d.pay_date}
         </div>
-        <div style="font-size:18px; color:var(--cyan);">
+        <div style="font-size:18px;color:var(--cyan);">
           £${Number(d.total_dividend).toFixed(2)}
         </div>
       </div>
@@ -453,10 +416,9 @@ function renderUpcoming(sync){
   const all = sync?.isa?.dividends?.upcoming || [];
   const today = new Date();
 
-  const future = all
-    .filter(d => new Date(d.ex_div_date) >= today)
-    .sort((a,b)=> new Date(a.ex_div_date) - new Date(b.ex_div_date))
-    .slice(0,5);
+  const future = all.filter(d => new Date(d.ex_div_date) >= today)
+                    .sort((a,b)=> new Date(a.ex_div_date)-new Date(b.ex_div_date))
+                    .slice(0,5);
 
   let html = "";
 
@@ -469,7 +431,7 @@ function renderUpcoming(sync){
           Pay: ${d.pay_date}<br>
           Status: ${d.status}
         </div>
-        <div style="font-size:18px; color:var(--teal);">
+        <div style="font-size:18px;color:var(--teal);">
           £${Number(d.total_dividend).toFixed(2)}
         </div>
       </div>
@@ -483,16 +445,17 @@ function renderUpcoming(sync){
 function renderYTD(sync){
   const totals = sync?.isa?.dividends?.monthly_totals || {};
   const year = new Date().getFullYear();
-  let sum = 0;
 
-  Object.entries(totals).forEach(([m,v])=>{
-    if(m.startsWith(String(year))) sum += v;
+  let sum = 0;
+  Object.entries(totals).forEach(([month,val])=>{
+    if(month.startsWith(String(year))) sum += val;
   });
 
   document.getElementById("ytd").innerHTML = `
-    <h3 style="text-align:center; font-size:26px; text-shadow:0 0 12px var(--cyan);">
+    <h3 style="text-align:center;font-size:26px;text-shadow:0 0 12px var(--cyan);">
       £${sum.toFixed(2)}
-    </h3>`;
+    </h3>
+  `;
 }
 
 /* ================= TESCO (SIP + SAYE) ================= */
@@ -534,34 +497,32 @@ function renderTescoMigration(sync){
 
   let html = `<p><strong>Maturity:</strong> ${p.maturity_date}</p><ul>`;
 
-  Object.entries(p.tax_years).forEach(([yr,txt])=>{
-    html += `<li><strong>${yr.replace("_","/")}:</strong> ${txt}</li>`;
+  Object.entries(p.tax_years).forEach(([yr,data])=>{
+    html += `<li><strong>${yr.replace("_","/")}:</strong> ${data}</li>`;
   });
 
   html += `</ul>`;
+
   document.getElementById("tesco-migration").innerHTML = html;
 }
-</script>
 
-<!-- ===================== EXPANSION PANEL LOGIC ===================== -->
-<script>
+/* ================= EXPANSION PANEL LOGIC ================= */
 document.addEventListener("click", e => {
-  if(e.target.classList.contains("expander-toggle")){
-    const toggle = e.target;
-    const content = toggle.nextElementSibling;
+  if(!e.target.classList.contains("expander-toggle")) return;
 
-    if(content.style.maxHeight){
-      content.style.maxHeight = null;
-      toggle.textContent = "▼ More";
-    } else {
-      content.style.maxHeight = content.scrollHeight + "px";
-      toggle.textContent = "▲ Less";
-    }
+  const toggle = e.target;
+  const content = toggle.nextElementSibling;
+
+  if(content.style.maxHeight){
+    content.style.maxHeight = null;
+    toggle.textContent = "Unfold Insights ▼";
+  } else {
+    content.style.maxHeight = content.scrollHeight + "px";
+    toggle.textContent = "Fold Insights ▲";
   }
 });
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 </body>
 </html>
