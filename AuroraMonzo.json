@@ -456,7 +456,7 @@
         "Category": "Groceries",
         "Processed": "TRUE",
         "Exclude From Spend": "FALSE",
-        "Gmail ID": "19a6d1055210ab2d"
+        "GMail ID": "19a6d1055210ab2d"
       },
       {
         "Date": "10/11/2025",
@@ -469,7 +469,7 @@
         "Category": "Groceries",
         "Processed": "TRUE",
         "Exclude From Spend": "FALSE",
-        "Gmail ID": "19a6e53b056fb9a2"
+        "GMail ID": "19a6e53b056fb9a2"
       },
       {
         "Date": "08/11/2025",
@@ -1061,7 +1061,7 @@
       },
       {
         "Date": "18/11/2025",
-        "Time": "18:34:42",
+        "Time": "18:42:42",
         "Merchant": "Uber Transport",
         "Amount (£)": "7.97",
         "Type": "Debit",
@@ -1097,6 +1097,32 @@
         "Processed": "TRUE",
         "Exclude From Spend": "",
         "Gmail ID": "19a9849fd102b005"
+      },
+      {
+        "Date": "10/11/2025",
+        "Time": "09:19:00",
+        "Merchant": "One Stop",
+        "Amount (£)": "3.60",
+        "Type": "Debit",
+        "Source": "IFTTT",
+        "Email Subject": "I just spent £ 3.60 at One Stop Groceries November 10, 2025 at 09:19AM",
+        "Category": "Groceries",
+        "Processed": "TRUE",
+        "Exclude From Spend": "FALSE",
+        "Gmail ID": "19a6d1055210ab2d"
+      },
+      {
+        "Date": "10/11/2025",
+        "Time": "15:12:00",
+        "Merchant": "Costcutter Rugby LTD",
+        "Amount (£)": "4.94",
+        "Type": "Debit",
+        "Source": "IFTTT",
+        "Email Subject": "I just spent £ 4.94 at Costcutter Rugby LTD Groceries November 10, 2025 at 03:12PM",
+        "Category": "Groceries",
+        "Processed": "TRUE",
+        "Exclude From Spend": "FALSE",
+        "Gmail ID": "19a6e53b056fb9a2"
       }
     ],
     "transfers": [
