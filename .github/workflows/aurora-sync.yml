@@ -27,12 +27,12 @@ jobs:
             -o holdings.json
 
       # ==============================================
-      # 2) FETCH WATCHLIST MASTER JSON
+      # 2) FETCH WATCHLIST MASTER JSON (RAW!)
       # ==============================================
       - name: 🔵 Fetch Watchlist Master JSON
         run: |
           curl -s \
-            "https://webbchrisuk-max.github.io/watchlist_master.json" \
+            "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/main/watchlist_master.json" \
             -o watchlist_master.json
 
       # ==============================================
@@ -52,7 +52,7 @@ jobs:
           function getPrice(ticker) {
             const w = watchlist.find(x => x.ticker?.toUpperCase() === ticker?.toUpperCase());
             if (!w) return 0;
-            return Number(w.liveprice || 0);   // <-- correct field
+            return Number(w.liveprice || w.live_price || 0);
           }
 
           aurora.isa = aurora.isa || {};
