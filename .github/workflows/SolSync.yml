@@ -118,12 +118,17 @@ jobs:
       # ==============================================
       # 4) COMMIT + PUSH BACK TO AURORA REPO
       # ==============================================
+     
+      - name: 🧼 Format JSON with Prettier
+        run: |
+          npx prettier --write "*.json" "**/*.json"
+      
       - name: 📤 Commit and Push Changes
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "Aurora Automation"
 
-          git add AuroraSync.json
+          git add -A
           git commit -m "🔄 Aurora Master Sync – Live ISA Update" || echo "No changes"
           git pull --rebase --autostash
           git push
