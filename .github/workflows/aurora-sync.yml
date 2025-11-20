@@ -98,14 +98,18 @@ jobs:
       # =====================================================
       # 5) COMMIT & PUSH
       # =====================================================
-      - name: 📤 Commit and Push
+      - name: 📤 Commit and Push (Safe Force)
         run: |
           git config --global user.email "actions@github.com"
-          git config --global user.name "Aurora Automation"
-
-          # NEW FIX
-          git pull --rebase origin main
+          git config --global user.name "Aurora Automation Bot"
 
           git add AuroraSync.json
-          git commit -m "🟢 ISA Updated with Live Prices (Watchlist Powered)" || echo "No changes to commit"
-          git push
+          git add holdings.json
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git commit -m "🔄 ISA Updated with Live Prices (Watchlist Powered)"
+          git push --force
