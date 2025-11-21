@@ -286,10 +286,27 @@ async function loadAuroraMonzo() {
     const data = await res.json();
 
     const monzo = data.monzo || {};
-    const core = monzo.account_core || {};
-    const pots = core.pots || {};
-    const directDebits = monzo.direct_debits || [];
-    const txns = monzo.transactions || [];
+
+/* ===================== FIX FOR NEW monzo.core STRUCTURE ===================== */
+let coreArray = monzo.core || [];  
+let core = {};
+if (Array.isArray(coreArray) && coreArray.length > 0) {
+  const row = coreArray[0];
+
+  core.main_balance = parseFloat(row["Value (£)"]) || 0;
+  core.payday_last = row["Last Payday"] || "";
+  core.payday_next = row["Next Payday"] || "";
+  core.income_received = parseFloat(row["Income Received (£)"] || 0);
+
+  // pots still come from AuroraMonzo.json
+  core.pots = monzo.pots || {};
+} else {
+  core = {};
+}
+
+const pots = core.pots || {};
+const directDebits = monzo.direct_debits || [];
+const txns = monzo.transactions || [];
 
     /* ===================== ACCOUNT CORE ===================== */
     document.getElementById("mainBalance").textContent =
