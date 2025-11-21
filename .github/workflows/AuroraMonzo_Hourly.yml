@@ -163,7 +163,10 @@ jobs:
             const match = tx.find(t =>
               ((t.Merchant || "") + " " + (t.Description || "")).toLowerCase().includes(name)
             );
-            if (match) item.paid = true;
+            if (match && dd.dateObj && dd.dateObj <= new Date()) {
+            item.paid = true;
+            } else {
+            item.paid = (dd.PAID === "TRUE");
           });
 
           fs.writeFileSync('directdebits.json', JSON.stringify(dd, null, 2));
