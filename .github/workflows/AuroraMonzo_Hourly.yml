@@ -109,7 +109,7 @@ jobs:
         run: curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/DirectDebits" -o directdebits.json
 
       - name: 🔵 Fetch MonzoCore
-        run: curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/MonzoCore" -o Monzo_Core.json
+        run: curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/MonzoCore" -o MonzoCore.json
 
       # =====================================================
       # STEP 2 – Ensure state folder
