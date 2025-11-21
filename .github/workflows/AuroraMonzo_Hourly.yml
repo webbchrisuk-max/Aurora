@@ -48,7 +48,6 @@ jobs:
           const txPath = 'transactions.json';
           const archivePath = 'transactions_archive.json';
 
-          // Safe reader
           let state;
           try { state = JSON.parse(fs.readFileSync(statePath, 'utf8')); }
           catch {
@@ -109,6 +108,9 @@ jobs:
       - name: 🟢 Fetch Direct Debits
         run: curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/DirectDebits" -o directdebits.json
 
+      - name: 🔵 Fetch MonzoCore
+        run: curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/MonzoCore" -o monzo_core.json
+
       # =====================================================
       # STEP 2 – Ensure state folder
       # =====================================================
@@ -137,7 +139,7 @@ jobs:
           EOF
 
       # =====================================================
-      # STEP 3.5 – Merge RAW into pay-period transactions (SAFE)
+      # STEP 3.5 – Merge RAW into pay-period transactions
       # =====================================================
       - name: 🔍 Merge RAW into pay-period transactions
         run: |
@@ -160,6 +162,7 @@ jobs:
           const start = new Date(state.current_period_start + "T00:00:00Z");
 
           const filtered = raw.filter(t => {
+            if (!t.Date) return false;
             const p = t.Date.split('/');
             const d = new Date(`${p[2]}-${p[1]}-${p[0]}T00:00:00Z`);
             return d >= start;
@@ -219,6 +222,9 @@ jobs:
           core.monzo.direct_debits = JSON.parse(fs.readFileSync('directdebits.json', 'utf8'));
           core.monzo.transfers = JSON.parse(fs.readFileSync('transfers.json', 'utf8'));
 
+          // NEW: Write MonzoCore sheet
+          core.monzo.core = JSON.parse(fs.readFileSync('monzo_core.json', 'utf8'));
+
           fs.writeFileSync('AuroraMonzo.json', JSON.stringify(core, null, 2));
           EOF
 
@@ -230,5 +236,5 @@ jobs:
           git config user.name "Aurora Automation"
           git config user.email "actions@github.com"
           git add .
-          git commit -m "Aurora Monzo Sync – Pay-period merge + rollover" || echo "No changes"
+          git commit -m "Aurora Monzo Sync – Updated MonzoCore + Transactions + Transfers" || echo "No changes"
           git push || echo "No changes"
