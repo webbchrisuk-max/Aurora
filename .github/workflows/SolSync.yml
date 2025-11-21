@@ -162,10 +162,30 @@ jobs:
               aurora.dividends.upcoming.push(entry);
             }
 
-            // HISTORY — only if logged_to_json = yes
-            if (pay < today && logged) {
-              aurora.dividends.history.push(entry);
+            // Helper: normalise tickbox TRUE/FALSE or text "yes"
+            function isLogged(v) {
+            if (v === undefined || v === null) return false;
+
+            const s = String(v).trim().toLowerCase();
+            return (s === "yes" || s === "true");
             }
+
+           // HISTORY + UPCOMING logic
+           rows.forEach(entry => {.   
+           const ex = new Date(entry.ex_div_date);
+           const pay = new Date(entry.pay_date);
+
+           const logged = isLogged(entry.logged_to_json);
+
+           // UPCOMING — future paydate
+           if (pay >= today) {
+           aurora.isa.dividends.upcoming.push(entry);
+           }
+
+          // HISTORY — paid + logged_to_json marked yes/true
+          if (pay < today && logged) {
+          aurora.isa.dividends.history.push(entry);
+          }
           });
 
           //-------------------------------------------
