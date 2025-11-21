@@ -1,7 +1,7 @@
 {
   "monzo": {
-    "updated_at": "2025-11-21T17:34:16.029Z",
-    "main_balance": 541.34,
+    "updated_at": "2025-11-21T18:46:24.015Z",
+    "main_balance": 527.34,
     "pots": [
       {
         "label": "Flex Repayment",
@@ -1344,12 +1344,25 @@
         "Merchant": "Postcode Lottery Winnings",
         "Amount (£)": "45.00",
         "Type": "Credit",
-        "Source": "Postcode Lottery",
+        "Source": "Monzo",
         "Email Subject": "",
         "Category": "Refund",
         "Processed": "TRUE",
         "Exclude From Spend": "",
         "Gmail ID": "manual-001"
+      },
+      {
+        "Date": "21/11/2025",
+        "Time": "18:29:46",
+        "Merchant": "Just Eat Takeaway",
+        "Amount (£)": "14.00",
+        "Type": "Debit",
+        "Source": "Monzo",
+        "Email Subject": "I just spent £ 14 at Just Eat Takeaway November 21, 2025 at 06:29PM",
+        "Category": "Takeaway",
+        "Processed": "TRUE",
+        "Exclude From Spend": "",
+        "Gmail ID": "19aa7adf37651f6f"
       }
     ]
   }
