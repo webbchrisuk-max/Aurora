@@ -1123,6 +1123,16 @@
         "Processed": "TRUE",
         "Exclude From Spend": "FALSE",
         "Gmail ID": "19a6e53b056fb9a2"
+      },
+      {
+        "Date": "20/11/2025",
+        "Time": "18:45:00",
+        "Merchant": "Postcode Lottery Winnings",
+        "Amount (£)": "45.00",
+        "Type": "Credit",
+        "Source": "Postcode Lottery",
+        "Email Subject": "",
+        "Category": "Refund"
       }
     ],
     "transfers": [
