@@ -539,9 +539,7 @@
     "total_dividend": "5.98",
     "dividend_received": "",
     "status": "Confirmed",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "TRADE212",
@@ -555,9 +553,7 @@
     "total_dividend": "6.00",
     "dividend_received": "",
     "status": "Confirmed",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "IG ISA",
@@ -587,9 +583,7 @@
     "total_dividend": "32.66",
     "dividend_received": "",
     "status": "Confirmed",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "IG ISA",
@@ -603,9 +597,7 @@
     "total_dividend": "6.70",
     "dividend_received": "",
     "status": "Confirmed",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "IG ISA",
@@ -619,9 +611,7 @@
     "total_dividend": "74.40",
     "dividend_received": "",
     "status": "Confirmed",
-    "frequency": "Semi-Annual",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Semi-Annual"
   },
   {
     "Account": "TRADE212",
@@ -635,9 +625,7 @@
     "total_dividend": "20.00",
     "dividend_received": "",
     "status": "Confirmed",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "IG ISA",
@@ -651,9 +639,7 @@
     "total_dividend": "44.73",
     "dividend_received": "",
     "status": "Confirmed",
-    "frequency": "Quarterly",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly"
   },
   {
     "Account": "TRADE212",
@@ -667,9 +653,7 @@
     "total_dividend": "7.65",
     "dividend_received": "",
     "status": "Confirmed",
-    "frequency": "Quarterly",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly"
   },
   {
     "Account": "IG ISA",
@@ -683,9 +667,7 @@
     "total_dividend": "152.32",
     "dividend_received": "",
     "status": "Confirmed",
-    "frequency": "Semi-Annual",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Semi-Annual"
   },
   {
     "Account": "IG ISA",
@@ -699,9 +681,7 @@
     "total_dividend": "30.72",
     "dividend_received": "",
     "status": "Confirmed",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "IG ISA",
@@ -715,9 +695,7 @@
     "total_dividend": "60.23",
     "dividend_received": "",
     "status": "Confirmed",
-    "frequency": "Quarterly",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly"
   },
   {
     "Account": "IG ISA",
@@ -731,9 +709,7 @@
     "total_dividend": "36.66",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Semi-Annual",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Semi-Annual"
   },
   {
     "Account": "IG ISA",
@@ -747,9 +723,7 @@
     "total_dividend": "30.87",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "TRADE212",
@@ -763,9 +737,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "TRADE212",
@@ -779,9 +751,7 @@
     "total_dividend": "32.66",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "TRADE212",
@@ -795,9 +765,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "IG ISA",
@@ -811,9 +779,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "TRADE212",
@@ -827,9 +793,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "IG ISA",
@@ -843,9 +807,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly"
   },
   {
     "Account": "IG ISA",
@@ -859,9 +821,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly"
   },
   {
     "Account": "IG ISA",
@@ -875,9 +835,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "IG ISA",
@@ -891,9 +849,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "IG ISA",
@@ -907,9 +863,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Semi-Annual",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Semi-Annual"
   },
   {
     "Account": "TRADE212",
@@ -923,9 +877,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "IG ISA",
@@ -939,9 +891,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Semi-Annual",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Semi-Annual"
   },
   {
     "Account": "IG ISA",
@@ -955,9 +905,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Semi-Annual",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Semi-Annual"
   },
   {
     "Account": "IG ISA",
@@ -971,9 +919,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Semi-Annual",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Semi-Annual"
   },
   {
     "Account": "TRADE212",
@@ -987,9 +933,7 @@
     "total_dividend": "32.66",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "IG ISA",
@@ -1003,9 +947,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "IG ISA",
@@ -1019,9 +961,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Semi-Annual",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Semi-Annual"
   },
   {
     "Account": "TRADE212",
@@ -1035,9 +975,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "TRADE212",
@@ -1051,9 +989,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "IG ISA",
@@ -1067,9 +1003,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly"
   },
   {
     "Account": "IG ISA",
@@ -1083,9 +1017,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "IG ISA",
@@ -1099,9 +1031,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Semi-Annual",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Semi-Annual"
   },
   {
     "Account": "IG ISA",
@@ -1115,9 +1045,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "IG ISA",
@@ -1131,9 +1059,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "IG ISA",
@@ -1147,9 +1073,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly"
   },
   {
     "Account": "TRADE212",
@@ -1163,9 +1087,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "TRADE212",
@@ -1179,9 +1101,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "TRADE212",
@@ -1195,9 +1115,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "IG ISA",
@@ -1211,9 +1129,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Semi-Annual",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Semi-Annual"
   },
   {
     "Account": "TRADE212",
@@ -1227,9 +1143,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "IG ISA",
@@ -1243,9 +1157,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "IG ISA",
@@ -1259,9 +1171,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly"
   },
   {
     "Account": "IG ISA",
@@ -1275,9 +1185,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly"
   },
   {
     "Account": "IG ISA",
@@ -1291,9 +1199,7 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   },
   {
     "Account": "IG ISA",
@@ -1307,8 +1213,6 @@
     "total_dividend": "0.00",
     "dividend_received": "",
     "status": "Estimated",
-    "frequency": "Quarterly ",
-    "notes": "",
-    "logged_to_json": "FALSE"
+    "frequency": "Quarterly "
   }
 ]
