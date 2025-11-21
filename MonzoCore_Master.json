@@ -1,35 +1,35 @@
 {
   "monzo": {
-    "updated_at": "2025-11-21T14:32:45.255Z",
-    "main_balance": 0,
+    "updated_at": "2025-11-21T14:48:33.085Z",
+    "main_balance": 541.34,
     "pots": [
       {
         "label": "Flex Repayment",
-        "value": 0
+        "value": 809.44
       },
       {
         "label": "Direct Debits",
-        "value": 0
+        "value": 347.19
       },
       {
         "label": "Holiday Pot",
-        "value": 0
+        "value": 274.45
       },
       {
         "label": "Coventry City F.C",
-        "value": 0
+        "value": 167.86
       },
       {
         "label": "IGTrading",
-        "value": 0
+        "value": 12.5
       },
       {
         "label": "Car Maintenance",
-        "value": 0
+        "value": 124.49
       },
       {
         "label": "Work Buffer",
-        "value": 0
+        "value": 33.59
       },
       {
         "label": "Savings",
@@ -37,11 +37,11 @@
       },
       {
         "label": "Christmas",
-        "value": 0
+        "value": 300
       },
       {
         "label": "Dentist",
-        "value": 0
+        "value": 448.34
       },
       {
         "label": "Holding Pot",
@@ -246,10 +246,7 @@
         "AMOUNT": "18.95",
         "POT": "Direct Debit",
         "STATUS": "Paid",
-        "PAID": "TRUE",
-        "": "",
-        "TOTAL": "524.57",
-        "Pay Date": "2025-12-05"
+        "PAID": "TRUE"
       },
       {
         "DATE": "2025-11-14",
@@ -378,6 +375,19 @@
         "POT": "Direct Debit",
         "STATUS": "Future",
         "PAID": "FALSE"
+      },
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {
+        "DATE": "",
+        "NAME": "",
+        "AMOUNT": "",
+        "POT": "2025-12-05"
       }
     ],
     "transactions": [
