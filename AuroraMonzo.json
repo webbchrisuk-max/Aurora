@@ -1897,6 +1897,95 @@
       "45979-Main Account -Holiday Pot-100",
       "45979-Main Account-Flex Repayment -200",
       "45979-Work Buffer-Holding Pot-33.59"
+    ],
+    "core": [
+      {
+        "Label": "Main Account",
+        "Value (£)": "541.34",
+        "Target": "",
+        "Total Due": "",
+        "Remaining After Payments": "",
+        "": "",
+        "Last Payday": "2025-11-07",
+        "Next Payday": "05/12/2025"
+      },
+      {
+        "Label": "Flex Repayment",
+        "Value (£)": "809.44",
+        "Target": "896.71",
+        "Total Due": "515.84",
+        "Remaining After Payments": "87.27"
+      },
+      {
+        "Label": "Direct Debits",
+        "Value (£)": "347.19",
+        "Target": "524.57",
+        "Total Due": "351.56",
+        "Remaining After Payments": "177.38"
+      },
+      {
+        "Label": "Holiday Pot",
+        "Value (£)": "274.45",
+        "Target": "297.79",
+        "Total Due": "23.34",
+        "Remaining After Payments": "🏖️ £23.34 left to save"
+      },
+      {
+        "Label": "Coventry City F.C",
+        "Value (£)": "167.86",
+        "Target": "500",
+        "Total Due": "332.14",
+        "Remaining After Payments": "⚽️ £332.14 left to save"
+      },
+      {
+        "Label": "IGTrading",
+        "Value (£)": "12.5",
+        "Target": "500",
+        "Total Due": "487.5",
+        "Remaining After Payments": "📈 £487.50 left to save"
+      },
+      {
+        "Label": "Car Maintenance",
+        "Value (£)": "124.49",
+        "Target": "300",
+        "Total Due": "175.51",
+        "Remaining After Payments": "👨🏻‍🔧 £175.51 left to save"
+      },
+      {
+        "Label": "Work Buffer",
+        "Value (£)": "33.59",
+        "Target": "65",
+        "Total Due": "31.41",
+        "Remaining After Payments": "🏖️ £31.41 left to save"
+      },
+      {
+        "Label": "Savings",
+        "Value (£)": "0",
+        "Target": "1000",
+        "Total Due": "1000",
+        "Remaining After Payments": "💸 £1000.00 left to save"
+      },
+      {
+        "Label": "Christmas",
+        "Value (£)": "300",
+        "Target": "300",
+        "Total Due": "0",
+        "Remaining After Payments": "✅ Goal Reached"
+      },
+      {
+        "Label": "Dentist",
+        "Value (£)": "448.34",
+        "Target": "1800",
+        "Total Due": "1351.66",
+        "Remaining After Payments": "🦷 £1351.66 left to save"
+      },
+      {
+        "Label": "Holding Pot",
+        "Value (£)": "0",
+        "Target": "500",
+        "Total Due": "500",
+        "Remaining After Payments": "🤑 £500.00 left to save"
+      }
     ]
   }
 }
