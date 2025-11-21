@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aurora ISA Tracker – Cinematic Edition v2</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+
+<style>
+:root{
+  --cyan:#00eaff;
+  --teal:#00ffd0;
+  --amber:#ffb347;
+  --pink:#ff4dff;
+  --purple:#8d4dff;
+  --gainGreen:#6bff6b;
+  --bg1:#050016;
+  --bg2:#120035;
+  --bg3:#001628;
+}
+
+/* ===================== GLOBAL BACKGROUND ===================== */
+body{
+  margin:0;
+  padding:0;
+  font-family:'Orbitron',sans-serif;
+
+  /* STATIC BACKGROUND IMAGE */
+  background-image: url(https://raw.githubusercontent.com/webbchrisuk-max/Aurora/main/.png/C1FEE15E-E445-4155-AFA5-94F85F22C952.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  color:#fff;
+  overflow-x:hidden;
+}
+/* ===================== EXPANDER TEXT CENTRED ===================== */
+.expander-content-inner{
+  text-align:center;
+}
+.expander-row{
+  display:flex;
+  justify-content:center;
+  gap:50px;
+  margin:10px 0;
+  font-size:1rem;
+}
+.expander-label{
+  width:180px;
+  text-align:right;
+  color:var(--teal);
+  font-weight:600;
+}
+.expander-value{
+  width:180px;
+  text-align:left;
+  color:var(--amber);
+  font-weight:700;
+}
+.expander-value.glow-gain{
+  color:var(--gainGreen);
+  text-shadow:0 0 10px var(--gainGreen),0 0 15px var(--gainGreen);
+}
+
+/* ===================== PAGE GRID ===================== */
+.cinematic-grid{
+  display:flex;
+  gap:25px;
+  padding:20px;
+  max-width:1450px;
+  margin:auto;
+}
+.left-panel{
+  width:60%;
+  display:flex;
+  flex-direction:column;
+  gap:25px;
+}
+.right-panel{
+  width:40%;
+  display:flex;
+  flex-direction:column;
+  gap:25px;
+}
+
+/* ===================== HOLOGRAPHIC CARD ===================== */
+.holo-card{
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(0,255,255,0.25);
+  border-radius:20px;
+  padding:20px;
+  position:relative;
+  box-shadow:0 0 18px rgba(0,255,255,0.2);
+  backdrop-filter:blur(12px);
+  overflow:hidden;
+}
+.holo-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:20px;
+  padding:2px;
+  background:linear-gradient(120deg,var(--cyan),var(--teal),var(--pink),var(--purple),var(--cyan));
+  background-size:400% 400%;
+  animation:holoPulse 8s ease infinite;
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+          mask-composite:exclude;
+}
+@keyframes holoPulse{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+
+.section-header{
+  font-size:22px;
+  font-weight:700;
+  color:var(--cyan);
+  margin-bottom:10px;
+  text-shadow:0 0 12px var(--cyan);
+}
+
+/* ===================== EXPANDERS ===================== */
+.expander-toggle{
+  margin-top:14px;
+  padding:12px 25px;
+  display:block;
+  font-size:0.95rem;
+  cursor:pointer;
+  border-radius:40px;
+  user-select:none;
+  width:85%;
+  margin-left:auto;
+  margin-right:auto;
+  text-align:center;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(6px);
+  border:1px solid rgba(0,255,255,0.35);
+  box-shadow:0 0 10px rgba(0,255,255,0.45), 0 0 22px rgba(0,255,255,0.25);
+  color:#00faff;
+  font-weight:700;
+}
+.expander-content{
+  overflow:hidden;
+  max-height:0;
+  transition:max-height 0.35s ease-in-out;
+}
+
+/* ===================== PROGRESS BAR ===================== */
+#saye-progress-wrap{
+  width:100%;
+  height:22px;
+  background:rgba(255,255,255,0.1);
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 0 12px rgba(0,255,255,0.35);
+  margin-bottom:12px;
+}
+#saye-progress-bar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(120deg,var(--cyan),var(--teal));
+  background-size:300% 300%;
+  animation:progressFlow 4s ease infinite;
+  transition:width 1.8s ease-out;
+}
+@keyframes progressFlow{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+
+/* ===================== DIVIDEND TIMELINE ===================== */
+#divTimeline{
+  width:100%;
+  height:260px;
+  filter:drop-shadow(0 0 10px var(--cyan));
+}
+
+/* ===================== MOBILE ===================== */
+@media(max-width:900px){
+  .cinematic-grid{flex-direction:column;}
+  .left-panel, .right-panel{width:100%;}
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const AURORA_SYNC =
+"https://raw.githubusercontent.com/webbchrisuk-max/Aurora/main/AuroraSync.json";
+
+async function loadJSON(url){
+  const r = await fetch(url + "?nocache=" + Date.now());
+  return r.json();
+}
+
+async function initAurora(){
+  const sync = await loadJSON(AURORA_SYNC);
+
+  renderPortfolio(sync);
+  renderTescoSections(sync);
+  renderSayeProgress(sync);
+  renderDividendTimeline(sync);
+
+  /* PHASE 1 NEW RENDERS */
+  renderUpcomingDividends(sync);
+  renderDividendHistory(sync);
+  renderNextExDiv(sync);
+  renderAnnualDividendSummary(sync);
+}
+</script>
+</head>
+
+<body onload="initAurora()">
+
+<h1 style="
+  text-align:center;
+  margin-top:25px;
+  color:var(--cyan);
+  font-size:30px;
+  text-shadow:0 0 18px var(--cyan);
+">
+🌌 Aurora ISA Tracker – Cinematic Edition v2
+</h1>
+
+<div style="
+  width:100%;
+  height:3px;
+  background:linear-gradient(90deg,var(--cyan),var(--purple),var(--teal));
+  margin:15px auto 25px auto;
+  max-width:800px;
+  border-radius:12px;
+  box-shadow:0 0 16px var(--cyan);
+"></div>
+
+<div class="cinematic-grid">
+
+<!-- ===================== LEFT PANEL ===================== -->
+<div class="left-panel">
+
+  <div class="holo-card">
+    <div class="section-header">📊 Portfolio Summary</div>
+    <div id="portfolio-summary"></div>
+  </div>
+
+  <div class="holo-card">
+    <div class="section-header">🛒 Tesco SIP • SAYE • ISA Migration</div>
+
+      <div class="expander-toggle">SIP Shares ▼</div>
+      <div class="expander-content"><div class="expander-content-inner" id="tesco-sip"></div></div>
+
+      <div class="expander-toggle">SAYE Plan ▼</div>
+      <div class="expander-content"><div class="expander-content-inner" id="tesco-saye"></div></div>
+
+      <div class="expander-toggle">ISA Migration ▼</div>
+      <div class="expander-content"><div class="expander-content-inner" id="tesco-migration"></div></div>
+
+      <div class="expander-toggle">Aurora SAYE Progress ▼</div>
+      <div class="expander-content">
+        <div class="expander-content-inner">
+          <h3 style="color:var(--cyan);margin-bottom:10px;">SAYE Progress</h3>
+
+          <div id="saye-progress-wrap"><div id="saye-progress-bar"></div></div>
+          <div style="margin-bottom:15px;">
+            <span id="saye-progress-text" style="color:var(--teal);font-weight:700;">0%</span> complete
+          </div>
+
+          <h3 style="color:var(--cyan);margin-bottom:6px;">Time Remaining</h3>
+          <div id="saye-countdown" style="color:var(--amber);margin-bottom:14px;">Loading…</div>
+
+          <div class="expander-row"><span class="expander-label">Saved to Date</span><span class="expander-value" id="saye-saved"></span></div>
+          <div class="expander-row"><span class="expander-label">Funds Pending</span><span class="expander-value" id="saye-pending"></span></div>
+          <div class="expander-row"><span class="expander-label">Total Option Cost</span><span class="expander-value" id="saye-total"></span></div>
+          <div class="expander-row"><span class="expander-label">Maturity Date</span><span class="expander-value" id="saye-end"></span></div>
+        </div>
+      </div>
+
+  </div><!-- end card -->
+</div>
+
+<!-- ===================== RIGHT PANEL ===================== -->
+<div class="right-panel">
+
+  <!-- DIVIDEND TIMELINE -->
+  <div class="holo-card">
+    <div class="section-header">📈 Dividend Timeline</div>
+    <canvas id="divTimeline"></canvas>
+  </div>
+
+  <!-- UPCOMING DIVIDENDS -->
+  <div class="holo-card">
+    <div class="section-header">📆 Upcoming Dividends</div>
+
+    <!-- first 10 here -->
+    <div id="upcoming-dividends-limited"></div>
+
+    <!-- toggle -->
+    <div class="expander-toggle" id="toggle-upcoming">Show More ▼</div>
+
+    <!-- expandable full list -->
+    <div class="expander-content">
+      <div class="expander-content-inner" id="upcoming-dividends-full"></div>
+    </div>
+  </div>
+
+  <!-- DIVIDEND HISTORY -->
+  <div class="holo-card">
+    <div class="section-header">📜 Dividend History</div>
+
+    <div class="expander-toggle">View History ▼</div>
+    <div class="expander-content">
+      <div class="expander-content-inner" id="dividend-history"></div>
+    </div>
+  </div>
+
+  <!-- NEXT EX-DIV -->
+  <div class="holo-card">
+    <div class="section-header">🔔 Next Ex-Dividend Dates</div>
+    <div id="next-exdiv"></div>
+  </div>
+
+</div><!-- END RIGHT PANEL -->
+
+</div><!-- END GRID -->
+
+<!-- ===================== JS FUNCTIONS ===================== -->
+<script>
+/* ---------- Portfolio Summary ---------- */
+function renderPortfolio(sync){
+  const ig = sync?.isa?.holdings?.ig_isa || [];
+  const t2 = sync?.isa?.holdings?.trade212_isa || [];
+
+  const igVal = ig.reduce((s,h)=>s+(+h.value||0),0);
+  const t2Val = t2.reduce((s,h)=>s+(+h.value||0),0);
+
+  const total = igVal + t2Val;
+  const income = sync?.isa?.portfolio_summary?.annual_income_gbp || 0;
+
+  document.getElementById("portfolio-summary").innerHTML = `
+    <p><strong>IG ISA:</strong> £${igVal.toFixed(2)}</p>
+    <p><strong>Trade212 ISA:</strong> £${t2Val.toFixed(2)}</p>
+    <p><strong>Total Value:</strong> £${total.toFixed(2)}</p>
+    <p><strong>Annual Income:</strong> £${income.toFixed(2)}</p>
+  `;
+}
+
+/* ---------- Tesco Panels ---------- */
+function renderTescoSections(sync){
+  const t = sync?.tesco?.summary;
+  const m = sync?.tesco?.isa_migration_plan;
+
+  document.getElementById("tesco-sip").innerHTML = `
+    <div class="expander-row"><span class="expander-label">Total Shares</span><span class="expander-value">${t.sip_total_shares}</span></div>
+    <div class="expander-row"><span class="expander-label">Value</span><span class="expander-value">£${t.sip_value_gbp.toFixed(2)}</span></div>
+    <div class="expander-row"><span class="expander-label">Average Cost</span><span class="expander-value">£${t.sip_average_cost.toFixed(2)}</span></div>
+    <div class="expander-row"><span class="expander-label">Gain</span><span class="expander-value glow-gain">£${t.sip_gain_gbp.toFixed(2)}</span></div>
+  `;
+
+  document.getElementById("tesco-saye").innerHTML = `
+    <div class="expander-row"><span class="expander-label">Options</span><span class="expander-value">${t.saye_total_options}</span></div>
+    <div class="expander-row"><span class="expander-label">Option Price</span><span class="expander-value">£${t.saye_option_price.toFixed(2)}</span></div>
+    <div class="expander-row"><span class="expander-label">Current Value</span><span class="expander-value">£${t.saye_current_value_gbp.toFixed(2)}</span></div>
+    <div class="expander-row"><span class="expander-label">Potential Gain</span><span class="expander-value glow-gain">£${t.saye_potential_gain_gbp.toFixed(2)}</span></div>
+  `;
+
+  let mig="";
+  mig += `
+    <div class="expander-row">
+      <span class="expander-label">Maturity Date</span>
+      <span class="expander-value">${m.maturity_date}</span>
+    </div>
+    <hr style="opacity:.2; margin:10px 0;">
+  `;
+
+  for(const [year,text] of Object.entries(m.tax_years)){
+    mig += `
+      <div class="expander-row">
+        <span class="expander-label">${year.replace("_","/")}</span>
+        <span class="expander-value">${text}</span>
+      </div>`;
+  }
+  document.getElementById("tesco-migration").innerHTML = mig;
+}
+
+/* ---------- SAYE PROGRESS ---------- */
+function renderSayeProgress(sync){
+  const p = sync?.tesco?.saye_progress;
+
+  const saved = +p.savings_to_date || 0;
+  const pending = +p.funds_pending || 0;
+  const total = +p.total_option_cost || 1;
+  const pct = ((saved+pending)/total)*100;
+
+  document.getElementById("saye-saved").textContent = "£"+saved.toFixed(2);
+  document.getElementById("saye-pending").textContent = "£"+pending.toFixed(2);
+  document.getElementById("saye-total").textContent = "£"+total.toFixed(2);
+  document.getElementById("saye-end").textContent = p.end_date;
+
+  const toggles=document.querySelectorAll(".expander-toggle");
+  toggles.forEach(t=>{
+    t.addEventListener("click",()=>{
+      if(t.textContent.includes("Aurora SAYE Progress")){
+        setTimeout(()=>{
+          document.getElementById("saye-progress-bar").style.width=pct.toFixed(2)+"%";
+          document.getElementById("saye-progress-text").textContent=pct.toFixed(2)+"%";
+        },150);
+      }
+    });
+  });
+
+  function updateCountdown(){
+    const end=new Date(p.end_date);
+    const now=new Date();
+    const diff=end-now;
+
+    if(diff<=0){
+      document.getElementById("saye-countdown").textContent="Completed";
+      return;
+    }
+
+    const d=Math.floor(diff/86400000);
+    const h=Math.floor((diff/3600000)%24);
+    const m=Math.floor((diff/60000)%60);
+    const s=Math.floor((diff/1000)%60);
+
+    document.getElementById("saye-countdown").textContent =
+      `${d}d • ${h}h ${m}m ${s}s`;
+  }
+  setInterval(updateCountdown,1000);
+  updateCountdown();
+}
+
+/* ---------- DIVIDEND TIMELINE (KEEP) ---------- */
+function renderDividendTimeline(sync){
+
+  const monthly = sync?.isa?.dividends?.monthly_totals || {};
+  const months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  const data = months.map(m => monthly[`2025-${m}`] || 0);
+
+  const ctx=document.getElementById("divTimeline").getContext("2d");
+
+  new Chart(ctx,{
+    type:"line",
+    data:{
+      labels:months,
+      datasets:[{
+        label:"Dividends",
+        data:data,
+        tension:0.45,
+        borderWidth:3,
+        borderColor:"#00eaff",
+        pointRadius:6,
+        pointHoverRadius:12,
+        pointBackgroundColor:"#00ffd0",
+        pointBorderColor:"#ffffff",
+        pointBorderWidth:2
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          enabled:true,
+          yAlign:"bottom",
+          xAlign:"center",
+          caretPadding:15,
+          backgroundColor:"rgba(0,255,255,0.18)",
+          borderColor:"#00eaff",
+          borderWidth:1.2,
+          titleColor:"#00eaff",
+          bodyColor:"#ffffff",
+          displayColors:false,
+          padding:10,
+          cornerRadius:10
+        }
+      },
+      scales:{
+        x:{ticks:{color:"#00eaff"},grid:{display:false}},
+        y:{ticks:{color:"#00ffd0"},grid:{color:"rgba(255,255,255,0.05)"}}
+      }
+    }
+  });
+}
+
+/* ============================================================
+   UPDATED DIVIDEND SECTIONS (PHASE 1 CLEAN VERSION)
+============================================================ */
+
+/* ---------- UPCOMING DIVIDENDS (limit 10 + full dropdown) ---------- */
+function renderUpcomingDividends(sync){
+  const rows = sync?.isa?.dividends?.upcoming || [];
+  const today = new Date();
+
+  // FUTURE ONLY
+  const future = rows.filter(r => new Date(r.pay_date) >= today);
+
+  // SORT BY PAYDATE
+  const sorted = [...future].sort((a,b)=>
+    new Date(a.pay_date) - new Date(b.pay_date)
+  );
+
+  // FIRST 10 ONLY
+  const limited = sorted.slice(0,10);
+
+  // EVERYTHING AFTER THE FIRST 10
+  const remaining = sorted.slice(10);
+
+  /* ---------- PREVIEW TABLE (first 10 only) ---------- */
+  let htmlLimited = `
+    <table style="width:100%; text-align:center;">
+      <tr style="color:var(--cyan); font-weight:700;">
+        <td>Ticker</td><td>Ex-Div</td><td>Pay</td><td>Total</td>
+      </tr>
+  `;
+  limited.forEach(r=>{
+  htmlLimited += `
+      <tr>
+        <td>${r.ticker}</td>
+        <td style="color:var(--amber);">${r.ex_div_date}</td>
+        <td style="color:var(--gainGreen);">${r.pay_date}</td>
+        <td>£${(+r.total_dividend).toFixed(2)}</td>
+      </tr>
+    `;
+});
+htmlLimited += "</table>";
+
+  document.getElementById("upcoming-dividends-limited").innerHTML = htmlLimited;
+
+  /* ---------- FULL TABLE (remaining only) ---------- */
+  if(remaining.length === 0){
+    document.getElementById("upcoming-dividends-full").innerHTML =
+      "<p>No more dividends beyond the first ten.</p>";
+    return;
+  }
+
+  let htmlFull = `
+    <table style="width:100%; text-align:center;">
+      <tr style="color:var(--teal); font-weight:700;">
+        <td>Ticker</td><td>Ex-Div</td><td>Pay</td><td>Total</td>
+      </tr>
+  `;
+  remaining.forEach(r=>{
+  htmlFull += `
+      <tr>
+        <td>${r.ticker}</td>
+        <td style="color:var(--amber);">${r.ex_div_date}</td>
+        <td style="color:var(--gainGreen);">${r.pay_date}</td>
+        <td>£${(+r.total_dividend).toFixed(2)}</td>
+      </tr>
+    `;
+});
+htmlFull += "</table>";
+  document.getElementById("upcoming-dividends-full").innerHTML = htmlFull;
+}
+  
+/* ---------- DIVIDEND HISTORY (dropdown only) ---------- */
+function renderDividendHistory(sync){
+  const rows = sync?.isa?.dividends?.history || [];
+
+  if(rows.length === 0){
+    document.getElementById("dividend-history").innerHTML =
+      "<p>No paid dividends logged.</p>";
+    return;
+  }
+
+  let html = `
+    <table style="width:100%; text-align:center;">
+      <tr style="color:var(--pink); font-weight:700;">
+        <td>Ticker</td>
+        <td>Pay Date</td>
+        <td>Total</td>
+      </tr>
+  `;
+
+  rows.forEach(r=>{
+    html += `
+      <tr>
+        <td>${r.ticker}</td>
+        <td>${r.pay_date}</td>
+        <td>£${(+r.total_dividend).toFixed(2)}</td>
+      </tr>
+    `;
+  });
+
+  html += "</table>";
+  document.getElementById("dividend-history").innerHTML = html;
+}
+
+/* ---------- NEXT 5 EX-DIV DATES (future only) ---------- */
+function renderNextExDiv(sync){
+  const today = new Date();
+  const rows = sync?.isa?.dividends?.upcoming || [];
+
+  const sorted = rows
+    .filter(r => new Date(r.ex_div_date) >= today)
+    .sort((a,b)=> new Date(a.ex_div_date) - new Date(b.ex_div_date))
+    .slice(0,5);
+
+  if(sorted.length===0){
+    document.getElementById("next-exdiv").innerHTML =
+      "<p>No upcoming ex-div dates.</p>";
+    return;
+  }
+
+  let html = "<ul style='list-style:none; padding-left:0'>";
+  sorted.forEach(r=>{
+    html += `
+      <li style="margin:6px 0;">
+        <strong style="color:var(--teal);">${r.ticker}</strong> — 
+        <span style="color:var(--amber);">${r.ex_div_date}</span>
+      </li>
+    `;
+  });
+  html += "</ul>";
+
+  document.getElementById("next-exdiv").innerHTML = html;
+}
+/* ---------- EXPANDERS ---------- */
+document.addEventListener("click",e=>{
+  if(!e.target.classList.contains("expander-toggle")) return;
+
+  const t=e.target;
+  const c=t.nextElementSibling;
+
+  if(c.style.maxHeight){
+    c.style.maxHeight=null;
+    t.textContent=t.textContent.replace("▲","▼");
+  }else{
+    c.style.maxHeight=c.scrollHeight+"px";
+    t.textContent=t.textContent.replace("▼","▲");
+  }
+});
+</script>
+
+</body>
+</html>
