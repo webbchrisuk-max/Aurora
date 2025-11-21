@@ -222,8 +222,14 @@ jobs:
           core.monzo.direct_debits = JSON.parse(fs.readFileSync('directdebits.json', 'utf8'));
           core.monzo.transfers = JSON.parse(fs.readFileSync('transfers.json', 'utf8'));
 
-          // NEW: Write MonzoCore sheet
-          core.monzo.core = JSON.parse(fs.readFileSync('MonzoCore.json', 'utf8'));
+          # NEW: Write MonzoCore sheet (safe)
+          let monzoCoreData = {};
+          try { 
+            monzoCoreData = JSON.parse(fs.readFileSync('MonzoCore.json', 'utf8'));
+          } catch {
+            monzoCoreData = {};
+          }
+          core.monzo.core = monzoCoreData;
 
           fs.writeFileSync('AuroraMonzo.json', JSON.stringify(core, null, 2));
           EOF
