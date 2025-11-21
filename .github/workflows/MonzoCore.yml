@@ -1,1 +1,106 @@
+name: Aurora Monzo – Trekker Engine v1
 
+on:
+  schedule:
+    - cron: "0 * * * *"   # runs every hour
+  workflow_dispatch:
+
+jobs:
+  monzo_core_build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # =====================================================
+      # STEP 0 — Checkout Repo
+      # =====================================================
+      - name: 🧩 Checkout Repository
+        uses: actions/checkout@v4
+
+      # =====================================================
+      # STEP 1 — Fetch Google Sheets
+      # =====================================================
+      - name: 🟢 Fetch MonzoCore sheet
+        run: |
+          curl -s \
+          "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/MonzoCore" \
+          -o monzo_core.json
+
+      - name: 🟢 Fetch Transactions sheet
+        run: |
+          curl -s \
+          "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transactions" \
+          -o transactions.json
+
+      - name: 🟢 Fetch Transfers sheet
+        run: |
+          curl -s \
+          "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transfers" \
+          -o transfers.json
+
+      - name: 🟢 Fetch DirectDebits sheet
+        run: |
+          curl -s \
+          "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/DirectDebits" \
+          -o directdebits.json
+
+      # =====================================================
+      # STEP 2 — Build MonzoCore_Master.json (NO MERGE)
+      # =====================================================
+      - name: 🛠 Build unified MonzoCore_Master.json
+        run: |
+          node <<'EOF'
+          const fs = require('fs');
+
+          const core = JSON.parse(fs.readFileSync('monzo_core.json', 'utf8'));
+          const tx   = JSON.parse(fs.readFileSync('transactions.json', 'utf8'));
+          const tr   = JSON.parse(fs.readFileSync('transfers.json', 'utf8'));
+          const dd   = JSON.parse(fs.readFileSync('directdebits.json', 'utf8'));
+
+          // Helper → numeric conversion
+          const toNumber = x => {
+            if (x === undefined || x === null) return 0;
+            const n = parseFloat(String(x).replace(/[^0-9.-]/g, ''));
+            return isNaN(n) ? 0 : n;
+          };
+
+          // Extract main account + pots
+          let mainBalance = 0;
+          const pots = [];
+
+          core.forEach(row => {
+            const label = row.Label || row.label || "";
+            const value = toNumber(row.Value || row.value);
+
+            if (label.toLowerCase() === "main account") {
+              mainBalance = value;
+            } else {
+              pots.push({ label, value });
+            }
+          });
+
+          // Build unified structure
+          const master = {
+            monzo: {
+              updated_at: new Date().toISOString(),
+              main_balance: mainBalance,
+              pots: pots,
+              transfers: tr,
+              direct_debits: dd,
+              transactions: tx,
+            }
+          };
+
+          fs.writeFileSync("MonzoCore_Master.json", JSON.stringify(master, null, 2));
+          console.log("✓ Built MonzoCore_Master.json");
+          EOF
+
+      # =====================================================
+      # STEP 3 — Commit & Push
+      # =====================================================
+      - name: 📤 Commit and Push
+        run: |
+          git config user.name "Aurora Automation"
+          git config user.email "actions@github.com"
+          git add MonzoCore_Master.json
+          git commit -m "Aurora-Monzo – Trekker Engine v1 Sync" || echo "No changes"
+          git push || echo "No changes"
