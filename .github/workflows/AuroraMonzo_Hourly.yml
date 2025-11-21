@@ -214,7 +214,7 @@ jobs:
 
           let core = {};
           if (fs.existsSync('AuroraMonzo.json')) {
-            core = JSON.parse(fs.readFileSync('AuroraMonzo.json', 'utf8'));
+            core = JSON.parse(fs.readFileSync('auroramonzo.json', 'utf8'));
           }
 
           if (!core.monzo) core.monzo = {};
