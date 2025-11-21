@@ -14,16 +14,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # =====================================================
-      # STEP 0 – Checkout repo
-      # =====================================================
-      - name: 🧩 Checkout repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      # =====================================================
-      # STEP 0.1 – Ensure .aurora folder + create default pay_period.json
-      # =====================================================
-      - name: 🛠 Ensure .aurora + default pay period file
+      - name: Ensure .aurora + default pay period file
         run: |
           mkdir -p .aurora
           if [ ! -f .aurora/pay_period.json ]; then
@@ -32,13 +26,9 @@ jobs:
               \"next_payday\": \"2025-12-05\",
               \"period_length_days\": 28
             }" > .aurora/pay_period.json
-            echo "Created missing .aurora/pay_period.json"
           fi
 
-      # =====================================================
-      # STEP 0.5 – Payday Rollover BEFORE anything else
-      # =====================================================
-      - name: 📆 Rollover pay-period transactions if needed
+      - name: Payday Rollover if needed
         run: |
           node <<'EOF'
           const fs = require('fs');
@@ -51,7 +41,6 @@ jobs:
           let state;
           try { state = JSON.parse(fs.readFileSync(statePath, 'utf8')); }
           catch {
-            console.log("⚠ No pay_period.json found. Creating minimal default.");
             state = {
               current_period_start: "2025-11-01",
               next_payday: "2025-12-05",
@@ -65,12 +54,7 @@ jobs:
           const nextPayday = new Date(state.next_payday + "T00:00:00Z");
           const nextPaydayYMD = nextPayday.toISOString().slice(0, 10);
 
-          if (todayYMD < nextPaydayYMD) {
-            console.log("No payday rollover needed.");
-            process.exit(0);
-          }
-
-          console.log("🔄 Payday reached — rolling over.");
+          if (todayYMD < nextPaydayYMD) process.exit(0);
 
           let oldTx = [];
           try { oldTx = JSON.parse(fs.readFileSync(txPath, 'utf8')); } catch {}
@@ -80,7 +64,6 @@ jobs:
           if (oldTx.length > 0) {
             const merged = archive.concat(oldTx);
             fs.writeFileSync(archivePath, JSON.stringify(merged, null, 2));
-            console.log(`Archived ${oldTx.length} past-period transactions.`);
           }
 
           fs.writeFileSync(txPath, '[]\n');
@@ -93,38 +76,28 @@ jobs:
           state.next_payday = newNext.toISOString().slice(0, 10);
 
           fs.writeFileSync(statePath, JSON.stringify(state, null, 2));
-          console.log("Updated pay_period.json:", state);
           EOF
 
-      # =====================================================
-      # STEP 1 – Fetch Google Sheets
-      # =====================================================
-      - name: 🟢 Fetch Transfers
+      - name: Fetch Transfers
         run: curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transfers" -o transfers.json
 
-      - name: 🟢 Fetch Transactions (raw)
+      - name: Fetch Transactions raw
         run: curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Transactions" -o transactions_raw.json
 
-      - name: 🟢 Fetch Direct Debits
+      - name: Fetch Direct Debits
         run: curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/DirectDebits" -o directdebits.json
 
-      - name: 🔵 Fetch MonzoCore
+      - name: Fetch MonzoCore
         run: curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/MonzoCore" -o MonzoCore.json
 
-      # =====================================================
-      # STEP 2 – Ensure state folder
-      # =====================================================
-      - name: 📦 Ensure state folder
+      - name: Ensure state folder
         run: |
           mkdir -p .aurora
           if [ ! -f .aurora/monzo_transfers_applied.json ]; then
             echo "[]" > .aurora/monzo_transfers_applied.json
           fi
 
-      # =====================================================
-      # STEP 3 – Apply NEW Transfers
-      # =====================================================
-      - name: 🔄 Apply NEW Transfers
+      - name: Apply NEW Transfers
         run: |
           node <<'EOF'
           const fs = require('fs');
@@ -135,13 +108,9 @@ jobs:
           newOnes.forEach(t => applied.push(t.UID));
 
           fs.writeFileSync('.aurora/monzo_transfers_applied.json', JSON.stringify(applied, null, 2));
-          console.log(`Applied ${newOnes.length} new transfers.`);
           EOF
 
-      # =====================================================
-      # STEP 3.5 – Merge RAW into pay-period transactions
-      # =====================================================
-      - name: 🔍 Merge RAW into pay-period transactions
+      - name: Merge RAW into pay-period transactions
         run: |
           node <<'EOF'
           const fs = require('fs');
@@ -179,13 +148,9 @@ jobs:
           });
 
           fs.writeFileSync('transactions.json', JSON.stringify(merged, null, 2));
-          console.log(`Pay-period transactions now: ${merged.length}`);
           EOF
 
-      # =====================================================
-      # STEP 4 – Auto-mark Paid DDs
-      # =====================================================
-      - name: 🔘 Auto-mark Paid DDs
+      - name: Auto-mark Paid DDs
         run: |
           node <<'EOF'
           const fs = require('fs');
@@ -204,11 +169,7 @@ jobs:
           fs.writeFileSync('directdebits.json', JSON.stringify(dd, null, 2));
           EOF
 
-      # =====================================================
-      # STEP 5 – Update AuroraMonzo.json
-      # =====================================================
-            
-      - name: 🧿 Safe merge for AuroraMonzo.json
+      - name: Update AuroraMonzo.json
         run: |
           node <<'EOF'
           const fs = require('fs');
@@ -222,26 +183,15 @@ jobs:
           core.monzo.transactions = JSON.parse(fs.readFileSync('transactions.json', 'utf8'));
           core.monzo.direct_debits = JSON.parse(fs.readFileSync('directdebits.json', 'utf8'));
           core.monzo.transfers = JSON.parse(fs.readFileSync('transfers.json', 'utf8'));
-
-          // NEW: Write MonzoCore sheet (safe)
-          let monzoCoreData = {};
-          try { 
-            monzoCoreData = JSON.parse(fs.readFileSync('MonzoCore.json', 'utf8'));
-          } catch {
-            monzoCoreData = {};
-          }
-          core.monzo.core = monzoCoreData;
+          core.monzo.core = JSON.parse(fs.readFileSync('MonzoCore.json', 'utf8'));
 
           fs.writeFileSync('AuroraMonzo.json', JSON.stringify(core, null, 2));
           EOF
 
-      # =====================================================
-      # STEP 6 – Commit & Push
-      # =====================================================
-      - name: 📤 Commit and Push
+      - name: Commit and Push
         run: |
           git config user.name "Aurora Automation"
           git config user.email "actions@github.com"
           git add .
-          git commit -m "Aurora Monzo Sync – Updated MonzoCore + Transactions + Transfers" || echo "No changes"
+          git commit -m "Aurora Monzo Sync" || echo "No changes"
           git push || echo "No changes"
