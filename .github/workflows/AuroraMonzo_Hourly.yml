@@ -109,7 +109,7 @@ jobs:
         run: curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/DirectDebits" -o directdebits.json
 
       - name: 🔵 Fetch MonzoCore
-        run: curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/MonzoCore" -o monzo_core.json
+        run: curl -s "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/MonzoCore" -o Monzo_Core.json
 
       # =====================================================
       # STEP 2 – Ensure state folder
@@ -223,7 +223,7 @@ jobs:
           core.monzo.transfers = JSON.parse(fs.readFileSync('transfers.json', 'utf8'));
 
           // NEW: Write MonzoCore sheet
-          core.monzo.core = JSON.parse(fs.readFileSync('monzocore.json', 'utf8'));
+          core.monzo.core = JSON.parse(fs.readFileSync('MonzoCore.json', 'utf8'));
 
           fs.writeFileSync('AuroraMonzo.json', JSON.stringify(core, null, 2));
           EOF
