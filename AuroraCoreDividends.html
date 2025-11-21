@@ -434,23 +434,33 @@ function renderSayeProgress(sync){
   updateCountdown();
 }
 
-/* ---------- DIVIDEND TIMELINE (KEEP) ---------- */
+/* ---------- DIVIDEND TIMELINE (NEW – AUTO CALC) ---------- */
 function renderDividendTimeline(sync){
 
-  const monthly = sync?.isa?.dividends?.monthly_totals || {};
-  const months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const totals = Array(12).fill(0);
 
-  const data = months.map(m => monthly[`2025-${m}`] || 0);
+  const hist = sync?.dividends?.history || [];
+  const upcoming = sync?.dividends?.upcoming || [];
 
-  const ctx=document.getElementById("divTimeline").getContext("2d");
+  const all = [...hist, ...upcoming];
+
+  all.forEach(d => {
+    if(!d.pay_date) return;
+    const dt = new Date(d.pay_date);
+    const m = dt.getMonth();   // 0 = Jan
+    totals[m] += Number(d.total || 0);
+  });
+
+  const ctx = document.getElementById("divTimeline").getContext("2d");
 
   new Chart(ctx,{
     type:"line",
     data:{
-      labels:months,
+      labels: months,
       datasets:[{
         label:"Dividends",
-        data:data,
+        data: totals,
         tension:0.45,
         borderWidth:3,
         borderColor:"#00eaff",
@@ -487,7 +497,6 @@ function renderDividendTimeline(sync){
     }
   });
 }
-
 /* ============================================================
    UPDATED DIVIDEND SECTIONS (PHASE 1 CLEAN VERSION)
 ============================================================ */
