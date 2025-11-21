@@ -14,62 +14,59 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ==========================================================================
-      # 0) CHECKOUT
-      # ==========================================================================
       - name: 🧩 Checkout Repo
         uses: actions/checkout@v4
 
-      # ==========================================================================
+      # ==============================================
       # 1) FETCH GOOGLE SHEETS
-      # ==========================================================================
+      # ==============================================
       - name: 🟢 Fetch Holdings Sheet
         run: |
           curl -s \
             "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Holdings" \
             -o holdings.json
 
-      - name: 🟢 Fetch Watchlist Sheet
+      - name: 🔵 Fetch Watchlist Sheet
         run: |
           curl -s \
             "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Watchlist" \
             -o watchlist.json
 
-      - name: 🟢 Fetch Dividends Sheet
+      - name: 🟣 Fetch Dividends Sheet
         run: |
           curl -s \
             "https://opensheet.elk.sh/10MdgQKc4tParno7pNkz40eBGz308wxHu1u3gvJe_WsE/Dividends" \
             -o dividends.json
 
-      # ==========================================================================
-      # 2) PROCESS + BUILD AURORASYNC.JSON
-      # ==========================================================================
+      # ==============================================
+      # 2) BUILD AURORASYNC.JSON
+      # ==============================================
       - name: 🔧 Build AuroraSync.json
         run: |
           node << 'EOF'
           const fs = require("fs");
 
-          const aurora = JSON.parse(fs.readFileSync("AuroraSync.json", "utf8"));
+          const auroraPath = "AuroraSync.json";
+          const aurora = JSON.parse(fs.readFileSync(auroraPath, "utf8"));
           const holdings = JSON.parse(fs.readFileSync("holdings.json", "utf8"));
           const watchlist = JSON.parse(fs.readFileSync("watchlist.json", "utf8"));
           const dividends = JSON.parse(fs.readFileSync("dividends.json", "utf8"));
 
-          //-------------------------------------------
-          // UTILITIES
-          //-------------------------------------------
-          const num = x => Number(String(x).replace(/[^0-9.-]/g,"")) || 0;
+          const num = x => Number(String(x).replace(/[^0-9.-]/g, "")) || 0;
           const today = new Date();
 
-          //-------------------------------------------
-          // 1) BUILD ISA HOLDINGS (split IG + T212)
-          //-------------------------------------------
+          // =========================
+          // ISA HOLDINGS
+          // =========================
           aurora.isa = aurora.isa || {};
           aurora.isa.holdings = { ig_isa: [], trade212_isa: [] };
 
           holdings.forEach(row => {
-            const liveRow = watchlist.find(w => w.ticker?.toUpperCase() === row.ticker?.toUpperCase());
-            const live = num(liveRow?.live_price);
+            const liveRow = watchlist.find(w =>
+              (w.ticker || "").toUpperCase() === (row.ticker || "").toUpperCase()
+            );
 
+            const live = num(liveRow?.live_price);
             const shares = num(row.shares);
             const book = num(row.book_cost);
             const dps = num(row.annual_dividend_per_share);
@@ -85,128 +82,113 @@ jobs:
               gain_percentage: book > 0 ? ((shares * live - book) / book) * 100 : 0,
               annual_dividend_per_share: dps,
               annual_income: shares * dps,
-              annual_div_yield: live > 0 ? (dps / live * 100) : 0,
+              current_yield: live > 0 ? (dps / live) * 100 : 0,
               sector: row.sector,
-              last_updated: new Date().toISOString()
+              last_updated: new Date().toISOString().replace("T"," ").substring(0,19)
             };
 
-            if (row.account === "IG ISA") aurora.isa.holdings.ig_isa.push(obj);
-            if (row.account === "TRADE212") aurora.isa.holdings.trade212_isa.push(obj);
+            if (row.account === "IG ISA")
+              aurora.isa.holdings.ig_isa.push(obj);
+
+            if (row.account === "TRADE212")
+              aurora.isa.holdings.trade212_isa.push(obj);
           });
 
-          //-------------------------------------------
-          // 2) BUILD REITS + FINANCIALS OUTLOOK
-          //-------------------------------------------
-          const reitList = ["SUPR", "PHP", "FSFL", "GCP", "RGL"];
-          const finList = ["LGEN", "MNG", "PHNX"];
+          // =========================
+          // REITS OUTLOOK
+          // =========================
+          const REITS = ["SUPR", "PHP", "FSFL", "GCP", "RGL"];
 
           aurora.reits_outlook = {};
+
+          REITS.forEach(tkr => {
+            const row = watchlist.find(w =>
+              (w.ticker || "").toUpperCase() === tkr
+            );
+            if (!row) return;
+
+            aurora.reits_outlook[tkr] = {
+              ticker: tkr,
+              live_price: num(row.live_price),
+              fair_value: num(row.fair_value),
+              discount_pct: num(row["discount%"]),
+              status: row.status,
+              current_yield: num(row.current_yield),
+              buy_strength: row.buy_strength
+            };
+          });
+
+          // =========================
+          // FINANCIALS OUTLOOK
+          // =========================
+          const FINANCIALS = ["LGEN", "MNG", "PHNX"];
+
           aurora.financials_outlook = {};
 
-          const wlFetch = t => watchlist.find(w => w.ticker?.toUpperCase() === t);
+          FINANCIALS.forEach(tkr => {
+            const row = watchlist.find(w =>
+              (w.ticker || "").toUpperCase() === tkr
+            );
+            if (!row) return;
 
-          reitList.forEach(t => {
-            const w = wlFetch(t);
-            if (w) aurora.reits_outlook[t] = {
-              ticker: t,
-              live_price: num(w.live_price),
-              fair_value: num(w.fair_value),
-              discount_pct: num(w["discount%"]),
-              current_yield: num(w.current_yield),
-              status: w.status,
-              buy_strength: w.buy_strength,
-              updated: new Date().toISOString()
+            aurora.financials_outlook[tkr] = {
+              ticker: tkr,
+              live_price: num(row.live_price),
+              fair_value: num(row.fair_value),
+              discount_pct: num(row["discount%"]),
+              status: row.status,
+              current_yield: num(row.current_yield),
+              buy_strength: row.buy_strength
             };
           });
 
-          finList.forEach(t => {
-            const w = wlFetch(t);
-            if (w) aurora.financials_outlook[t] = {
-              ticker: t,
-              live_price: num(w.live_price),
-              fair_value: num(w.fair_value),
-              discount_pct: num(w["premium_discount_to_NAV%"]),
-              current_yield: num(w.current_yield),
-              status: w.status,
-              buy_strength: w.buy_strength,
-              updated: new Date().toISOString()
-            };
-          });
-
-          //-------------------------------------------
-          // 3) DIVIDENDS → Option 3 Logic
-          //-------------------------------------------
+          // =========================
+          // DIVIDENDS
+          // =========================
           aurora.dividends = aurora.dividends || {};
           aurora.dividends.upcoming = [];
           aurora.dividends.history = [];
 
           dividends.forEach(row => {
-            const pay = new Date(row.pay_date + "T00:00:00");
-            const logged = String(row.logged_to_json || "").trim().toLowerCase() === "yes";
+            const payDate = new Date(row.pay_date);
+            const logged = String(row.logged_to_json || "").toLowerCase() === "yes";
 
             const entry = {
-              account: row.account,
               ticker: row.ticker,
               name: row.name,
-              ex_div_date: row.ex_div_date,
               pay_date: row.pay_date,
+              ex_div_date: row.ex_div_date,
               dividend_per_share: num(row.dividend_per_share),
-              shares: num(row.shares),
-              total_dividend: num(row.total_dividend),
-              frequency: row.frequency,
-              status: row.status
+              shares: num(row.shares_at_exdiv),
+              total: num(row.total_dividend),
+              frequency: row.frequency
             };
 
-            // UPCOMING — future pay_date or blank status
-            if (pay >= today && !logged) {
+            if (payDate >= today) {
               aurora.dividends.upcoming.push(entry);
+            } else {
+              if (logged) aurora.dividends.history.push(entry);
             }
-
-            // Helper: normalise tickbox TRUE/FALSE or text "yes"
-            function isLogged(v) {
-            if (v === undefined || v === null) return false;
-
-            const s = String(v).trim().toLowerCase();
-            return (s === "yes" || s === "true");
-            }
-
-           // HISTORY + UPCOMING logic
-           rows.forEach(entry => {.   
-           const ex = new Date(entry.ex_div_date);
-           const pay = new Date(entry.pay_date);
-
-           const logged = isLogged(entry.logged_to_json);
-
-           // UPCOMING — future paydate
-           if (pay >= today) {
-           aurora.isa.dividends.upcoming.push(entry);
-           }
-
-          // HISTORY — paid + logged_to_json marked yes/true
-          if (pay < today && logged) {
-          aurora.isa.dividends.history.push(entry);
-          }
           });
 
-          //-------------------------------------------
-          // SAVE
-          //-------------------------------------------
-          fs.writeFileSync("AuroraSync.json", JSON.stringify(aurora, null, 2));
-          console.log("✓ AuroraSync.json updated successfully");
+          // =========================
+          // SAVE FILE
+          // =========================
+          fs.writeFileSync(auroraPath, JSON.stringify(aurora, null, 2));
           EOF
 
-      # ==========================================================================
-      # 3) FORMAT + COMMIT
-      # ==========================================================================
+      # ==============================================
+      # 3) COMMIT + PUSH
+      # ==============================================
       - name: 🧼 Format JSON
         run: |
           npx prettier --write "*.json" "**/*.json"
 
-      - name: 📤 Commit and Push
+      - name: 📤 Commit and Push Changes
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "Aurora Automation"
           git add -A
-          git commit -m "🔄 Aurora Master Sync – Full Update" || echo "No changes"
+          git commit -m "🔄 Aurora Master Sync – Live ISA Update" || echo "No changes"
           git pull --rebase --autostash
           git push
