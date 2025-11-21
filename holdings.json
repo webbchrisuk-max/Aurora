@@ -170,12 +170,13 @@
   },
   {
     "account": "TRADE212",
-    "ticker": "FSFL.L",
+    "ticker": "LON:FSFL",
     "name": "Foresight Solar Fund",
     "shares": "1633.210858",
     "book_cost": "1223.53",
     "annual_dividend_per_share": "0.07",
-    "sector": "Utilities/Renewable Energy"
+    "sector": "Utilities/Renewable Energy",
+    "undefined": "20-Nov-2025 18:44:33"
   },
   {
     "account": "IG ISA",
