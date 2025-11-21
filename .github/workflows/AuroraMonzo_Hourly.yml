@@ -223,7 +223,7 @@ jobs:
           core.monzo.transfers = JSON.parse(fs.readFileSync('transfers.json', 'utf8'));
 
           // NEW: Write MonzoCore sheet
-          core.monzo.core = JSON.parse(fs.readFileSync('monzo_core.json', 'utf8'));
+          core.monzo.core = JSON.parse(fs.readFileSync('MonzoCore.json', 'utf8'));
 
           fs.writeFileSync('AuroraMonzo.json', JSON.stringify(core, null, 2));
           EOF
