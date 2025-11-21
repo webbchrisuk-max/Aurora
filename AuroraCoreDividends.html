@@ -26,7 +26,6 @@ body{
   padding:0;
   font-family:'Orbitron',sans-serif;
 
-  /* STATIC BACKGROUND IMAGE */
   background-image: url(https://raw.githubusercontent.com/webbchrisuk-max/Aurora/main/.png/C1FEE15E-E445-4155-AFA5-94F85F22C952.png);
   background-size: cover;
   background-position: center;
@@ -36,7 +35,8 @@ body{
   color:#fff;
   overflow-x:hidden;
 }
-/* ===================== EXPANDER TEXT CENTRED ===================== */
+
+/* ===================== EXPANDER ENGINES ===================== */
 .expander-content-inner{
   text-align:center;
 }
@@ -193,6 +193,69 @@ body{
 const AURORA_SYNC =
 "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/main/AuroraSync.json";
 
+/* ============================================================
+   HOLDINGS ENGINE — FIXED & CLEAN
+============================================================ */
+function renderHoldings(sync){
+  const ig = sync?.isa?.holdings?.ig_isa || [];
+  const t2 = sync?.isa?.holdings?.trade212_isa || [];
+  const all = [...ig, ...t2];
+
+  if(all.length === 0){
+    document.getElementById("isa-holdings-compact").innerHTML =
+      "<p>No holdings found.</p>";
+    return;
+  }
+
+  /* ---------- COMPACT TOP 5 ---------- */
+  const top5 = [...all].sort((a,b)=>b.value-a.value).slice(0,5);
+
+  let compact = `
+    <table style="width:100%;text-align:center;">
+      <tr style="color:var(--cyan);font-weight:700;">
+        <td>Ticker</td><td>Value</td><td>Gain</td>
+      </tr>
+  `;
+  top5.forEach(h=>{
+    const col = h.gain_value >= 0 ? "var(--gainGreen)" : "var(--pink)";
+    compact += `
+      <tr>
+        <td>${h.ticker}</td>
+        <td>£${h.value.toFixed(2)}</td>
+        <td style="color:${col};">£${h.gain_value.toFixed(2)}</td>
+      </tr>`;
+  });
+  compact += `</table>`;
+  document.getElementById("isa-holdings-compact").innerHTML = compact;
+
+  /* ---------- FULL TABLE ---------- */
+  let full = `
+    <table style="width:100%;text-align:center;">
+      <tr style="color:var(--teal);font-weight:700;">
+        <td>Ticker</td><td>Shares</td><td>Price</td>
+        <td>Value</td><td>Gain £</td><td>Gain %</td><td>Yield</td>
+      </tr>
+  `;
+  all.forEach(h=>{
+    const col = h.gain_value >= 0 ? "var(--gainGreen)" : "var(--pink)";
+    full += `
+      <tr>
+        <td>${h.ticker}</td>
+        <td>${h.shares}</td>
+        <td>£${h.live_price.toFixed(2)}</td>
+        <td>£${h.value.toFixed(2)}</td>
+        <td style="color:${col};">£${h.gain_value.toFixed(2)}</td>
+        <td style="color:${col};">${h.gain_percentage.toFixed(2)}%</td>
+        <td>${h.annual_div_yield.toFixed(2)}%</td>
+      </tr>`;
+  });
+  full += `</table>`;
+  document.getElementById("isa-holdings-full").innerHTML = full;
+}
+
+/* ============================================================
+   JSON LOADER + INIT
+============================================================ */
 async function loadJSON(url){
   const r = await fetch(url + "?nocache=" + Date.now());
   return r.json();
@@ -205,36 +268,30 @@ async function initAurora(){
   renderTescoSections(sync);
   renderSayeProgress(sync);
   renderDividendTimeline(sync);
-
-  /* PHASE 1 NEW RENDERS */
   renderUpcomingDividends(sync);
   renderDividendHistory(sync);
   renderNextExDiv(sync);
-  renderAnnualDividendSummary(sync);
+
+  /* 🔥 FIXED: HOLDINGS NOW RENDERS */
+  renderHoldings(sync);
 }
 </script>
-</head>
 
+</head>
 <body onload="initAurora()">
 
 <h1 style="
-  text-align:center;
-  margin-top:25px;
-  color:var(--cyan);
-  font-size:30px;
-  text-shadow:0 0 18px var(--cyan);
+  text-align:center;margin-top:25px;color:var(--cyan);
+  font-size:30px;text-shadow:0 0 18px var(--cyan);
 ">
 🌌 Aurora ISA Tracker – Cinematic Edition v2
 </h1>
 
 <div style="
-  width:100%;
-  height:3px;
+  width:100%;height:3px;
   background:linear-gradient(90deg,var(--cyan),var(--purple),var(--teal));
-  margin:15px auto 25px auto;
-  max-width:800px;
-  border-radius:12px;
-  box-shadow:0 0 16px var(--cyan);
+  margin:15px auto 25px auto;max-width:800px;
+  border-radius:12px;box-shadow:0 0 16px var(--cyan);
 "></div>
 
 <div class="cinematic-grid">
@@ -242,407 +299,113 @@ async function initAurora(){
 <!-- ===================== LEFT PANEL ===================== -->
 <div class="left-panel">
 
+  <!-- PORTFOLIO SUMMARY -->
   <div class="holo-card">
     <div class="section-header">📊 Portfolio Summary</div>
     <div id="portfolio-summary"></div>
   </div>
 
+  <!-- ===================== HOLDINGS ===================== -->
+  <div class="holo-card">
+    <div class="section-header">📈 ISA Holdings</div>
+
+    <!-- Compact -->
+    <div id="isa-holdings-compact"></div>
+
+    <!-- Expander -->
+    <div class="expander-toggle">View Full Holdings ▼</div>
+    <div class="expander-content">
+      <div class="expander-content-inner" id="isa-holdings-full"></div>
+    </div>
+  </div>
+
+  <!-- ===================== TESCO ===================== -->
   <div class="holo-card">
     <div class="section-header">🛒 Tesco SIP • SAYE • ISA Migration</div>
 
-      <div class="expander-toggle">SIP Shares ▼</div>
-      <div class="expander-content"><div class="expander-content-inner" id="tesco-sip"></div></div>
+    <div class="expander-toggle">SIP Shares ▼</div>
+    <div class="expander-content"><div class="expander-content-inner" id="tesco-sip"></div></div>
 
-      <div class="expander-toggle">SAYE Plan ▼</div>
-      <div class="expander-content"><div class="expander-content-inner" id="tesco-saye"></div></div>
+    <div class="expander-toggle">SAYE Plan ▼</div>
+    <div class="expander-content"><div class="expander-content-inner" id="tesco-saye"></div></div>
 
-      <div class="expander-toggle">ISA Migration ▼</div>
-      <div class="expander-content"><div class="expander-content-inner" id="tesco-migration"></div></div>
+    <div class="expander-toggle">ISA Migration ▼</div>
+    <div class="expander-content"><div class="expander-content-inner" id="tesco-migration"></div></div>
 
-      <div class="expander-toggle">Aurora SAYE Progress ▼</div>
-      <div class="expander-content">
-        <div class="expander-content-inner">
-          <h3 style="color:var(--cyan);margin-bottom:10px;">SAYE Progress</h3>
+    <div class="expander-toggle">Aurora SAYE Progress ▼</div>
+    <div class="expander-content">
+      <div class="expander-content-inner">
 
-          <div id="saye-progress-wrap"><div id="saye-progress-bar"></div></div>
-          <div style="margin-bottom:15px;">
-            <span id="saye-progress-text" style="color:var(--teal);font-weight:700;">0%</span> complete
-          </div>
+        <h3 style="color:var(--cyan);margin-bottom:10px;">SAYE Progress</h3>
 
-          <h3 style="color:var(--cyan);margin-bottom:6px;">Time Remaining</h3>
-          <div id="saye-countdown" style="color:var(--amber);margin-bottom:14px;">Loading…</div>
-
-          <div class="expander-row"><span class="expander-label">Saved to Date</span><span class="expander-value" id="saye-saved"></span></div>
-          <div class="expander-row"><span class="expander-label">Funds Pending</span><span class="expander-value" id="saye-pending"></span></div>
-          <div class="expander-row"><span class="expander-label">Total Option Cost</span><span class="expander-value" id="saye-total"></span></div>
-          <div class="expander-row"><span class="expander-label">Maturity Date</span><span class="expander-value" id="saye-end"></span></div>
+        <div id="saye-progress-wrap"><div id="saye-progress-bar"></div></div>
+        <div style="margin-bottom:15px;">
+          <span id="saye-progress-text" style="color:var(--teal);font-weight:700;">0%</span> complete
         </div>
-      </div>
 
-  </div><!-- end card -->
-</div>
+        <h3 style="color:var(--cyan);margin-bottom:6px;">Time Remaining</h3>
+        <div id="saye-countdown" style="color:var(--amber);margin-bottom:14px;">Loading…</div>
+
+        <div class="expander-row"><span class="expander-label">Saved to Date</span><span class="expander-value" id="saye-saved"></span></div>
+        <div class="expander-row"><span class="expander-label">Funds Pending</span><span class="expander-value" id="saye-pending"></span></div>
+        <div class="expander-row"><span class="expander-label">Total Option Cost</span><span class="expander-value" id="saye-total"></span></div>
+        <div class="expander-row"><span class="expander-label">Maturity Date</span><span class="expander-value" id="saye-end"></span></div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div><!-- LEFT -->
 
 <!-- ===================== RIGHT PANEL ===================== -->
 <div class="right-panel">
 
-  <!-- DIVIDEND TIMELINE -->
   <div class="holo-card">
     <div class="section-header">📈 Dividend Timeline</div>
     <canvas id="divTimeline"></canvas>
   </div>
 
-  <!-- UPCOMING DIVIDENDS -->
   <div class="holo-card">
     <div class="section-header">📆 Upcoming Dividends</div>
-
-    <!-- first 10 here -->
     <div id="upcoming-dividends-limited"></div>
-
-    <!-- toggle -->
     <div class="expander-toggle" id="toggle-upcoming">Show More ▼</div>
 
-    <!-- expandable full list -->
     <div class="expander-content">
       <div class="expander-content-inner" id="upcoming-dividends-full"></div>
     </div>
   </div>
 
-  <!-- DIVIDEND HISTORY -->
   <div class="holo-card">
     <div class="section-header">📜 Dividend History</div>
-
     <div class="expander-toggle">View History ▼</div>
     <div class="expander-content">
       <div class="expander-content-inner" id="dividend-history"></div>
     </div>
   </div>
 
-  <!-- NEXT EX-DIV -->
   <div class="holo-card">
     <div class="section-header">🔔 Next Ex-Dividend Dates</div>
     <div id="next-exdiv"></div>
   </div>
 
-</div><!-- END RIGHT PANEL -->
+</div><!-- RIGHT -->
 
-</div><!-- END GRID -->
+</div><!-- GRID -->
 
-<!-- ===================== JS FUNCTIONS ===================== -->
 <script>
-/* ---------- Portfolio Summary ---------- */
-function renderPortfolio(sync){
-  const ig = sync?.isa?.holdings?.ig_isa || [];
-  const t2 = sync?.isa?.holdings?.trade212_isa || [];
-
-  const igVal = ig.reduce((s,h)=>s+(+h.value||0),0);
-  const t2Val = t2.reduce((s,h)=>s+(+h.value||0),0);
-
-  const total = igVal + t2Val;
-  const income = sync?.isa?.portfolio_summary?.annual_income_gbp || 0;
-
-  document.getElementById("portfolio-summary").innerHTML = `
-    <p><strong>IG ISA:</strong> £${igVal.toFixed(2)}</p>
-    <p><strong>Trade212 ISA:</strong> £${t2Val.toFixed(2)}</p>
-    <p><strong>Total Value:</strong> £${total.toFixed(2)}</p>
-    <p><strong>Annual Income:</strong> £${income.toFixed(2)}</p>
-  `;
-}
-
-/* ---------- Tesco Panels ---------- */
-function renderTescoSections(sync){
-  const t = sync?.tesco?.summary;
-  const m = sync?.tesco?.isa_migration_plan;
-
-  document.getElementById("tesco-sip").innerHTML = `
-    <div class="expander-row"><span class="expander-label">Total Shares</span><span class="expander-value">${t.sip_total_shares}</span></div>
-    <div class="expander-row"><span class="expander-label">Value</span><span class="expander-value">£${t.sip_value_gbp.toFixed(2)}</span></div>
-    <div class="expander-row"><span class="expander-label">Average Cost</span><span class="expander-value">£${t.sip_average_cost.toFixed(2)}</span></div>
-    <div class="expander-row"><span class="expander-label">Gain</span><span class="expander-value glow-gain">£${t.sip_gain_gbp.toFixed(2)}</span></div>
-  `;
-
-  document.getElementById("tesco-saye").innerHTML = `
-    <div class="expander-row"><span class="expander-label">Options</span><span class="expander-value">${t.saye_total_options}</span></div>
-    <div class="expander-row"><span class="expander-label">Option Price</span><span class="expander-value">£${t.saye_option_price.toFixed(2)}</span></div>
-    <div class="expander-row"><span class="expander-label">Current Value</span><span class="expander-value">£${t.saye_current_value_gbp.toFixed(2)}</span></div>
-    <div class="expander-row"><span class="expander-label">Potential Gain</span><span class="expander-value glow-gain">£${t.saye_potential_gain_gbp.toFixed(2)}</span></div>
-  `;
-
-  let mig="";
-  mig += `
-    <div class="expander-row">
-      <span class="expander-label">Maturity Date</span>
-      <span class="expander-value">${m.maturity_date}</span>
-    </div>
-    <hr style="opacity:.2; margin:10px 0;">
-  `;
-
-  for(const [year,text] of Object.entries(m.tax_years)){
-    mig += `
-      <div class="expander-row">
-        <span class="expander-label">${year.replace("_","/")}</span>
-        <span class="expander-value">${text}</span>
-      </div>`;
-  }
-  document.getElementById("tesco-migration").innerHTML = mig;
-}
-
-/* ---------- SAYE PROGRESS ---------- */
-function renderSayeProgress(sync){
-  const p = sync?.tesco?.saye_progress;
-
-  const saved = +p.savings_to_date || 0;
-  const pending = +p.funds_pending || 0;
-  const total = +p.total_option_cost || 1;
-  const pct = ((saved+pending)/total)*100;
-
-  document.getElementById("saye-saved").textContent = "£"+saved.toFixed(2);
-  document.getElementById("saye-pending").textContent = "£"+pending.toFixed(2);
-  document.getElementById("saye-total").textContent = "£"+total.toFixed(2);
-  document.getElementById("saye-end").textContent = p.end_date;
-
-  const toggles=document.querySelectorAll(".expander-toggle");
-  toggles.forEach(t=>{
-    t.addEventListener("click",()=>{
-      if(t.textContent.includes("Aurora SAYE Progress")){
-        setTimeout(()=>{
-          document.getElementById("saye-progress-bar").style.width=pct.toFixed(2)+"%";
-          document.getElementById("saye-progress-text").textContent=pct.toFixed(2)+"%";
-        },150);
-      }
-    });
-  });
-
-  function updateCountdown(){
-    const end=new Date(p.end_date);
-    const now=new Date();
-    const diff=end-now;
-
-    if(diff<=0){
-      document.getElementById("saye-countdown").textContent="Completed";
-      return;
-    }
-
-    const d=Math.floor(diff/86400000);
-    const h=Math.floor((diff/3600000)%24);
-    const m=Math.floor((diff/60000)%60);
-    const s=Math.floor((diff/1000)%60);
-
-    document.getElementById("saye-countdown").textContent =
-      `${d}d • ${h}h ${m}m ${s}s`;
-  }
-  setInterval(updateCountdown,1000);
-  updateCountdown();
-}
-
-/* ---------- DIVIDEND TIMELINE (NEW – AUTO CALC) ---------- */
-function renderDividendTimeline(sync){
-
-  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  const totals = Array(12).fill(0);
-
-  const hist = sync?.dividends?.history || [];
-  const upcoming = sync?.dividends?.upcoming || [];
-
-  const all = [...hist, ...upcoming];
-
-  all.forEach(d => {
-    if(!d.pay_date) return;
-    const dt = new Date(d.pay_date);
-    const m = dt.getMonth();   // 0 = Jan
-    totals[m] += Number(d.total || 0);
-  });
-
-  const ctx = document.getElementById("divTimeline").getContext("2d");
-
-  new Chart(ctx,{
-    type:"line",
-    data:{
-      labels: months,
-      datasets:[{
-        label:"Dividends",
-        data: totals,
-        tension:0.45,
-        borderWidth:3,
-        borderColor:"#00eaff",
-        pointRadius:6,
-        pointHoverRadius:12,
-        pointBackgroundColor:"#00ffd0",
-        pointBorderColor:"#ffffff",
-        pointBorderWidth:2
-      }]
-    },
-    options:{
-      responsive:true,
-      plugins:{
-        legend:{display:false},
-        tooltip:{
-          enabled:true,
-          yAlign:"bottom",
-          xAlign:"center",
-          caretPadding:15,
-          backgroundColor:"rgba(0,255,255,0.18)",
-          borderColor:"#00eaff",
-          borderWidth:1.2,
-          titleColor:"#00eaff",
-          bodyColor:"#ffffff",
-          displayColors:false,
-          padding:10,
-          cornerRadius:10
-        }
-      },
-      scales:{
-        x:{ticks:{color:"#00eaff"},grid:{display:false}},
-        y:{ticks:{color:"#00ffd0"},grid:{color:"rgba(255,255,255,0.05)"}}
-      }
-    }
-  });
-}
-/* ============================================================
-   UPDATED DIVIDEND SECTIONS (PHASE 1 CLEAN VERSION)
-============================================================ */
-
-/* ---------- UPCOMING DIVIDENDS (limit 10 + full dropdown) ---------- */
-function renderUpcomingDividends(sync){
-  const rows = sync?.isa?.dividends?.upcoming || [];
-  const today = new Date();
-
-  // FUTURE ONLY
-  const future = rows.filter(r => new Date(r.pay_date) >= today);
-
-  // SORT BY PAYDATE
-  const sorted = [...future].sort((a,b)=>
-    new Date(a.pay_date) - new Date(b.pay_date)
-  );
-
-  // FIRST 10 ONLY
-  const limited = sorted.slice(0,10);
-
-  // EVERYTHING AFTER THE FIRST 10
-  const remaining = sorted.slice(10);
-
-  /* ---------- PREVIEW TABLE (first 10 only) ---------- */
-  let htmlLimited = `
-    <table style="width:100%; text-align:center;">
-      <tr style="color:var(--cyan); font-weight:700;">
-        <td>Ticker</td><td>Ex-Div</td><td>Pay</td><td>Total</td>
-      </tr>
-  `;
-  limited.forEach(r=>{
-  htmlLimited += `
-      <tr>
-        <td>${r.ticker}</td>
-        <td style="color:var(--amber);">${r.ex_div_date}</td>
-        <td style="color:var(--gainGreen);">${r.pay_date}</td>
-        <td>£${(+r.total_dividend).toFixed(2)}</td>
-      </tr>
-    `;
-});
-htmlLimited += "</table>";
-
-  document.getElementById("upcoming-dividends-limited").innerHTML = htmlLimited;
-
-  /* ---------- FULL TABLE (remaining only) ---------- */
-  if(remaining.length === 0){
-    document.getElementById("upcoming-dividends-full").innerHTML =
-      "<p>No more dividends beyond the first ten.</p>";
-    return;
-  }
-
-  let htmlFull = `
-    <table style="width:100%; text-align:center;">
-      <tr style="color:var(--teal); font-weight:700;">
-        <td>Ticker</td><td>Ex-Div</td><td>Pay</td><td>Total</td>
-      </tr>
-  `;
-  remaining.forEach(r=>{
-  htmlFull += `
-      <tr>
-        <td>${r.ticker}</td>
-        <td style="color:var(--amber);">${r.ex_div_date}</td>
-        <td style="color:var(--gainGreen);">${r.pay_date}</td>
-        <td>£${(+r.total_dividend).toFixed(2)}</td>
-      </tr>
-    `;
-});
-htmlFull += "</table>";
-  document.getElementById("upcoming-dividends-full").innerHTML = htmlFull;
-}
-  
-/* ---------- DIVIDEND HISTORY (dropdown only) ---------- */
-function renderDividendHistory(sync){
-  const rows = sync?.isa?.dividends?.history || [];
-
-  if(rows.length === 0){
-    document.getElementById("dividend-history").innerHTML =
-      "<p>No paid dividends logged.</p>";
-    return;
-  }
-
-  let html = `
-    <table style="width:100%; text-align:center;">
-      <tr style="color:var(--pink); font-weight:700;">
-        <td>Ticker</td>
-        <td>Pay Date</td>
-        <td>Total</td>
-      </tr>
-  `;
-
-  rows.forEach(r=>{
-    html += `
-      <tr>
-        <td>${r.ticker}</td>
-        <td>${r.pay_date}</td>
-        <td>£${(+r.total_dividend).toFixed(2)}</td>
-      </tr>
-    `;
-  });
-
-  html += "</table>";
-  document.getElementById("dividend-history").innerHTML = html;
-}
-
-/* ---------- NEXT 5 EX-DIV DATES (future only) ---------- */
-function renderNextExDiv(sync){
-  const today = new Date();
-  const rows = sync?.isa?.dividends?.upcoming || [];
-
-  const sorted = rows
-    .filter(r => new Date(r.ex_div_date) >= today)
-    .sort((a,b)=> new Date(a.ex_div_date) - new Date(b.ex_div_date))
-    .slice(0,5);
-
-  if(sorted.length===0){
-    document.getElementById("next-exdiv").innerHTML =
-      "<p>No upcoming ex-div dates.</p>";
-    return;
-  }
-
-  let html = "<ul style='list-style:none; padding-left:0'>";
-  sorted.forEach(r=>{
-    html += `
-      <li style="margin:6px 0;">
-        <strong style="color:var(--teal);">${r.ticker}</strong> — 
-        <span style="color:var(--amber);">${r.ex_div_date}</span>
-      </li>
-    `;
-  });
-  html += "</ul>";
-
-  document.getElementById("next-exdiv").innerHTML = html;
-}
-/* ---------- EXPANDERS ---------- */
+/* ---------- Expanders ---------- */
 document.addEventListener("click",e=>{
   if(!e.target.classList.contains("expander-toggle")) return;
-
   const t=e.target;
   const c=t.nextElementSibling;
 
   if(c.style.maxHeight){
-    c.style.maxHeight=null;
-    t.textContent=t.textContent.replace("▲","▼");
-  }else{
-    c.style.maxHeight=c.scrollHeight+"px";
-    t.textContent=t.textContent.replace("▼","▲");
+    c.style.maxHeight = null;
+    t.textContent = t.textContent.replace("▲","▼");
+  } else {
+    c.style.maxHeight = c.scrollHeight + "px";
+    t.textContent = t.textContent.replace("▼","▲");
   }
 });
 </script>
