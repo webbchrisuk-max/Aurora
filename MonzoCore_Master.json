@@ -1,6 +1,6 @@
 {
   "monzo": {
-    "updated_at": "2025-11-22T16:41:27.098Z",
+    "updated_at": "2025-11-22T17:30:18.319Z",
     "main_balance": 466.74,
     "pots": [
       {
@@ -25,7 +25,7 @@
       },
       {
         "label": "IGTrading",
-        "value": 12.5
+        "value": 17.05
       },
       {
         "label": "Car Maintenance",
