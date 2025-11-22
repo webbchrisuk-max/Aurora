@@ -25,7 +25,6 @@ body{
   padding:0;
   font-family:'Orbitron',sans-serif;
 
-  /* FROSTY MOUNTAIN HYPERNOVA BACKGROUND */
   background-image: url(https://raw.githubusercontent.com/webbchrisuk-max/Aurora/main/.png/A5E8897C-C701-4579-A603-E160E8EFD08D.png);
   background-size: cover;
   background-position: center;
@@ -43,7 +42,7 @@ body{
   padding:20px;
 }
 
-/* ===== Frosted Glass Hypernova Cards ===== */
+/* ===== Frosted Cards ===== */
 .frost-card{
   background: rgba(255,255,255,0.12);
   border-radius: 22px;
@@ -53,7 +52,8 @@ body{
   box-shadow: 0 0 25px rgba(0,255,255,0.25);
   margin-bottom: 28px;
 }
-/* ===== STANDARD CARD (Overview + Holdings) ===== */
+
+/* ===== Standard Card ===== */
 .card{
   background: rgba(0,0,0,0.45);
   border-radius: 22px;
@@ -81,24 +81,14 @@ body{
   text-align:center;
 }
 
-/* Chart containers */
+/* Charts */
 #sectorChart, #quarterChart{
   width: 100%;
   height: 260px;
   margin-top: 12px;
 }
 
-th{
-  color:var(--teal);
-  padding:10px;
-  border-bottom:1px solid rgba(255,255,255,0.2);
-}
-
-td{
-  padding:8px;
-  border-bottom:1px solid rgba(255,255,255,0.1);
-}
-  /* ===== FROSTED GLASS HOLDINGS TABLE (Hypernova Frost Match) ===== */
+/* ===== Frosted Holdings Table ===== */
 .holdings-table-wrapper {
   background: rgba(255,255,255,0.10);
   padding: 18px;
@@ -109,7 +99,16 @@ td{
   margin-top: 14px;
 }
 
-  .holdings-table th {
+.holdings-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255,255,255,0.06);
+  border-radius: 16px;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+}
+
+.holdings-table th {
   color: var(--cyan);
   padding: 12px;
   font-size: 15px;
@@ -126,7 +125,6 @@ td{
   font-size: 14px;
 }
 
-/* Subtle hover ice shimmer */
 .holdings-table tr:hover {
   background: rgba(255,255,255,0.12);
 }
@@ -149,7 +147,9 @@ td{
   transition:max-height .35s ease;
 }
 </style>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
 const URL_JSON = "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/main/AuroraSync.json";
 
@@ -162,38 +162,34 @@ async function init(){
   const sync = await loadJSON();
   renderOverview(sync);
   renderHoldings(sync);
-
-  /* FIXED — moved from bottom */
   renderSectorBreakdown(sync);
   renderQuarterlyIncome(sync);
 }
 
-/* ===== OVERVIEW CARD ===== */
+/* ===== OVERVIEW ===== */
 function renderOverview(sync){
   const ig = sync?.isa?.holdings?.ig_isa || [];
   const t2 = sync?.isa?.holdings?.trade212_isa || [];
 
   const igVal = ig.reduce((a,h)=>a + (+h.value||0),0);
   const t2Val = t2.reduce((a,h)=>a + (+h.value||0),0);
-  const total = igVal + t2Val;
 
   document.getElementById("overview").innerHTML = `
     <p><strong>IG ISA:</strong> £${igVal.toFixed(2)}</p>
     <p><strong>Trade212 ISA:</strong> £${t2Val.toFixed(2)}</p>
     <p style="color:var(--cyan); font-size:1.2rem; margin-top:10px;">
-      <strong>Total Portfolio:</strong> £${total.toFixed(2)}
-    </p>
-  `;
+      <strong>Total Portfolio:</strong> £${(igVal+t2Val).toFixed(2)}
+    </p>`;
 }
 
-/* ===== HOLDINGS TABLE ===== */
+/* ===== HOLDINGS ===== */
 function renderHoldings(sync){
-  const ig = sync?.isa?.holdings?.ig_isa || [];
-  const t2 = sync?.isa?.holdings?.trade212_isa || [];
-  const all = [...ig, ...t2];
+  const all = [
+    ...(sync?.isa?.holdings?.ig_isa || []),
+    ...(sync?.isa?.holdings?.trade212_isa || [])
+  ];
 
   let html = `
-    let html = `
     <div class="holdings-table-wrapper">
       <table class="holdings-table">
         <thead>
@@ -205,81 +201,69 @@ function renderHoldings(sync){
           </tr>
         </thead>
         <tbody>
-
   `;
 
   all.forEach(h=>{
-    const col = h.gain_value >=0 ? "var(--green)" : "var(--pink)";
+    const col = h.gain_value >= 0 ? "var(--green)" : "var(--pink)";
     html += `
-        <tr>
-          <td>${h.ticker}</td>
-          <td>${h.shares}</td>
-          <td>£${h.value.toFixed(2)}</td>
-          <td style="color:${col};">£${h.gain_value.toFixed(2)}</td>
-        </tr>
-      `;
+      <tr>
+        <td>${h.ticker}</td>
+        <td>${h.shares}</td>
+        <td>£${h.value.toFixed(2)}</td>
+        <td style="color:${col};">£${h.gain_value.toFixed(2)}</td>
+      </tr>`;
   });
 
   html += `
+        </tbody>
       </table>
     </div>
   `;
 
   document.getElementById("holdings-full").innerHTML = html;
 }
-/* ===== SECTOR BREAKDOWN ===== */
+
+/* ===== SECTOR CHART ===== */
 function renderSectorBreakdown(sync){
-  const ig = sync?.isa?.holdings?.ig_isa || [];
-  const t2 = sync?.isa?.holdings?.trade212_isa || [];
-  const all = [...ig, ...t2];
+  const all = [
+    ...(sync?.isa?.holdings?.ig_isa || []),
+    ...(sync?.isa?.holdings?.trade212_isa || [])
+  ];
 
-  const sectorTotals = {};
-
+  const sectors = {};
   all.forEach(h=>{
-    const sector = h.sector || "Unknown";
-    const val = parseFloat(h.value || 0);
-    sectorTotals[sector] = (sectorTotals[sector] || 0) + val;
+    const s = h.sector || "Unknown";
+    sectors[s] = (sectors[s] || 0) + Number(h.value);
   });
-
-  const labels = Object.keys(sectorTotals);
-  const data = Object.values(sectorTotals);
 
   new Chart(document.getElementById("sectorChart"), {
     type: "doughnut",
     data: {
-      labels,
+      labels: Object.keys(sectors),
       datasets: [{
-        data,
+        data: Object.values(sectors),
         borderWidth: 2,
-        borderColor: "#ffffff",
+        borderColor: "#fff"
       }]
     },
-    options: {
-      plugins:{
-        legend:{labels:{color:"#e9ffff"}}
-      }
+    options:{
+      plugins:{ legend:{ labels:{ color:"#e9ffff" } } }
     }
   });
 }
 
-/* ===== QUARTERLY (REAL CALCULATED TOTALS) ===== */
+/* ===== QUARTERS ===== */
 function renderQuarterlyIncome(sync){
-
-  // HARD-CODED QUARTER TOTALS FROM FULL DATASET
   const q4_2025 = 1965.68;
   const q1_2026 = 589.76;
   const q2_2026 = 1749.24;
   const q3_2026 = 412.20;
 
-  // If future dates exist (2026 Q4 onward), calculate automatically
   let future = 0;
-
-  const rows = sync?.isa?.dividends?.upcoming || [];
-  rows.forEach(r=>{
-    if(!r.pay_date || !r.total_dividend) return;
-
+  (sync?.isa?.dividends?.upcoming || []).forEach(r=>{
+    if(!r.pay_date) return;
     const d = new Date(r.pay_date);
-    if(d.getFullYear() >= 2026 && d.getMonth() >= 9){   // Oct+ 2026
+    if(d.getFullYear()>=2026 && d.getMonth()>=9){
       future += Number(r.total_dividend);
     }
   });
@@ -287,22 +271,10 @@ function renderQuarterlyIncome(sync){
   new Chart(document.getElementById("quarterChart"), {
     type:"bar",
     data:{
-      labels:[
-        "Q4 2025",
-        "Q1 2026",
-        "Q2 2026",
-        "Q3 2026",
-        "Q4 2026+"
-      ],
+      labels:["Q4 2025","Q1 2026","Q2 2026","Q3 2026","Q4 2026+"],
       datasets:[{
         label:"£ Income",
-        data:[
-          q4_2025,
-          q1_2026,
-          q2_2026,
-          q3_2026,
-          future
-        ],
+        data:[q4_2025,q1_2026,q2_2026,q3_2026,future],
         borderWidth:2
       }]
     },
@@ -311,65 +283,59 @@ function renderQuarterlyIncome(sync){
         x:{ticks:{color:"#d8faff"}},
         y:{ticks:{color:"#d8faff"}}
       },
-      plugins:{
-        legend:{labels:{color:"#d8faff"}}
-      }
+      plugins:{ legend:{ labels:{ color:"#d8faff" } } }
     }
   });
 }
+
 /* ===== EXPANDERS ===== */
 document.addEventListener("click",e=>{
-  if(!e.target.classList.contains("toggle")) return;
-  const box = e.target.nextElementSibling;
-  box.style.maxHeight = box.style.maxHeight ? null : box.scrollHeight + "px";
+  if(e.target.classList.contains("toggle")){
+    const box = e.target.nextElementSibling;
+    box.style.maxHeight = box.style.maxHeight ? null : box.scrollHeight + "px";
+  }
 });
-
 </script>
 </head>
-<body onload="init()">
 
+<body onload="init()">
 <div class="wrapper">
 
-  <!-- TITLE -->
-  <h1 style="color:var(--cyan); text-align:center; text-shadow:0 0 18px var(--cyan);">
-    ❄ Aurora ISA — Nebula Frost Dark
-  </h1>
+<h1 style="color:var(--cyan); text-align:center; text-shadow:0 0 18px var(--cyan);">
+  ❄ Aurora ISA — Nebula Frost Dark
+</h1>
 
-  <!-- ===== OVERVIEW CARD ===== -->
-  <div class="card">
-    <h2>📊 ISA Overview</h2>
-    <div id="overview"></div>
-  </div>
-  
-  <div class="right-panel">
+<!-- OVERVIEW -->
+<div class="card">
+  <h2>📊 ISA Overview</h2>
+  <div id="overview"></div>
+</div>
 
-  <!-- Existing cards (timeline, upcoming, history, etc.) -->
+<div class="right-panel">
 
-  <!-- ===================== SECTOR BREAKDOWN ===================== -->
-  <div class="frost-card">
-    <div class="section-title">📊 Sector Breakdown</div>
-    <canvas id="sectorChart"></canvas>
-  </div>
+<!-- SECTOR -->
+<div class="frost-card">
+  <div class="section-title">📊 Sector Breakdown</div>
+  <canvas id="sectorChart"></canvas>
+</div>
 
-  <!-- ===================== QUARTERLY INCOME ===================== -->
-  <div class="frost-card">
-    <div class="section-title">📆 Quarterly Income Projection</div>
-    <canvas id="quarterChart"></canvas>
-  </div>
+<!-- QUARTERS -->
+<div class="frost-card">
+  <div class="section-title">📆 Quarterly Income Projection</div>
+  <canvas id="quarterChart"></canvas>
+</div>
 
 </div>
 
-  <!-- ===== HOLDINGS CARD ===== -->
-  <div class="card">
-    <h2>📈 ISA Holdings</h2>
-
-    <div class="toggle">Show Holdings ▼</div>
-    <div class="expander">
-      <div id="holdings-full" style="padding-top:15px;"></div>
-    </div>
+<!-- HOLDINGS -->
+<div class="card">
+  <h2>📈 ISA Holdings</h2>
+  <div class="toggle">Show Holdings ▼</div>
+  <div class="expander">
+    <div id="holdings-full" style="padding-top:15px;"></div>
   </div>
-
 </div>
 
+</div>
 </body>
 </html>
