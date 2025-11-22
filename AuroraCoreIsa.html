@@ -208,33 +208,38 @@ function renderOverview(sync){
 function renderHoldings(sync){
   const ig = sync?.isa?.holdings?.ig_isa || [];
   const t2 = sync?.isa?.holdings?.trade212_isa || [];
-  const all = [...ig,...t2];
+  const all = [...ig, ...t2];
 
   let html = `
-    <table>
-      <tr>
-        <th>Ticker</th>
-        <th>Shares</th>
-        <th>Value</th>
-        <th>Gain</th>
-      </tr>
+    <div class="holdings-table-wrapper">
+      <table class="holdings-table">
+        <tr>
+          <th>Ticker</th>
+          <th>Shares</th>
+          <th>Value</th>
+          <th>Gain</th>
+        </tr>
   `;
 
   all.forEach(h=>{
     const col = h.gain_value >=0 ? "var(--green)" : "var(--pink)";
     html += `
-      <tr>
-        <td>${h.ticker}</td>
-        <td>${h.shares}</td>
-        <td>£${h.value.toFixed(2)}</td>
-        <td style="color:${col};">£${h.gain_value.toFixed(2)}</td>
-      </tr>`;
+        <tr>
+          <td>${h.ticker}</td>
+          <td>${h.shares}</td>
+          <td>£${h.value.toFixed(2)}</td>
+          <td style="color:${col};">£${h.gain_value.toFixed(2)}</td>
+        </tr>
+      `;
   });
 
-  html += `</table>`;
+  html += `
+      </table>
+    </div>
+  `;
+
   document.getElementById("holdings-full").innerHTML = html;
 }
-
 /* ===== SECTOR BREAKDOWN ===== */
 function renderSectorBreakdown(sync){
   const ig = sync?.isa?.holdings?.ig_isa || [];
