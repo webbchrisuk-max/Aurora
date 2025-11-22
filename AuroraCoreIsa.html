@@ -193,14 +193,19 @@ function renderHoldings(sync){
   const all = [...ig, ...t2];
 
   let html = `
+    let html = `
     <div class="holdings-table-wrapper">
       <table class="holdings-table">
-        <tr>
-          <th>Ticker</th>
-          <th>Shares</th>
-          <th>Value</th>
-          <th>Gain</th>
-        </tr>
+        <thead>
+          <tr>
+            <th>Ticker</th>
+            <th>Shares</th>
+            <th>Value</th>
+            <th>Gain</th>
+          </tr>
+        </thead>
+        <tbody>
+
   `;
 
   all.forEach(h=>{
