@@ -134,6 +134,32 @@ body{
   backdrop-filter: blur(12px);
   transition: all 0.25s ease;
 }
+/* ===== iPhone Responsive Fix for Frosted Holdings Table ===== */
+.holdings-table-wrapper {
+  overflow-x: auto;              /* allows sideways scroll if needed */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Force table to shrink nicely */
+.holdings-table {
+  width: 100%;
+  table-layout: fixed;           /* prevents columns from exploding wider than screen */
+  word-wrap: break-word;         /* wraps long text */
+}
+
+/* Tighter padding on phones */
+@media (max-width: 480px) {
+  .holdings-table th,
+  .holdings-table td {
+    padding: 8px 6px;
+    font-size: 12px;             /* cleaner on iPhone screens */
+  }
+
+  .holdings-table-wrapper {
+    padding: 12px;
+    border-radius: 14px;
+  }
+}
 
 /* ===== EXPANDERS ===== */
 .toggle{
