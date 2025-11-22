@@ -106,6 +106,48 @@ td{
   padding:8px;
   border-bottom:1px solid rgba(255,255,255,0.1);
 }
+  /* ===== FROSTED GLASS HOLDINGS TABLE (Hypernova Frost Match) ===== */
+.holdings-table-wrapper {
+  background: rgba(255,255,255,0.10);
+  padding: 18px;
+  border-radius: 20px;
+  backdrop-filter: blur(12px) brightness(1.25);
+  border: 1px solid rgba(255,255,255,0.28);
+  box-shadow: 0 0 22px rgba(0,255,255,0.25);
+  margin-top: 14px;
+}
+
+/* Table itself */
+.holdings-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.holdings-table th {
+  color: var(--cyan);
+  padding: 12px;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  background: rgba(255,255,255,0.12);
+  border-bottom: 1px solid rgba(255,255,255,0.25);
+  text-shadow: 0 0 10px var(--cyan);
+}
+
+.holdings-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  color: #eaffff;
+  font-size: 14px;
+}
+
+/* Subtle hover ice shimmer */
+.holdings-table tr:hover {
+  background: rgba(255,255,255,0.12);
+}
 
 /* ===== EXPANDERS ===== */
 .toggle{
