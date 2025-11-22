@@ -33,6 +33,7 @@ body{
   padding:0;
   font-family:'Orbitron',sans-serif;
 
+  /* 🌌 Your background image (unchanged) */
   background-image: url(https://raw.githubusercontent.com/webbchrisuk-max/Aurora/main/.png/46DA7C1E-D8CF-4590-B8B8-34E46FE76CFC.png);
   background-size: cover;
   background-position: center;
@@ -44,28 +45,35 @@ body{
   position:relative;
 }
 
-/* ===========================================================
-   ULTRA AURORA OVERLAY (ANIMATED)
-   =========================================================== */
+/* ⭐ NEW — Darken layer to allow glows + animations to become visible */
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.38);  /* ← Adjust 0.30–0.50 until perfect */
+  z-index:0;
+  pointer-events:none;
+}
+
+/* ⭐ NEW — Ultra Aurora Animated Overlay (now visible!) */
 body::before{
   content:"";
   position:fixed;
-  top:0; left:0;
-  width:100%; height:100%;
+  inset:0;
   pointer-events:none;
+  z-index:1;
 
   background:
-    radial-gradient(circle at 20% 30%, rgba(94,255,255,0.16), transparent 60%),
-    radial-gradient(circle at 85% 70%, rgba(255,105,255,0.18), transparent 55%),
-    radial-gradient(circle at 40% 90%, rgba(60,255,220,0.12), transparent 70%);
+    radial-gradient(circle at 20% 30%, rgba(94,255,255,0.40), transparent 60%),
+    radial-gradient(circle at 85% 70%, rgba(255,105,255,0.45), transparent 55%),
+    radial-gradient(circle at 40% 90%, rgba(60,255,220,0.35), transparent 70%);
 
-  animation: auroraDrift 14s infinite alternate ease-in-out;
-  z-index:0;
+  animation:auroraDrift 14s infinite alternate ease-in-out;
 }
 
 @keyframes auroraDrift{
-  0% { transform:translateY(0px) scale(1); opacity:0.7; }
-  100% { transform:translateY(-16px) scale(1.05); opacity:1; }
+  0% { transform:translateY(0px) scale(1); opacity:0.75; }
+  100% { transform:translateY(-18px) scale(1.05); opacity:1; }
 }
 
 /* ===========================================================
