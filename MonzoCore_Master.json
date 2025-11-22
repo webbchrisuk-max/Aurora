@@ -1,7 +1,7 @@
 {
   "monzo": {
-    "updated_at": "2025-11-22T15:30:03.954Z",
-    "main_balance": 479.24,
+    "updated_at": "2025-11-22T16:41:27.098Z",
+    "main_balance": 466.74,
     "pots": [
       {
         "label": "Flex Account",
@@ -234,13 +234,14 @@
         "UID": "45979-Main Account-Flex Repayment-200"
       },
       {
-        "Date": "",
-        "From Pot": "",
-        "To Pot": "",
-        "Amount": "",
-        "Note": "",
-        "Processed": "",
-        "Type": "Transfer"
+        "Date": "2025-11-22",
+        "From Pot": "Main Account",
+        "To Pot": "IGTrading",
+        "Amount": "4.5",
+        "Note": "Round Up from Spending",
+        "Processed": "TRUE",
+        "Type": "Roundup",
+        "UID": "45983-Main Account-IGTrading-4.5"
       }
     ],
     "direct_debits": [
@@ -1406,6 +1407,18 @@
         "Processed": "TRUE",
         "Exclude From Spend": "",
         "Gmail ID": "19aabc0442d4efe7"
+      },
+      {
+        "Date": "22/11/2025",
+        "Time": "15:55:00",
+        "Merchant": "Transfer to Chidlow",
+        "Amount (£)": "8.00",
+        "Type": "Debit",
+        "Source": "Main Account",
+        "Email Subject": "",
+        "Category": "Transfer",
+        "Processed": "TRUE",
+        "Exclude From Spend": "FALSE"
       }
     ]
   }
