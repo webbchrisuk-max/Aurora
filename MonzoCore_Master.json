@@ -1,7 +1,7 @@
 {
   "monzo": {
-    "updated_at": "2025-11-22T11:23:46.600Z",
-    "main_balance": 527.34,
+    "updated_at": "2025-11-22T13:04:00.644Z",
+    "main_balance": 499.24,
     "pots": [
       {
         "label": "Flex Account",
@@ -1367,6 +1367,32 @@
         "Processed": "TRUE",
         "Exclude From Spend": "",
         "Gmail ID": "19aa7adf37651f6f"
+      },
+      {
+        "Date": "22/11/2025",
+        "Time": "11:36:26",
+        "Merchant": "Cbs Arena Kiosk 12 Eating out",
+        "Amount (£)": "8.10",
+        "Type": "Debit",
+        "Source": "Food/Drink",
+        "Email Subject": "I just spent £ 8.10 at Cbs Arena Kiosk 12 Eating out November 22, 2025 at 11:36AM",
+        "Category": "",
+        "Processed": "TRUE",
+        "Exclude From Spend": "",
+        "Gmail ID": "19aab59e33baf742"
+      },
+      {
+        "Date": "22/11/2025",
+        "Time": "12:06:33",
+        "Merchant": "Smarkets Shopping",
+        "Amount (£)": "20.00",
+        "Type": "Debit",
+        "Source": "General",
+        "Email Subject": "I just spent £ 20 at Smarkets Shopping November 22, 2025 at 12:06PM",
+        "Category": "",
+        "Processed": "TRUE",
+        "Exclude From Spend": "",
+        "Gmail ID": "19aab7576ded5585"
       }
     ]
   }
