@@ -3,23 +3,31 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Aurora ISA – Nebula Frost Dark</title>
+<title>Aurora ISA – Ultra Aurora Mode</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
 
 <style>
+/* ===========================================================
+   AURORA ULTRA MODE VARIABLES
+   =========================================================== */
 :root{
   --cyan:#5eefff;
-  --teal:#4affe3;
+  --teal:#3affd9;
+  --magenta:#ff6bff;
+  --purple:#a07bff;
   --amber:#ffc36a;
-  --pink:#ff77ff;
   --green:#72ff72;
+
   --glass-dark: rgba(0,14,28,0.55);
   --glass-light: rgba(255,255,255,0.08);
+
   --bg:#020710;
 }
 
-/* ===== GLOBAL ===== */
+/* ===========================================================
+   GLOBAL + BACKGROUND
+   =========================================================== */
 body{
   margin:0;
   padding:0;
@@ -33,16 +41,46 @@ body{
 
   color:#fff;
   overflow-x:hidden;
+  position:relative;
 }
 
-/* ===== CONTAINER ===== */
+/* ===========================================================
+   ULTRA AURORA OVERLAY (SUBTLE)
+   =========================================================== */
+body::before{
+  content:"";
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  pointer-events:none;
+
+  background:radial-gradient(circle at 20% 30%, rgba(94,255,255,0.16), transparent 60%),
+             radial-gradient(circle at 85% 70%, rgba(255,105,255,0.18), transparent 55%),
+             radial-gradient(circle at 40% 90%, rgba(60,255,220,0.12), transparent 70%);
+
+  animation:auroraDrift 14s infinite alternate ease-in-out;
+  z-index:0;
+}
+
+@keyframes auroraDrift{
+  0% { transform:translateY(0px) scale(1); opacity:0.7; }
+  100% { transform:translateY(-16px) scale(1.05); opacity:1; }
+}
+
+/* ===========================================================
+   WRAPPER
+   =========================================================== */
 .wrapper{
   max-width:1400px;
   margin:auto;
   padding:20px;
+  position:relative;
+  z-index:5;
 }
 
-/* ===== Frosted Cards ===== */
+/* ===========================================================
+   CARDS
+   =========================================================== */
 .frost-card{
   background: rgba(255,255,255,0.12);
   border-radius: 22px;
@@ -53,19 +91,21 @@ body{
   margin-bottom: 28px;
 }
 
-/* ===== Standard Card ===== */
 .card{
-  background: rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.10);
   backdrop-filter: blur(14px) brightness(1.25);
   border: 1px solid rgba(255,255,255,0.22);
   box-shadow: 0 0 20px rgba(0,255,255,0.15);
+  border-radius:20px;
+  padding:22px;
+  margin-bottom:30px;
 }
 
 .card h2{
   margin-top:0;
   text-align:center;
   color:var(--cyan);
-  text-shadow:0 0 12px var(--cyan);
+  text-shadow:0 0 14px var(--cyan);
 }
 
 .section-title{
@@ -77,41 +117,47 @@ body{
   text-align:center;
 }
 
-/* Charts */
+/* ===========================================================
+   CHARTS
+   =========================================================== */
 #sectorChart, #quarterChart{
   width: 100%;
   height: 260px;
   margin-top: 12px;
 }
 
-/* ===== Frosted Holdings Table – Darker Aurora Edition ===== */
+/* ===========================================================
+   HOLDINGS TABLE — ULTRA DARK + AURORA GLOW
+   =========================================================== */
 .holdings-table-wrapper {
-  background: rgba(0,0,0,0.35); /* darker base */
+  background: rgba(0,0,0,0.38);
   padding: 18px;
   border-radius: 20px;
-  backdrop-filter: blur(14px) brightness(0.9);
-  border: 1px solid rgba(0,255,255,0.20);
-  box-shadow: 0 0 28px rgba(0,255,255,0.22);
+  backdrop-filter: blur(14px) brightness(0.95);
+  border: 1px solid rgba(0,255,255,0.18);
+  box-shadow: 0 0 30px rgba(0,255,255,0.25);
   margin-top: 14px;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
 }
 
 .holdings-table {
   width: 100%;
   border-collapse: collapse;
-  background: rgba(0,0,0,0.45); /* darker table surface */
+  background: rgba(0,0,0,0.55);
   border-radius: 16px;
   overflow: hidden;
-  backdrop-filter: blur(10px) brightness(0.9);
+  table-layout: fixed;
+  word-wrap: break-word;
 }
 
 .holdings-table th {
-  color: var(--glow-cyan);
+  color: var(--cyan);
   padding: 12px;
   font-size: 15px;
-  letter-spacing: 0.6px;
-  background: rgba(0,0,0,0.55); /* darker header */
+  background: rgba(0,0,0,0.65);
   border-bottom: 1px solid rgba(0,255,255,0.25);
-  text-shadow: 0 0 6px rgba(0,255,255,0.5);
+  text-shadow: 0 0 8px rgba(0,255,255,0.6);
   font-weight: 600;
   text-align: left;
 }
@@ -123,45 +169,27 @@ body{
   border-bottom: 1px solid rgba(255,255,255,0.10);
 }
 
-/* Remove bottom border on final row */
-.holdings-table tr:last-child td {
-  border-bottom: none;
-}
-
-/* Hover glow – icy and dark */
 .holdings-table tr:hover {
-  background: rgba(0,255,255,0.10);
-  backdrop-filter: blur(12px);
+  background: rgba(0,255,255,0.08);
   transition: all 0.25s ease;
 }
-/* ===== iPhone Responsive Fix for Frosted Holdings Table ===== */
-.holdings-table-wrapper {
-  overflow-x: auto;              /* allows sideways scroll if needed */
-  -webkit-overflow-scrolling: touch;
-}
 
-/* Force table to shrink nicely */
-.holdings-table {
-  width: 100%;
-  table-layout: fixed;           /* prevents columns from exploding wider than screen */
-  word-wrap: break-word;         /* wraps long text */
-}
-
-/* Tighter padding on phones */
+/* --- iPhone compact mode --- */
 @media (max-width: 480px) {
   .holdings-table th,
   .holdings-table td {
     padding: 8px 6px;
-    font-size: 12px;             /* cleaner on iPhone screens */
+    font-size: 12px;
   }
-
   .holdings-table-wrapper {
     padding: 12px;
     border-radius: 14px;
   }
 }
 
-/* ===== EXPANDERS ===== */
+/* ===========================================================
+   EXPANDERS
+   =========================================================== */
 .toggle{
   margin-top:15px;
   padding:10px 20px;
@@ -198,7 +226,9 @@ async function init(){
   renderQuarterlyIncome(sync);
 }
 
-/* ===== OVERVIEW ===== */
+/* ===========================================================
+   OVERVIEW
+   =========================================================== */
 function renderOverview(sync){
   const ig = sync?.isa?.holdings?.ig_isa || [];
   const t2 = sync?.isa?.holdings?.trade212_isa || [];
@@ -214,7 +244,9 @@ function renderOverview(sync){
     </p>`;
 }
 
-/* ===== HOLDINGS ===== */
+/* ===========================================================
+   HOLDINGS TABLE
+   =========================================================== */
 function renderHoldings(sync){
   const all = [
     ...(sync?.isa?.holdings?.ig_isa || []),
@@ -236,7 +268,7 @@ function renderHoldings(sync){
   `;
 
   all.forEach(h=>{
-    const col = h.gain_value >= 0 ? "var(--green)" : "var(--pink)";
+    const col = h.gain_value >= 0 ? "var(--green)" : "var(--magenta)";
     html += `
       <tr>
         <td>${h.ticker}</td>
@@ -255,7 +287,9 @@ function renderHoldings(sync){
   document.getElementById("holdings-full").innerHTML = html;
 }
 
-/* ===== SECTOR CHART ===== */
+/* ===========================================================
+   SECTOR BREAKDOWN — ULTRA AURORA PALETTE
+   =========================================================== */
 function renderSectorBreakdown(sync){
   const all = [
     ...(sync?.isa?.holdings?.ig_isa || []),
@@ -268,14 +302,25 @@ function renderSectorBreakdown(sync){
     sectors[s] = (sectors[s] || 0) + Number(h.value);
   });
 
-  new Chart(document.getElementById("sectorChart"), {
+  const ctx = document.getElementById("sectorChart");
+
+  new Chart(ctx, {
     type: "doughnut",
     data: {
       labels: Object.keys(sectors),
       datasets: [{
         data: Object.values(sectors),
-        borderWidth: 2,
-        borderColor: "#fff"
+
+        backgroundColor: [
+          "rgba(94,255,255,0.70)", 
+          "rgba(58,255,217,0.70)",
+          "rgba(160,123,255,0.70)",
+          "rgba(255,107,255,0.70)",
+          "rgba(255,195,106,0.70)",
+          "rgba(114,255,114,0.70)"
+        ],
+        borderColor: "#ffffff",
+        borderWidth: 1.5
       }]
     },
     options:{
@@ -284,7 +329,9 @@ function renderSectorBreakdown(sync){
   });
 }
 
-/* ===== QUARTERS ===== */
+/* ===========================================================
+   QUARTERLY CHART
+   =========================================================== */
 function renderQuarterlyIncome(sync){
   const q4_2025 = 1965.68;
   const q1_2026 = 589.76;
@@ -307,7 +354,15 @@ function renderQuarterlyIncome(sync){
       datasets:[{
         label:"£ Income",
         data:[q4_2025,q1_2026,q2_2026,q3_2026,future],
-        borderWidth:2
+        backgroundColor:[
+          "rgba(94,255,255,0.65)",
+          "rgba(58,255,217,0.65)",
+          "rgba(160,123,255,0.65)",
+          "rgba(255,107,255,0.65)",
+          "rgba(255,195,106,0.65)"
+        ],
+        borderWidth:2,
+        borderColor:"#fff"
       }]
     },
     options:{
@@ -320,7 +375,9 @@ function renderQuarterlyIncome(sync){
   });
 }
 
-/* ===== EXPANDERS ===== */
+/* ===========================================================
+   EXPANDERS
+   =========================================================== */
 document.addEventListener("click",e=>{
   if(e.target.classList.contains("toggle")){
     const box = e.target.nextElementSibling;
@@ -334,7 +391,7 @@ document.addEventListener("click",e=>{
 <div class="wrapper">
 
 <h1 style="color:var(--cyan); text-align:center; text-shadow:0 0 18px var(--cyan);">
-  ❄ Aurora ISA — Nebula Frost Dark
+  ❄ Aurora ISA — Ultra Aurora Mode
 </h1>
 
 <!-- OVERVIEW -->
@@ -342,8 +399,6 @@ document.addEventListener("click",e=>{
   <h2>📊 ISA Overview</h2>
   <div id="overview"></div>
 </div>
-
-<div class="right-panel">
 
 <!-- SECTOR -->
 <div class="frost-card">
@@ -355,8 +410,6 @@ document.addEventListener("click",e=>{
 <div class="frost-card">
   <div class="section-title">📆 Quarterly Income Projection</div>
   <canvas id="quarterChart"></canvas>
-</div>
-
 </div>
 
 <!-- HOLDINGS -->
