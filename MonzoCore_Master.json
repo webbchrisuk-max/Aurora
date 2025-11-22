@@ -1,7 +1,7 @@
 {
   "monzo": {
-    "updated_at": "2025-11-22T13:04:00.644Z",
-    "main_balance": 499.24,
+    "updated_at": "2025-11-22T14:32:07.787Z",
+    "main_balance": 479.24,
     "pots": [
       {
         "label": "Flex Account",
@@ -1393,6 +1393,19 @@
         "Processed": "TRUE",
         "Exclude From Spend": "",
         "Gmail ID": "19aab7576ded5585"
+      },
+      {
+        "Date": "22/11/2025",
+        "Time": "13:28:15",
+        "Merchant": "Smarkets Shopping",
+        "Amount (£)": "20.00",
+        "Type": "Debit",
+        "Source": "General",
+        "Email Subject": "I just spent £ 20 at Smarkets Shopping November 22, 2025 at 01:28PM",
+        "Category": "",
+        "Processed": "TRUE",
+        "Exclude From Spend": "",
+        "Gmail ID": "19aabc0442d4efe7"
       }
     ]
   }
