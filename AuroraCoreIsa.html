@@ -43,21 +43,49 @@ body{
   padding:20px;
 }
 
-/* ===== CARD ===== */
+/* ===== Frosted Glass Hypernova Cards ===== */
+.frost-card{
+  background: rgba(255,255,255,0.12);
+  border-radius: 22px;
+  padding: 22px;
+  backdrop-filter: blur(14px) brightness(1.3);
+  border: 1px solid rgba(255,255,255,0.25);
+  box-shadow: 0 0 25px rgba(0,255,255,0.25);
+  margin-bottom: 28px;
+}
+/* ===== STANDARD CARD (Overview + Holdings) ===== */
 .card{
-  background:var(--glass-dark);
-  border:1px solid rgba(255,255,255,0.15);
-  border-radius:18px;
-  padding:22px;
-  margin-bottom:25px;
-  backdrop-filter:blur(10px);
-  box-shadow:0 0 25px rgba(0,180,255,0.18);
+  background: rgba(0,0,0,0.45);
+  border-radius: 22px;
+  padding: 22px;
+  border: 1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 0 20px rgba(0,255,255,0.15);
+  margin-bottom: 28px;
+  color:#e8faff;
 }
 
 .card h2{
-  margin:0 0 12px 0;
+  margin-top:0;
+  text-align:center;
   color:var(--cyan);
-  text-shadow:0 0 10px var(--cyan);
+  text-shadow:0 0 12px var(--cyan);
+}
+
+.section-title{
+  font-size: 22px;
+  font-weight: 700;
+  color: #b7f7ff;
+  text-shadow: 0 0 14px #6beaff;
+  margin-bottom: 14px;
+  text-align:center;
+}
+
+/* Chart containers */
+#sectorChart, #quarterChart{
+  width: 100%;
+  height: 260px;
+  margin-top: 12px;
 }
 
 /* ===== TABLE ===== */
@@ -99,6 +127,8 @@ td{
 </style>
 
 <script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
 const URL_JSON = "https://raw.githubusercontent.com/webbchrisuk-max/Aurora/main/AuroraSync.json";
 
 async function loadJSON(){
@@ -110,6 +140,10 @@ async function init(){
   const sync = await loadJSON();
   renderOverview(sync);
   renderHoldings(sync);
+
+  /* FIXED — moved from bottom */
+  renderSectorBreakdown(sync);
+  renderQuarterlyIncome(sync);
 }
 
 /* ===== OVERVIEW CARD ===== */
@@ -161,14 +195,88 @@ function renderHoldings(sync){
   document.getElementById("holdings-full").innerHTML = html;
 }
 
+/* ===== SECTOR BREAKDOWN ===== */
+function renderSectorBreakdown(sync){
+  const ig = sync?.isa?.holdings?.ig_isa || [];
+  const t2 = sync?.isa?.holdings?.trade212_isa || [];
+  const all = [...ig, ...t2];
+
+  const sectorTotals = {};
+
+  all.forEach(h=>{
+    const sector = h.sector || "Unknown";
+    const val = parseFloat(h.value || 0);
+    sectorTotals[sector] = (sectorTotals[sector] || 0) + val;
+  });
+
+  const labels = Object.keys(sectorTotals);
+  const data = Object.values(sectorTotals);
+
+  new Chart(document.getElementById("sectorChart"), {
+    type: "doughnut",
+    data: {
+      labels,
+      datasets: [{
+        data,
+        borderWidth: 2,
+        borderColor: "#ffffff",
+      }]
+    },
+    options: {
+      plugins:{
+        legend:{labels:{color:"#e9ffff"}}
+      }
+    }
+  });
+}
+
+/* ===== QUARTERLY ===== */
+function renderQuarterlyIncome(sync){
+  const rows = sync?.isa?.dividends?.upcoming || [];
+  
+  let q1=0, q2=0, q3=0, q4=0;
+
+  rows.forEach(r=>{
+    if(!r.pay_date || !r.total_dividend) return;
+    const d = new Date(r.pay_date);
+    const m = d.getMonth();
+
+    if(m <= 2) q1 += +r.total_dividend;
+    else if(m <= 5) q2 += +r.total_dividend;
+    else if(m <= 8) q3 += +r.total_dividend;
+    else q4 += +r.total_dividend;
+  });
+
+  new Chart(document.getElementById("quarterChart"),{
+    type:"bar",
+    data:{
+      labels:["Q1","Q2","Q3","Q4"],
+      datasets:[{
+        label:"£ Income",
+        data:[q1,q2,q3,q4],
+        borderWidth:2,
+      }]
+    },
+    options:{
+      scales:{
+        x:{ticks:{color:"#d8faff"}},
+        y:{ticks:{color:"#d8faff"}}
+      },
+      plugins:{
+        legend:{labels:{color:"#d8faff"}}
+      }
+    }
+  });
+}
+
 /* ===== EXPANDERS ===== */
 document.addEventListener("click",e=>{
   if(!e.target.classList.contains("toggle")) return;
   const box = e.target.nextElementSibling;
   box.style.maxHeight = box.style.maxHeight ? null : box.scrollHeight + "px";
 });
-</script>
 
+</script>
 </head>
 <body onload="init()">
 
@@ -184,6 +292,24 @@ document.addEventListener("click",e=>{
     <h2>📊 ISA Overview</h2>
     <div id="overview"></div>
   </div>
+  
+  <div class="right-panel">
+
+  <!-- Existing cards (timeline, upcoming, history, etc.) -->
+
+  <!-- ===================== SECTOR BREAKDOWN ===================== -->
+  <div class="frost-card">
+    <div class="section-title">📊 Sector Breakdown</div>
+    <canvas id="sectorChart"></canvas>
+  </div>
+
+  <!-- ===================== QUARTERLY INCOME ===================== -->
+  <div class="frost-card">
+    <div class="section-title">📆 Quarterly Income Projection</div>
+    <canvas id="quarterChart"></canvas>
+  </div>
+
+</div>
 
   <!-- ===== HOLDINGS CARD ===== -->
   <div class="card">
